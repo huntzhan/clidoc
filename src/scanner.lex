@@ -1,16 +1,8 @@
 %{
-// `generated_parser.h` use macro YY_NULLPTR, which is not defined.
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
-
 // Use parser defined tokens.
-#include "generated_parser.h"
 #include "generated_scanner.h"
+// `generated_parser.h` must be included after `generated_scanner.h`.
+#include "generated_parser.h"
 
 #define	YY_DECL                         \
   yy::BisonGeneratedParser::symbol_type \
@@ -36,11 +28,11 @@ OPERAND              {ALNUM}+
 OPTION_DEFAULT_VALUE "{ALNUM}+"
 COMMENT              #.*
 
-L_PARENTHESIS        (
-R_PARENTHESIS        )
-L_BRACKET            [
-R_BRACKET            ]
-EXCLUSIVE_OR         |
+L_PARENTHESIS        \(
+R_PARENTHESIS        \)
+L_BRACKET            \[
+R_BRACKET            \]
+EXCLUSIVE_OR         \|
 EQUAL_SIGN           =
 ELLIPSES             \.\.\.
 K_USAGE_COLON        usage:
@@ -52,4 +44,9 @@ K_DESC_DELIMITER     \*DESC_DELIMITER\*
 
 %%
 
-<<EOF>> {  }
+{POSIX_OPTION} return yy::BisonGeneratedParser::make_POSIX_OPTION(YYText());
+
+<<EOF>> return yy::BisonGeneratedParser::make_END();
+
+%%
+int yyFlexLexer::yylex() {/* empty */ }

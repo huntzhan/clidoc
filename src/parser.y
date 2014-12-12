@@ -8,7 +8,6 @@
 %define parser_class_name {BisonGeneratedParser}
 %define api.token.constructor
 %define api.value.type variant
-%define parse.assert
 
 %code requires {
 #include <string>
@@ -23,6 +22,9 @@ class FlexGeneratedScanner;
 #include "generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
+
+// Error report function.
+void yy::BisonGeneratedParser::error (const std::string&) {}
 }
 
 %parse-param { FlexGeneratedScanner *lexer_ptr }
@@ -47,6 +49,7 @@ class FlexGeneratedScanner;
   K_OPTIONS           "options"
   K_UTILITY_DELIMITER "*UTILITY_DELIMITER*"
   K_DESC_DELIMITER    "*DESC_DELIMITER*"
+  END                 0
 ;
 
 %type <Undefine> doc
