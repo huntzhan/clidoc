@@ -4,7 +4,7 @@
 // `generated_parser.h` must be included after `generated_scanner.h`.
 #include "generated_parser.h"
 
-#define	YY_DECL                         \
+#define YY_DECL                             \
   clidoc::BisonGeneratedParser::symbol_type \
   clidoc::FlexGeneratedScanner::lex()
 %}

@@ -34,7 +34,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 %token <std::string>
   POSIX_OPTION GROUPED_OPTIONS GNU_OPTION
   ARGUEMENT OPERAND
-	OPTION_DEFAULT_VALUE COMMENT
+  OPTION_DEFAULT_VALUE COMMENT
 ;
 
 %token
@@ -94,11 +94,11 @@ or_exprs : or_exprs EXCLUSIVE_OR seqs {  }
 ;
 
 seqs : seqs single_seq {  }
-  	 | single_seq {  }
+     | single_seq {  }
 ;
 
 single_seq : atom {  }
-  				 | atom ELLIPSES {  }
+           | atom ELLIPSES {  }
 ;
 
 atom : L_PARENTHESIS or_exprs R_PARENTHESIS { }
@@ -122,7 +122,7 @@ options_section : K_OPTIONS_COLON descriptions {  }
 ;
 
 descriptions : descriptions single_description {  }
-						 | single_description {  }
+             | single_description {  }
 ;
 
 single_description : bindings default_value comment K_DESC_DELIMITER  {  }
@@ -133,11 +133,11 @@ default_value : L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE R_BRACKET {  }
 ;
 
 comment : COMMENT {  }
-				| %empty {  }
+        | %empty {  }
 ;
 
 bindings : bindings single_binding {  }
-				 | single_binding {  }
+         | single_binding {  }
 ;
 
 single_binding : POSIX_OPTION {  }
