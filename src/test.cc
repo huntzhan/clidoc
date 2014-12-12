@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "lex.yy.cc"
+#include "generated_scanner.h"
 
 using std::cout;
 using std::endl;
@@ -9,10 +9,13 @@ using std::endl;
 int main() {
   std::ofstream null_ostream("/dev/null");
   std::istringstream input_stream("docopt -c -afefe --long -c=a,b,c <shit> FILE fuck");
-  yyFlexLexer lexer(&input_stream, &null_ostream);
-  while(lexer.yylex() != 0) { /* nothing */ }
-  for (const auto &token : clidoc::TokenHandler::tokens) {
-    cout << token.lexeme_ << " " << token.syntactic_category_ << endl;
+  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
+  while (true) {
+    auto token = lexer.lex();
+    if (token.token() == 0) {
+      break;
+    }
+    cout << token.value.as<std::string>() << endl;
   }
   return 0;
 }

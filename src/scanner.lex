@@ -49,4 +49,5 @@ K_DESC_DELIMITER     \*DESC_DELIMITER\*
 <<EOF>> return yy::BisonGeneratedParser::make_END();
 
 %%
+// Bug fix.
 int yyFlexLexer::yylex() {/* empty */ }
