@@ -1,56 +1,55 @@
 %{
-#include <string>
-#include <vector>
+// `generated_parser.h` use macro YY_NULLPTR, which is not defined.
+# ifndef YY_NULLPTR
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULLPTR nullptr
+#  else
+#   define YY_NULLPTR 0
+#  endif
+# endif
 
-namespace clidoc {
-// using declarations.
-using std::string;
-using std::vector;
+// Use parser defined tokens.
+#include "generated_parser.h"
+#include "generated_scanner.h"
 
-class Token {
- public:
-  Token(const string &lexeme, const string &syntactic_category)
-      : lexeme_(lexeme), syntactic_category_(syntactic_category) {}
-  string lexeme_;
-  string syntactic_category_;
-};
-
-class TokenHandler {
- public:
-  static void AddToken(const string &lexeme, const string &syntactic_category);
-	static vector<Token> tokens;
-};
-
-void TokenHandler::AddToken(const string &lexeme,
-                            const string &syntactic_category) {
-  tokens.push_back(Token(lexeme, syntactic_category));
-}
-
-vector<Token> TokenHandler::tokens;  // init static member.
-
-}  // namespace clidoc
+#define	YY_DECL                         \
+  yy::BisonGeneratedParser::symbol_type \
+  FlexGeneratedScanner::lex()
 %}
 
 %option c++
-%option noyywrap
+%option noyywrap nounput batch debug noinput
+%option outfile="generated_scanner.cc"
 
-DIGIT             [0-9]
-LOWERCASE         [a-z]
-UPPERCASE         [A-Z]
-LOWERCASE_DIGIT   {LOWERCASE}|{DIGIT}
-UPPERCASE_DIGIT   {UPPERCASE}|{DIGIT}
-ALNUM             {LOWERCASE}|{UPPERCASE}|{DIGIT}
+DIGIT                [0-9]
+LOWERCASE            [a-z]
+UPPERCASE            [A-Z]
+LOWERCASE_DIGIT      {LOWERCASE}|{DIGIT}
+UPPERCASE_DIGIT      {UPPERCASE}|{DIGIT}
+ALNUM                {LOWERCASE}|{UPPERCASE}|{DIGIT}
 
-OPTION            -{ALNUM}
-OPTION_ARGUEMENT  (<{LOWERCASE_DIGIT}+>)|({UPPERCASE_DIGIT}+)
-GROUPED_OPTIONS   -{ALNUM}+
-GNU_LONG_OPTION   --{ALNUM}+
-ARGUMENT          {ALNUM}+
+POSIX_OPTION         -{ALNUM}
+GROUPED_OPTIONS      -{ALNUM}+
+GNU_OPTION           --{ALNUM}+
+ARGUEMENT            (<{LOWERCASE_DIGIT}+>)|({UPPERCASE_DIGIT}+)
+OPERAND              {ALNUM}+
+OPTION_DEFAULT_VALUE "{ALNUM}+"
+COMMENT              #.*
+
+L_PARENTHESIS        (
+R_PARENTHESIS        )
+L_BRACKET            [
+R_BRACKET            ]
+EXCLUSIVE_OR         |
+EQUAL_SIGN           =
+ELLIPSES             \.\.\.
+K_USAGE_COLON        usage:
+K_OPTIONS_COLON      options:
+K_DEFAULT_COLON      default:
+K_OPTIONS            options
+K_UTILITY_DELIMITER  \*UTILITY_DELIMITER\*
+K_DESC_DELIMITER     \*DESC_DELIMITER\*
 
 %%
-{OPTION}            { clidoc::TokenHandler::AddToken(YYText(), "OPTION"); }
-{OPTION_ARGUEMENT}  { clidoc::TokenHandler::AddToken(YYText(), "OPTION_ARGUEMENT"); }
-{GROUPED_OPTIONS}   { clidoc::TokenHandler::AddToken(YYText(), "GROUPED_OPTIONS"); }
-{GNU_LONG_OPTION}   { clidoc::TokenHandler::AddToken(YYText(), "GNU_LONG_OPTION"); }
-{ARGUMENT}          { clidoc::TokenHandler::AddToken(YYText(), "ARGUMENT"); }
-[,\|\[\]\n=]        { clidoc::TokenHandler::AddToken(YYText(), "STRUCTURE"); }
+
+<<EOF>> {  }

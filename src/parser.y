@@ -2,8 +2,8 @@
 %skeleton "lalr1.cc"
 %require "3.0.2"
 
-%output "generated_parser.cc"
 %defines "generated_parser.h"
+%output "generated_parser.cc"
 
 %define parser_class_name {BisonGeneratedParser}
 %define api.token.constructor
