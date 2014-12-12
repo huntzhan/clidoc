@@ -34,14 +34,23 @@ vector<Token> TokenHandler::tokens;  // init static member.
 %option c++
 %option noyywrap
 
-ALNUM            [a-zA-Z0-9]
-ARGUMENT         {ALNUM}+
-OPTION           -{ALNUM}
-GROUPED_OPTIONS  -{ALNUM}+
-GNU_LONG_OPTION  --{ALNUM}+
+DIGIT             [0-9]
+LOWERCASE         [a-z]
+UPPERCASE         [A-Z]
+LOWERCASE_DIGIT   {LOWERCASE}|{DIGIT}
+UPPERCASE_DIGIT   {UPPERCASE}|{DIGIT}
+ALNUM             {LOWERCASE}|{UPPERCASE}|{DIGIT}
+
+OPTION            -{ALNUM}
+OPTION_ARGUEMENT  (<{LOWERCASE_DIGIT}+>)|({UPPERCASE_DIGIT}+)
+GROUPED_OPTIONS   -{ALNUM}+
+GNU_LONG_OPTION   --{ALNUM}+
+ARGUMENT          {ALNUM}+
 
 %%
-{ARGUMENT}         { clidoc::TokenHandler::AddToken(YYText(), "ARGUMENT"); }
-{OPTION}           { clidoc::TokenHandler::AddToken(YYText(), "OPTION"); }
-{GROUPED_OPTIONS}  { clidoc::TokenHandler::AddToken(YYText(), "GROUPED_OPTIONS"); }
-{GNU_LONG_OPTION}  { clidoc::TokenHandler::AddToken(YYText(), "GNU_LONG_OPTION"); }
+{OPTION}            { clidoc::TokenHandler::AddToken(YYText(), "OPTION"); }
+{OPTION_ARGUEMENT}  { clidoc::TokenHandler::AddToken(YYText(), "OPTION_ARGUEMENT"); }
+{GROUPED_OPTIONS}   { clidoc::TokenHandler::AddToken(YYText(), "GROUPED_OPTIONS"); }
+{GNU_LONG_OPTION}   { clidoc::TokenHandler::AddToken(YYText(), "GNU_LONG_OPTION"); }
+{ARGUMENT}          { clidoc::TokenHandler::AddToken(YYText(), "ARGUMENT"); }
+[,\|\[\]\n=]        { clidoc::TokenHandler::AddToken(YYText(), "STRUCTURE"); }

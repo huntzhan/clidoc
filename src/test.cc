@@ -8,7 +8,7 @@ using std::endl;
 
 int main() {
   std::ofstream null_ostream("/dev/null");
-  std::istringstream input_stream("docopt -c -afefe --long fuck");
+  std::istringstream input_stream("docopt -c -afefe --long -c=a,b,c <shit> FILE fuck");
   yyFlexLexer lexer(&input_stream, &null_ostream);
   while(lexer.yylex() != 0) { /* nothing */ }
   for (const auto &token : clidoc::TokenHandler::tokens) {

@@ -1,22 +1,31 @@
 
 %skeleton "lalr1.cc"
 %require "3.0.2"
-%output "generated_parser.cc"
 
-%defines
+%output "generated_parser.cc"
+%defines "generated_parser.h"
+
 %define parser_class_name {BisonGeneratedParser}
 %define api.token.constructor
 %define api.value.type variant
+%define parse.assert
 
 %code requires {
-#include "FlexLexer.h"
 #include <string>
 
-#undef yylex
-#define yylex lexer_ptr->yylex
+class Undefine {};
+
+// Forward declaration FlexGeneratedScanner to resolve cyclic #include.
+class FlexGeneratedScanner;
 }
 
-%parse-param { FlexLexer *lexer_ptr }
+%code {
+#include "generated_scanner.h"
+#undef yylex
+#define yylex lexer_ptr->lex
+}
+
+%parse-param { FlexGeneratedScanner *lexer_ptr }
 
 %token <std::string>
   POSIX_OPTION GROUPED_OPTIONS GNU_OPTION
