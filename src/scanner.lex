@@ -20,14 +20,6 @@ LOWERCASE_DIGIT      {LOWERCASE}|{DIGIT}
 UPPERCASE_DIGIT      {UPPERCASE}|{DIGIT}
 ALNUM                {LOWERCASE}|{UPPERCASE}|{DIGIT}
 
-POSIX_OPTION         -{ALNUM}
-GROUPED_OPTIONS      -{ALNUM}+
-GNU_OPTION           --{ALNUM}+
-ARGUEMENT            (<{LOWERCASE_DIGIT}+>)|({UPPERCASE_DIGIT}+)
-OPERAND              {ALNUM}+
-OPTION_DEFAULT_VALUE "{ALNUM}+"
-COMMENT              #.*
-
 L_PARENTHESIS        \(
 R_PARENTHESIS        \)
 L_BRACKET            \[
@@ -42,11 +34,39 @@ K_OPTIONS            options
 K_UTILITY_DELIMITER  \*UTILITY_DELIMITER\*
 K_DESC_DELIMITER     \*DESC_DELIMITER\*
 
+POSIX_OPTION         -{ALNUM}
+GROUPED_OPTIONS      -{ALNUM}+
+GNU_OPTION           --{ALNUM}+
+ARGUEMENT            (<{LOWERCASE_DIGIT}+>)|({UPPERCASE_DIGIT}+)
+OPERAND              {ALNUM}+
+OPTION_DEFAULT_VALUE "{ALNUM}+"
+COMMENT              #.*
+
 %%
 
-{POSIX_OPTION} return yy::BisonGeneratedParser::make_POSIX_OPTION(YYText());
+{L_PARENTHESIS}        return yy::BisonGeneratedParser::make_L_PARENTHESIS();
+{R_PARENTHESIS}        return yy::BisonGeneratedParser::make_R_PARENTHESIS();
+{L_BRACKET}            return yy::BisonGeneratedParser::make_L_BRACKET();
+{R_BRACKET}            return yy::BisonGeneratedParser::make_R_BRACKET();
+{EXCLUSIVE_OR}         return yy::BisonGeneratedParser::make_EXCLUSIVE_OR();
+{EQUAL_SIGN}           return yy::BisonGeneratedParser::make_EQUAL_SIGN();
+{ELLIPSES}             return yy::BisonGeneratedParser::make_ELLIPSES();
+{K_USAGE_COLON}        return yy::BisonGeneratedParser::make_K_USAGE_COLON();
+{K_OPTIONS_COLON}      return yy::BisonGeneratedParser::make_K_OPTIONS_COLON();
+{K_DEFAULT_COLON}      return yy::BisonGeneratedParser::make_K_DEFAULT_COLON();
+{K_OPTIONS}            return yy::BisonGeneratedParser::make_K_OPTIONS();
+{K_UTILITY_DELIMITER}  return yy::BisonGeneratedParser::make_K_UTILITY_DELIMITER();
+{K_DESC_DELIMITER}     return yy::BisonGeneratedParser::make_K_DESC_DELIMITER();
 
-<<EOF>> return yy::BisonGeneratedParser::make_END();
+{POSIX_OPTION}         return yy::BisonGeneratedParser::make_POSIX_OPTION(YYText());
+{GROUPED_OPTIONS}      return yy::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
+{GNU_OPTION}           return yy::BisonGeneratedParser::make_GNU_OPTION(YYText());
+{ARGUEMENT}            return yy::BisonGeneratedParser::make_ARGUEMENT(YYText());
+{OPERAND}              return yy::BisonGeneratedParser::make_OPERAND(YYText());
+{OPTION_DEFAULT_VALUE} return yy::BisonGeneratedParser::make_OPTION_DEFAULT_VALUE(YYText());
+{COMMENT}              return yy::BisonGeneratedParser::make_COMMENT(YYText());
+
+<<EOF>>                return yy::BisonGeneratedParser::make_END();
 
 %%
 // Bug fix.
