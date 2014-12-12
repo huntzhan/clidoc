@@ -32,16 +32,16 @@
 
 /**
  ** \file stack.hh
- ** Define the yy::stack class.
+ ** Define the clidoc::stack class.
  */
 
-#ifndef YY_YY_STACK_HH_INCLUDED
-# define YY_YY_STACK_HH_INCLUDED
+#ifndef YY_CLIDOC_STACK_HH_INCLUDED
+# define YY_CLIDOC_STACK_HH_INCLUDED
 
 # include <vector>
 
 
-namespace yy {
+namespace clidoc {
 #line 46 "stack.hh" // stack.hh:152
   template <class T, class S = std::vector<T> >
   class stack
@@ -152,7 +152,7 @@ namespace yy {
   };
 
 
-} // yy
+} // clidoc
 #line 157 "stack.hh" // stack.hh:152
 
-#endif // !YY_YY_STACK_HH_INCLUDED
+#endif // !YY_CLIDOC_STACK_HH_INCLUDED

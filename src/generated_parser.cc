@@ -30,10 +30,12 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// Take the name prefix into account.
+#define yylex   clidoclex
 
 // First part of user declarations.
 
-#line 37 "generated_parser.cc" // lalr1.cc:399
+#line 39 "generated_parser.cc" // lalr1.cc:399
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -47,18 +49,18 @@
 
 // User implementation prologue.
 
-#line 51 "generated_parser.cc" // lalr1.cc:407
+#line 53 "generated_parser.cc" // lalr1.cc:407
 // Unqualified %code blocks.
-#line 21 "flex-bison-scripts/parser.y" // lalr1.cc:408
+#line 23 "flex-bison-scripts/parser.y" // lalr1.cc:408
 
 #include "generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
 
 // Error report function.
-void yy::BisonGeneratedParser::error (const std::string&) {}
+void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
-#line 62 "generated_parser.cc" // lalr1.cc:408
+#line 64 "generated_parser.cc" // lalr1.cc:408
 
 
 #ifndef YY_
@@ -124,11 +126,11 @@ void yy::BisonGeneratedParser::error (const std::string&) {}
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
-namespace yy {
-#line 129 "generated_parser.cc" // lalr1.cc:474
+namespace clidoc {
+#line 131 "generated_parser.cc" // lalr1.cc:474
 
   /// Build a parser object.
-  BisonGeneratedParser::BisonGeneratedParser (FlexGeneratedScanner *lexer_ptr_yyarg)
+  BisonGeneratedParser::BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
@@ -533,223 +535,223 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 77 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 79 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 539 "generated_parser.cc" // lalr1.cc:847
+#line 541 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 3:
-#line 80 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 82 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 545 "generated_parser.cc" // lalr1.cc:847
+#line 547 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 4:
-#line 83 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 85 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 551 "generated_parser.cc" // lalr1.cc:847
+#line 553 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 6:
-#line 87 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 89 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 557 "generated_parser.cc" // lalr1.cc:847
+#line 559 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 7:
-#line 90 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 92 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 563 "generated_parser.cc" // lalr1.cc:847
+#line 565 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 8:
-#line 91 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 93 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 569 "generated_parser.cc" // lalr1.cc:847
+#line 571 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 9:
-#line 94 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 96 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 575 "generated_parser.cc" // lalr1.cc:847
+#line 577 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 10:
-#line 95 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 97 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 581 "generated_parser.cc" // lalr1.cc:847
+#line 583 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 11:
-#line 98 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 100 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 587 "generated_parser.cc" // lalr1.cc:847
+#line 589 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 12:
-#line 99 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 101 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 593 "generated_parser.cc" // lalr1.cc:847
+#line 595 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 13:
-#line 102 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 104 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 599 "generated_parser.cc" // lalr1.cc:847
+#line 601 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 14:
-#line 103 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 105 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 605 "generated_parser.cc" // lalr1.cc:847
+#line 607 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 15:
-#line 104 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 106 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 611 "generated_parser.cc" // lalr1.cc:847
+#line 613 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 16:
-#line 105 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 107 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 617 "generated_parser.cc" // lalr1.cc:847
+#line 619 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 17:
-#line 106 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 108 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 623 "generated_parser.cc" // lalr1.cc:847
+#line 625 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 18:
-#line 107 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 109 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 629 "generated_parser.cc" // lalr1.cc:847
+#line 631 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 19:
-#line 108 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 110 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 635 "generated_parser.cc" // lalr1.cc:847
+#line 637 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 20:
-#line 111 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 113 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 641 "generated_parser.cc" // lalr1.cc:847
+#line 643 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 21:
-#line 112 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 114 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 647 "generated_parser.cc" // lalr1.cc:847
+#line 649 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 22:
-#line 115 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 117 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 653 "generated_parser.cc" // lalr1.cc:847
+#line 655 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 23:
-#line 116 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 118 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 659 "generated_parser.cc" // lalr1.cc:847
+#line 661 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 24:
-#line 119 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 121 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 665 "generated_parser.cc" // lalr1.cc:847
+#line 667 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 25:
-#line 122 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 124 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 671 "generated_parser.cc" // lalr1.cc:847
+#line 673 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 26:
-#line 123 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 125 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 677 "generated_parser.cc" // lalr1.cc:847
+#line 679 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 27:
-#line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 683 "generated_parser.cc" // lalr1.cc:847
+#line 685 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 28:
-#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 131 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 689 "generated_parser.cc" // lalr1.cc:847
+#line 691 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 29:
-#line 130 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 132 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 695 "generated_parser.cc" // lalr1.cc:847
+#line 697 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 30:
-#line 133 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 135 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 701 "generated_parser.cc" // lalr1.cc:847
+#line 703 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 31:
-#line 134 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 136 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 707 "generated_parser.cc" // lalr1.cc:847
+#line 709 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 32:
-#line 137 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 139 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 713 "generated_parser.cc" // lalr1.cc:847
+#line 715 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 33:
-#line 138 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 140 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 719 "generated_parser.cc" // lalr1.cc:847
+#line 721 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 34:
-#line 141 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 143 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 725 "generated_parser.cc" // lalr1.cc:847
+#line 727 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 35:
-#line 142 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 144 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 731 "generated_parser.cc" // lalr1.cc:847
+#line 733 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 36:
-#line 143 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 145 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 737 "generated_parser.cc" // lalr1.cc:847
+#line 739 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 37:
-#line 144 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 146 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 743 "generated_parser.cc" // lalr1.cc:847
+#line 745 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 38:
-#line 145 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 147 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 749 "generated_parser.cc" // lalr1.cc:847
+#line 751 "generated_parser.cc" // lalr1.cc:847
     break;
 
 
-#line 753 "generated_parser.cc" // lalr1.cc:847
+#line 755 "generated_parser.cc" // lalr1.cc:847
             default:
               break;
             }
@@ -1022,10 +1024,10 @@ namespace yy {
   const unsigned char
   BisonGeneratedParser::yyrline_[] =
   {
-       0,    77,    77,    80,    83,    84,    87,    90,    91,    94,
-      95,    98,    99,   102,   103,   104,   105,   106,   107,   108,
-     111,   112,   115,   116,   119,   122,   123,   126,   129,   130,
-     133,   134,   137,   138,   141,   142,   143,   144,   145
+       0,    79,    79,    82,    85,    86,    89,    92,    93,    96,
+      97,   100,   101,   104,   105,   106,   107,   108,   109,   110,
+     113,   114,   117,   118,   121,   124,   125,   128,   131,   132,
+     135,   136,   139,   140,   143,   144,   145,   146,   147
   };
 
   // Print the state stack on the debug stream.
@@ -1059,7 +1061,7 @@ namespace yy {
 
 
 
-} // yy
-#line 1064 "generated_parser.cc" // lalr1.cc:1155
-#line 148 "flex-bison-scripts/parser.y" // lalr1.cc:1156
+} // clidoc
+#line 1066 "generated_parser.cc" // lalr1.cc:1155
+#line 150 "flex-bison-scripts/parser.y" // lalr1.cc:1156
 

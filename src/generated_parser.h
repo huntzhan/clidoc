@@ -32,24 +32,25 @@
 
 /**
  ** \file generated_parser.h
- ** Define the yy::parser class.
+ ** Define the clidoc::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_YY_GENERATED_PARSER_H_INCLUDED
-# define YY_YY_GENERATED_PARSER_H_INCLUDED
+#ifndef YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
+# define YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 // //                    "%code requires" blocks.
-#line 12 "flex-bison-scripts/parser.y" // lalr1.cc:387
+#line 13 "flex-bison-scripts/parser.y" // lalr1.cc:387
 
 #include <string>
 
+// Forward declaration FlexGeneratedScanner to resolve cyclic #include.
+namespace clidoc { class FlexGeneratedScanner; }
+
+// TODO
 class Undefine {};
 
-// Forward declaration FlexGeneratedScanner to resolve cyclic #include.
-class FlexGeneratedScanner;
-
-#line 53 "generated_parser.h" // lalr1.cc:387
+#line 54 "generated_parser.h" // lalr1.cc:387
 
 
 # include <vector>
@@ -124,8 +125,8 @@ class FlexGeneratedScanner;
 #endif
 
 
-namespace yy {
-#line 129 "generated_parser.h" // lalr1.cc:387
+namespace clidoc {
+#line 130 "generated_parser.h" // lalr1.cc:387
 
 
 
@@ -517,7 +518,7 @@ namespace yy {
 
 
     /// Build a parser object.
-    BisonGeneratedParser (FlexGeneratedScanner *lexer_ptr_yyarg);
+    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg);
     virtual ~BisonGeneratedParser ();
 
     /// Parse.
@@ -722,7 +723,7 @@ namespace yy {
 
 
     // User arguments.
-    FlexGeneratedScanner *lexer_ptr;
+    clidoc::FlexGeneratedScanner *lexer_ptr;
   };
 
   // Symbol number corresponding to token number t.
@@ -1168,10 +1169,10 @@ namespace yy {
 
 
 
-} // yy
-#line 1173 "generated_parser.h" // lalr1.cc:387
+} // clidoc
+#line 1174 "generated_parser.h" // lalr1.cc:387
 
 
 
 
-#endif // !YY_YY_GENERATED_PARSER_H_INCLUDED
+#endif // !YY_CLIDOC_GENERATED_PARSER_H_INCLUDED

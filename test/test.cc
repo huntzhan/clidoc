@@ -8,8 +8,8 @@ using std::endl;
 
 int main() {
   std::ofstream null_ostream("/dev/null");
-  std::istringstream input_stream("docopt -c -afefe --long -c=a b c <shit> FILE fuck");
-  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
+  std::istringstream input_stream("docopt -c -afefe --long \"bitch\" -c=a b c <shit> FILE fuck");
+  clidoc::FlexGeneratedScanner lexer(&input_stream, &null_ostream);
   while (true) {
     auto token = lexer.lex();
     if (token.token() == 0) {

@@ -14,13 +14,17 @@
 
 #include "generated_parser.h"
 
+namespace clidoc {
+
 class FlexGeneratedScanner : public yyFlexLexer {
  public:
 	FlexGeneratedScanner(std::istream *arg_yyin = 0,
                        std::ostream *arg_yyout = 0)
       : yyFlexLexer(arg_yyin, arg_yyout) { /* empty */ }
-  // Implemented the pure virtual function.
-  yy::BisonGeneratedParser::symbol_type lex();
+
+  BisonGeneratedParser::symbol_type lex();
 };
+
+}  // namespace clidoc
 
 #endif // SCANNER_H_

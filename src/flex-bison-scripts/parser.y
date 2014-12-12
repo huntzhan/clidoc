@@ -2,8 +2,9 @@
 %skeleton "lalr1.cc"
 %require "3.0.2"
 
-%defines "generated_parser.h"
-%output "generated_parser.cc"
+%defines     "generated_parser.h"
+%output      "generated_parser.cc"
+%name-prefix "clidoc"
 
 %define parser_class_name {BisonGeneratedParser}
 %define api.token.constructor
@@ -12,10 +13,11 @@
 %code requires {
 #include <string>
 
-class Undefine {};
-
 // Forward declaration FlexGeneratedScanner to resolve cyclic #include.
-class FlexGeneratedScanner;
+namespace clidoc { class FlexGeneratedScanner; }
+
+// TODO
+class Undefine {};
 }
 
 %code {
@@ -24,10 +26,10 @@ class FlexGeneratedScanner;
 #define yylex lexer_ptr->lex
 
 // Error report function.
-void yy::BisonGeneratedParser::error (const std::string&) {}
+void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 }
 
-%parse-param { FlexGeneratedScanner *lexer_ptr }
+%parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
 
 %token <std::string>
   POSIX_OPTION GROUPED_OPTIONS GNU_OPTION

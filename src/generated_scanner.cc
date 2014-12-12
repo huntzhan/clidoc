@@ -569,8 +569,8 @@ static yyconst flex_int16_t yy_rule_linenum[21] =
 #include "generated_parser.h"
 
 #define	YY_DECL                         \
-  yy::BisonGeneratedParser::symbol_type \
-  FlexGeneratedScanner::lex()
+  clidoc::BisonGeneratedParser::symbol_type \
+  clidoc::FlexGeneratedScanner::lex()
 #define YY_NO_INPUT 1
 #line 576 "generated_scanner.cc"
 
@@ -844,106 +844,106 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 47 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_L_PARENTHESIS();
+return clidoc::BisonGeneratedParser::make_L_PARENTHESIS();
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 48 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_R_PARENTHESIS();
+return clidoc::BisonGeneratedParser::make_R_PARENTHESIS();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 49 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_L_BRACKET();
+return clidoc::BisonGeneratedParser::make_L_BRACKET();
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 50 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_R_BRACKET();
+return clidoc::BisonGeneratedParser::make_R_BRACKET();
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 51 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_EXCLUSIVE_OR();
+return clidoc::BisonGeneratedParser::make_EXCLUSIVE_OR();
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 52 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_EQUAL_SIGN();
+return clidoc::BisonGeneratedParser::make_EQUAL_SIGN();
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 53 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_ELLIPSES();
+return clidoc::BisonGeneratedParser::make_ELLIPSES();
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 54 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_K_USAGE_COLON();
+return clidoc::BisonGeneratedParser::make_K_USAGE_COLON();
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 55 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_K_OPTIONS_COLON();
+return clidoc::BisonGeneratedParser::make_K_OPTIONS_COLON();
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 56 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_K_DEFAULT_COLON();
+return clidoc::BisonGeneratedParser::make_K_DEFAULT_COLON();
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 57 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_K_OPTIONS();
+return clidoc::BisonGeneratedParser::make_K_OPTIONS();
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 58 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_K_UTILITY_DELIMITER();
+return clidoc::BisonGeneratedParser::make_K_UTILITY_DELIMITER();
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 59 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_K_DESC_DELIMITER();
+return clidoc::BisonGeneratedParser::make_K_DESC_DELIMITER();
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 61 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_POSIX_OPTION(YYText());
+return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 62 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
+return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 63 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_GNU_OPTION(YYText());
+return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 64 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_ARGUEMENT(YYText());
+return clidoc::BisonGeneratedParser::make_ARGUEMENT(YYText());
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 65 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_OPERAND(YYText());
+return clidoc::BisonGeneratedParser::make_OPERAND(YYText());
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 66 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_OPTION_DEFAULT_VALUE(YYText());
+return clidoc::BisonGeneratedParser::make_OPTION_DEFAULT_VALUE(YYText());
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 67 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_COMMENT(YYText());
+return clidoc::BisonGeneratedParser::make_COMMENT(YYText());
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 69 "flex-bison-scripts/scanner.lex"
-return yy::BisonGeneratedParser::make_END();
+return clidoc::BisonGeneratedParser::make_END();
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
@@ -1992,5 +1992,5 @@ void yyfree (void * ptr )
 
 
 // Bug fix.
-int yyFlexLexer::yylex() {/* empty */ }
+int yyFlexLexer::yylex() { return 1; }
 
