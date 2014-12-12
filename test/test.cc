@@ -8,14 +8,14 @@ using std::endl;
 
 int main() {
   std::ofstream null_ostream("/dev/null");
-  std::istringstream input_stream("docopt -c -afefe --long -c=a,b,c <shit> FILE fuck");
+  std::istringstream input_stream("docopt -c -afefe --long -c=a b c <shit> FILE fuck");
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
   while (true) {
     auto token = lexer.lex();
     if (token.token() == 0) {
       break;
     }
-    cout << token.value.as<std::string>() << endl;
+    cout << token.token() << " " << token.value.as<std::string>() << endl;
   }
   return 0;
 }

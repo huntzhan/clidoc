@@ -12,15 +12,6 @@
 #include "FlexLexer.h"
 #endif
 
-// `generated_parser.h` use macro YY_NULLPTR, which is not defined.
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
-// then, include the header.
 #include "generated_parser.h"
 
 class FlexGeneratedScanner : public yyFlexLexer {
