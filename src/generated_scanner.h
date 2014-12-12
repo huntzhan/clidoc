@@ -1,5 +1,5 @@
-#ifndef SCANNER_H_
-#define SCANNER_H_
+#ifndef SRC_GENERATED_SCANNER_H_
+#define SRC_GENERATED_SCANNER_H_
 
 #include <istream>
 #include <ostream>
@@ -18,7 +18,7 @@ namespace clidoc {
 
 class FlexGeneratedScanner : public yyFlexLexer {
  public:
-	FlexGeneratedScanner(std::istream *arg_yyin = 0,
+  FlexGeneratedScanner(std::istream *arg_yyin = 0,
                        std::ostream *arg_yyout = 0)
       : yyFlexLexer(arg_yyin, arg_yyout) { /* empty */ }
 
@@ -27,4 +27,4 @@ class FlexGeneratedScanner : public yyFlexLexer {
 
 }  // namespace clidoc
 
-#endif // SCANNER_H_
+#endif  // SRC_GENERATED_SCANNER_H_
