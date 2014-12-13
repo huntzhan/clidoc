@@ -13,10 +13,10 @@ class Token {
   Token(BisonGeneratedParser::token_type type, const std::string &value)
       : has_value_(false), type_(type), value_(value) { /* empty */ }
 
-  std::string value() {
+  std::string value() const {
     return value_;
   }
-  virtual BisonGeneratedParser::token_type type() {
+  virtual BisonGeneratedParser::token_type type() const {
     return type_;
   }
 
