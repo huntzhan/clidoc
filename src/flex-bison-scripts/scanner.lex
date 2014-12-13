@@ -27,9 +27,9 @@ R_BRACKET            \]
 EXCLUSIVE_OR         \|
 EQUAL_SIGN           =
 ELLIPSES             \.\.\.
-K_USAGE_COLON        usage:
-K_OPTIONS_COLON      options:
-K_DEFAULT_COLON      default:
+K_USAGE_COLON        (?i:usage:)
+K_OPTIONS_COLON      (?i:options:)
+K_DEFAULT_COLON      (?i:default:)
 K_OPTIONS            options
 K_UTILITY_DELIMITER  \*UTILITY_DELIMITER\*
 K_DESC_DELIMITER     \*DESC_DELIMITER\*
