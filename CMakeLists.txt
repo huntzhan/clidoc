@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(cpp_project CXX)
+project(clidoc CXX)
 
 
 ######################################
@@ -33,3 +33,5 @@ endfunction(add_gtest)
 #################
 include_directories(src)
 include_directories(test)
+
+add_subdirectory(src)
