@@ -17,12 +17,17 @@ namespace clidoc {
 
 inline bool Tokenizer::TokenHasValue(const Token::Type &type_id) {
   switch (type_id) {
+    // Only for doc processing.
+    case Token::TypeID::OPTION_ARGUEMENT:
+    case Token::TypeID::GNU_OPTION:
+    case Token::TypeID::OPERAND:
+    case Token::TypeID::COMMENT:
+    // Only for argument processing.
+    case Token::TypeID::ARGUMENT:
+    // Shared.
+    case Token::TypeID::OPTION_DEFAULT_VALUE:
     case Token::TypeID::POSIX_OPTION:
     case Token::TypeID::GROUPED_OPTIONS:
-    case Token::TypeID::GNU_OPTION:
-    case Token::TypeID::OPTION_ARGUEMENT:
-    case Token::TypeID::OPERAND:
-    case Token::TypeID::OPTION_DEFAULT_VALUE:
       return true;
     default:
       return false;

@@ -401,8 +401,8 @@ int yyFlexLexer::yywrap() { return 1; }
 	(yy_c_buf_p) = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 8
-#define YY_END_OF_BUFFER 9
+#define YY_NUM_RULES 7
+#define YY_END_OF_BUFFER 8
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -410,28 +410,28 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[15] =
+static yyconst flex_int16_t yy_accept[14] =
     {   0,
-        0,    0,    9,    8,    8,    6,    7,    2,    1,    3,
-        6,    5,    4,    0
+        0,    0,    8,    6,    7,    6,    2,    6,    1,    3,
+        5,    4,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
     {   0,
+        1,    1,    1,    1,    1,    1,    1,    1,    2,    2,
+        2,    2,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    2,    3,    1,    4,    4,    4,
-        4,    4,    4,    4,    4,    4,    4,    5,    1,    1,
-        6,    1,    1,    1,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        1,    1,    1,    1,    1,    1,    8,    9,    8,    9,
+        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    3,    1,    1,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    1,    1,    1,
+        5,    1,    1,    1,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        1,    1,    1,    1,    1,    1,    7,    7,    7,    7,
 
-        8,    9,    9,    9,    9,    9,    9,    9,    9,    9,
-        9,    8,    9,    9,    8,    9,    9,    9,    9,    9,
-        9,    9,    1,    1,    1,    1,    1,    1,    1,    1,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        7,    7,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -448,42 +448,40 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[10] =
+static yyconst flex_int32_t yy_meta[8] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    1
+        1,    2,    1,    1,    1,    1,    1
     } ;
 
 static yyconst flex_int16_t yy_base[15] =
     {   0,
-        0,    0,   14,   30,    8,   10,   30,   30,   14,   20,
-        8,    0,    0,   30
+        0,    0,   16,    0,   23,    7,    0,    0,   11,   15,
+        0,    0,   23,    8
     } ;
 
 static yyconst flex_int16_t yy_def[15] =
     {   0,
-       14,    1,   14,   14,   14,   14,   14,   14,   14,   14,
-       14,    9,   10,    0
+       13,    1,   13,   14,   13,   13,   14,   14,   14,   14,
+        9,   10,    0,   13
     } ;
 
-static yyconst flex_int16_t yy_nxt[40] =
+static yyconst flex_int16_t yy_nxt[31] =
     {   0,
-        4,    5,    6,    4,    7,    8,    4,    7,    4,    9,
-       11,   10,   11,   14,   10,   10,   10,   12,   14,   14,
-       12,   12,   12,   13,   14,   14,   13,   13,   13,    3,
-       14,   14,   14,   14,   14,   14,   14,   14,   14
+        4,    5,    6,    4,    7,    4,    4,    8,    8,    9,
+       10,    8,   10,   10,   11,   13,   11,   11,   12,   13,
+       12,   12,    3,   13,   13,   13,   13,   13,   13,   13
     } ;
 
-static yyconst flex_int16_t yy_chk[40] =
+static yyconst flex_int16_t yy_chk[31] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    5,
-       11,    5,    6,    3,    5,    5,    5,    9,    0,    0,
-        9,    9,    9,   10,    0,    0,   10,   10,   10,   14,
-       14,   14,   14,   14,   14,   14,   14,   14,   14
+        1,    1,    1,    1,    1,    1,    1,    6,   14,    6,
+        6,    6,    6,    6,    9,    3,    9,    9,   10,    0,
+       10,   10,   13,   13,   13,   13,   13,   13,   13,   13
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[8] =
+static yyconst flex_int16_t yy_rule_linenum[7] =
     {   0,
-       32,   33,   35,   36,   37,   38,   40
+       33,   34,   36,   37,   38,   39
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -503,7 +501,7 @@ static yyconst flex_int16_t yy_rule_linenum[8] =
   clidoc::BisonGeneratedParser::symbol_type \
   clidoc::FlexGeneratedScanner::lex()
 #define YY_NO_INPUT 1
-#line 507 "generated_scanner_for_argv.cc"
+#line 505 "generated_scanner_for_argv.cc"
 
 #define INITIAL 0
 
@@ -660,10 +658,10 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 30 "flex-bison-scripts/scanner_for_argv.lex"
+#line 31 "flex-bison-scripts/scanner_for_argv.lex"
 
 
-#line 667 "generated_scanner_for_argv.cc"
+#line 665 "generated_scanner_for_argv.cc"
 
 	if ( !(yy_init) )
 		{
@@ -726,13 +724,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 15 )
+				if ( yy_current_state >= 14 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 14 );
+		while ( yy_current_state != 13 );
 		yy_cp = (yy_last_accepting_cpos);
 		yy_current_state = (yy_last_accepting_state);
 
@@ -751,12 +749,12 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				std::cerr << "--scanner backing up\n";
-			else if ( yy_act < 8 )
+			else if ( yy_act < 7 )
 				std::cerr << "--accepting rule at line " << yy_rule_linenum[yy_act] <<
 				         "(\"" << yytext << "\")\n";
-			else if ( yy_act == 8 )
+			else if ( yy_act == 7 )
 				std::cerr << "--accepting default rule (\"" << yytext << "\")\n";
-			else if ( yy_act == 9 )
+			else if ( yy_act == 8 )
 				std::cerr << "--(end of buffer or a NUL)\n";
 			else
 				std::cerr << "--EOF (start condition " << YY_START << ")\n";
@@ -774,49 +772,44 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 32 "flex-bison-scripts/scanner_for_argv.lex"
+#line 33 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "flex-bison-scripts/scanner_for_argv.lex"
+#line 34 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_EQUAL_SIGN();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 35 "flex-bison-scripts/scanner_for_argv.lex"
+#line 36 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "flex-bison-scripts/scanner_for_argv.lex"
+#line 37 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 37 "flex-bison-scripts/scanner_for_argv.lex"
+#line 38 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 38 "flex-bison-scripts/scanner_for_argv.lex"
+#line 39 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
-	YY_BREAK
-case 7:
-YY_RULE_SETUP
-#line 40 "flex-bison-scripts/scanner_for_argv.lex"
-{ /* do nothing. */ }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 41 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_END();
 	YY_BREAK
-case 8:
+case 7:
 YY_RULE_SETUP
 #line 43 "flex-bison-scripts/scanner_for_argv.lex"
 ECHO;
 	YY_BREAK
-#line 820 "generated_scanner_for_argv.cc"
+#line 813 "generated_scanner_for_argv.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1216,7 +1209,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 15 )
+			if ( yy_current_state >= 14 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1249,11 +1242,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 15 )
+		if ( yy_current_state >= 14 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 14);
+	yy_is_jam = (yy_current_state == 13);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }

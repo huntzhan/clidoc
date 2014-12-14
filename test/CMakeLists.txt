@@ -1,3 +1,7 @@
 add_executable (tokenizer_for_doc tokenizer_for_doc.cc)
 target_link_libraries (tokenizer_for_doc tokenizer generated_scanner_for_doc)
 add_gtest (tokenizer_for_doc)
+
+add_executable (tokenizer_for_argv tokenizer_for_argv.cc)
+target_link_libraries (tokenizer_for_argv tokenizer generated_scanner_for_argv)
+add_gtest (tokenizer_for_argv)

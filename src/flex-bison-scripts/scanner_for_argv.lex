@@ -18,6 +18,7 @@ UPPERCASE            [A-Z]
 LOWERCASE_DIGIT      {LOWERCASE}|{DIGIT}
 UPPERCASE_DIGIT      {UPPERCASE}|{DIGIT}
 ALNUM                {LOWERCASE}|{UPPERCASE}|{DIGIT}
+NON_SPACE            [^ \t\r\n\v\f]
 
 K_DOUBLE_HYPHEN      "--"
 EQUAL_SIGN           "="
@@ -25,7 +26,7 @@ EQUAL_SIGN           "="
 POSIX_OPTION         -{ALNUM}
 GROUPED_OPTIONS      -{ALNUM}+
 GNU_OPTION           --{ALNUM}+
-ARGUMENT             ([.]{-}[:space:])+
+ARGUMENT             {NON_SPACE}+
 
 %%
 
@@ -37,7 +38,6 @@ ARGUMENT             ([.]{-}[:space:])+
 {GNU_OPTION}           return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
 {ARGUMENT}             return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
 
-[:space:]              { /* do nothing. */ }
 <<EOF>>                return clidoc::BisonGeneratedParser::make_END();
 
 %%
