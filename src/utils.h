@@ -18,6 +18,7 @@ class Token {
   Token(Type type_id, const std::string &value)
       : has_value_(true), type_id_(type_id), value_(value) { /* empty */ }
 
+  bool has_value() const { return has_value_; }
   std::string value() const { return value_; }
   Type type_id() const { return type_id_; }
 

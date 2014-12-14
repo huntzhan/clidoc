@@ -37,8 +37,20 @@ TEST(tokenizer_for_doc, token_type) {
       "*UTILITY_DELIMITER* *DESC_DELIMITER*", 
       {K_UTILITY_DELIMITER, K_DESC_DELIMITER});
   CheckTokenTypes(
-      "-c --long <arg> ARG operand \"1.414 whatever\" #comment ", 
+      "-c --long <arg> ARG operand", 
       {POSIX_OPTION, GNU_OPTION,
        OPTION_ARGUEMENT, OPTION_ARGUEMENT,
-       OPERAND, OPTION_DEFAULT_VALUE, COMMENT});
+       OPERAND});
+  CheckTokenTypes(
+      "\"1.414 whatever\" # long long comment", 
+      {OPTION_DEFAULT_VALUE, COMMENT});
+}
+
+TEST(tokenizer_for_doc, token_value) {
+  CheckTokenValues(
+      "-c  - --long ",
+      {"-c", "-", "--long"});
+  CheckTokenValues(
+      "-c FILE",
+      {"-c", "FILE"});
 }
