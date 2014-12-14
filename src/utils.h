@@ -8,21 +8,22 @@ namespace clidoc {
 
 class Token {
  public:
-  Token(BisonGeneratedParser::token_type type)
-      : has_value_(false), type_(type) { /* empty */ }
-  Token(BisonGeneratedParser::token_type type, const std::string &value)
-      : has_value_(false), type_(type), value_(value) { /* empty */ }
+  // facilitate usage.
+  using Type = BisonGeneratedParser::token_type;
+  using TypeID = BisonGeneratedParser::token;
 
-  std::string value() const {
-    return value_;
-  }
-  virtual BisonGeneratedParser::token_type type() const {
-    return type_;
-  }
+  // constructors.
+  Token(Type type_id)
+      : has_value_(false), type_id_(type_id) { /* empty */ }
+  Token(Type type_id, const std::string &value)
+      : has_value_(true), type_id_(type_id), value_(value) { /* empty */ }
+
+  std::string value() const { return value_; }
+  Type type_id() const { return type_id_; }
 
  private:
   const bool has_value_;
-  const BisonGeneratedParser::token_type type_;
+  const Type type_id_;
   const std::string value_;
 };
 

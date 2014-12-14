@@ -4,46 +4,44 @@
 #include "gtest/gtest.h"
 #include "utils.h"
 #include "tokenizer.h"
-#include "generated_parser.h"
 
 using namespace clidoc;
 using std::string;
 using std::vector;
-using token_type = BisonGeneratedParser::token_type;
 
-#define L_PARENTHESIS        BisonGeneratedParser::token::L_PARENTHESIS
-#define R_PARENTHESIS        BisonGeneratedParser::token::R_PARENTHESIS
-#define L_BRACKET            BisonGeneratedParser::token::L_BRACKET
-#define R_BRACKET            BisonGeneratedParser::token::R_BRACKET
-#define EXCLUSIVE_OR         BisonGeneratedParser::token::EXCLUSIVE_OR
-#define EQUAL_SIGN           BisonGeneratedParser::token::EQUAL_SIGN
-#define ELLIPSES             BisonGeneratedParser::token::ELLIPSES
-#define K_USAGE_COLON        BisonGeneratedParser::token::K_USAGE_COLON
-#define K_OPTIONS_COLON      BisonGeneratedParser::token::K_OPTIONS_COLON
-#define K_DEFAULT_COLON      BisonGeneratedParser::token::K_DEFAULT_COLON
-#define K_OPTIONS            BisonGeneratedParser::token::K_OPTIONS
-#define K_UTILITY_DELIMITER  BisonGeneratedParser::token::K_UTILITY_DELIMITER
-#define K_DESC_DELIMITER     BisonGeneratedParser::token::K_DESC_DELIMITER
-#define POSIX_OPTION         BisonGeneratedParser::token::POSIX_OPTION
-#define GROUPED_OPTIONS      BisonGeneratedParser::token::GROUPED_OPTIONS
-#define GNU_OPTION           BisonGeneratedParser::token::GNU_OPTION
-#define ARGUEMENT            BisonGeneratedParser::token::ARGUEMENT
-#define OPERAND              BisonGeneratedParser::token::OPERAND
-#define OPTION_DEFAULT_VALUE BisonGeneratedParser::token::OPTION_DEFAULT_VALUE
-#define COMMENT              BisonGeneratedParser::token::COMMENT
+#define L_PARENTHESIS        Token::TypeID::L_PARENTHESIS
+#define R_PARENTHESIS        Token::TypeID::R_PARENTHESIS
+#define L_BRACKET            Token::TypeID::L_BRACKET
+#define R_BRACKET            Token::TypeID::R_BRACKET
+#define EXCLUSIVE_OR         Token::TypeID::EXCLUSIVE_OR
+#define EQUAL_SIGN           Token::TypeID::EQUAL_SIGN
+#define ELLIPSES             Token::TypeID::ELLIPSES
+#define K_USAGE_COLON        Token::TypeID::K_USAGE_COLON
+#define K_OPTIONS_COLON      Token::TypeID::K_OPTIONS_COLON
+#define K_DEFAULT_COLON      Token::TypeID::K_DEFAULT_COLON
+#define K_OPTIONS            Token::TypeID::K_OPTIONS
+#define K_UTILITY_DELIMITER  Token::TypeID::K_UTILITY_DELIMITER
+#define K_DESC_DELIMITER     Token::TypeID::K_DESC_DELIMITER
+#define POSIX_OPTION         Token::TypeID::POSIX_OPTION
+#define GROUPED_OPTIONS      Token::TypeID::GROUPED_OPTIONS
+#define GNU_OPTION           Token::TypeID::GNU_OPTION
+#define ARGUEMENT            Token::TypeID::ARGUEMENT
+#define OPERAND              Token::TypeID::OPERAND
+#define OPTION_DEFAULT_VALUE Token::TypeID::OPTION_DEFAULT_VALUE
+#define COMMENT              Token::TypeID::COMMENT
 
-vector<token_type> Extractoken_typeokenType(const vector<Token> &tokens) {
-  vector<token_type> types;
+vector<Token::Type> Extractoken_typeokenType(const vector<Token> &tokens) {
+  vector<Token::Type> type_ids;
   for (const Token &token : tokens) {
-    types.push_back(token.type());
+    type_ids.push_back(token.type_id());
   }
-  return types;
+  return type_ids;
 }
 
 void CheckTokenTypes(const string &text,
-                     const vector<token_type> &token_types) {
+                     const vector<Token::Type> &type_ids) {
   auto tokens = Tokenizer::FromString(text);
-  EXPECT_EQ(token_types, Extractoken_typeokenType(tokens));
+  EXPECT_EQ(type_ids, Extractoken_typeokenType(tokens));
 }
 
 TEST(tokenizer, simple_cases) {

@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "generated_scanner.h"
-#include "generated_parser.h"
 #include "utils.h"
 
 using std::string;
@@ -16,14 +15,14 @@ using std::istringstream;
 
 namespace clidoc {
 
-bool Tokenizer::TokenHasValue(const BisonGeneratedParser::token_type &type) {
-  switch (type) {
-    case BisonGeneratedParser::token::POSIX_OPTION:
-    case BisonGeneratedParser::token::GROUPED_OPTIONS:
-    case BisonGeneratedParser::token::GNU_OPTION:
-    case BisonGeneratedParser::token::ARGUEMENT:
-    case BisonGeneratedParser::token::OPERAND:
-    case BisonGeneratedParser::token::OPTION_DEFAULT_VALUE:
+inline bool Tokenizer::TokenHasValue(const Token::Type &type_id) {
+  switch (type_id) {
+    case Token::TypeID::POSIX_OPTION:
+    case Token::TypeID::GROUPED_OPTIONS:
+    case Token::TypeID::GNU_OPTION:
+    case Token::TypeID::ARGUEMENT:
+    case Token::TypeID::OPERAND:
+    case Token::TypeID::OPTION_DEFAULT_VALUE:
       return true;
     default:
       return false;
@@ -39,18 +38,18 @@ vector<Token> Tokenizer::FromString(const string &text) {
 
   while (true) {
     auto item = lexer.lex();
-    auto type = item.token();
+    auto type_id = item.token();
     auto value = item.value.as<string>();
-    if (type == BisonGeneratedParser::token::END) {
+    if (type_id == Token::TypeID::END) {
       break;
     }
-    if (TokenHasValue(type)) {
-      tokens.push_back(Token(type, value));
+    if (TokenHasValue(type_id)) {
+      tokens.push_back(Token(type_id, value));
     } else {
-      tokens.push_back(Token(type));
+      tokens.push_back(Token(type_id));
     }
   }
   return tokens;
 }
 
-}  // namespace clidoc 
+}  // namespace clTypeIDoc 

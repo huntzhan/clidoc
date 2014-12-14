@@ -5,13 +5,13 @@
 #include <memory>
 
 #include "utils.h"
-#include "generated_parser.h"
 
 namespace clidoc {
 
 struct Tokenizer {
+  // encapsulated operations.
   static std::vector<Token> FromString(const std::string &text);
-  static bool TokenHasValue(const BisonGeneratedParser::token_type &type);
+  static bool TokenHasValue(const Token::Type &type_id);
 };
 
 }  // namespace clidoc 
