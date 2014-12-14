@@ -295,7 +295,7 @@ namespace clidoc {
       // POSIX_OPTION
       // GROUPED_OPTIONS
       // GNU_OPTION
-      // ARGUEMENT
+      // OPTION_ARGUEMENT
       // OPERAND
       // OPTION_DEFAULT_VALUE
       // COMMENT
@@ -323,7 +323,7 @@ namespace clidoc {
         POSIX_OPTION = 258,
         GROUPED_OPTIONS = 259,
         GNU_OPTION = 260,
-        ARGUEMENT = 261,
+        OPTION_ARGUEMENT = 261,
         OPERAND = 262,
         OPTION_DEFAULT_VALUE = 263,
         COMMENT = 264,
@@ -450,7 +450,7 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_ARGUEMENT (const std::string& v);
+    make_OPTION_ARGUEMENT (const std::string& v);
 
     static inline
     symbol_type
@@ -818,7 +818,7 @@ namespace clidoc {
       case 3: // POSIX_OPTION
       case 4: // GROUPED_OPTIONS
       case 5: // GNU_OPTION
-      case 6: // ARGUEMENT
+      case 6: // OPTION_ARGUEMENT
       case 7: // OPERAND
       case 8: // OPTION_DEFAULT_VALUE
       case 9: // COMMENT
@@ -864,7 +864,7 @@ namespace clidoc {
       case 3: // POSIX_OPTION
       case 4: // GROUPED_OPTIONS
       case 5: // GNU_OPTION
-      case 6: // ARGUEMENT
+      case 6: // OPTION_ARGUEMENT
       case 7: // OPERAND
       case 8: // OPTION_DEFAULT_VALUE
       case 9: // COMMENT
@@ -936,7 +936,7 @@ namespace clidoc {
       case 3: // POSIX_OPTION
       case 4: // GROUPED_OPTIONS
       case 5: // GNU_OPTION
-      case 6: // ARGUEMENT
+      case 6: // OPTION_ARGUEMENT
       case 7: // OPERAND
       case 8: // OPTION_DEFAULT_VALUE
       case 9: // COMMENT
@@ -980,7 +980,7 @@ namespace clidoc {
       case 3: // POSIX_OPTION
       case 4: // GROUPED_OPTIONS
       case 5: // GNU_OPTION
-      case 6: // ARGUEMENT
+      case 6: // OPTION_ARGUEMENT
       case 7: // OPERAND
       case 8: // OPTION_DEFAULT_VALUE
       case 9: // COMMENT
@@ -1066,9 +1066,9 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_ARGUEMENT (const std::string& v)
+  BisonGeneratedParser::make_OPTION_ARGUEMENT (const std::string& v)
   {
-    return symbol_type (token::ARGUEMENT, v);
+    return symbol_type (token::OPTION_ARGUEMENT, v);
   }
 
   BisonGeneratedParser::symbol_type

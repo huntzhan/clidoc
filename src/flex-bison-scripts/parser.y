@@ -33,7 +33,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 %token <std::string>
   POSIX_OPTION GROUPED_OPTIONS GNU_OPTION
-  ARGUEMENT OPERAND
+  OPTION_ARGUEMENT OPERAND
   OPTION_DEFAULT_VALUE COMMENT
 ;
 
@@ -51,6 +51,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
   K_OPTIONS           "options"
   K_UTILITY_DELIMITER "*UTILITY_DELIMITER*"
   K_DESC_DELIMITER    "*DESC_DELIMITER*"
+
   END                 0
 ;
 
@@ -105,7 +106,7 @@ atom : L_PARENTHESIS or_exprs R_PARENTHESIS { }
      | L_BRACKET or_exprs R_BRACKET         { }
      | posix_option_unit                    { }
      | gnu_option_unit                      { }
-     | ARGUEMENT                            { }
+     | OPTION_ARGUEMENT                     { }
      | OPERAND                              { }
      | K_OPTIONS                            { }
 ;
@@ -115,7 +116,7 @@ posix_option_unit : POSIX_OPTION {  }
 ;
 
 gnu_option_unit : GNU_OPTION {  }
-                | GNU_OPTION EQUAL_SIGN ARGUEMENT {  }
+                | GNU_OPTION EQUAL_SIGN OPTION_ARGUEMENT {  }
 ;
 
 options_section : K_OPTIONS_COLON descriptions {  }
@@ -142,9 +143,9 @@ bindings : bindings single_binding {  }
 
 single_binding : POSIX_OPTION {  }
                | GNU_OPTION {  }
-               | POSIX_OPTION ARGUEMENT {  }
-               | GNU_OPTION ARGUEMENT {  }
-               | GNU_OPTION EQUAL_SIGN ARGUEMENT {  }
+               | POSIX_OPTION OPTION_ARGUEMENT {  }
+               | GNU_OPTION OPTION_ARGUEMENT {  }
+               | GNU_OPTION EQUAL_SIGN OPTION_ARGUEMENT {  }
 ; 
 
 %%

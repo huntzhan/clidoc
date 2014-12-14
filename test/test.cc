@@ -25,12 +25,12 @@ using std::vector;
 #define POSIX_OPTION         Token::TypeID::POSIX_OPTION
 #define GROUPED_OPTIONS      Token::TypeID::GROUPED_OPTIONS
 #define GNU_OPTION           Token::TypeID::GNU_OPTION
-#define ARGUEMENT            Token::TypeID::ARGUEMENT
+#define OPTION_ARGUEMENT     Token::TypeID::OPTION_ARGUEMENT
 #define OPERAND              Token::TypeID::OPERAND
 #define OPTION_DEFAULT_VALUE Token::TypeID::OPTION_DEFAULT_VALUE
 #define COMMENT              Token::TypeID::COMMENT
 
-vector<Token::Type> Extractoken_typeokenType(const vector<Token> &tokens) {
+vector<Token::Type> ExtractTokenType(const vector<Token> &tokens) {
   vector<Token::Type> type_ids;
   for (const Token &token : tokens) {
     type_ids.push_back(token.type_id());
@@ -41,13 +41,10 @@ vector<Token::Type> Extractoken_typeokenType(const vector<Token> &tokens) {
 void CheckTokenTypes(const string &text,
                      const vector<Token::Type> &type_ids) {
   auto tokens = Tokenizer::FromString(text);
-  EXPECT_EQ(type_ids, Extractoken_typeokenType(tokens));
+  EXPECT_EQ(type_ids, ExtractTokenType(tokens));
 }
 
-TEST(tokenizer, simple_cases) {
-  CheckTokenTypes(
-      "-c --long <arg> ARG", 
-      {POSIX_OPTION, GNU_OPTION, ARGUEMENT, ARGUEMENT});
+TEST(tokenizer, token_type) {
   CheckTokenTypes(
       "( ) [ ] | = ...", 
       {L_PARENTHESIS, R_PARENTHESIS, L_BRACKET, R_BRACKET, EXCLUSIVE_OR,
@@ -57,4 +54,12 @@ TEST(tokenizer, simple_cases) {
       {K_USAGE_COLON, K_USAGE_COLON,
        K_OPTIONS_COLON, K_OPTIONS, K_OPTIONS_COLON,
        K_DEFAULT_COLON});
+  CheckTokenTypes(
+      "*UTILITY_DELIMITER* *DESC_DELIMITER*", 
+      {K_UTILITY_DELIMITER, K_DESC_DELIMITER});
+  CheckTokenTypes(
+      "-c --long <arg> ARG operand \"1.414 whatever\" #comment ", 
+      {POSIX_OPTION, GNU_OPTION,
+       OPTION_ARGUEMENT, OPTION_ARGUEMENT,
+       OPERAND, OPTION_DEFAULT_VALUE, COMMENT});
 }
