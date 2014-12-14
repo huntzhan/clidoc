@@ -191,33 +191,34 @@ namespace clidoc {
   {
       switch (that.type_get ())
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         value.move< Undefine > (that.value);
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         value.move< std::string > (that.value);
         break;
 
@@ -236,33 +237,34 @@ namespace clidoc {
     state = that.state;
       switch (that.type_get ())
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         value.copy< Undefine > (that.value);
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         value.copy< std::string > (that.value);
         break;
 
@@ -492,33 +494,34 @@ namespace clidoc {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         yylhs.value.build< Undefine > ();
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         yylhs.value.build< std::string > ();
         break;
 
@@ -535,223 +538,223 @@ namespace clidoc {
           switch (yyn)
             {
   case 2:
-#line 80 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 99 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 541 "generated_parser.cc" // lalr1.cc:847
+#line 544 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 3:
-#line 83 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 102 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 547 "generated_parser.cc" // lalr1.cc:847
+#line 550 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 4:
-#line 86 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 105 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 553 "generated_parser.cc" // lalr1.cc:847
+#line 556 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 6:
-#line 90 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 109 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 559 "generated_parser.cc" // lalr1.cc:847
+#line 562 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 7:
-#line 93 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 112 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 565 "generated_parser.cc" // lalr1.cc:847
+#line 568 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 8:
-#line 94 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 113 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 571 "generated_parser.cc" // lalr1.cc:847
+#line 574 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 9:
-#line 97 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 116 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 577 "generated_parser.cc" // lalr1.cc:847
+#line 580 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 10:
-#line 98 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 117 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 583 "generated_parser.cc" // lalr1.cc:847
+#line 586 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 11:
-#line 101 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 120 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 589 "generated_parser.cc" // lalr1.cc:847
+#line 592 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 12:
-#line 102 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 121 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 595 "generated_parser.cc" // lalr1.cc:847
+#line 598 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 13:
-#line 105 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 124 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 601 "generated_parser.cc" // lalr1.cc:847
+#line 604 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 14:
-#line 106 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 125 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 607 "generated_parser.cc" // lalr1.cc:847
+#line 610 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 15:
-#line 107 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 613 "generated_parser.cc" // lalr1.cc:847
+#line 616 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 16:
-#line 108 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 127 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 619 "generated_parser.cc" // lalr1.cc:847
+#line 622 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 17:
-#line 109 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 625 "generated_parser.cc" // lalr1.cc:847
+#line 628 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 18:
-#line 110 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 631 "generated_parser.cc" // lalr1.cc:847
+#line 634 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 19:
-#line 111 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 130 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 637 "generated_parser.cc" // lalr1.cc:847
+#line 640 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 20:
-#line 114 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 133 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 643 "generated_parser.cc" // lalr1.cc:847
+#line 646 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 21:
-#line 115 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 134 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 649 "generated_parser.cc" // lalr1.cc:847
+#line 652 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 22:
-#line 118 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 137 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 655 "generated_parser.cc" // lalr1.cc:847
+#line 658 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 23:
-#line 119 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 138 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 661 "generated_parser.cc" // lalr1.cc:847
+#line 664 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 24:
-#line 122 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 141 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 667 "generated_parser.cc" // lalr1.cc:847
+#line 670 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 25:
-#line 125 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 144 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 673 "generated_parser.cc" // lalr1.cc:847
+#line 676 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 26:
-#line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 145 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 679 "generated_parser.cc" // lalr1.cc:847
+#line 682 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 27:
-#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 148 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 685 "generated_parser.cc" // lalr1.cc:847
+#line 688 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 28:
-#line 132 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 151 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 691 "generated_parser.cc" // lalr1.cc:847
+#line 694 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 29:
-#line 133 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 152 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 697 "generated_parser.cc" // lalr1.cc:847
+#line 700 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 30:
-#line 136 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 155 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 703 "generated_parser.cc" // lalr1.cc:847
+#line 706 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 31:
-#line 137 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 156 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 709 "generated_parser.cc" // lalr1.cc:847
+#line 712 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 32:
-#line 140 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 159 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 715 "generated_parser.cc" // lalr1.cc:847
+#line 718 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 33:
-#line 141 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 160 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 721 "generated_parser.cc" // lalr1.cc:847
+#line 724 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 34:
-#line 144 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 163 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 727 "generated_parser.cc" // lalr1.cc:847
+#line 730 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 35:
-#line 145 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 164 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 733 "generated_parser.cc" // lalr1.cc:847
+#line 736 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 36:
-#line 146 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 165 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 739 "generated_parser.cc" // lalr1.cc:847
+#line 742 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 37:
-#line 147 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 166 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 745 "generated_parser.cc" // lalr1.cc:847
+#line 748 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 38:
-#line 148 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 167 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 751 "generated_parser.cc" // lalr1.cc:847
+#line 754 "generated_parser.cc" // lalr1.cc:847
     break;
 
 
-#line 755 "generated_parser.cc" // lalr1.cc:847
+#line 758 "generated_parser.cc" // lalr1.cc:847
             default:
               break;
             }
@@ -920,19 +923,19 @@ namespace clidoc {
   const signed char
   BisonGeneratedParser::yypact_[] =
   {
-      -5,     5,    21,     9,    -2,     5,   -20,   -20,     8,   -20,
-     -20,   -20,    10,   -20,   -20,    -2,    -2,   -20,    15,    -2,
-     -20,    14,   -20,   -20,   -20,    18,     0,     8,   -20,     4,
-     -20,    25,     3,     6,    -2,   -20,   -20,   -20,   -20,    26,
-     -20,    16,    24,   -20,   -20,   -20,   -20,    -2,   -20,    28,
-     -20,    12,    27,   -20,   -20
+      -4,     6,    15,     7,    -2,     6,   -20,   -20,    -5,   -20,
+     -20,   -20,   -20,     1,   -20,    -2,    -2,   -20,    12,    -2,
+     -20,    13,   -20,   -20,   -20,    27,     0,    -5,   -20,     3,
+     -20,    28,     2,     4,    -2,   -20,   -20,   -20,   -20,    29,
+     -20,    14,    30,   -20,   -20,   -20,   -20,    -2,   -20,    32,
+     -20,    16,    20,   -20,   -20
   };
 
   const unsigned char
   BisonGeneratedParser::yydefact_[] =
   {
        0,     0,     0,     0,     0,     3,     5,     1,     0,     2,
-      20,    21,    22,    17,    18,     0,     0,    19,     6,     8,
+      17,    20,    21,    22,    18,     0,     0,    19,     6,     8,
       10,    11,    15,    16,     4,    34,    35,    24,    26,    29,
       33,     0,     0,     0,     0,     9,    12,    36,    37,     0,
       25,     0,    31,    32,    23,    13,    14,     7,    38,     0,
@@ -942,8 +945,8 @@ namespace clidoc {
   const signed char
   BisonGeneratedParser::yypgoto_[] =
   {
-     -20,   -20,   -20,   -20,    32,     7,    11,   -19,   -20,   -20,
-     -20,   -20,   -20,    17,   -20,   -20,   -20,    13
+     -20,   -20,   -20,   -20,    33,     5,     8,   -19,   -20,   -20,
+     -20,   -20,   -20,    17,   -20,   -20,   -20,    10
   };
 
   const signed char
@@ -956,41 +959,41 @@ namespace clidoc {
   const unsigned char
   BisonGeneratedParser::yytable_[] =
   {
-      35,    10,    11,    12,    13,    14,    38,    25,    15,    26,
-      16,    25,     1,    26,    45,    39,    41,    34,    17,    46,
-      34,     7,    32,    33,    37,    31,     4,     8,    35,    34,
-      36,    44,    48,    50,    53,    49,    52,    24,     0,     0,
-      54,     0,    43,     0,    40,    47
+      35,    10,    25,    38,    26,    11,    12,    13,    14,    15,
+      25,    16,    26,     1,    45,     7,    41,    34,    46,    34,
+      32,    33,    17,    39,    31,     8,     4,    34,    35,    36,
+      37,    44,    48,    49,    54,    50,    52,    53,    24,    43,
+       0,     0,    47,     0,    40
   };
 
   const signed char
   BisonGeneratedParser::yycheck_[] =
   {
-      19,     3,     4,     5,     6,     7,     6,     3,    10,     5,
-      12,     3,    17,     5,    11,    15,    12,    14,    20,    13,
-      14,     0,    15,    16,     6,    15,    21,    18,    47,    14,
-      16,     6,     6,     9,    22,    19,     8,     5,    -1,    -1,
-      13,    -1,    29,    -1,    27,    34
+      19,     3,     7,     3,     9,     7,     8,     9,    10,    11,
+       7,    13,     9,    17,    12,     0,    13,    15,    14,    15,
+      15,    16,    24,    23,    23,    18,    20,    15,    47,    16,
+       3,     3,     3,    19,    14,     5,     4,    21,     5,    29,
+      -1,    -1,    34,    -1,    27
   };
 
   const unsigned char
   BisonGeneratedParser::yystos_[] =
   {
-       0,    17,    24,    25,    21,    26,    27,     0,    18,    34,
-       3,     4,     5,     6,     7,    10,    12,    20,    28,    29,
-      30,    31,    32,    33,    27,     3,     5,    35,    36,    39,
-      40,    15,    28,    28,    14,    30,    16,     6,     6,    15,
-      36,    12,    37,    40,     6,    11,    13,    29,     6,    19,
-       9,    38,     8,    22,    13
+       0,    17,    26,    27,    20,    28,    29,     0,    18,    36,
+       3,     7,     8,     9,    10,    11,    13,    24,    30,    31,
+      32,    33,    34,    35,    29,     7,     9,    37,    38,    41,
+      42,    23,    30,    30,    15,    32,    16,     3,     3,    23,
+      38,    13,    39,    42,     3,    12,    14,    31,     3,    19,
+       5,    40,     4,    21,    14
   };
 
   const unsigned char
   BisonGeneratedParser::yyr1_[] =
   {
-       0,    23,    24,    25,    26,    26,    27,    28,    28,    29,
-      29,    30,    30,    31,    31,    31,    31,    31,    31,    31,
-      32,    32,    33,    33,    34,    35,    35,    36,    37,    37,
-      38,    38,    39,    39,    40,    40,    40,    40,    40
+       0,    25,    26,    27,    28,    28,    29,    30,    30,    31,
+      31,    32,    32,    33,    33,    33,    33,    33,    33,    33,
+      34,    34,    35,    35,    36,    37,    37,    38,    39,    39,
+      40,    40,    41,    41,    42,    42,    42,    42,    42
   };
 
   const unsigned char
@@ -1009,25 +1012,26 @@ namespace clidoc {
   const char*
   const BisonGeneratedParser::yytname_[] =
   {
-  "END", "error", "$undefined", "POSIX_OPTION", "GROUPED_OPTIONS",
-  "GNU_OPTION", "OPTION_ARGUEMENT", "OPERAND", "OPTION_DEFAULT_VALUE",
-  "COMMENT", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"|\"", "\"=\"",
-  "\"...\"", "\"usage:\"", "\"options:\"", "\"default:\"", "\"options\"",
-  "\"*UTILITY_DELIMITER*\"", "\"*DESC_DELIMITER*\"", "$accept", "doc",
-  "usage_section", "utilities", "single_utility", "or_exprs", "seqs",
-  "single_seq", "atom", "posix_option_unit", "gnu_option_unit",
-  "options_section", "descriptions", "single_description", "default_value",
-  "comment", "bindings", "single_binding", YY_NULLPTR
+  "END", "error", "$undefined", "OPTION_ARGUEMENT",
+  "OPTION_DEFAULT_VALUE", "COMMENT", "ARGUMENT", "POSIX_OPTION",
+  "GROUPED_OPTIONS", "GNU_OPTION", "OPERAND", "\"(\"", "\")\"", "\"[\"",
+  "\"]\"", "\"|\"", "\"...\"", "\"usage:\"", "\"options:\"",
+  "\"default:\"", "\"*UTILITY_DELIMITER*\"", "\"*DESC_DELIMITER*\"",
+  "\"--\"", "\"=\"", "\"options\"", "$accept", "doc", "usage_section",
+  "utilities", "single_utility", "or_exprs", "seqs", "single_seq", "atom",
+  "posix_option_unit", "gnu_option_unit", "options_section",
+  "descriptions", "single_description", "default_value", "comment",
+  "bindings", "single_binding", YY_NULLPTR
   };
 
 
   const unsigned char
   BisonGeneratedParser::yyrline_[] =
   {
-       0,    80,    80,    83,    86,    87,    90,    93,    94,    97,
-      98,   101,   102,   105,   106,   107,   108,   109,   110,   111,
-     114,   115,   118,   119,   122,   125,   126,   129,   132,   133,
-     136,   137,   140,   141,   144,   145,   146,   147,   148
+       0,    99,    99,   102,   105,   106,   109,   112,   113,   116,
+     117,   120,   121,   124,   125,   126,   127,   128,   129,   130,
+     133,   134,   137,   138,   141,   144,   145,   148,   151,   152,
+     155,   156,   159,   160,   163,   164,   165,   166,   167
   };
 
   // Print the state stack on the debug stream.
@@ -1062,6 +1066,6 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1066 "generated_parser.cc" // lalr1.cc:1155
-#line 151 "flex-bison-scripts/parser.y" // lalr1.cc:1156
+#line 1070 "generated_parser.cc" // lalr1.cc:1155
+#line 170 "flex-bison-scripts/parser.y" // lalr1.cc:1156
 

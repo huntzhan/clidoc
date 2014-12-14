@@ -1,6 +1,6 @@
-#line 2 "generated_scanner.cc"
+#line 2 "generated_scanner_for_argv.cc"
 
-#line 4 "generated_scanner.cc"
+#line 4 "generated_scanner_for_argv.cc"
 
 #define  YY_INT_ALIGNED short int
 
@@ -401,8 +401,8 @@ int yyFlexLexer::yywrap() { return 1; }
 	(yy_c_buf_p) = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 22
-#define YY_END_OF_BUFFER 23
+#define YY_NUM_RULES 8
+#define YY_END_OF_BUFFER 9
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -410,39 +410,28 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[115] =
+static yyconst flex_int16_t yy_accept[15] =
     {   0,
-        0,    0,   23,   22,   22,   20,    1,    2,   22,   18,
-       22,   17,   21,   22,    6,   17,   17,   17,    3,    4,
-       18,   18,   18,   18,   18,    5,    0,   19,   20,    0,
-        0,    0,   14,    0,   17,   18,    0,   17,   18,   17,
-       18,   17,   18,   18,    0,    0,   16,   15,    7,   17,
-       17,   18,   17,   18,   17,   18,   18,    0,    0,   17,
-       18,   17,   18,   17,   18,   18,    0,    0,   17,   18,
-       17,   18,   17,   18,   18,    0,    0,   17,   18,   17,
-       18,    8,   18,    0,    0,   17,   18,   17,   18,   11,
-        0,    0,   10,    9,    0,    0,    0,    0,    0,    0,
-
-        0,    0,    0,    0,    0,    0,    0,    0,   13,    0,
-        0,    0,   12,    0
+        0,    0,    9,    8,    8,    6,    7,    2,    1,    3,
+        6,    5,    4,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    2,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    3,    4,    1,    1,    1,    1,    5,
-        6,    7,    1,    1,    8,    9,    1,   10,   10,   10,
-       10,   10,   10,   10,   10,   10,   10,   11,    1,   12,
-       13,   14,    1,    1,   15,   16,   17,   18,   19,   20,
-       21,   16,   22,   16,   16,   23,   24,   25,   26,   27,
-       16,   28,   29,   30,   31,   16,   16,   16,   32,   16,
-       33,    1,   34,    1,   35,    1,   36,   37,   38,   39,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    2,    3,    1,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    5,    1,    1,
+        6,    1,    1,    1,    7,    7,    7,    7,    7,    7,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        1,    1,    1,    1,    1,    1,    8,    9,    8,    9,
 
-       40,   41,   42,   37,   43,   37,   37,   44,   37,   45,
-       46,   47,   37,   37,   48,   49,   50,   37,   37,   37,
-       37,   37,    1,   51,    1,    1,    1,    1,    1,    1,
+        8,    9,    9,    9,    9,    9,    9,    9,    9,    9,
+        9,    8,    9,    9,    8,    9,    9,    9,    9,    9,
+        9,    9,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -459,125 +448,42 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[52] =
+static yyconst flex_int32_t yy_meta[10] =
     {   0,
-        1,    2,    1,    1,    1,    1,    1,    3,    1,    4,
-        1,    1,    1,    1,    5,    5,    5,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
-        5,    5,    1,    1,    1,    4,    4,    4,    4,    4,
-        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
-        1
+        1,    1,    1,    1,    1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int16_t yy_base[122] =
+static yyconst flex_int16_t yy_base[15] =
     {   0,
-        0,    0,  225,  226,  221,    0,  226,  226,   34,  215,
-      213,   56,  226,    0,  226,   49,   43,   62,  226,  226,
-        0,    0,   88,   82,   79,  226,  218,  217,    0,  200,
-      188,    0,    0,  208,    0,    0,  202,   91,   92,   85,
-       86,  102,  103,   91,  186,  192,    0,    0,  226,  226,
-      105,  107,  101,  102,  104,  105,  108,  196,  189,  100,
-      105,  111,  116,  129,  130,  126,  176,  188,  130,  131,
-      131,  133,  198,  197,  134,  189,  176,  131,  133,  135,
-      136,  226,  137,  186,  160,  176,  170,  166,  162,  160,
-      145,  132,  226,  226,  138,  101,   90,   94,   47,   44,
-
-       34,   41,   43,   37,   32,   37,   51,   27,  226,   37,
-       27,   47,  226,  226,  185,  190,  193,   49,  195,  197,
-      199
+        0,    0,   14,   30,    8,   10,   30,   30,   14,   20,
+        8,    0,    0,   30
     } ;
 
-static yyconst flex_int16_t yy_def[122] =
+static yyconst flex_int16_t yy_def[15] =
     {   0,
-      114,    1,  114,  114,  115,  116,  114,  114,  114,  117,
-      114,  114,  114,  118,  114,   12,   12,   12,  114,  114,
-      119,  119,  119,  119,  119,  114,  115,  115,  116,  114,
-      114,  120,  121,  114,   12,  119,  118,   12,  119,   12,
-      119,   12,  119,  119,  114,  114,  120,  121,  114,  114,
-       12,  119,   12,  119,   12,  119,  119,  114,  114,   12,
-      119,   12,  119,   12,  119,  119,  114,  114,   12,  119,
-       12,  119,   12,  119,  119,  114,  114,   12,  119,   12,
-      119,  114,  119,  114,  114,   12,  119,   12,  119,  119,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,    0,  114,  114,  114,  114,  114,  114,
-      114
+       14,    1,   14,   14,   14,   14,   14,   14,   14,   14,
+       14,    9,   10,    0
     } ;
 
-static yyconst flex_int16_t yy_nxt[278] =
+static yyconst flex_int16_t yy_nxt[40] =
     {   0,
-        4,    4,    5,    6,    7,    8,    9,   10,   11,   12,
-       13,   14,   15,    4,   12,   12,   12,   16,   12,   12,
-       12,   12,   12,   12,   12,   17,   12,   12,   12,   12,
-       18,   12,   19,   20,    4,   21,   22,   21,   23,   21,
-       22,   22,   22,   22,   22,   24,   21,   21,   22,   25,
-       26,   30,   37,  113,  112,  111,  110,  109,  108,  107,
-      106,  105,  104,  103,   31,   35,  102,   38,  101,   40,
-       35,   35,   35,   35,   35,   35,   35,   35,   35,   35,
-       35,   35,   35,   35,   35,   35,   35,   35,   39,   41,
-       42,   36,   36,   36,   36,   36,   36,   36,   36,   36,
-
-       36,   36,   36,   36,   36,   36,   39,   43,   41,   43,
-       51,   52,  100,   99,   53,   54,   55,   56,   98,   60,
-       54,   61,   62,   63,   64,   65,   43,   39,   44,   63,
-       69,   52,   52,   54,   54,   70,   71,   56,   56,   57,
-       61,   72,   61,   63,   63,   65,   65,   73,   74,   70,
-       66,   72,   78,   79,   70,   80,   72,   81,   81,   97,
-       86,   72,   87,   88,   89,   89,   96,   95,   74,   74,
-       94,   75,   94,   79,   79,   81,   94,   81,   83,   87,
-       93,   87,   89,   89,   90,   27,   93,   27,   27,   27,
-       29,   92,   29,   29,   29,   33,   33,   33,   36,   36,
-
-       47,   47,   48,   48,   91,   85,   84,   82,   82,   77,
-       76,   68,   67,   59,   58,   50,   49,   46,   45,   28,
-       28,   34,   32,   28,  114,    3,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114
+        4,    5,    6,    4,    7,    8,    4,    7,    4,    9,
+       11,   10,   11,   14,   10,   10,   10,   12,   14,   14,
+       12,   12,   12,   13,   14,   14,   13,   13,   13,    3,
+       14,   14,   14,   14,   14,   14,   14,   14,   14
     } ;
 
-static yyconst flex_int16_t yy_chk[278] =
+static yyconst flex_int16_t yy_chk[40] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    9,  118,  112,  111,  110,  108,  107,  106,  105,
-      104,  103,  102,  101,    9,   12,  100,   16,   99,   17,
-       12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
-       12,   12,   12,   12,   12,   12,   12,   12,   16,   17,
-       18,   12,   12,   12,   12,   12,   12,   12,   12,   12,
-
-       12,   12,   12,   12,   12,   12,   23,   25,   24,   18,
-       38,   39,   98,   97,   40,   41,   42,   43,   96,   51,
-       44,   52,   53,   54,   55,   56,   25,   23,   24,   57,
-       60,   38,   39,   40,   41,   61,   62,   42,   43,   44,
-       51,   63,   52,   53,   54,   55,   56,   64,   65,   60,
-       57,   66,   69,   70,   61,   71,   62,   72,   75,   95,
-       78,   63,   79,   80,   81,   83,   92,   91,   64,   65,
-       90,   66,   89,   69,   70,   71,   88,   72,   75,   78,
-       87,   79,   80,   81,   83,  115,   86,  115,  115,  115,
-      116,   85,  116,  116,  116,  117,  117,  117,  119,  119,
-
-      120,  120,  121,  121,   84,   77,   76,   74,   73,   68,
-       67,   59,   58,   46,   45,   37,   34,   31,   30,   28,
-       27,   11,   10,    5,    3,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    5,
+       11,    5,    6,    3,    5,    5,    5,    9,    0,    0,
+        9,    9,    9,   10,    0,    0,   10,   10,   10,   14,
+       14,   14,   14,   14,   14,   14,   14,   14,   14
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[22] =
+static yyconst flex_int16_t yy_rule_linenum[8] =
     {   0,
-       47,   48,   49,   50,   51,   52,   53,   54,   55,   56,
-       57,   58,   59,   61,   62,   63,   64,   65,   66,   67,
-       69
+       32,   33,   35,   36,   37,   38,   40
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -587,18 +493,17 @@ static yyconst flex_int16_t yy_rule_linenum[22] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "flex-bison-scripts/scanner.lex"
-#line 2 "flex-bison-scripts/scanner.lex"
+#line 1 "flex-bison-scripts/scanner_for_argv.lex"
+#line 2 "flex-bison-scripts/scanner_for_argv.lex"
 // Use parser defined tokens.
 #include "generated_scanner.h"
-// `generated_parser.h` must be included after `generated_scanner.h`.
 #include "generated_parser.h"
 
 #define YY_DECL                             \
   clidoc::BisonGeneratedParser::symbol_type \
   clidoc::FlexGeneratedScanner::lex()
 #define YY_NO_INPUT 1
-#line 602 "generated_scanner.cc"
+#line 507 "generated_scanner_for_argv.cc"
 
 #define INITIAL 0
 
@@ -755,10 +660,10 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 45 "flex-bison-scripts/scanner.lex"
+#line 30 "flex-bison-scripts/scanner_for_argv.lex"
 
 
-#line 762 "generated_scanner.cc"
+#line 667 "generated_scanner_for_argv.cc"
 
 	if ( !(yy_init) )
 		{
@@ -821,13 +726,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 115 )
+				if ( yy_current_state >= 15 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 114 );
+		while ( yy_current_state != 14 );
 		yy_cp = (yy_last_accepting_cpos);
 		yy_current_state = (yy_last_accepting_state);
 
@@ -846,12 +751,12 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				std::cerr << "--scanner backing up\n";
-			else if ( yy_act < 22 )
+			else if ( yy_act < 8 )
 				std::cerr << "--accepting rule at line " << yy_rule_linenum[yy_act] <<
 				         "(\"" << yytext << "\")\n";
-			else if ( yy_act == 22 )
+			else if ( yy_act == 8 )
 				std::cerr << "--accepting default rule (\"" << yytext << "\")\n";
-			else if ( yy_act == 23 )
+			else if ( yy_act == 9 )
 				std::cerr << "--(end of buffer or a NUL)\n";
 			else
 				std::cerr << "--EOF (start condition " << YY_START << ")\n";
@@ -869,119 +774,49 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 47 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_L_PARENTHESIS();
+#line 32 "flex-bison-scripts/scanner_for_argv.lex"
+return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 48 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_R_PARENTHESIS();
+#line 33 "flex-bison-scripts/scanner_for_argv.lex"
+return clidoc::BisonGeneratedParser::make_EQUAL_SIGN();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 49 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_L_BRACKET();
+#line 35 "flex-bison-scripts/scanner_for_argv.lex"
+return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 50 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_R_BRACKET();
+#line 36 "flex-bison-scripts/scanner_for_argv.lex"
+return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 51 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_EXCLUSIVE_OR();
+#line 37 "flex-bison-scripts/scanner_for_argv.lex"
+return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 52 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_EQUAL_SIGN();
+#line 38 "flex-bison-scripts/scanner_for_argv.lex"
+return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 53 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_ELLIPSES();
-	YY_BREAK
-case 8:
-YY_RULE_SETUP
-#line 54 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_K_USAGE_COLON();
-	YY_BREAK
-case 9:
-YY_RULE_SETUP
-#line 55 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_K_OPTIONS_COLON();
-	YY_BREAK
-case 10:
-YY_RULE_SETUP
-#line 56 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_K_DEFAULT_COLON();
-	YY_BREAK
-case 11:
-YY_RULE_SETUP
-#line 57 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_K_OPTIONS();
-	YY_BREAK
-case 12:
-YY_RULE_SETUP
-#line 58 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_K_UTILITY_DELIMITER();
-	YY_BREAK
-case 13:
-YY_RULE_SETUP
-#line 59 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_K_DESC_DELIMITER();
-	YY_BREAK
-case 14:
-YY_RULE_SETUP
-#line 61 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
-	YY_BREAK
-case 15:
-YY_RULE_SETUP
-#line 62 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
-	YY_BREAK
-case 16:
-YY_RULE_SETUP
-#line 63 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
-	YY_BREAK
-case 17:
-YY_RULE_SETUP
-#line 64 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_OPTION_ARGUEMENT(YYText());
-	YY_BREAK
-case 18:
-YY_RULE_SETUP
-#line 65 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_OPERAND(YYText());
-	YY_BREAK
-case 19:
-YY_RULE_SETUP
-#line 66 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_OPTION_DEFAULT_VALUE(YYText());
-	YY_BREAK
-case 20:
-YY_RULE_SETUP
-#line 67 "flex-bison-scripts/scanner.lex"
-return clidoc::BisonGeneratedParser::make_COMMENT(YYText());
-	YY_BREAK
-case 21:
-YY_RULE_SETUP
-#line 69 "flex-bison-scripts/scanner.lex"
+#line 40 "flex-bison-scripts/scanner_for_argv.lex"
 { /* do nothing. */ }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 70 "flex-bison-scripts/scanner.lex"
+#line 41 "flex-bison-scripts/scanner_for_argv.lex"
 return clidoc::BisonGeneratedParser::make_END();
 	YY_BREAK
-case 22:
+case 8:
 YY_RULE_SETUP
-#line 72 "flex-bison-scripts/scanner.lex"
+#line 43 "flex-bison-scripts/scanner_for_argv.lex"
 ECHO;
 	YY_BREAK
-#line 985 "generated_scanner.cc"
+#line 820 "generated_scanner_for_argv.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1381,7 +1216,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 115 )
+			if ( yy_current_state >= 15 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1414,11 +1249,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 115 )
+		if ( yy_current_state >= 15 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 114);
+	yy_is_jam = (yy_current_state == 14);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -2019,7 +1854,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 72 "flex-bison-scripts/scanner.lex"
+#line 43 "flex-bison-scripts/scanner_for_argv.lex"
 
 
 // Bug fix.

@@ -1,3 +1,3 @@
-add_executable (run_test test.cc)
-target_link_libraries (run_test tokenizer)
-add_gtest (run_test)
+add_executable (tokenizer_for_doc tokenizer_for_doc.cc)
+target_link_libraries (tokenizer_for_doc tokenizer generated_scanner_for_doc)
+add_gtest (tokenizer_for_doc)

@@ -31,19 +31,31 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
 
+// Terminal with value.
 %token <std::string>
-  POSIX_OPTION GROUPED_OPTIONS GNU_OPTION
-  OPTION_ARGUEMENT OPERAND
-  OPTION_DEFAULT_VALUE COMMENT
+  // Only for doc processing.
+  OPTION_ARGUEMENT
+  OPERAND
+  OPTION_DEFAULT_VALUE
+  COMMENT
+
+  // Only for argument processing.
+  ARGUMENT
+
+  // Shared.
+  POSIX_OPTION
+  GROUPED_OPTIONS
+  GNU_OPTION
 ;
 
+// Terminal without value.
 %token
+  // Only for doc processing.
   L_PARENTHESIS       "("
   R_PARENTHESIS       ")"
   L_BRACKET           "["
   R_BRACKET           "]"
   EXCLUSIVE_OR        "|"
-  EQUAL_SIGN          "="
   ELLIPSES            "..."
   K_USAGE_COLON       "usage:"
   K_OPTIONS_COLON     "options:"
@@ -52,6 +64,13 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
   K_UTILITY_DELIMITER "*UTILITY_DELIMITER*"
   K_DESC_DELIMITER    "*DESC_DELIMITER*"
 
+  // Only for argument processing.
+  K_DOUBLE_HYPHEN     "--"
+
+  // Shared.
+  EQUAL_SIGN          "="
+	
+  // end-of-file.
   END                 0
 ;
 

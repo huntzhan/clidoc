@@ -292,13 +292,14 @@ namespace clidoc {
       // single_binding
       char dummy1[sizeof(Undefine)];
 
+      // OPTION_ARGUEMENT
+      // OPTION_DEFAULT_VALUE
+      // COMMENT
+      // ARGUMENT
       // POSIX_OPTION
       // GROUPED_OPTIONS
       // GNU_OPTION
-      // OPTION_ARGUEMENT
       // OPERAND
-      // OPTION_DEFAULT_VALUE
-      // COMMENT
       char dummy2[sizeof(std::string)];
 };
 
@@ -320,26 +321,28 @@ namespace clidoc {
       enum yytokentype
       {
         END = 0,
-        POSIX_OPTION = 258,
-        GROUPED_OPTIONS = 259,
-        GNU_OPTION = 260,
-        OPTION_ARGUEMENT = 261,
-        OPERAND = 262,
-        OPTION_DEFAULT_VALUE = 263,
-        COMMENT = 264,
-        L_PARENTHESIS = 265,
-        R_PARENTHESIS = 266,
-        L_BRACKET = 267,
-        R_BRACKET = 268,
-        EXCLUSIVE_OR = 269,
-        EQUAL_SIGN = 270,
+        OPTION_ARGUEMENT = 258,
+        OPTION_DEFAULT_VALUE = 259,
+        COMMENT = 260,
+        ARGUMENT = 261,
+        POSIX_OPTION = 262,
+        GROUPED_OPTIONS = 263,
+        GNU_OPTION = 264,
+        OPERAND = 265,
+        L_PARENTHESIS = 266,
+        R_PARENTHESIS = 267,
+        L_BRACKET = 268,
+        R_BRACKET = 269,
+        EXCLUSIVE_OR = 270,
         ELLIPSES = 271,
         K_USAGE_COLON = 272,
         K_OPTIONS_COLON = 273,
         K_DEFAULT_COLON = 274,
-        K_OPTIONS = 275,
-        K_UTILITY_DELIMITER = 276,
-        K_DESC_DELIMITER = 277
+        K_UTILITY_DELIMITER = 275,
+        K_DESC_DELIMITER = 276,
+        K_DOUBLE_HYPHEN = 277,
+        EQUAL_SIGN = 278,
+        K_OPTIONS = 279
       };
     };
 
@@ -438,6 +441,22 @@ namespace clidoc {
 
     static inline
     symbol_type
+    make_OPTION_ARGUEMENT (const std::string& v);
+
+    static inline
+    symbol_type
+    make_OPTION_DEFAULT_VALUE (const std::string& v);
+
+    static inline
+    symbol_type
+    make_COMMENT (const std::string& v);
+
+    static inline
+    symbol_type
+    make_ARGUMENT (const std::string& v);
+
+    static inline
+    symbol_type
     make_POSIX_OPTION (const std::string& v);
 
     static inline
@@ -450,19 +469,7 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_OPTION_ARGUEMENT (const std::string& v);
-
-    static inline
-    symbol_type
     make_OPERAND (const std::string& v);
-
-    static inline
-    symbol_type
-    make_OPTION_DEFAULT_VALUE (const std::string& v);
-
-    static inline
-    symbol_type
-    make_COMMENT (const std::string& v);
 
     static inline
     symbol_type
@@ -486,10 +493,6 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_EQUAL_SIGN ();
-
-    static inline
-    symbol_type
     make_ELLIPSES ();
 
     static inline
@@ -506,15 +509,23 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_K_OPTIONS ();
-
-    static inline
-    symbol_type
     make_K_UTILITY_DELIMITER ();
 
     static inline
     symbol_type
     make_K_DESC_DELIMITER ();
+
+    static inline
+    symbol_type
+    make_K_DOUBLE_HYPHEN ();
+
+    static inline
+    symbol_type
+    make_EQUAL_SIGN ();
+
+    static inline
+    symbol_type
+    make_K_OPTIONS ();
 
 
     /// Build a parser object.
@@ -712,13 +723,13 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 45,     ///< Last index in yytable_.
+      yylast_ = 44,     ///< Last index in yytable_.
       yynnts_ = 18,  ///< Number of nonterminal symbols.
       yyempty_ = -2,
       yyfinal_ = 7, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 23  ///< Number of tokens.
+      yyntokens_ = 25  ///< Number of tokens.
     };
 
 
@@ -762,9 +773,9 @@ namespace clidoc {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24
     };
-    const unsigned int user_token_number_max_ = 277;
+    const unsigned int user_token_number_max_ = 279;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -795,33 +806,34 @@ namespace clidoc {
   {
       switch (other.type_get ())
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         value.copy< Undefine > (other.value);
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         value.copy< std::string > (other.value);
         break;
 
@@ -841,33 +853,34 @@ namespace clidoc {
     (void) v;
       switch (this->type_get ())
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         value.copy< Undefine > (v);
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         value.copy< std::string > (v);
         break;
 
@@ -913,33 +926,34 @@ namespace clidoc {
     // Type destructor.
     switch (yytype)
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         value.template destroy< Undefine > ();
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         value.template destroy< std::string > ();
         break;
 
@@ -957,33 +971,34 @@ namespace clidoc {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 24: // doc
-      case 25: // usage_section
-      case 26: // utilities
-      case 27: // single_utility
-      case 28: // or_exprs
-      case 29: // seqs
-      case 30: // single_seq
-      case 31: // atom
-      case 32: // posix_option_unit
-      case 33: // gnu_option_unit
-      case 34: // options_section
-      case 35: // descriptions
-      case 36: // single_description
-      case 37: // default_value
-      case 38: // comment
-      case 39: // bindings
-      case 40: // single_binding
+      case 26: // doc
+      case 27: // usage_section
+      case 28: // utilities
+      case 29: // single_utility
+      case 30: // or_exprs
+      case 31: // seqs
+      case 32: // single_seq
+      case 33: // atom
+      case 34: // posix_option_unit
+      case 35: // gnu_option_unit
+      case 36: // options_section
+      case 37: // descriptions
+      case 38: // single_description
+      case 39: // default_value
+      case 40: // comment
+      case 41: // bindings
+      case 42: // single_binding
         value.move< Undefine > (s.value);
         break;
 
-      case 3: // POSIX_OPTION
-      case 4: // GROUPED_OPTIONS
-      case 5: // GNU_OPTION
-      case 6: // OPTION_ARGUEMENT
-      case 7: // OPERAND
-      case 8: // OPTION_DEFAULT_VALUE
-      case 9: // COMMENT
+      case 3: // OPTION_ARGUEMENT
+      case 4: // OPTION_DEFAULT_VALUE
+      case 5: // COMMENT
+      case 6: // ARGUMENT
+      case 7: // POSIX_OPTION
+      case 8: // GROUPED_OPTIONS
+      case 9: // GNU_OPTION
+      case 10: // OPERAND
         value.move< std::string > (s.value);
         break;
 
@@ -1036,7 +1051,7 @@ namespace clidoc {
     {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277
+     275,   276,   277,   278,   279
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -1045,6 +1060,30 @@ namespace clidoc {
   BisonGeneratedParser::make_END ()
   {
     return symbol_type (token::END);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_OPTION_ARGUEMENT (const std::string& v)
+  {
+    return symbol_type (token::OPTION_ARGUEMENT, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_OPTION_DEFAULT_VALUE (const std::string& v)
+  {
+    return symbol_type (token::OPTION_DEFAULT_VALUE, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_COMMENT (const std::string& v)
+  {
+    return symbol_type (token::COMMENT, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_ARGUMENT (const std::string& v)
+  {
+    return symbol_type (token::ARGUMENT, v);
   }
 
   BisonGeneratedParser::symbol_type
@@ -1066,27 +1105,9 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_OPTION_ARGUEMENT (const std::string& v)
-  {
-    return symbol_type (token::OPTION_ARGUEMENT, v);
-  }
-
-  BisonGeneratedParser::symbol_type
   BisonGeneratedParser::make_OPERAND (const std::string& v)
   {
     return symbol_type (token::OPERAND, v);
-  }
-
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_OPTION_DEFAULT_VALUE (const std::string& v)
-  {
-    return symbol_type (token::OPTION_DEFAULT_VALUE, v);
-  }
-
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_COMMENT (const std::string& v)
-  {
-    return symbol_type (token::COMMENT, v);
   }
 
   BisonGeneratedParser::symbol_type
@@ -1120,12 +1141,6 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_EQUAL_SIGN ()
-  {
-    return symbol_type (token::EQUAL_SIGN);
-  }
-
-  BisonGeneratedParser::symbol_type
   BisonGeneratedParser::make_ELLIPSES ()
   {
     return symbol_type (token::ELLIPSES);
@@ -1150,12 +1165,6 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_K_OPTIONS ()
-  {
-    return symbol_type (token::K_OPTIONS);
-  }
-
-  BisonGeneratedParser::symbol_type
   BisonGeneratedParser::make_K_UTILITY_DELIMITER ()
   {
     return symbol_type (token::K_UTILITY_DELIMITER);
@@ -1167,10 +1176,28 @@ namespace clidoc {
     return symbol_type (token::K_DESC_DELIMITER);
   }
 
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_K_DOUBLE_HYPHEN ()
+  {
+    return symbol_type (token::K_DOUBLE_HYPHEN);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_EQUAL_SIGN ()
+  {
+    return symbol_type (token::EQUAL_SIGN);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_K_OPTIONS ()
+  {
+    return symbol_type (token::K_OPTIONS);
+  }
+
 
 
 } // clidoc
-#line 1174 "generated_parser.h" // lalr1.cc:387
+#line 1201 "generated_parser.h" // lalr1.cc:387
 
 
 
