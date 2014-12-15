@@ -69,7 +69,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
   // Shared.
   EQUAL_SIGN          "="
-	
+  
   // end-of-file.
   END                 0
 ;
@@ -158,7 +158,7 @@ comments : comments single_comment {  }
 ;
 
 single_comment : COMMENT K_DESC_DELIMITER { }
-							 | K_DESC_DELIMITER { }
+               | K_DESC_DELIMITER { }
 ;
 
 bindings : bindings single_binding {  }

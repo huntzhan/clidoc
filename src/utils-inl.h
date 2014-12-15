@@ -7,7 +7,7 @@ bool Terminal<T>::ProcessToken(
   throw "NotImplementedError.";
 }
 
-template <NodeInterface::NodeType T>
+template <NonTerminalType T>
 bool NonTerminal<T>::ProcessToken(
     TokenInProcessCollection *token_collection) {
   throw "NotImplementedError.";
