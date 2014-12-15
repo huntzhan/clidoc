@@ -28,5 +28,37 @@ class Token {
   const std::string value_;
 };
 
+// Contains tokenized arguments during semantic analysis.
+class TokenInProcessCollection {
+ public:
+};
+
+// Interface for symbols in parsing tree.
+class NodeInterface {
+ public:
+  // Defines non-terminal types.
+  enum class NodeType {
+    EXAMPLE
+  };
+  virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
+};
+
+// Template for terminal types.
+template <Token::Type T>
+class Terminal : public NodeInterface {
+ public:
+  bool ProcessToken(TokenInProcessCollection *token_collection) override;
+};
+
+// Template for non-terminal types.
+template <NodeInterface::NodeType T>
+class NonTerminal : public NodeInterface {
+ public:
+  bool ProcessToken(TokenInProcessCollection *token_collection) override;
+};
+
 }  // namespace clidoc 
+
+#include "utils-inl.h"
+
 #endif

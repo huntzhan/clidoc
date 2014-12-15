@@ -287,19 +287,20 @@ namespace clidoc {
       // descriptions
       // single_description
       // default_value
-      // comment
+      // comments
+      // single_comment
       // bindings
       // single_binding
       char dummy1[sizeof(Undefine)];
 
       // OPTION_ARGUEMENT
+      // OPERAND
       // OPTION_DEFAULT_VALUE
       // COMMENT
       // ARGUMENT
       // POSIX_OPTION
       // GROUPED_OPTIONS
       // GNU_OPTION
-      // OPERAND
       char dummy2[sizeof(std::string)];
 };
 
@@ -322,13 +323,13 @@ namespace clidoc {
       {
         END = 0,
         OPTION_ARGUEMENT = 258,
-        OPTION_DEFAULT_VALUE = 259,
-        COMMENT = 260,
-        ARGUMENT = 261,
-        POSIX_OPTION = 262,
-        GROUPED_OPTIONS = 263,
-        GNU_OPTION = 264,
-        OPERAND = 265,
+        OPERAND = 259,
+        OPTION_DEFAULT_VALUE = 260,
+        COMMENT = 261,
+        ARGUMENT = 262,
+        POSIX_OPTION = 263,
+        GROUPED_OPTIONS = 264,
+        GNU_OPTION = 265,
         L_PARENTHESIS = 266,
         R_PARENTHESIS = 267,
         L_BRACKET = 268,
@@ -338,11 +339,11 @@ namespace clidoc {
         K_USAGE_COLON = 272,
         K_OPTIONS_COLON = 273,
         K_DEFAULT_COLON = 274,
-        K_UTILITY_DELIMITER = 275,
-        K_DESC_DELIMITER = 276,
-        K_DOUBLE_HYPHEN = 277,
-        EQUAL_SIGN = 278,
-        K_OPTIONS = 279
+        K_OPTIONS = 275,
+        K_UTILITY_DELIMITER = 276,
+        K_DESC_DELIMITER = 277,
+        K_DOUBLE_HYPHEN = 278,
+        EQUAL_SIGN = 279
       };
     };
 
@@ -445,6 +446,10 @@ namespace clidoc {
 
     static inline
     symbol_type
+    make_OPERAND (const std::string& v);
+
+    static inline
+    symbol_type
     make_OPTION_DEFAULT_VALUE (const std::string& v);
 
     static inline
@@ -466,10 +471,6 @@ namespace clidoc {
     static inline
     symbol_type
     make_GNU_OPTION (const std::string& v);
-
-    static inline
-    symbol_type
-    make_OPERAND (const std::string& v);
 
     static inline
     symbol_type
@@ -509,6 +510,10 @@ namespace clidoc {
 
     static inline
     symbol_type
+    make_K_OPTIONS ();
+
+    static inline
+    symbol_type
     make_K_UTILITY_DELIMITER ();
 
     static inline
@@ -522,10 +527,6 @@ namespace clidoc {
     static inline
     symbol_type
     make_EQUAL_SIGN ();
-
-    static inline
-    symbol_type
-    make_K_OPTIONS ();
 
 
     /// Build a parser object.
@@ -723,8 +724,8 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 44,     ///< Last index in yytable_.
-      yynnts_ = 18,  ///< Number of nonterminal symbols.
+      yylast_ = 48,     ///< Last index in yytable_.
+      yynnts_ = 19,  ///< Number of nonterminal symbols.
       yyempty_ = -2,
       yyfinal_ = 7, ///< Termination state number.
       yyterror_ = 1,
@@ -820,20 +821,21 @@ namespace clidoc {
       case 37: // descriptions
       case 38: // single_description
       case 39: // default_value
-      case 40: // comment
-      case 41: // bindings
-      case 42: // single_binding
+      case 40: // comments
+      case 41: // single_comment
+      case 42: // bindings
+      case 43: // single_binding
         value.copy< Undefine > (other.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
-      case 4: // OPTION_DEFAULT_VALUE
-      case 5: // COMMENT
-      case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
-      case 10: // OPERAND
+      case 4: // OPERAND
+      case 5: // OPTION_DEFAULT_VALUE
+      case 6: // COMMENT
+      case 7: // ARGUMENT
+      case 8: // POSIX_OPTION
+      case 9: // GROUPED_OPTIONS
+      case 10: // GNU_OPTION
         value.copy< std::string > (other.value);
         break;
 
@@ -867,20 +869,21 @@ namespace clidoc {
       case 37: // descriptions
       case 38: // single_description
       case 39: // default_value
-      case 40: // comment
-      case 41: // bindings
-      case 42: // single_binding
+      case 40: // comments
+      case 41: // single_comment
+      case 42: // bindings
+      case 43: // single_binding
         value.copy< Undefine > (v);
         break;
 
       case 3: // OPTION_ARGUEMENT
-      case 4: // OPTION_DEFAULT_VALUE
-      case 5: // COMMENT
-      case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
-      case 10: // OPERAND
+      case 4: // OPERAND
+      case 5: // OPTION_DEFAULT_VALUE
+      case 6: // COMMENT
+      case 7: // ARGUMENT
+      case 8: // POSIX_OPTION
+      case 9: // GROUPED_OPTIONS
+      case 10: // GNU_OPTION
         value.copy< std::string > (v);
         break;
 
@@ -940,20 +943,21 @@ namespace clidoc {
       case 37: // descriptions
       case 38: // single_description
       case 39: // default_value
-      case 40: // comment
-      case 41: // bindings
-      case 42: // single_binding
+      case 40: // comments
+      case 41: // single_comment
+      case 42: // bindings
+      case 43: // single_binding
         value.template destroy< Undefine > ();
         break;
 
       case 3: // OPTION_ARGUEMENT
-      case 4: // OPTION_DEFAULT_VALUE
-      case 5: // COMMENT
-      case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
-      case 10: // OPERAND
+      case 4: // OPERAND
+      case 5: // OPTION_DEFAULT_VALUE
+      case 6: // COMMENT
+      case 7: // ARGUMENT
+      case 8: // POSIX_OPTION
+      case 9: // GROUPED_OPTIONS
+      case 10: // GNU_OPTION
         value.template destroy< std::string > ();
         break;
 
@@ -985,20 +989,21 @@ namespace clidoc {
       case 37: // descriptions
       case 38: // single_description
       case 39: // default_value
-      case 40: // comment
-      case 41: // bindings
-      case 42: // single_binding
+      case 40: // comments
+      case 41: // single_comment
+      case 42: // bindings
+      case 43: // single_binding
         value.move< Undefine > (s.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
-      case 4: // OPTION_DEFAULT_VALUE
-      case 5: // COMMENT
-      case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
-      case 10: // OPERAND
+      case 4: // OPERAND
+      case 5: // OPTION_DEFAULT_VALUE
+      case 6: // COMMENT
+      case 7: // ARGUMENT
+      case 8: // POSIX_OPTION
+      case 9: // GROUPED_OPTIONS
+      case 10: // GNU_OPTION
         value.move< std::string > (s.value);
         break;
 
@@ -1069,6 +1074,12 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_OPERAND (const std::string& v)
+  {
+    return symbol_type (token::OPERAND, v);
+  }
+
+  BisonGeneratedParser::symbol_type
   BisonGeneratedParser::make_OPTION_DEFAULT_VALUE (const std::string& v)
   {
     return symbol_type (token::OPTION_DEFAULT_VALUE, v);
@@ -1102,12 +1113,6 @@ namespace clidoc {
   BisonGeneratedParser::make_GNU_OPTION (const std::string& v)
   {
     return symbol_type (token::GNU_OPTION, v);
-  }
-
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_OPERAND (const std::string& v)
-  {
-    return symbol_type (token::OPERAND, v);
   }
 
   BisonGeneratedParser::symbol_type
@@ -1165,6 +1170,12 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_K_OPTIONS ()
+  {
+    return symbol_type (token::K_OPTIONS);
+  }
+
+  BisonGeneratedParser::symbol_type
   BisonGeneratedParser::make_K_UTILITY_DELIMITER ()
   {
     return symbol_type (token::K_UTILITY_DELIMITER);
@@ -1188,16 +1199,10 @@ namespace clidoc {
     return symbol_type (token::EQUAL_SIGN);
   }
 
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_K_OPTIONS ()
-  {
-    return symbol_type (token::K_OPTIONS);
-  }
-
 
 
 } // clidoc
-#line 1201 "generated_parser.h" // lalr1.cc:387
+#line 1206 "generated_parser.h" // lalr1.cc:387
 
 
 

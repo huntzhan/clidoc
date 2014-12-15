@@ -92,7 +92,8 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 %type <Undefine> bindings
 %type <Undefine> single_binding
 %type <Undefine> default_value
-%type <Undefine> comment
+%type <Undefine> comments
+%type <Undefine> single_comment
 
 %%
 
@@ -145,15 +146,19 @@ descriptions : descriptions single_description {  }
              | single_description {  }
 ;
 
-single_description : bindings default_value comment K_DESC_DELIMITER  {  }
+single_description : bindings default_value comments {  }
 ;
 
 default_value : L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE R_BRACKET {  }
               | %empty {  }
 ;
 
-comment : COMMENT {  }
-        | %empty {  }
+comments : comments single_comment {  }
+         | single_comment {  }
+;
+
+single_comment : COMMENT K_DESC_DELIMITER { }
+							 | K_DESC_DELIMITER { }
 ;
 
 bindings : bindings single_binding {  }
