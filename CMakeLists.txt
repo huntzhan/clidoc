@@ -31,6 +31,9 @@ endfunction(add_gtest)
 #################
 # Build runtime #
 #################
+# make sure the compiler find the right version of FlexLexer.h
+include_directories (${clidoc_SOURCE_DIR}/lib/flex/include)
+
 include_directories(src)
 include_directories(test)
 

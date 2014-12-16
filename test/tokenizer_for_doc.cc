@@ -1,44 +1,62 @@
 
 #include "test_utils-inl.h"
 
-#define OPTION_ARGUEMENT     TerminalType::OPTION_ARGUEMENT
-#define GNU_OPTION           TerminalType::GNU_OPTION
-#define OPERAND              TerminalType::OPERAND
-#define COMMENT              TerminalType::COMMENT
-#define OPTION_DEFAULT_VALUE TerminalType::OPTION_DEFAULT_VALUE
-#define POSIX_OPTION         TerminalType::POSIX_OPTION
-#define GROUPED_OPTIONS      TerminalType::GROUPED_OPTIONS
 
 TEST(tokenizer_for_doc, token_type) {
   CheckTokenTypes(
-      "-c --long -afciFEj <arg> ARG operand", 
-      {POSIX_OPTION, GNU_OPTION, GROUPED_OPTIONS,
-       OPTION_ARGUEMENT, OPTION_ARGUEMENT,
-       OPERAND});
+      "-c --long -afciFEj <arg> ARG operand", {
+        TerminalType::POSIX_OPTION,
+        TerminalType::GNU_OPTION,
+        TerminalType::GROUPED_OPTIONS,
+        TerminalType::OPTION_ARGUEMENT,
+        TerminalType::OPTION_ARGUEMENT,
+        TerminalType::OPERAND,
+      });
   CheckTokenTypes(
-      "\"1.414 whatever\" # long long comment", 
-      {OPTION_DEFAULT_VALUE, COMMENT});
+      "\"1.414 whatever\" # long long comment", {
+        TerminalType::OPTION_DEFAULT_VALUE,
+        TerminalType::COMMENT,
+      });
 }
 
-/*
-TEST(tokenizer_for_doc, token_type) {
-  CheckTokenTypes(
-      "( ) [ ] | = ...", 
-      {L_PARENTHESIS, R_PARENTHESIS, L_BRACKET, R_BRACKET, EXCLUSIVE_OR,
-       EQUAL_SIGN, ELLIPSES});
-  CheckTokenTypes(
-      "usage: UsAge: options: options OPTIONS: default:", 
-      {K_USAGE_COLON, K_USAGE_COLON,
-       K_OPTIONS_COLON, K_OPTIONS, K_OPTIONS_COLON,
-       K_DEFAULT_COLON});
-  CheckTokenTypes(
-      "*UTILITY_DELIMITER* *DESC_DELIMITER*", 
-      {K_UTILITY_DELIMITER, K_DESC_DELIMITER});
-  CheckTokenTypes(
-      "-c --long <arg> ARG operand", 
-      {POSIX_OPTION, GNU_OPTION,
-       OPTION_ARGUEMENT, OPTION_ARGUEMENT,
-       OPERAND});
+TEST(tokenizer_for_doc, raw_token_type) {
+  CheckRawTokenTypes(
+      "( ) [ ] | = ...", {
+        TypeID::K_L_PARENTHESIS,
+        TypeID::K_R_PARENTHESIS,
+        TypeID::K_L_BRACKET,
+        TypeID::K_R_BRACKET,
+        TypeID::K_EXCLUSIVE_OR,
+        TypeID::K_EQUAL_SIGN,
+        TypeID::K_ELLIPSES,
+      });
+  CheckRawTokenTypes(
+      "usage: UsAge: options: options OPTIONS: default:", {
+        TypeID::K_USAGE_COLON,
+        TypeID::K_USAGE_COLON,
+        TypeID::K_OPTIONS_COLON,
+        TypeID::K_OPTIONS,
+        TypeID::K_OPTIONS_COLON,
+        TypeID::K_DEFAULT_COLON,
+      });
+  CheckRawTokenTypes(
+      "*UTILITY_DELIMITER* *DESC_DELIMITER*", {
+        TypeID::K_UTILITY_DELIMITER,
+        TypeID::K_DESC_DELIMITER,
+      });
+  CheckRawTokenTypes(
+      "-c --long <arg> ARG operand", {
+        TypeID::POSIX_OPTION,
+        TypeID::GNU_OPTION,
+        TypeID::OPTION_ARGUEMENT,
+        TypeID::OPTION_ARGUEMENT,
+        TypeID::OPERAND,
+      });
+  CheckRawTokenTypes(
+      "\"1.414 whatever\" # long long comment", {
+        TypeID::OPTION_DEFAULT_VALUE,
+        TypeID::COMMENT,
+      });
 }
 
 TEST(tokenizer_for_doc, token_value) {
@@ -49,4 +67,12 @@ TEST(tokenizer_for_doc, token_value) {
       "-c FILE",
       {"-c", "FILE"});
 }
-*/
+
+TEST(tokenizer_for_doc, raw_token_value) {
+  CheckRawTokenValues(
+      "-c  - --long ",
+      {"-c", "-", "--long"});
+  CheckRawTokenValues(
+      "-c FILE",
+      {"-c", "FILE"});
+}

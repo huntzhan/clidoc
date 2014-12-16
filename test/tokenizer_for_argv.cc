@@ -1,45 +1,72 @@
 
 #include "test_utils-inl.h"
 
-#define K_DOUBLE_HYPHEN TerminalType::K_DOUBLE_HYPHEN
-#define POSIX_OPTION    TerminalType::POSIX_OPTION
-#define GROUPED_OPTIONS TerminalType::GROUPED_OPTIONS
-#define GNU_OPTION      TerminalType::GNU_OPTION
-#define ARGUMENT        TerminalType::ARGUMENT
-
 TEST(tokenizer_for_argv, token_type) {
   CheckTokenTypes(
-      "--",
-      {K_DOUBLE_HYPHEN});
+      "--", {
+        TerminalType::K_DOUBLE_HYPHEN,
+      });
   CheckTokenTypes(
-      "--long SOME_VALUE",
-      {GNU_OPTION, ARGUMENT});
+      "--long SOME_VALUE", {
+        TerminalType::GNU_OPTION,
+        TerminalType::ARGUMENT,
+      });
   CheckTokenTypes(
-      "-c --long -afjb",
-      {POSIX_OPTION, GNU_OPTION, GROUPED_OPTIONS});
+      "-c --long -afjb", {
+      TerminalType::POSIX_OPTION,
+      TerminalType::GNU_OPTION,
+      TerminalType::GROUPED_OPTIONS,
+    });
   CheckTokenTypes(
-      "-f test_file.py FILE abc 42.19243", 
-      {POSIX_OPTION, ARGUMENT, ARGUMENT, ARGUMENT, ARGUMENT});
+      "-f test_file.py FILE abc 42.19243", {
+        TerminalType::POSIX_OPTION,
+        TerminalType::ARGUMENT,
+        TerminalType::ARGUMENT,
+        TerminalType::ARGUMENT,
+        TerminalType::ARGUMENT,
+      });
+}
+
+TEST(tokenizer_for_argv, raw_token_type) {
+  CheckRawTokenTypes(
+      "--long = SOME_VALUE", {
+        TypeID::GNU_OPTION,
+        TypeID::K_EQUAL_SIGN,
+        TypeID::ARGUMENT,
+      });
 }
 
 TEST(tokenizer_for_argv, ambiguous) {
   // such kind of ambiguity should be handle after tokenized.
   CheckTokenTypes(
-      "--long = SOME_VALUE",
-      {GNU_OPTION, ARGUMENT});
+      "--long = SOME_VALUE", {
+        TerminalType::GNU_OPTION,
+        TerminalType::ARGUMENT,
+      });
   CheckTokenTypes(
-      "--long= SOME_VALUE",
-      {ARGUMENT, ARGUMENT});
+      "--long= SOME_VALUE", {
+        TerminalType::ARGUMENT,
+        TerminalType::ARGUMENT,
+      });
   CheckTokenTypes(
-      "--long =SOME_VALUE",
-      {GNU_OPTION, ARGUMENT});
+      "--long =SOME_VALUE", {
+        TerminalType::GNU_OPTION,
+        TerminalType::ARGUMENT,
+      });
   CheckTokenTypes(
-      "--long=SOME_VALUE",
-      {ARGUMENT});
+      "--long=SOME_VALUE", {
+        TerminalType::ARGUMENT,
+      });
 }
 
 TEST(tokenizer_for_argv, token_value) {
   CheckTokenValues(
+      "-f test_file.py FILE abc 42.19243", 
+      {"-f", "test_file.py", "FILE", "abc", "42.19243"});
+}
+
+TEST(tokenizer_for_argv, raw_token_value) {
+  CheckRawTokenValues(
       "-f test_file.py FILE abc 42.19243", 
       {"-f", "test_file.py", "FILE", "abc", "42.19243"});
 }
