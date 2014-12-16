@@ -12,7 +12,7 @@
 
 %code requires {
 #include <string>
-#include "parser_utils.h"
+#include "utils.h"
 
 // Forward declaration FlexGeneratedScanner to resolve cyclic #include.
 namespace clidoc { class FlexGeneratedScanner; }
@@ -52,12 +52,12 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 // Terminal without value.
 %token
   // Only for doc processing.
-  L_PARENTHESIS       "("
-  R_PARENTHESIS       ")"
-  L_BRACKET           "["
-  R_BRACKET           "]"
-  EXCLUSIVE_OR        "|"
-  ELLIPSES            "..."
+  K_L_PARENTHESIS     "("
+  K_R_PARENTHESIS     ")"
+  K_L_BRACKET         "["
+  K_R_BRACKET         "]"
+  K_EXCLUSIVE_OR      "|"
+  K_ELLIPSES          "..."
   K_USAGE_COLON       "usage:"
   K_OPTIONS_COLON     "options:"
   K_DEFAULT_COLON     "default:"
@@ -69,7 +69,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
   K_DOUBLE_HYPHEN     "--"
 
   // Shared.
-  EQUAL_SIGN          "="
+  K_EQUAL_SIGN        "="
   
   // end-of-file.
   END                 0
@@ -111,7 +111,7 @@ utilities : utilities single_utility {  }
 single_utility : K_UTILITY_DELIMITER or_exprs {  }
 ;
 
-or_exprs : or_exprs EXCLUSIVE_OR seqs {  }
+or_exprs : or_exprs K_EXCLUSIVE_OR seqs {  }
          | seqs {  }
 ;
 
@@ -120,11 +120,11 @@ seqs : seqs single_seq {  }
 ;
 
 single_seq : atom {  }
-           | atom ELLIPSES {  }
+           | atom K_ELLIPSES {  }
 ;
 
-atom : L_PARENTHESIS or_exprs R_PARENTHESIS { }
-     | L_BRACKET or_exprs R_BRACKET         { }
+atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS { }
+     | K_L_BRACKET or_exprs K_R_BRACKET         { }
      | posix_option_unit                    { }
      | gnu_option_unit                      { }
      | OPTION_ARGUEMENT                     { }
@@ -137,7 +137,7 @@ posix_option_unit : POSIX_OPTION {  }
 ;
 
 gnu_option_unit : GNU_OPTION {  }
-                | GNU_OPTION EQUAL_SIGN OPTION_ARGUEMENT {  }
+                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {  }
 ;
 
 options_section : K_OPTIONS_COLON descriptions {  }
@@ -150,7 +150,7 @@ descriptions : descriptions single_description {  }
 single_description : bindings default_value comments {  }
 ;
 
-default_value : L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE R_BRACKET {  }
+default_value : K_L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE K_R_BRACKET {  }
               | %empty {  }
 ;
 
@@ -170,7 +170,7 @@ single_binding : POSIX_OPTION {  }
                | GNU_OPTION {  }
                | POSIX_OPTION OPTION_ARGUEMENT {  }
                | GNU_OPTION OPTION_ARGUEMENT {  }
-               | GNU_OPTION EQUAL_SIGN OPTION_ARGUEMENT {  }
+               | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {  }
 ; 
 
 %%

@@ -13,28 +13,49 @@ using std::vector;
 using std::ofstream;
 using std::istringstream;
 
-namespace clidoc {
+#define TokenTypeMapping(name) \
+case TypeID::name:             \
+  return TerminalType::name    \
 
-inline bool Tokenizer::TokenHasValue(const Token::Type &type_id) {
+namespace clidoc {
+namespace tokenizer {
+
+inline TerminalType ToTerminalType(const Type &type_id) {
   switch (type_id) {
+    TokenTypeMapping(OPTION_ARGUEMENT);
+    TokenTypeMapping(GNU_OPTION);
+    TokenTypeMapping(OPERAND);
+    TokenTypeMapping(COMMENT);
+    TokenTypeMapping(ARGUMENT);
+    TokenTypeMapping(K_DOUBLE_HYPHEN);
+    TokenTypeMapping(OPTION_DEFAULT_VALUE);
+    TokenTypeMapping(POSIX_OPTION);
+    TokenTypeMapping(GROUPED_OPTIONS);
+    default:
+      return TerminalType::OTHER;
+  }
+}
+
+inline bool TokenHasValue(const TerminalType &type) {
+  switch (type) {
     // Only for doc processing.
-    case Token::TypeID::OPTION_ARGUEMENT:
-    case Token::TypeID::GNU_OPTION:
-    case Token::TypeID::OPERAND:
-    case Token::TypeID::COMMENT:
+    case TerminalType::OPTION_ARGUEMENT:
+    case TerminalType::GNU_OPTION:
+    case TerminalType::OPERAND:
+    case TerminalType::COMMENT:
     // Only for argument processing.
-    case Token::TypeID::ARGUMENT:
+    case TerminalType::ARGUMENT:
     // Shared.
-    case Token::TypeID::OPTION_DEFAULT_VALUE:
-    case Token::TypeID::POSIX_OPTION:
-    case Token::TypeID::GROUPED_OPTIONS:
+    case TerminalType::OPTION_DEFAULT_VALUE:
+    case TerminalType::POSIX_OPTION:
+    case TerminalType::GROUPED_OPTIONS:
       return true;
     default:
       return false;
   }
 }
 
-vector<Token> Tokenizer::FromString(const string &text) {
+vector<Token> FromString(const string &text) {
   // TODO: handle invalid input.
   ofstream null_ostream("/dev/null");
   istringstream input_stream(text);
@@ -47,15 +68,24 @@ vector<Token> Tokenizer::FromString(const string &text) {
   while (true) {
     auto item = lexer.lex();
     auto type_id = item.token();
+    auto terminal_type = ToTerminalType(type_id);
     auto value = item.value.as<string>();
-    if (type_id == Token::TypeID::END) { break; }
-    if (TokenHasValue(type_id)) {
-      tokens.push_back(Token(type_id, value));
+    if (type_id == TypeID::END) {
+      // finish.
+      break;
+    }
+    if (terminal_type == TerminalType::OTHER) {
+      // terminals that would not be instaniation.
+      continue;
+    }
+    if (TokenHasValue(terminal_type)) {
+      tokens.push_back(Token(terminal_type, value));
     } else {
-      tokens.push_back(Token(type_id));
+      tokens.push_back(Token(terminal_type));
     }
   }
   return tokens;
 }
 
-}  // namespace clTypeIDoc 
+}  // namespace clidoc::tokenizer
+}  // namespace clidoc

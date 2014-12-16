@@ -43,7 +43,7 @@
 #line 13 "flex-bison-scripts/parser.y" // lalr1.cc:387
 
 #include <string>
-#include "parser_utils.h"
+#include "utils.h"
 
 // Forward declaration FlexGeneratedScanner to resolve cyclic #include.
 namespace clidoc { class FlexGeneratedScanner; }
@@ -331,12 +331,12 @@ namespace clidoc {
         POSIX_OPTION = 263,
         GROUPED_OPTIONS = 264,
         GNU_OPTION = 265,
-        L_PARENTHESIS = 266,
-        R_PARENTHESIS = 267,
-        L_BRACKET = 268,
-        R_BRACKET = 269,
-        EXCLUSIVE_OR = 270,
-        ELLIPSES = 271,
+        K_L_PARENTHESIS = 266,
+        K_R_PARENTHESIS = 267,
+        K_L_BRACKET = 268,
+        K_R_BRACKET = 269,
+        K_EXCLUSIVE_OR = 270,
+        K_ELLIPSES = 271,
         K_USAGE_COLON = 272,
         K_OPTIONS_COLON = 273,
         K_DEFAULT_COLON = 274,
@@ -344,7 +344,7 @@ namespace clidoc {
         K_UTILITY_DELIMITER = 276,
         K_DESC_DELIMITER = 277,
         K_DOUBLE_HYPHEN = 278,
-        EQUAL_SIGN = 279
+        K_EQUAL_SIGN = 279
       };
     };
 
@@ -475,27 +475,27 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_L_PARENTHESIS ();
+    make_K_L_PARENTHESIS ();
 
     static inline
     symbol_type
-    make_R_PARENTHESIS ();
+    make_K_R_PARENTHESIS ();
 
     static inline
     symbol_type
-    make_L_BRACKET ();
+    make_K_L_BRACKET ();
 
     static inline
     symbol_type
-    make_R_BRACKET ();
+    make_K_R_BRACKET ();
 
     static inline
     symbol_type
-    make_EXCLUSIVE_OR ();
+    make_K_EXCLUSIVE_OR ();
 
     static inline
     symbol_type
-    make_ELLIPSES ();
+    make_K_ELLIPSES ();
 
     static inline
     symbol_type
@@ -527,7 +527,7 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_EQUAL_SIGN ();
+    make_K_EQUAL_SIGN ();
 
 
     /// Build a parser object.
@@ -1117,39 +1117,39 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_L_PARENTHESIS ()
+  BisonGeneratedParser::make_K_L_PARENTHESIS ()
   {
-    return symbol_type (token::L_PARENTHESIS);
+    return symbol_type (token::K_L_PARENTHESIS);
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_R_PARENTHESIS ()
+  BisonGeneratedParser::make_K_R_PARENTHESIS ()
   {
-    return symbol_type (token::R_PARENTHESIS);
+    return symbol_type (token::K_R_PARENTHESIS);
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_L_BRACKET ()
+  BisonGeneratedParser::make_K_L_BRACKET ()
   {
-    return symbol_type (token::L_BRACKET);
+    return symbol_type (token::K_L_BRACKET);
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_R_BRACKET ()
+  BisonGeneratedParser::make_K_R_BRACKET ()
   {
-    return symbol_type (token::R_BRACKET);
+    return symbol_type (token::K_R_BRACKET);
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_EXCLUSIVE_OR ()
+  BisonGeneratedParser::make_K_EXCLUSIVE_OR ()
   {
-    return symbol_type (token::EXCLUSIVE_OR);
+    return symbol_type (token::K_EXCLUSIVE_OR);
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_ELLIPSES ()
+  BisonGeneratedParser::make_K_ELLIPSES ()
   {
-    return symbol_type (token::ELLIPSES);
+    return symbol_type (token::K_ELLIPSES);
   }
 
   BisonGeneratedParser::symbol_type
@@ -1195,9 +1195,9 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_EQUAL_SIGN ()
+  BisonGeneratedParser::make_K_EQUAL_SIGN ()
   {
-    return symbol_type (token::EQUAL_SIGN);
+    return symbol_type (token::K_EQUAL_SIGN);
   }
 
 

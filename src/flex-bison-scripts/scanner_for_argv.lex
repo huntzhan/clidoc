@@ -21,7 +21,7 @@ ALNUM                {LOWERCASE}|{UPPERCASE}|{DIGIT}
 NON_SPACE            [^ \t\r\n\v\f]
 
 K_DOUBLE_HYPHEN      "--"
-EQUAL_SIGN           "="
+K_EQUAL_SIGN         "="
 
 POSIX_OPTION         -{ALNUM}
 GROUPED_OPTIONS      -{ALNUM}+
@@ -30,15 +30,15 @@ ARGUMENT             {NON_SPACE}+
 
 %%
 
-{K_DOUBLE_HYPHEN}      return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
-{EQUAL_SIGN}           return clidoc::BisonGeneratedParser::make_EQUAL_SIGN();
+{K_DOUBLE_HYPHEN} return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
+{K_EQUAL_SIGN}    return clidoc::BisonGeneratedParser::make_K_EQUAL_SIGN();
 
-{POSIX_OPTION}         return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
-{GROUPED_OPTIONS}      return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
-{GNU_OPTION}           return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
-{ARGUMENT}             return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
+{POSIX_OPTION}    return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
+{GROUPED_OPTIONS} return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
+{GNU_OPTION}      return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
+{ARGUMENT}        return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
 
-<<EOF>>                return clidoc::BisonGeneratedParser::make_END();
+<<EOF>>           return clidoc::BisonGeneratedParser::make_END();
 
 %%
 // Bug fix.

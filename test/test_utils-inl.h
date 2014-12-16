@@ -8,23 +8,23 @@ using namespace clidoc;
 using std::string;
 using std::vector;
 
-vector<Token::Type> ExtractTokenType(const vector<Token> &tokens) {
-  vector<Token::Type> type_ids;
+vector<TerminalType> ExtractTokenType(const vector<Token> &tokens) {
+  vector<TerminalType> types;
   for (const Token &token : tokens) {
-    type_ids.push_back(token.type_id());
+    types.push_back(token.type());
   }
-  return type_ids;
+  return types;
 }
 
 void CheckTokenTypes(const string &text,
-                     const vector<Token::Type> &type_ids) {
-  auto tokens = Tokenizer::FromString(text);
-  EXPECT_EQ(type_ids, ExtractTokenType(tokens));
+                     const vector<TerminalType> &types) {
+  auto tokens = tokenizer::FromString(text);
+  EXPECT_EQ(types, ExtractTokenType(tokens));
 }
 
 void CheckTokenValues(const string &text,
                       const vector<string> &values) {
-  auto tokens = Tokenizer::FromString(text);
+  auto tokens = tokenizer::FromString(text);
   ASSERT_TRUE(tokens.size() == values.size());
   int index = 0;
   for (const auto &token : tokens) {

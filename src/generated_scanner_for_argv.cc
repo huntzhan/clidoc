@@ -778,7 +778,7 @@ return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
 case 2:
 YY_RULE_SETUP
 #line 34 "flex-bison-scripts/scanner_for_argv.lex"
-return clidoc::BisonGeneratedParser::make_EQUAL_SIGN();
+return clidoc::BisonGeneratedParser::make_K_EQUAL_SIGN();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
