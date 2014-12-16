@@ -1,7 +1,7 @@
 
 namespace clidoc {
 
-template <Token::Type T>
+template <TerminalType T>
 bool Terminal<T>::ProcessToken(
     TokenInProcessCollection *token_collection) {
   throw "NotImplementedError.";

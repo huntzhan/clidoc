@@ -43,6 +43,7 @@
 #line 13 "flex-bison-scripts/parser.y" // lalr1.cc:387
 
 #include <string>
+#include "parser_utils.h"
 
 // Forward declaration FlexGeneratedScanner to resolve cyclic #include.
 namespace clidoc { class FlexGeneratedScanner; }
@@ -50,7 +51,7 @@ namespace clidoc { class FlexGeneratedScanner; }
 // TODO
 class Undefine {};
 
-#line 54 "generated_parser.h" // lalr1.cc:387
+#line 55 "generated_parser.h" // lalr1.cc:387
 
 
 # include <vector>
@@ -126,7 +127,7 @@ class Undefine {};
 
 
 namespace clidoc {
-#line 130 "generated_parser.h" // lalr1.cc:387
+#line 131 "generated_parser.h" // lalr1.cc:387
 
 
 
@@ -1202,7 +1203,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1206 "generated_parser.h" // lalr1.cc:387
+#line 1207 "generated_parser.h" // lalr1.cc:387
 
 
 

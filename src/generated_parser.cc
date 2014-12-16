@@ -51,7 +51,7 @@
 
 #line 53 "generated_parser.cc" // lalr1.cc:407
 // Unqualified %code blocks.
-#line 23 "flex-bison-scripts/parser.y" // lalr1.cc:408
+#line 24 "flex-bison-scripts/parser.y" // lalr1.cc:408
 
 #include "generated_scanner.h"
 #undef yylex
@@ -541,229 +541,229 @@ namespace clidoc {
           switch (yyn)
             {
   case 2:
-#line 100 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 101 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 547 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 3:
-#line 103 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 104 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 553 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 4:
-#line 106 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 107 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 559 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 6:
-#line 110 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 111 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 565 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 7:
-#line 113 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 114 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 571 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 8:
-#line 114 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 115 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 577 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 9:
-#line 117 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 118 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 583 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 10:
-#line 118 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 119 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 589 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 11:
-#line 121 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 122 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 595 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 12:
-#line 122 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 123 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 601 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 13:
-#line 125 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 607 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 14:
-#line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 127 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 613 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 15:
-#line 127 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 619 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 16:
-#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 625 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 17:
-#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 130 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 631 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 18:
-#line 130 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 131 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 637 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 19:
-#line 131 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 132 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 643 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 20:
-#line 134 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 135 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 649 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 21:
-#line 135 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 136 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 655 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 22:
-#line 138 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 139 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 661 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 23:
-#line 139 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 140 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 667 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 24:
-#line 142 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 143 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 673 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 25:
-#line 145 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 146 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 679 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 26:
-#line 146 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 147 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 685 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 27:
-#line 149 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 150 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 691 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 28:
-#line 152 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 153 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 697 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 29:
-#line 153 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 154 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 703 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 30:
-#line 156 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 157 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 709 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 31:
-#line 157 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 158 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 715 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 32:
-#line 160 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 161 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 721 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 33:
-#line 161 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 162 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
 #line 727 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 34:
-#line 164 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 165 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 733 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 35:
-#line 165 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 166 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 739 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 36:
-#line 168 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 169 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 745 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 37:
-#line 169 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 170 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 751 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 38:
-#line 170 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 171 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 757 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 39:
-#line 171 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 172 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 763 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 40:
-#line 172 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 173 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
 #line 769 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -1045,11 +1045,11 @@ namespace clidoc {
   const unsigned char
   BisonGeneratedParser::yyrline_[] =
   {
-       0,   100,   100,   103,   106,   107,   110,   113,   114,   117,
-     118,   121,   122,   125,   126,   127,   128,   129,   130,   131,
-     134,   135,   138,   139,   142,   145,   146,   149,   152,   153,
-     156,   157,   160,   161,   164,   165,   168,   169,   170,   171,
-     172
+       0,   101,   101,   104,   107,   108,   111,   114,   115,   118,
+     119,   122,   123,   126,   127,   128,   129,   130,   131,   132,
+     135,   136,   139,   140,   143,   146,   147,   150,   153,   154,
+     157,   158,   161,   162,   165,   166,   169,   170,   171,   172,
+     173
   };
 
   // Print the state stack on the debug stream.
@@ -1085,5 +1085,5 @@ namespace clidoc {
 
 } // clidoc
 #line 1088 "generated_parser.cc" // lalr1.cc:1155
-#line 175 "flex-bison-scripts/parser.y" // lalr1.cc:1156
+#line 176 "flex-bison-scripts/parser.y" // lalr1.cc:1156
 

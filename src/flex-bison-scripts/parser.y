@@ -12,6 +12,7 @@
 
 %code requires {
 #include <string>
+#include "parser_utils.h"
 
 // Forward declaration FlexGeneratedScanner to resolve cyclic #include.
 namespace clidoc { class FlexGeneratedScanner; }
