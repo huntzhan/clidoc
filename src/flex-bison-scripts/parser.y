@@ -16,15 +16,16 @@
 
 // Forward declaration FlexGeneratedScanner to resolve cyclic #include.
 namespace clidoc { class FlexGeneratedScanner; }
-
-// TODO
-class Undefine {};
 }
 
 %code {
 #include "generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
+
+#include <memory>
+#include "tokenizer.h"
+#include "utils.h"
 
 // Error report function.
 void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
@@ -75,26 +76,27 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
   END                 0
 ;
 
-%type <Undefine> doc
+// Logical nodes.
+%type <Doc::SharedPtr>               doc
+%type <LogicAnd::SharedPtr>          utilities
+%type <LogicAnd::SharedPtr>          seqs
+%type <LogicAnd::SharedPtr>          descriptions
+%type <LogicAnd::SharedPtr>          bindings
+%type <LogicAnd::SharedPtr>          comments
+%type <LogicXor::SharedPtr>          or_exprs
+%type <SharedPtrNode>                single_seq
+%type <SharedPtrNode>                atom
 
-%type <Undefine> usage_section
-%type <Undefine> utilities
-%type <Undefine> single_utility
-%type <Undefine> or_exprs
-%type <Undefine> seqs
-%type <Undefine> single_seq
-%type <Undefine> atom
-%type <Undefine> gnu_option_unit
-%type <Undefine> posix_option_unit
+%type <UsageSection::SharedPtr>      usage_section
+%type <SingleUtility::SharedPtr>     single_utility
+%type <GnuOptionUnit::SharedPtr>     gnu_option_unit
+%type <PosixOptionUnit::SharedPtr>   posix_option_unit
 
-%type <Undefine> options_section
-%type <Undefine> descriptions
-%type <Undefine> single_description
-%type <Undefine> bindings
-%type <Undefine> single_binding
-%type <Undefine> default_value
-%type <Undefine> comments
-%type <Undefine> single_comment
+%type <OptionsSection::SharedPtr>    options_section
+%type <SingleDescription::SharedPtr> single_description
+%type <SingleBinding::SharedPtr>     single_binding
+%type <DefaultValue::SharedPtr>      default_value
+%type <SingleComment::SharedPtr>     single_comment
 
 %%
 
@@ -105,7 +107,7 @@ usage_section : K_USAGE_COLON utilities {  }
 ;
 
 utilities : utilities single_utility {  }
-          | single_utility
+          | single_utility { }
 ;
 
 single_utility : K_UTILITY_DELIMITER or_exprs {  }
@@ -136,8 +138,16 @@ posix_option_unit : POSIX_OPTION {  }
                   | GROUPED_OPTIONS {  }
 ;
 
-gnu_option_unit : GNU_OPTION {  }
-                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {  }
+gnu_option_unit : GNU_OPTION {
+  // so verbose!!!! try to fix it.
+  auto result = GnuOptionUnit::Init();
+  result->children_.push_back(
+      T_GnuOption::Init(
+          Token( tokenizer::ToTerminalType(tokenizer::TypeID::GNU_OPTION), $1)));
+  $$ = result;
+}
+                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
+}
 ;
 
 options_section : K_OPTIONS_COLON descriptions {  }

@@ -40,7 +40,10 @@ enum class NonTerminalType {
   LOGIX_AND,
   LOGIC_XOR,
   LOGIC_OPTIONAL,
+  LOGIC_ONEORMORE,
   LOGIC_EMPTY,
+  // start node.
+  DOC,
 };
 
 class Token {
@@ -70,17 +73,33 @@ class TokenInProcessCollection {
 class NodeInterface {
  public:
   virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
+  virtual ~NodeInterface() { /* empty */ }
 };
 
 using SharedPtrNode = std::shared_ptr<NodeInterface>;
 using VecSharedPtrNode = std::vector<SharedPtrNode>;
 
+template <typename Derived>
+class SharedPtrInterface : public NodeInterface {
+ public:
+  // type alias for shared_ptr.
+  using SharedPtr = std::shared_ptr<Derived>;
+  // function for init shared_ptr.
+  template <typename... Args>
+  static SharedPtr Init(Args&&... args);
+};
+
+template <typename Derived>
+template <typename... Args>
+typename SharedPtrInterface<Derived>::SharedPtr
+SharedPtrInterface<Derived>::Init(Args&&... args) {
+  return std::make_shared<Derived>(args...);
+}
+
 // Template for terminal types.
 template <TerminalType T>
-class Terminal : public NodeInterface {
+class Terminal : public SharedPtrInterface<Terminal<T>> {
  public:
-  using SharedPtr = std::shared_ptr<Terminal<T>>;
-
   Terminal(const Token &token) : token_(token) { /* empty */ }
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
 
@@ -89,9 +108,9 @@ class Terminal : public NodeInterface {
 
 // Template for non-terminal types.
 template <NonTerminalType T>
-class NonTerminal : public NodeInterface {
+class NonTerminal : public SharedPtrInterface<NonTerminal<T>> {
  public:
-  using SharedPtr = std::shared_ptr<NonTerminal<T>>;
+  using SharedPtr = std::shared_ptr<NonTerminal>;
 
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
 
@@ -125,7 +144,10 @@ using SingleComment        = NonTerminal<NonTerminalType::SINGLE_COMMENT>;
 using LogicAnd             = NonTerminal<NonTerminalType::LOGIX_AND>;
 using LogicXor             = NonTerminal<NonTerminalType::LOGIC_XOR>;
 using LogicOptional        = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
+using LogicOneOrMore       = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
 using LogicEmpty           = NonTerminal<NonTerminalType::LOGIC_EMPTY>;
+
+using Doc = NonTerminal<NonTerminalType::DOC>;
 
 }  // namespace clidoc 
 

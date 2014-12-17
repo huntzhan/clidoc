@@ -51,16 +51,20 @@
 
 #line 53 "generated_parser.cc" // lalr1.cc:407
 // Unqualified %code blocks.
-#line 24 "flex-bison-scripts/parser.y" // lalr1.cc:408
+#line 21 "flex-bison-scripts/parser.y" // lalr1.cc:408
 
 #include "generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
 
+#include <memory>
+#include "tokenizer.h"
+#include "utils.h"
+
 // Error report function.
 void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
-#line 64 "generated_parser.cc" // lalr1.cc:408
+#line 68 "generated_parser.cc" // lalr1.cc:408
 
 
 #ifndef YY_
@@ -127,7 +131,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 
 namespace clidoc {
-#line 131 "generated_parser.cc" // lalr1.cc:474
+#line 135 "generated_parser.cc" // lalr1.cc:474
 
   /// Build a parser object.
   BisonGeneratedParser::BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg)
@@ -191,25 +195,61 @@ namespace clidoc {
   {
       switch (that.type_get ())
     {
+      case 39: // default_value
+        value.move< DefaultValue::SharedPtr > (that.value);
+        break;
+
       case 26: // doc
-      case 27: // usage_section
+        value.move< Doc::SharedPtr > (that.value);
+        break;
+
+      case 35: // gnu_option_unit
+        value.move< GnuOptionUnit::SharedPtr > (that.value);
+        break;
+
       case 28: // utilities
-      case 29: // single_utility
-      case 30: // or_exprs
       case 31: // seqs
+      case 37: // descriptions
+      case 40: // comments
+      case 42: // bindings
+        value.move< LogicAnd::SharedPtr > (that.value);
+        break;
+
+      case 30: // or_exprs
+        value.move< LogicXor::SharedPtr > (that.value);
+        break;
+
+      case 36: // options_section
+        value.move< OptionsSection::SharedPtr > (that.value);
+        break;
+
+      case 34: // posix_option_unit
+        value.move< PosixOptionUnit::SharedPtr > (that.value);
+        break;
+
       case 32: // single_seq
       case 33: // atom
-      case 34: // posix_option_unit
-      case 35: // gnu_option_unit
-      case 36: // options_section
-      case 37: // descriptions
-      case 38: // single_description
-      case 39: // default_value
-      case 40: // comments
-      case 41: // single_comment
-      case 42: // bindings
+        value.move< SharedPtrNode > (that.value);
+        break;
+
       case 43: // single_binding
-        value.move< Undefine > (that.value);
+        value.move< SingleBinding::SharedPtr > (that.value);
+        break;
+
+      case 41: // single_comment
+        value.move< SingleComment::SharedPtr > (that.value);
+        break;
+
+      case 38: // single_description
+        value.move< SingleDescription::SharedPtr > (that.value);
+        break;
+
+      case 29: // single_utility
+        value.move< SingleUtility::SharedPtr > (that.value);
+        break;
+
+      case 27: // usage_section
+        value.move< UsageSection::SharedPtr > (that.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -238,25 +278,61 @@ namespace clidoc {
     state = that.state;
       switch (that.type_get ())
     {
+      case 39: // default_value
+        value.copy< DefaultValue::SharedPtr > (that.value);
+        break;
+
       case 26: // doc
-      case 27: // usage_section
+        value.copy< Doc::SharedPtr > (that.value);
+        break;
+
+      case 35: // gnu_option_unit
+        value.copy< GnuOptionUnit::SharedPtr > (that.value);
+        break;
+
       case 28: // utilities
-      case 29: // single_utility
-      case 30: // or_exprs
       case 31: // seqs
+      case 37: // descriptions
+      case 40: // comments
+      case 42: // bindings
+        value.copy< LogicAnd::SharedPtr > (that.value);
+        break;
+
+      case 30: // or_exprs
+        value.copy< LogicXor::SharedPtr > (that.value);
+        break;
+
+      case 36: // options_section
+        value.copy< OptionsSection::SharedPtr > (that.value);
+        break;
+
+      case 34: // posix_option_unit
+        value.copy< PosixOptionUnit::SharedPtr > (that.value);
+        break;
+
       case 32: // single_seq
       case 33: // atom
-      case 34: // posix_option_unit
-      case 35: // gnu_option_unit
-      case 36: // options_section
-      case 37: // descriptions
-      case 38: // single_description
-      case 39: // default_value
-      case 40: // comments
-      case 41: // single_comment
-      case 42: // bindings
+        value.copy< SharedPtrNode > (that.value);
+        break;
+
       case 43: // single_binding
-        value.copy< Undefine > (that.value);
+        value.copy< SingleBinding::SharedPtr > (that.value);
+        break;
+
+      case 41: // single_comment
+        value.copy< SingleComment::SharedPtr > (that.value);
+        break;
+
+      case 38: // single_description
+        value.copy< SingleDescription::SharedPtr > (that.value);
+        break;
+
+      case 29: // single_utility
+        value.copy< SingleUtility::SharedPtr > (that.value);
+        break;
+
+      case 27: // usage_section
+        value.copy< UsageSection::SharedPtr > (that.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -496,25 +572,61 @@ namespace clidoc {
          when using variants.  */
         switch (yyr1_[yyn])
     {
+      case 39: // default_value
+        yylhs.value.build< DefaultValue::SharedPtr > ();
+        break;
+
       case 26: // doc
-      case 27: // usage_section
+        yylhs.value.build< Doc::SharedPtr > ();
+        break;
+
+      case 35: // gnu_option_unit
+        yylhs.value.build< GnuOptionUnit::SharedPtr > ();
+        break;
+
       case 28: // utilities
-      case 29: // single_utility
-      case 30: // or_exprs
       case 31: // seqs
+      case 37: // descriptions
+      case 40: // comments
+      case 42: // bindings
+        yylhs.value.build< LogicAnd::SharedPtr > ();
+        break;
+
+      case 30: // or_exprs
+        yylhs.value.build< LogicXor::SharedPtr > ();
+        break;
+
+      case 36: // options_section
+        yylhs.value.build< OptionsSection::SharedPtr > ();
+        break;
+
+      case 34: // posix_option_unit
+        yylhs.value.build< PosixOptionUnit::SharedPtr > ();
+        break;
+
       case 32: // single_seq
       case 33: // atom
-      case 34: // posix_option_unit
-      case 35: // gnu_option_unit
-      case 36: // options_section
-      case 37: // descriptions
-      case 38: // single_description
-      case 39: // default_value
-      case 40: // comments
-      case 41: // single_comment
-      case 42: // bindings
+        yylhs.value.build< SharedPtrNode > ();
+        break;
+
       case 43: // single_binding
-        yylhs.value.build< Undefine > ();
+        yylhs.value.build< SingleBinding::SharedPtr > ();
+        break;
+
+      case 41: // single_comment
+        yylhs.value.build< SingleComment::SharedPtr > ();
+        break;
+
+      case 38: // single_description
+        yylhs.value.build< SingleDescription::SharedPtr > ();
+        break;
+
+      case 29: // single_utility
+        yylhs.value.build< SingleUtility::SharedPtr > ();
+        break;
+
+      case 27: // usage_section
+        yylhs.value.build< UsageSection::SharedPtr > ();
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -541,235 +653,249 @@ namespace clidoc {
           switch (yyn)
             {
   case 2:
-#line 101 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 103 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 547 "generated_parser.cc" // lalr1.cc:847
+#line 659 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 3:
-#line 104 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 106 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 553 "generated_parser.cc" // lalr1.cc:847
+#line 665 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 4:
-#line 107 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 109 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 559 "generated_parser.cc" // lalr1.cc:847
+#line 671 "generated_parser.cc" // lalr1.cc:847
+    break;
+
+  case 5:
+#line 110 "flex-bison-scripts/parser.y" // lalr1.cc:847
+    { }
+#line 677 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 6:
-#line 111 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 113 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 565 "generated_parser.cc" // lalr1.cc:847
+#line 683 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 7:
-#line 114 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 116 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 571 "generated_parser.cc" // lalr1.cc:847
+#line 689 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 8:
-#line 115 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 117 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 577 "generated_parser.cc" // lalr1.cc:847
+#line 695 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 9:
-#line 118 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 120 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 583 "generated_parser.cc" // lalr1.cc:847
+#line 701 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 10:
-#line 119 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 121 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 589 "generated_parser.cc" // lalr1.cc:847
+#line 707 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 11:
-#line 122 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 124 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 595 "generated_parser.cc" // lalr1.cc:847
+#line 713 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 12:
-#line 123 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 125 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 601 "generated_parser.cc" // lalr1.cc:847
+#line 719 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 13:
-#line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 607 "generated_parser.cc" // lalr1.cc:847
+#line 725 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 14:
-#line 127 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 613 "generated_parser.cc" // lalr1.cc:847
+#line 731 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 15:
-#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 130 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 619 "generated_parser.cc" // lalr1.cc:847
+#line 737 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 16:
-#line 129 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 131 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 625 "generated_parser.cc" // lalr1.cc:847
+#line 743 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 17:
-#line 130 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 132 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 631 "generated_parser.cc" // lalr1.cc:847
+#line 749 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 18:
-#line 131 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 133 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 637 "generated_parser.cc" // lalr1.cc:847
+#line 755 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 19:
-#line 132 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 134 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 643 "generated_parser.cc" // lalr1.cc:847
+#line 761 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 20:
-#line 135 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 137 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 649 "generated_parser.cc" // lalr1.cc:847
+#line 767 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 21:
-#line 136 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 138 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 655 "generated_parser.cc" // lalr1.cc:847
+#line 773 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 22:
-#line 139 "flex-bison-scripts/parser.y" // lalr1.cc:847
-    {  }
-#line 661 "generated_parser.cc" // lalr1.cc:847
+#line 141 "flex-bison-scripts/parser.y" // lalr1.cc:847
+    {
+  // so verbose!!!! try to fix it.
+  auto result = GnuOptionUnit::Init();
+  result->children_.push_back(
+      T_GnuOption::Init(
+          Token( tokenizer::ToTerminalType(tokenizer::TypeID::GNU_OPTION), yystack_[0].value.as< std::string > ())));
+  yylhs.value.as< GnuOptionUnit::SharedPtr > () = result;
+}
+#line 786 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 23:
-#line 140 "flex-bison-scripts/parser.y" // lalr1.cc:847
-    {  }
-#line 667 "generated_parser.cc" // lalr1.cc:847
+#line 149 "flex-bison-scripts/parser.y" // lalr1.cc:847
+    {
+}
+#line 793 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 24:
-#line 143 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 153 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 673 "generated_parser.cc" // lalr1.cc:847
+#line 799 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 25:
-#line 146 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 156 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 679 "generated_parser.cc" // lalr1.cc:847
+#line 805 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 26:
-#line 147 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 157 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 685 "generated_parser.cc" // lalr1.cc:847
+#line 811 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 27:
-#line 150 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 160 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 691 "generated_parser.cc" // lalr1.cc:847
+#line 817 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 28:
-#line 153 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 163 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 697 "generated_parser.cc" // lalr1.cc:847
+#line 823 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 29:
-#line 154 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 164 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 703 "generated_parser.cc" // lalr1.cc:847
+#line 829 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 30:
-#line 157 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 167 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 709 "generated_parser.cc" // lalr1.cc:847
+#line 835 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 31:
-#line 158 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 168 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 715 "generated_parser.cc" // lalr1.cc:847
+#line 841 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 32:
-#line 161 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 171 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 721 "generated_parser.cc" // lalr1.cc:847
+#line 847 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 33:
-#line 162 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 172 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 727 "generated_parser.cc" // lalr1.cc:847
+#line 853 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 34:
-#line 165 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 175 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 733 "generated_parser.cc" // lalr1.cc:847
+#line 859 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 35:
-#line 166 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 176 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 739 "generated_parser.cc" // lalr1.cc:847
+#line 865 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 36:
-#line 169 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 179 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 745 "generated_parser.cc" // lalr1.cc:847
+#line 871 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 37:
-#line 170 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 180 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 751 "generated_parser.cc" // lalr1.cc:847
+#line 877 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 38:
-#line 171 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 181 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 757 "generated_parser.cc" // lalr1.cc:847
+#line 883 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 39:
-#line 172 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 182 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 763 "generated_parser.cc" // lalr1.cc:847
+#line 889 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 40:
-#line 173 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 183 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 769 "generated_parser.cc" // lalr1.cc:847
+#line 895 "generated_parser.cc" // lalr1.cc:847
     break;
 
 
-#line 773 "generated_parser.cc" // lalr1.cc:847
+#line 899 "generated_parser.cc" // lalr1.cc:847
             default:
               break;
             }
@@ -1045,11 +1171,11 @@ namespace clidoc {
   const unsigned char
   BisonGeneratedParser::yyrline_[] =
   {
-       0,   101,   101,   104,   107,   108,   111,   114,   115,   118,
-     119,   122,   123,   126,   127,   128,   129,   130,   131,   132,
-     135,   136,   139,   140,   143,   146,   147,   150,   153,   154,
-     157,   158,   161,   162,   165,   166,   169,   170,   171,   172,
-     173
+       0,   103,   103,   106,   109,   110,   113,   116,   117,   120,
+     121,   124,   125,   128,   129,   130,   131,   132,   133,   134,
+     137,   138,   141,   149,   153,   156,   157,   160,   163,   164,
+     167,   168,   171,   172,   175,   176,   179,   180,   181,   182,
+     183
   };
 
   // Print the state stack on the debug stream.
@@ -1084,6 +1210,6 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1088 "generated_parser.cc" // lalr1.cc:1155
-#line 176 "flex-bison-scripts/parser.y" // lalr1.cc:1156
+#line 1214 "generated_parser.cc" // lalr1.cc:1155
+#line 186 "flex-bison-scripts/parser.y" // lalr1.cc:1156
 
