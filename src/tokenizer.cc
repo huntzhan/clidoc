@@ -55,6 +55,19 @@ inline bool TokenHasValue(const TerminalType &type) {
   }
 }
 
+inline Token InitToken(const TerminalType &type, const string &value) {
+  if (TokenHasValue(type)) {
+    return Token(type, value);
+  } else {
+    return Token(type);
+  }
+}
+
+inline Token InitToken(const Type &type_id, const string &value) {
+  auto terminal_type = ToTerminalType(type_id);
+  return InitToken(terminal_type, value);
+}
+
 vector<Token> FromString(const string &text) {
   // TODO: handle invalid input.
   ofstream null_ostream("/dev/null");
@@ -78,11 +91,7 @@ vector<Token> FromString(const string &text) {
       // terminals that would not be instaniation.
       continue;
     }
-    if (TokenHasValue(terminal_type)) {
-      tokens.push_back(Token(terminal_type, value));
-    } else {
-      tokens.push_back(Token(terminal_type));
-    }
+    tokens.push_back(InitToken(terminal_type, value));
   }
   return tokens;
 }

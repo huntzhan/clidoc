@@ -14,6 +14,8 @@ namespace tokenizer {
 using Type = BisonGeneratedParser::token_type;
 using TypeID = BisonGeneratedParser::token;
 TerminalType ToTerminalType(const Type &type_id);
+Token InitToken(const TerminalType &terminal_type, const std::string &value);
+Token InitToken(const Type &type_id, const std::string &value);
 
 // encapsulated operations.
 bool TokenHasValue(const TerminalType &type);

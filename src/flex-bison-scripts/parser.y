@@ -27,6 +27,8 @@ namespace clidoc { class FlexGeneratedScanner; }
 #include "tokenizer.h"
 #include "utils.h"
 
+using namespace clidoc::tokenizer;
+
 // Error report function.
 void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 }
@@ -141,9 +143,8 @@ posix_option_unit : POSIX_OPTION {  }
 gnu_option_unit : GNU_OPTION {
   // so verbose!!!! try to fix it.
   auto result = GnuOptionUnit::Init();
-  result->children_.push_back(
-      T_GnuOption::Init(
-          Token( tokenizer::ToTerminalType(tokenizer::TypeID::GNU_OPTION), $1)));
+  auto gnu_option = T_GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
+  result->children_.push_back(gnu_option);
   $$ = result;
 }
                 | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
