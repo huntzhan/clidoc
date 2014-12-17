@@ -73,7 +73,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
   // Shared.
   K_EQUAL_SIGN        "="
-  
+
   // end-of-file.
   END                 0
 ;
@@ -86,68 +86,199 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 %type <LogicAnd::SharedPtr>          bindings
 %type <LogicAnd::SharedPtr>          comments
 %type <LogicXor::SharedPtr>          or_exprs
-%type <SharedPtrNode>                single_seq
-%type <SharedPtrNode>                atom
 
 %type <UsageSection::SharedPtr>      usage_section
-%type <SingleUtility::SharedPtr>     single_utility
-%type <GnuOptionUnit::SharedPtr>     gnu_option_unit
-%type <PosixOptionUnit::SharedPtr>   posix_option_unit
 
-%type <OptionsSection::SharedPtr>    options_section
-%type <SingleDescription::SharedPtr> single_description
-%type <SingleBinding::SharedPtr>     single_binding
-%type <DefaultValue::SharedPtr>      default_value
-%type <SingleComment::SharedPtr>     single_comment
+// %type <SingleUtility::SharedPtr>     single_utility
+// %type <GnuOptionUnit::SharedPtr>     gnu_option_unit
+// %type <PosixOptionUnit::SharedPtr>   posix_option_unit
+//
+// %type <OptionsSection::SharedPtr>    options_section
+// %type <SingleDescription::SharedPtr> single_description
+// %type <SingleBinding::SharedPtr>     single_binding
+// %type <DefaultValue::SharedPtr>      default_value
+// %type <SingleComment::SharedPtr>     single_comment
+
+%type <SharedPtrNode> single_seq
+%type <SharedPtrNode> atom
+%type <SharedPtrNode> single_utility
+%type <SharedPtrNode> gnu_option_unit
+%type <SharedPtrNode> posix_option_unit
+
+%type <SharedPtrNode> options_section
+%type <SharedPtrNode> single_description
+%type <SharedPtrNode> single_binding
+%type <SharedPtrNode> default_value
+%type <SharedPtrNode> single_comment
 
 %%
 
-doc : usage_section options_section {  }
+// doc : usage_section options_section
+// ;
+doc : usage_section options_section {
+  auto doc = Doc::Init();
+  doc->children_.push_back($1);
+  doc->children_.push_back($2);
+  // TODO: should pass to driver.
+  $$ = doc;
+}
 ;
 
-usage_section : K_USAGE_COLON utilities {  }
+// usage_section : K_USAGE_COLON utilities
+// ;
+usage_section : K_USAGE_COLON utilities {
+  auto usage_section = UsageSection::Init();
+  usage_section->children_.push_back($2);
+  $$ = usage_section;
+}
 ;
 
-utilities : utilities single_utility {  }
-          | single_utility { }
+// utilities : utilities single_utility
+//           | single_utility
+// ;
+utilities : utilities single_utility {
+  $1->children_.push_back($2);
+  $$ = $1;
+}
+          | single_utility {
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back($1);
+  $$ = logic_and;
+}
 ;
 
-single_utility : K_UTILITY_DELIMITER or_exprs {  }
+// single_utility : K_UTILITY_DELIMITER or_exprs
+// ;
+single_utility : K_UTILITY_DELIMITER or_exprs {
+  $$ = $2;
+}
 ;
 
-or_exprs : or_exprs K_EXCLUSIVE_OR seqs {  }
-         | seqs {  }
+// or_exprs : or_exprs K_EXCLUSIVE_OR seqs
+//          | seqs
+// ;
+or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
+  $1->children_.push_back($3);
+  $$ = $1;
+}
+         | seqs {
+  auto logic_xor = LogicXor::Init();
+  logic_xor->children_.push_back($1);
+  $$ = logic_xor;
+}
 ;
 
-seqs : seqs single_seq {  }
-     | single_seq {  }
+// seqs : seqs single_seq
+//      | single_seq
+// ;
+seqs : seqs single_seq {
+  $1->children_.push_back($2);
+  $$ = $1;
+}
+     | single_seq {
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back($1);
+  $$ = logic_and;
+}
 ;
 
-single_seq : atom {  }
-           | atom K_ELLIPSES {  }
+// single_seq : atom
+//            | atom K_ELLIPSES
+// ;
+single_seq : atom {
+  $$ = $1;
+}
+           | atom K_ELLIPSES {
+  auto logic_one_or_more = LogicOneOrMore::Init();
+  logic_one_or_more->children_.push_back($1);
+  $$ = logic_one_or_more;
+}
 ;
 
-atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS { }
-     | K_L_BRACKET or_exprs K_R_BRACKET         { }
-     | posix_option_unit                    { }
-     | gnu_option_unit                      { }
-     | OPTION_ARGUEMENT                     { }
-     | OPERAND                              { }
-     | K_OPTIONS                            { }
+// atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS
+//      | K_L_BRACKET or_exprs K_R_BRACKET
+//      | posix_option_unit
+//      | gnu_option_unit
+//      | OPTION_ARGUEMENT
+//      | OPERAND
+//      | K_OPTIONS
+// ;
+atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back($2);
+  $$ = logic_and;
+}
+     | K_L_BRACKET or_exprs K_R_BRACKET {
+  auto logic_optional = LogicOptional::Init();
+  logic_optional->children_.push_back($2);
+  $$ = logic_optional;
+}
+     | posix_option_unit {
+  $$ = $1;
+}
+     | gnu_option_unit {
+  $$ = $1;
+}
+     | OPTION_ARGUEMENT {
+  auto option_argument =
+      OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, $1));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(option_argument);
+  $$ = logic_and;
+}
+     | OPERAND {
+  auto operand =
+      Operand::Init(InitToken(TypeID::OPERAND, $1));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(operand);
+  $$ = logic_and;
+}
+     | K_OPTIONS {
+  auto k_options =
+      KOptions::Init(InitToken(TypeID::K_OPTIONS, ""));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(k_options);
+  $$ = logic_and;
+}
 ;
 
-posix_option_unit : POSIX_OPTION {  }
-                  | GROUPED_OPTIONS {  }
+// posix_option_unit : POSIX_OPTION
+//                   | GROUPED_OPTIONS
+// ;
+posix_option_unit : POSIX_OPTION {
+  auto posix_option =
+      PosixOption::Init(InitToken(TypeID::POSIX_OPTION, $1));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(posix_option);
+  $$ = logic_and;
+}
+                  | GROUPED_OPTIONS {
+  auto grouped_option =
+      GroupedOptions::Init(InitToken(TypeID::GROUPED_OPTIONS, $1));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(grouped_option);
+  $$ = logic_and;
+}
 ;
 
+// gnu_option_unit : GNU_OPTION
+//                 | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT
+// ;
 gnu_option_unit : GNU_OPTION {
-  // so verbose!!!! try to fix it.
-  auto result = GnuOptionUnit::Init();
-  auto gnu_option = T_GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
-  result->children_.push_back(gnu_option);
-  $$ = result;
+  auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(gnu_option);
+  $$ = logic_and;
 }
                 | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
+  // The driver must crate binding for option and option_argument.
+  auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
+  auto option_argument =
+      OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, $3));
+  auto logic_and = LogicAnd::Init();
+  logic_and->children_.push_back(gnu_option);
+  logic_and->children_.push_back(option_argument);
+  $$ = logic_and;
 }
 ;
 
@@ -182,6 +313,6 @@ single_binding : POSIX_OPTION {  }
                | POSIX_OPTION OPTION_ARGUEMENT {  }
                | GNU_OPTION OPTION_ARGUEMENT {  }
                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {  }
-; 
+;
 
 %%
