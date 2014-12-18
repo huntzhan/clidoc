@@ -14,8 +14,11 @@
 #include <string>
 #include "utils.h"
 
-// Forward declaration FlexGeneratedScanner to resolve cyclic #include.
-namespace clidoc { class FlexGeneratedScanner; }
+namespace clidoc {
+// Forward declaration `FlexGeneratedScanner` to resolve cyclic #include.
+class FlexGeneratedScanner;
+}  // namespace clidoc
+
 }
 
 %code {
@@ -24,6 +27,8 @@ namespace clidoc { class FlexGeneratedScanner; }
 #define yylex lexer_ptr->lex
 
 #include <memory>
+// TODO:
+// #include "parser_proxy.h"
 #include "tokenizer.h"
 #include "utils.h"
 
@@ -34,6 +39,8 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 }
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
+%parse-param { clidoc::Doc::SharedPtr *doc_ptr }
+// %parse-param { clidoc::OptionsBindingRecorder *option_binding_recorder_ptr }
 
 // Terminal with value.
 %token <std::string>
@@ -78,60 +85,49 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
   END                 0
 ;
 
-// Logical nodes.
-%type <Doc::SharedPtr>               doc
-%type <LogicAnd::SharedPtr>          utilities
-%type <LogicAnd::SharedPtr>          seqs
-%type <LogicAnd::SharedPtr>          descriptions
-%type <LogicAnd::SharedPtr>          bindings
-%type <LogicAnd::SharedPtr>          comments
-%type <LogicXor::SharedPtr>          or_exprs
+// Logical                  nodes.
+%type <Doc::SharedPtr>      doc
+%type <LogicAnd::SharedPtr> utilities
+%type <LogicAnd::SharedPtr> seqs
+%type <LogicAnd::SharedPtr> descriptions
+%type <LogicAnd::SharedPtr> comments
+%type <LogicXor::SharedPtr> or_exprs
 
-%type <UsageSection::SharedPtr>      usage_section
+%type <SharedPtrNode>       usage_section
+%type <SharedPtrNode>       single_seq
+%type <SharedPtrNode>       atom
+%type <SharedPtrNode>       single_utility
+%type <SharedPtrNode>       gnu_option_unit
+%type <SharedPtrNode>       posix_option_unit
 
-// %type <SingleUtility::SharedPtr>     single_utility
-// %type <GnuOptionUnit::SharedPtr>     gnu_option_unit
-// %type <PosixOptionUnit::SharedPtr>   posix_option_unit
-//
-// %type <OptionsSection::SharedPtr>    options_section
-// %type <SingleDescription::SharedPtr> single_description
-// %type <SingleBinding::SharedPtr>     single_binding
-// %type <DefaultValue::SharedPtr>      default_value
-// %type <SingleComment::SharedPtr>     single_comment
-
-%type <SharedPtrNode> single_seq
-%type <SharedPtrNode> atom
-%type <SharedPtrNode> single_utility
-%type <SharedPtrNode> gnu_option_unit
-%type <SharedPtrNode> posix_option_unit
-
-%type <SharedPtrNode> options_section
-%type <SharedPtrNode> single_description
-%type <SharedPtrNode> single_binding
-%type <SharedPtrNode> default_value
-%type <SharedPtrNode> single_comment
+%type <SharedPtrNode>       options_section
+%type <SharedPtrNode>       single_description
+%type <GeneralContainer::SharedPtr>    bindings
+%type <OptionBinding::SharedPtr>       single_binding
+%type <DefaultValue::SharedPtr>       default_value
+%type <SharedPtrNode>       single_comment
 
 %%
+
 
 // doc : usage_section options_section
 // ;
 doc : usage_section options_section {
   auto doc = Doc::Init();
   doc->children_.push_back($1);
-  doc->children_.push_back($2);
-  // TODO: should pass to driver.
+  *doc_ptr = doc;
   $$ = doc;
 }
 ;
 
+
 // usage_section : K_USAGE_COLON utilities
 // ;
 usage_section : K_USAGE_COLON utilities {
-  auto usage_section = UsageSection::Init();
-  usage_section->children_.push_back($2);
-  $$ = usage_section;
+  $$ = $2;
 }
 ;
+
 
 // utilities : utilities single_utility
 //           | single_utility
@@ -147,12 +143,14 @@ utilities : utilities single_utility {
 }
 ;
 
+
 // single_utility : K_UTILITY_DELIMITER or_exprs
 // ;
 single_utility : K_UTILITY_DELIMITER or_exprs {
   $$ = $2;
 }
 ;
+
 
 // or_exprs : or_exprs K_EXCLUSIVE_OR seqs
 //          | seqs
@@ -168,6 +166,7 @@ or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
 }
 ;
 
+
 // seqs : seqs single_seq
 //      | single_seq
 // ;
@@ -182,6 +181,7 @@ seqs : seqs single_seq {
 }
 ;
 
+
 // single_seq : atom
 //            | atom K_ELLIPSES
 // ;
@@ -194,6 +194,7 @@ single_seq : atom {
   $$ = logic_one_or_more;
 }
 ;
+
 
 // atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS
 //      | K_L_BRACKET or_exprs K_R_BRACKET
@@ -242,6 +243,7 @@ atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
 }
 ;
 
+
 // posix_option_unit : POSIX_OPTION
 //                   | GROUPED_OPTIONS
 // ;
@@ -260,6 +262,7 @@ posix_option_unit : POSIX_OPTION {
   $$ = logic_and;
 }
 ;
+
 
 // gnu_option_unit : GNU_OPTION
 //                 | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT
@@ -282,37 +285,97 @@ gnu_option_unit : GNU_OPTION {
 }
 ;
 
+
+// follow
+
 options_section : K_OPTIONS_COLON descriptions {  }
 ;
+
 
 descriptions : descriptions single_description {  }
              | single_description {  }
 ;
 
-single_description : bindings default_value comments {  }
+
+// single_description : bindings default_value comments {  }
+// ;
+single_description : bindings default_value comments {
+  // record bindings and default value.
+}
 ;
 
-default_value : K_L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE K_R_BRACKET {  }
-              | %empty {  }
+
+default_value : K_L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE K_R_BRACKET {  
+  auto default_value =
+      DefaultValue::Init(InitToken(TypeID::OPTION_DEFAULT_VALUE, $3));
+  $$ = default_value;
+}
+              | %empty {
+  $$ = DefaultValue::Init();
+}
 ;
+
 
 comments : comments single_comment {  }
          | single_comment {  }
 ;
 
+
 single_comment : COMMENT K_DESC_DELIMITER { }
                | K_DESC_DELIMITER { }
 ;
 
-bindings : bindings single_binding {  }
-         | single_binding {  }
+
+// bindings : bindings single_binding {  }
+//          | single_binding {  }
+// ;
+bindings : bindings single_binding {
+  $1->children_.push_back($2);
+  $$ = $1;
+
+}
+         | single_binding {
+  auto bindings = GeneralContainer::Init();
+  bindings->children_.push_back($1);
+  $$ = bindings;
+}
 ;
 
-single_binding : POSIX_OPTION {  }
-               | GNU_OPTION {  }
-               | POSIX_OPTION OPTION_ARGUEMENT {  }
-               | GNU_OPTION OPTION_ARGUEMENT {  }
-               | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {  }
+
+// single_binding : POSIX_OPTION
+//                | GNU_OPTION
+//                | POSIX_OPTION OPTION_ARGUEMENT
+//                | GNU_OPTION OPTION_ARGUEMENT
+//                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT
+// ;
+single_binding : POSIX_OPTION {
+  auto binding =
+      OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, $1));
+  $$ = binding;
+}
+               | GNU_OPTION {
+  auto binding =
+      OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1));
+  $$ = binding;
+}
+               | POSIX_OPTION OPTION_ARGUEMENT {
+  auto binding =
+      OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, $1),
+                          InitToken(TypeID::OPTION_ARGUEMENT, $2));
+  $$ = binding;
+}
+               | GNU_OPTION OPTION_ARGUEMENT {
+  auto binding =
+      OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1),
+                          InitToken(TypeID::OPTION_ARGUEMENT, $2));
+  $$ = binding;
+}
+               | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
+  auto binding =
+      OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1),
+                          InitToken(TypeID::OPTION_ARGUEMENT, $3));
+  $$ = binding;
+}
 ;
 
 %%

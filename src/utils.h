@@ -25,24 +25,14 @@ enum class TerminalType {
 
 // Defines non-terminal types.
 enum class NonTerminalType {
-  // normal.
-  USAGE_SECTION,
-  OPTIONS_SECTION,
-  // SINGLE_UTILITY,
-  // SINGLE_SEQ,
-  // ATOM,
-  // GNU_OPTION_UNIT,
-  // POSIX_OPTION_UNIT,
-  // SINGLE_DESCRIPTION,
-  // SINGLE_BINDING,
-  // DEFAULT_VALUE,
-  // SINGLE_COMMENT,
   // logical.
   LOGIX_AND,
   LOGIC_XOR,
   LOGIC_OPTIONAL,
   LOGIC_ONEORMORE,
   LOGIC_EMPTY,
+  // general container.
+  GENERAL_CONTAINER,
   // start node.
   DOC,
 };
@@ -73,7 +63,9 @@ class TokenInProcessCollection {
 // Interface for symbols in parsing tree.
 class NodeInterface {
  public:
-  virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
+  virtual bool ProcessToken(TokenInProcessCollection *token_collection) {
+    throw "NotImplementedError.";
+  }
   virtual ~NodeInterface() { /* empty */ }
 };
 
@@ -111,8 +103,6 @@ class Terminal : public SharedPtrNodeInterface<Terminal<T>> {
 template <NonTerminalType T>
 class NonTerminal : public SharedPtrNodeInterface<NonTerminal<T>> {
  public:
-  using SharedPtr = std::shared_ptr<NonTerminal>;
-
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
 
   // Container of symbols.
@@ -131,27 +121,37 @@ using KDoubleHyphen      = Terminal<TerminalType::K_DOUBLE_HYPHEN>;
 using KOptions           = Terminal<TerminalType::K_OPTIONS>;
 
 // Non-terminal classes.
-using UsageSection         = NonTerminal<NonTerminalType::USAGE_SECTION>;
-using OptionsSection       = NonTerminal<NonTerminalType::OPTIONS_SECTION>;
-/*
-using SingleUtility        = NonTerminal<NonTerminalType::SINGLE_UTILITY>;
-using SingleSeq            = NonTerminal<NonTerminalType::SINGLE_SEQ>;
-using Atom                 = NonTerminal<NonTerminalType::ATOM>;
-using GnuOptionUnit        = NonTerminal<NonTerminalType::GNU_OPTION_UNIT>;
-using PosixOptionUnit      = NonTerminal<NonTerminalType::POSIX_OPTION_UNIT>;
-using SingleDescription    = NonTerminal<NonTerminalType::SINGLE_DESCRIPTION>;
-using SingleBinding        = NonTerminal<NonTerminalType::SINGLE_BINDING>;
-using DefaultValue         = NonTerminal<NonTerminalType::DEFAULT_VALUE>;
-using SingleComment        = NonTerminal<NonTerminalType::SINGLE_COMMENT>;
-*/
+using Doc                = NonTerminal<NonTerminalType::DOC>;
+using LogicAnd           = NonTerminal<NonTerminalType::LOGIX_AND>;
+using LogicXor           = NonTerminal<NonTerminalType::LOGIC_XOR>;
+using LogicOptional      = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
+using LogicOneOrMore     = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
 
-using LogicAnd             = NonTerminal<NonTerminalType::LOGIX_AND>;
-using LogicXor             = NonTerminal<NonTerminalType::LOGIC_XOR>;
-using LogicOptional        = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
-using LogicOneOrMore       = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
-// using LogicEmpty           = NonTerminal<NonTerminalType::LOGIC_EMPTY>;
+// For capturing option bindings.
+class OptionBinding : public SharedPtrNodeInterface<OptionBinding> {
+ public:
+  // binding without argument, for synonym options, i.e. "-h, --help".
+  OptionBinding(const Token &token_option)
+      : token_option_(token_option) { /* empty */ }
+  // binding option and option_argument.
+  OptionBinding(const Token &token_option,
+                const Token &token_optin_argument)
+      : token_option_(token_option),
+        token_option_argument_(token_optin_argument) { /* empty */ }
+  const Token token_option_;
+  const Token token_option_argument_ = Token(TerminalType::OTHER);
+};
 
-using Doc = NonTerminal<NonTerminalType::DOC>;
+// For capturing default value of option(s) argument.
+class DefaultValue : public SharedPtrNodeInterface<DefaultValue> {
+ public:
+  DefaultValue() = default;
+  DefaultValue(const Token &default_value)
+      : default_value_(default_value) { /* empty */ }
+  const Token default_value_ = Token(TerminalType::OTHER);
+};
+
+using GeneralContainer = NonTerminal<NonTerminalType::GENERAL_CONTAINER>;
 
 }  // namespace clidoc 
 

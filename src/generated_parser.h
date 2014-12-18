@@ -45,10 +45,13 @@
 #include <string>
 #include "utils.h"
 
-// Forward declaration FlexGeneratedScanner to resolve cyclic #include.
-namespace clidoc { class FlexGeneratedScanner; }
+namespace clidoc {
+// Forward declaration `FlexGeneratedScanner` to resolve cyclic #include.
+class FlexGeneratedScanner;
+}  // namespace clidoc
 
-#line 52 "generated_parser.h" // lalr1.cc:387
+
+#line 55 "generated_parser.h" // lalr1.cc:387
 
 
 # include <vector>
@@ -124,7 +127,7 @@ namespace clidoc { class FlexGeneratedScanner; }
 
 
 namespace clidoc {
-#line 128 "generated_parser.h" // lalr1.cc:387
+#line 131 "generated_parser.h" // lalr1.cc:387
 
 
 
@@ -271,19 +274,28 @@ namespace clidoc {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // default_value
+      char dummy1[sizeof(DefaultValue::SharedPtr)];
+
       // doc
-      char dummy1[sizeof(Doc::SharedPtr)];
+      char dummy2[sizeof(Doc::SharedPtr)];
+
+      // bindings
+      char dummy3[sizeof(GeneralContainer::SharedPtr)];
 
       // utilities
       // seqs
       // descriptions
       // comments
-      // bindings
-      char dummy2[sizeof(LogicAnd::SharedPtr)];
+      char dummy4[sizeof(LogicAnd::SharedPtr)];
 
       // or_exprs
-      char dummy3[sizeof(LogicXor::SharedPtr)];
+      char dummy5[sizeof(LogicXor::SharedPtr)];
 
+      // single_binding
+      char dummy6[sizeof(OptionBinding::SharedPtr)];
+
+      // usage_section
       // single_utility
       // single_seq
       // atom
@@ -291,13 +303,8 @@ namespace clidoc {
       // gnu_option_unit
       // options_section
       // single_description
-      // default_value
       // single_comment
-      // single_binding
-      char dummy4[sizeof(SharedPtrNode)];
-
-      // usage_section
-      char dummy5[sizeof(UsageSection::SharedPtr)];
+      char dummy7[sizeof(SharedPtrNode)];
 
       // OPTION_ARGUEMENT
       // OPERAND
@@ -307,7 +314,7 @@ namespace clidoc {
       // POSIX_OPTION
       // GROUPED_OPTIONS
       // GNU_OPTION
-      char dummy6[sizeof(std::string)];
+      char dummy8[sizeof(std::string)];
 };
 
     /// Symbol semantic values.
@@ -384,15 +391,19 @@ namespace clidoc {
 
   basic_symbol (typename Base::kind_type t);
 
+  basic_symbol (typename Base::kind_type t, const DefaultValue::SharedPtr v);
+
   basic_symbol (typename Base::kind_type t, const Doc::SharedPtr v);
+
+  basic_symbol (typename Base::kind_type t, const GeneralContainer::SharedPtr v);
 
   basic_symbol (typename Base::kind_type t, const LogicAnd::SharedPtr v);
 
   basic_symbol (typename Base::kind_type t, const LogicXor::SharedPtr v);
 
-  basic_symbol (typename Base::kind_type t, const SharedPtrNode v);
+  basic_symbol (typename Base::kind_type t, const OptionBinding::SharedPtr v);
 
-  basic_symbol (typename Base::kind_type t, const UsageSection::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const SharedPtrNode v);
 
   basic_symbol (typename Base::kind_type t, const std::string v);
 
@@ -544,7 +555,7 @@ namespace clidoc {
 
 
     /// Build a parser object.
-    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg);
+    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_ptr_yyarg);
     virtual ~BisonGeneratedParser ();
 
     /// Parse.
@@ -750,6 +761,7 @@ namespace clidoc {
 
     // User arguments.
     clidoc::FlexGeneratedScanner *lexer_ptr;
+    clidoc::Doc::SharedPtr *doc_ptr;
   };
 
   // Symbol number corresponding to token number t.
@@ -821,15 +833,22 @@ namespace clidoc {
   {
       switch (other.type_get ())
     {
+      case 39: // default_value
+        value.copy< DefaultValue::SharedPtr > (other.value);
+        break;
+
       case 26: // doc
         value.copy< Doc::SharedPtr > (other.value);
+        break;
+
+      case 42: // bindings
+        value.copy< GeneralContainer::SharedPtr > (other.value);
         break;
 
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-      case 42: // bindings
         value.copy< LogicAnd::SharedPtr > (other.value);
         break;
 
@@ -837,6 +856,11 @@ namespace clidoc {
         value.copy< LogicXor::SharedPtr > (other.value);
         break;
 
+      case 43: // single_binding
+        value.copy< OptionBinding::SharedPtr > (other.value);
+        break;
+
+      case 27: // usage_section
       case 29: // single_utility
       case 32: // single_seq
       case 33: // atom
@@ -844,14 +868,8 @@ namespace clidoc {
       case 35: // gnu_option_unit
       case 36: // options_section
       case 38: // single_description
-      case 39: // default_value
       case 41: // single_comment
-      case 43: // single_binding
         value.copy< SharedPtrNode > (other.value);
-        break;
-
-      case 27: // usage_section
-        value.copy< UsageSection::SharedPtr > (other.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -881,15 +899,22 @@ namespace clidoc {
     (void) v;
       switch (this->type_get ())
     {
+      case 39: // default_value
+        value.copy< DefaultValue::SharedPtr > (v);
+        break;
+
       case 26: // doc
         value.copy< Doc::SharedPtr > (v);
+        break;
+
+      case 42: // bindings
+        value.copy< GeneralContainer::SharedPtr > (v);
         break;
 
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-      case 42: // bindings
         value.copy< LogicAnd::SharedPtr > (v);
         break;
 
@@ -897,6 +922,11 @@ namespace clidoc {
         value.copy< LogicXor::SharedPtr > (v);
         break;
 
+      case 43: // single_binding
+        value.copy< OptionBinding::SharedPtr > (v);
+        break;
+
+      case 27: // usage_section
       case 29: // single_utility
       case 32: // single_seq
       case 33: // atom
@@ -904,14 +934,8 @@ namespace clidoc {
       case 35: // gnu_option_unit
       case 36: // options_section
       case 38: // single_description
-      case 39: // default_value
       case 41: // single_comment
-      case 43: // single_binding
         value.copy< SharedPtrNode > (v);
-        break;
-
-      case 27: // usage_section
-        value.copy< UsageSection::SharedPtr > (v);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -940,7 +964,19 @@ namespace clidoc {
   {}
 
   template <typename Base>
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const DefaultValue::SharedPtr v)
+    : Base (t)
+    , value (v)
+  {}
+
+  template <typename Base>
   BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const Doc::SharedPtr v)
+    : Base (t)
+    , value (v)
+  {}
+
+  template <typename Base>
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const GeneralContainer::SharedPtr v)
     : Base (t)
     , value (v)
   {}
@@ -958,13 +994,13 @@ namespace clidoc {
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const SharedPtrNode v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBinding::SharedPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const UsageSection::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const SharedPtrNode v)
     : Base (t)
     , value (v)
   {}
@@ -991,15 +1027,22 @@ namespace clidoc {
     // Type destructor.
     switch (yytype)
     {
+      case 39: // default_value
+        value.template destroy< DefaultValue::SharedPtr > ();
+        break;
+
       case 26: // doc
         value.template destroy< Doc::SharedPtr > ();
+        break;
+
+      case 42: // bindings
+        value.template destroy< GeneralContainer::SharedPtr > ();
         break;
 
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-      case 42: // bindings
         value.template destroy< LogicAnd::SharedPtr > ();
         break;
 
@@ -1007,6 +1050,11 @@ namespace clidoc {
         value.template destroy< LogicXor::SharedPtr > ();
         break;
 
+      case 43: // single_binding
+        value.template destroy< OptionBinding::SharedPtr > ();
+        break;
+
+      case 27: // usage_section
       case 29: // single_utility
       case 32: // single_seq
       case 33: // atom
@@ -1014,14 +1062,8 @@ namespace clidoc {
       case 35: // gnu_option_unit
       case 36: // options_section
       case 38: // single_description
-      case 39: // default_value
       case 41: // single_comment
-      case 43: // single_binding
         value.template destroy< SharedPtrNode > ();
-        break;
-
-      case 27: // usage_section
-        value.template destroy< UsageSection::SharedPtr > ();
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -1049,15 +1091,22 @@ namespace clidoc {
     super_type::move(s);
       switch (this->type_get ())
     {
+      case 39: // default_value
+        value.move< DefaultValue::SharedPtr > (s.value);
+        break;
+
       case 26: // doc
         value.move< Doc::SharedPtr > (s.value);
+        break;
+
+      case 42: // bindings
+        value.move< GeneralContainer::SharedPtr > (s.value);
         break;
 
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-      case 42: // bindings
         value.move< LogicAnd::SharedPtr > (s.value);
         break;
 
@@ -1065,6 +1114,11 @@ namespace clidoc {
         value.move< LogicXor::SharedPtr > (s.value);
         break;
 
+      case 43: // single_binding
+        value.move< OptionBinding::SharedPtr > (s.value);
+        break;
+
+      case 27: // usage_section
       case 29: // single_utility
       case 32: // single_seq
       case 33: // atom
@@ -1072,14 +1126,8 @@ namespace clidoc {
       case 35: // gnu_option_unit
       case 36: // options_section
       case 38: // single_description
-      case 39: // default_value
       case 41: // single_comment
-      case 43: // single_binding
         value.move< SharedPtrNode > (s.value);
-        break;
-
-      case 27: // usage_section
-        value.move< UsageSection::SharedPtr > (s.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -1288,7 +1336,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1292 "generated_parser.h" // lalr1.cc:387
+#line 1340 "generated_parser.h" // lalr1.cc:387
 
 
 
