@@ -280,12 +280,12 @@ namespace clidoc {
       // doc
       char dummy2[sizeof(Doc::SharedPtr)];
 
-      // utilities
       // seqs
       // descriptions
       // comments
       char dummy3[sizeof(LogicAnd::SharedPtr)];
 
+      // utilities
       // or_exprs
       char dummy4[sizeof(LogicXor::SharedPtr)];
 
@@ -841,13 +841,13 @@ namespace clidoc {
         value.copy< Doc::SharedPtr > (other.value);
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         value.copy< LogicAnd::SharedPtr > (other.value);
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         value.copy< LogicXor::SharedPtr > (other.value);
         break;
@@ -907,13 +907,13 @@ namespace clidoc {
         value.copy< Doc::SharedPtr > (v);
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         value.copy< LogicAnd::SharedPtr > (v);
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         value.copy< LogicXor::SharedPtr > (v);
         break;
@@ -1035,13 +1035,13 @@ namespace clidoc {
         value.template destroy< Doc::SharedPtr > ();
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         value.template destroy< LogicAnd::SharedPtr > ();
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         value.template destroy< LogicXor::SharedPtr > ();
         break;
@@ -1099,13 +1099,13 @@ namespace clidoc {
         value.move< Doc::SharedPtr > (s.value);
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         value.move< LogicAnd::SharedPtr > (s.value);
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         value.move< LogicXor::SharedPtr > (s.value);
         break;

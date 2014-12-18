@@ -87,10 +87,10 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 // Logical                  nodes.
 %type <Doc::SharedPtr>      doc
-%type <LogicAnd::SharedPtr> utilities
 %type <LogicAnd::SharedPtr> seqs
 %type <LogicAnd::SharedPtr> descriptions
 %type <LogicAnd::SharedPtr> comments
+%type <LogicXor::SharedPtr> utilities
 %type <LogicXor::SharedPtr> or_exprs
 
 %type <SharedPtrNode>       usage_section
@@ -100,12 +100,12 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 %type <SharedPtrNode>       gnu_option_unit
 %type <SharedPtrNode>       posix_option_unit
 
-%type <SharedPtrNode>       options_section
-%type <SharedPtrNode>       single_description
-%type <OptionBindingContainer::SharedPtr>    bindings
-%type <OptionBinding::SharedPtr>       single_binding
-%type <DefaultValue::SharedPtr>       default_value
-%type <SharedPtrNode>       single_comment
+%type <SharedPtrNode>                     options_section
+%type <SharedPtrNode>                     single_description
+%type <OptionBindingContainer::SharedPtr> bindings
+%type <OptionBinding::SharedPtr>          single_binding
+%type <DefaultValue::SharedPtr>           default_value
+%type <SharedPtrNode>                     single_comment
 
 %%
 
@@ -137,9 +137,9 @@ utilities : utilities single_utility {
   $$ = $1;
 }
           | single_utility {
-  auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back($1);
-  $$ = logic_and;
+  auto logic_xor = LogicXor::Init();
+  logic_xor->children_.push_back($1);
+  $$ = logic_xor;
 }
 ;
 

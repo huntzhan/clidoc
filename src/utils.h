@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace clidoc {
@@ -38,7 +39,7 @@ enum class NonTerminalType {
 class Token {
  public:
   // constructors.
-  Token(TerminalType type)
+  explicit Token(TerminalType type)
       : has_value_(false), type_(type) { /* empty */ }
   Token(TerminalType type, const std::string &value)
       : has_value_(true), type_(type), value_(value) { /* empty */ }
@@ -66,8 +67,8 @@ class SharedPtrInterface {
 template <typename Derived>
 template <typename... Args>
 typename SharedPtrInterface<Derived>::SharedPtr
-SharedPtrInterface<Derived>::Init(Args&&... args) {
-  return std::make_shared<Derived>(args...);
+    SharedPtrInterface<Derived>::Init(Args&&... args) {
+  return std::make_shared<Derived>(std::forward<Args>(args)...);
 }
 
 // Contains tokenized arguments during semantic analysis.
@@ -90,7 +91,7 @@ template <TerminalType T>
 class Terminal : public NodeInterface,
                  public SharedPtrInterface<Terminal<T>> {
  public:
-  Terminal(const Token &token) : token_(token) { /* empty */ }
+  explicit Terminal(const Token &token) : token_(token) { /* empty */ }
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
 
   const Token token_;
@@ -129,13 +130,14 @@ using LogicOneOrMore     = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
 class OptionBinding : public SharedPtrInterface<OptionBinding> {
  public:
   // binding without argument, for synonym options, i.e. "-h, --help".
-  OptionBinding(const Token &token_option)
+  explicit OptionBinding(const Token &token_option)
       : token_option_(token_option) { /* empty */ }
   // binding option and option_argument.
   OptionBinding(const Token &token_option,
                 const Token &token_optin_argument)
       : token_option_(token_option),
         token_option_argument_(token_optin_argument) { /* empty */ }
+
   const Token token_option_;
   const Token token_option_argument_ = Token(TerminalType::OTHER);
 };
@@ -150,13 +152,14 @@ class OptionBindingContainer
 class DefaultValue : public SharedPtrInterface<DefaultValue> {
  public:
   DefaultValue() = default;
-  DefaultValue(const Token &default_value)
+  explicit DefaultValue(const Token &default_value)
       : default_value_(default_value) { /* empty */ }
+
   const Token default_value_ = Token(TerminalType::OTHER);
 };
 
-}  // namespace clidoc 
+}  // namespace clidoc
 
 #include "utils-inl.h"
 
-#endif
+#endif  // SRC_UTILS_H_

@@ -208,13 +208,13 @@ namespace clidoc {
         value.move< Doc::SharedPtr > (that.value);
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         value.move< LogicAnd::SharedPtr > (that.value);
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         value.move< LogicXor::SharedPtr > (that.value);
         break;
@@ -273,13 +273,13 @@ namespace clidoc {
         value.copy< Doc::SharedPtr > (that.value);
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         value.copy< LogicAnd::SharedPtr > (that.value);
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         value.copy< LogicXor::SharedPtr > (that.value);
         break;
@@ -549,13 +549,13 @@ namespace clidoc {
         yylhs.value.build< Doc::SharedPtr > ();
         break;
 
-      case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
         yylhs.value.build< LogicAnd::SharedPtr > ();
         break;
 
+      case 28: // utilities
       case 30: // or_exprs
         yylhs.value.build< LogicXor::SharedPtr > ();
         break;
@@ -617,7 +617,7 @@ namespace clidoc {
   case 3:
 #line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< LogicAnd::SharedPtr > ();
+  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< LogicXor::SharedPtr > ();
 }
 #line 623 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -625,8 +625,8 @@ namespace clidoc {
   case 4:
 #line 135 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yystack_[1].value.as< LogicAnd::SharedPtr > ()->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
-  yylhs.value.as< LogicAnd::SharedPtr > () = yystack_[1].value.as< LogicAnd::SharedPtr > ();
+  yystack_[1].value.as< LogicXor::SharedPtr > ()->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
+  yylhs.value.as< LogicXor::SharedPtr > () = yystack_[1].value.as< LogicXor::SharedPtr > ();
 }
 #line 632 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -634,9 +634,9 @@ namespace clidoc {
   case 5:
 #line 139 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
-  yylhs.value.as< LogicAnd::SharedPtr > () = logic_and;
+  auto logic_xor = LogicXor::Init();
+  logic_xor->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
+  yylhs.value.as< LogicXor::SharedPtr > () = logic_xor;
 }
 #line 642 "generated_parser.cc" // lalr1.cc:847
     break;

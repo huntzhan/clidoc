@@ -1,6 +1,7 @@
 #ifndef SRC_TOKENIZER_H_
 #define SRC_TOKENIZER_H_
 
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -22,5 +23,5 @@ bool TokenHasValue(const TerminalType &type);
 std::vector<Token> FromString(const std::string &text);
 
 }  // namespace clidoc::tokenizer
-}  // namespace clidoc 
-#endif
+}  // namespace clidoc
+#endif  // SRC_TOKENIZER_H_
