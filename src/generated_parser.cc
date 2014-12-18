@@ -208,10 +208,6 @@ namespace clidoc {
         value.move< Doc::SharedPtr > (that.value);
         break;
 
-      case 42: // bindings
-        value.move< GeneralContainer::SharedPtr > (that.value);
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -225,6 +221,10 @@ namespace clidoc {
 
       case 43: // single_binding
         value.move< OptionBinding::SharedPtr > (that.value);
+        break;
+
+      case 42: // bindings
+        value.move< OptionBindingContainer::SharedPtr > (that.value);
         break;
 
       case 27: // usage_section
@@ -273,10 +273,6 @@ namespace clidoc {
         value.copy< Doc::SharedPtr > (that.value);
         break;
 
-      case 42: // bindings
-        value.copy< GeneralContainer::SharedPtr > (that.value);
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -290,6 +286,10 @@ namespace clidoc {
 
       case 43: // single_binding
         value.copy< OptionBinding::SharedPtr > (that.value);
+        break;
+
+      case 42: // bindings
+        value.copy< OptionBindingContainer::SharedPtr > (that.value);
         break;
 
       case 27: // usage_section
@@ -549,10 +549,6 @@ namespace clidoc {
         yylhs.value.build< Doc::SharedPtr > ();
         break;
 
-      case 42: // bindings
-        yylhs.value.build< GeneralContainer::SharedPtr > ();
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -566,6 +562,10 @@ namespace clidoc {
 
       case 43: // single_binding
         yylhs.value.build< OptionBinding::SharedPtr > ();
+        break;
+
+      case 42: // bindings
+        yylhs.value.build< OptionBindingContainer::SharedPtr > ();
         break;
 
       case 27: // usage_section
@@ -898,8 +898,8 @@ namespace clidoc {
   case 34:
 #line 332 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yystack_[1].value.as< GeneralContainer::SharedPtr > ()->children_.push_back(yystack_[0].value.as< OptionBinding::SharedPtr > ());
-  yylhs.value.as< GeneralContainer::SharedPtr > () = yystack_[1].value.as< GeneralContainer::SharedPtr > ();
+  yystack_[1].value.as< OptionBindingContainer::SharedPtr > ()->children_.push_back(yystack_[0].value.as< OptionBinding::SharedPtr > ());
+  yylhs.value.as< OptionBindingContainer::SharedPtr > () = yystack_[1].value.as< OptionBindingContainer::SharedPtr > ();
 
 }
 #line 906 "generated_parser.cc" // lalr1.cc:847
@@ -908,9 +908,9 @@ namespace clidoc {
   case 35:
 #line 337 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  auto bindings = GeneralContainer::Init();
+  auto bindings = OptionBindingContainer::Init();
   bindings->children_.push_back(yystack_[0].value.as< OptionBinding::SharedPtr > ());
-  yylhs.value.as< GeneralContainer::SharedPtr > () = bindings;
+  yylhs.value.as< OptionBindingContainer::SharedPtr > () = bindings;
 }
 #line 916 "generated_parser.cc" // lalr1.cc:847
     break;

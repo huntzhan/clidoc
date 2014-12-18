@@ -31,8 +31,6 @@ enum class NonTerminalType {
   LOGIC_OPTIONAL,
   LOGIC_ONEORMORE,
   LOGIC_EMPTY,
-  // general container.
-  GENERAL_CONTAINER,
   // start node.
   DOC,
 };
@@ -55,25 +53,8 @@ class Token {
   const std::string value_;
 };
 
-// Contains tokenized arguments during semantic analysis.
-class TokenInProcessCollection {
- public:
-};
-
-// Interface for symbols in parsing tree.
-class NodeInterface {
- public:
-  virtual bool ProcessToken(TokenInProcessCollection *token_collection) {
-    throw "NotImplementedError.";
-  }
-  virtual ~NodeInterface() { /* empty */ }
-};
-
-using SharedPtrNode = std::shared_ptr<NodeInterface>;
-using VecSharedPtrNode = std::vector<SharedPtrNode>;
-
 template <typename Derived>
-class SharedPtrNodeInterface : public NodeInterface {
+class SharedPtrInterface {
  public:
   // type alias for shared_ptr.
   using SharedPtr = std::shared_ptr<Derived>;
@@ -84,14 +65,30 @@ class SharedPtrNodeInterface : public NodeInterface {
 
 template <typename Derived>
 template <typename... Args>
-typename SharedPtrNodeInterface<Derived>::SharedPtr
-SharedPtrNodeInterface<Derived>::Init(Args&&... args) {
+typename SharedPtrInterface<Derived>::SharedPtr
+SharedPtrInterface<Derived>::Init(Args&&... args) {
   return std::make_shared<Derived>(args...);
 }
 
+// Contains tokenized arguments during semantic analysis.
+class TokenInProcessCollection {
+ public:
+};
+
+// Interface for symbols in parsing tree.
+class NodeInterface {
+ public:
+  virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
+  virtual ~NodeInterface() { /* empty */ }
+};
+
+using SharedPtrNode = std::shared_ptr<NodeInterface>;
+using VecSharedPtrNode = std::vector<SharedPtrNode>;
+
 // Template for terminal types.
 template <TerminalType T>
-class Terminal : public SharedPtrNodeInterface<Terminal<T>> {
+class Terminal : public NodeInterface,
+                 public SharedPtrInterface<Terminal<T>> {
  public:
   Terminal(const Token &token) : token_(token) { /* empty */ }
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
@@ -101,7 +98,8 @@ class Terminal : public SharedPtrNodeInterface<Terminal<T>> {
 
 // Template for non-terminal types.
 template <NonTerminalType T>
-class NonTerminal : public SharedPtrNodeInterface<NonTerminal<T>> {
+class NonTerminal : public NodeInterface,
+                    public SharedPtrInterface<NonTerminal<T>> {
  public:
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
 
@@ -128,7 +126,7 @@ using LogicOptional      = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
 using LogicOneOrMore     = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
 
 // For capturing option bindings.
-class OptionBinding : public SharedPtrNodeInterface<OptionBinding> {
+class OptionBinding : public SharedPtrInterface<OptionBinding> {
  public:
   // binding without argument, for synonym options, i.e. "-h, --help".
   OptionBinding(const Token &token_option)
@@ -142,16 +140,20 @@ class OptionBinding : public SharedPtrNodeInterface<OptionBinding> {
   const Token token_option_argument_ = Token(TerminalType::OTHER);
 };
 
+class OptionBindingContainer
+    : public SharedPtrInterface<OptionBindingContainer> {
+ public:
+  std::vector<OptionBinding::SharedPtr> children_;
+};
+
 // For capturing default value of option(s) argument.
-class DefaultValue : public SharedPtrNodeInterface<DefaultValue> {
+class DefaultValue : public SharedPtrInterface<DefaultValue> {
  public:
   DefaultValue() = default;
   DefaultValue(const Token &default_value)
       : default_value_(default_value) { /* empty */ }
   const Token default_value_ = Token(TerminalType::OTHER);
 };
-
-using GeneralContainer = NonTerminal<NonTerminalType::GENERAL_CONTAINER>;
 
 }  // namespace clidoc 
 

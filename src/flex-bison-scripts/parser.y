@@ -102,7 +102,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 %type <SharedPtrNode>       options_section
 %type <SharedPtrNode>       single_description
-%type <GeneralContainer::SharedPtr>    bindings
+%type <OptionBindingContainer::SharedPtr>    bindings
 %type <OptionBinding::SharedPtr>       single_binding
 %type <DefaultValue::SharedPtr>       default_value
 %type <SharedPtrNode>       single_comment
@@ -335,7 +335,7 @@ bindings : bindings single_binding {
 
 }
          | single_binding {
-  auto bindings = GeneralContainer::Init();
+  auto bindings = OptionBindingContainer::Init();
   bindings->children_.push_back($1);
   $$ = bindings;
 }

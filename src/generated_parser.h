@@ -280,20 +280,20 @@ namespace clidoc {
       // doc
       char dummy2[sizeof(Doc::SharedPtr)];
 
-      // bindings
-      char dummy3[sizeof(GeneralContainer::SharedPtr)];
-
       // utilities
       // seqs
       // descriptions
       // comments
-      char dummy4[sizeof(LogicAnd::SharedPtr)];
+      char dummy3[sizeof(LogicAnd::SharedPtr)];
 
       // or_exprs
-      char dummy5[sizeof(LogicXor::SharedPtr)];
+      char dummy4[sizeof(LogicXor::SharedPtr)];
 
       // single_binding
-      char dummy6[sizeof(OptionBinding::SharedPtr)];
+      char dummy5[sizeof(OptionBinding::SharedPtr)];
+
+      // bindings
+      char dummy6[sizeof(OptionBindingContainer::SharedPtr)];
 
       // usage_section
       // single_utility
@@ -395,13 +395,13 @@ namespace clidoc {
 
   basic_symbol (typename Base::kind_type t, const Doc::SharedPtr v);
 
-  basic_symbol (typename Base::kind_type t, const GeneralContainer::SharedPtr v);
-
   basic_symbol (typename Base::kind_type t, const LogicAnd::SharedPtr v);
 
   basic_symbol (typename Base::kind_type t, const LogicXor::SharedPtr v);
 
   basic_symbol (typename Base::kind_type t, const OptionBinding::SharedPtr v);
+
+  basic_symbol (typename Base::kind_type t, const OptionBindingContainer::SharedPtr v);
 
   basic_symbol (typename Base::kind_type t, const SharedPtrNode v);
 
@@ -841,10 +841,6 @@ namespace clidoc {
         value.copy< Doc::SharedPtr > (other.value);
         break;
 
-      case 42: // bindings
-        value.copy< GeneralContainer::SharedPtr > (other.value);
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -858,6 +854,10 @@ namespace clidoc {
 
       case 43: // single_binding
         value.copy< OptionBinding::SharedPtr > (other.value);
+        break;
+
+      case 42: // bindings
+        value.copy< OptionBindingContainer::SharedPtr > (other.value);
         break;
 
       case 27: // usage_section
@@ -907,10 +907,6 @@ namespace clidoc {
         value.copy< Doc::SharedPtr > (v);
         break;
 
-      case 42: // bindings
-        value.copy< GeneralContainer::SharedPtr > (v);
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -924,6 +920,10 @@ namespace clidoc {
 
       case 43: // single_binding
         value.copy< OptionBinding::SharedPtr > (v);
+        break;
+
+      case 42: // bindings
+        value.copy< OptionBindingContainer::SharedPtr > (v);
         break;
 
       case 27: // usage_section
@@ -976,12 +976,6 @@ namespace clidoc {
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const GeneralContainer::SharedPtr v)
-    : Base (t)
-    , value (v)
-  {}
-
-  template <typename Base>
   BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicAnd::SharedPtr v)
     : Base (t)
     , value (v)
@@ -995,6 +989,12 @@ namespace clidoc {
 
   template <typename Base>
   BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBinding::SharedPtr v)
+    : Base (t)
+    , value (v)
+  {}
+
+  template <typename Base>
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBindingContainer::SharedPtr v)
     : Base (t)
     , value (v)
   {}
@@ -1035,10 +1035,6 @@ namespace clidoc {
         value.template destroy< Doc::SharedPtr > ();
         break;
 
-      case 42: // bindings
-        value.template destroy< GeneralContainer::SharedPtr > ();
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -1052,6 +1048,10 @@ namespace clidoc {
 
       case 43: // single_binding
         value.template destroy< OptionBinding::SharedPtr > ();
+        break;
+
+      case 42: // bindings
+        value.template destroy< OptionBindingContainer::SharedPtr > ();
         break;
 
       case 27: // usage_section
@@ -1099,10 +1099,6 @@ namespace clidoc {
         value.move< Doc::SharedPtr > (s.value);
         break;
 
-      case 42: // bindings
-        value.move< GeneralContainer::SharedPtr > (s.value);
-        break;
-
       case 28: // utilities
       case 31: // seqs
       case 37: // descriptions
@@ -1116,6 +1112,10 @@ namespace clidoc {
 
       case 43: // single_binding
         value.move< OptionBinding::SharedPtr > (s.value);
+        break;
+
+      case 42: // bindings
+        value.move< OptionBindingContainer::SharedPtr > (s.value);
         break;
 
       case 27: // usage_section
