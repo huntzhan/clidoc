@@ -85,7 +85,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
   END                 0
 ;
 
-// Logical                  nodes.
+// Logical nodes.
 %type <Doc::WeakPtr>      doc
 %type <LogicAnd::WeakPtr> seqs
 %type <LogicAnd::WeakPtr> descriptions
