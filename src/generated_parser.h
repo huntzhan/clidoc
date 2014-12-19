@@ -275,25 +275,25 @@ namespace clidoc {
     union union_type
     {
       // default_value
-      char dummy1[sizeof(DefaultValue::SharedPtr)];
+      char dummy1[sizeof(DefaultValue::WeakPtr)];
 
       // doc
-      char dummy2[sizeof(Doc::SharedPtr)];
+      char dummy2[sizeof(Doc::WeakPtr)];
 
       // seqs
       // descriptions
       // comments
-      char dummy3[sizeof(LogicAnd::SharedPtr)];
+      char dummy3[sizeof(LogicAnd::WeakPtr)];
 
       // utilities
       // or_exprs
-      char dummy4[sizeof(LogicXor::SharedPtr)];
+      char dummy4[sizeof(LogicXor::WeakPtr)];
 
       // single_binding
-      char dummy5[sizeof(OptionBinding::SharedPtr)];
+      char dummy5[sizeof(OptionBinding::WeakPtr)];
 
       // bindings
-      char dummy6[sizeof(OptionBindingContainer::SharedPtr)];
+      char dummy6[sizeof(OptionBindingContainer::WeakPtr)];
 
       // usage_section
       // single_utility
@@ -304,7 +304,7 @@ namespace clidoc {
       // options_section
       // single_description
       // single_comment
-      char dummy7[sizeof(SharedPtrNode)];
+      char dummy7[sizeof(WeakPtrNode)];
 
       // OPTION_ARGUEMENT
       // OPERAND
@@ -391,19 +391,19 @@ namespace clidoc {
 
   basic_symbol (typename Base::kind_type t);
 
-  basic_symbol (typename Base::kind_type t, const DefaultValue::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const DefaultValue::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const Doc::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const Doc::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const LogicAnd::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const LogicAnd::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const LogicXor::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const LogicXor::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const OptionBinding::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const OptionBinding::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const OptionBindingContainer::SharedPtr v);
+  basic_symbol (typename Base::kind_type t, const OptionBindingContainer::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const SharedPtrNode v);
+  basic_symbol (typename Base::kind_type t, const WeakPtrNode v);
 
   basic_symbol (typename Base::kind_type t, const std::string v);
 
@@ -834,30 +834,30 @@ namespace clidoc {
       switch (other.type_get ())
     {
       case 39: // default_value
-        value.copy< DefaultValue::SharedPtr > (other.value);
+        value.copy< DefaultValue::WeakPtr > (other.value);
         break;
 
       case 26: // doc
-        value.copy< Doc::SharedPtr > (other.value);
+        value.copy< Doc::WeakPtr > (other.value);
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        value.copy< LogicAnd::SharedPtr > (other.value);
+        value.copy< LogicAnd::WeakPtr > (other.value);
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        value.copy< LogicXor::SharedPtr > (other.value);
+        value.copy< LogicXor::WeakPtr > (other.value);
         break;
 
       case 43: // single_binding
-        value.copy< OptionBinding::SharedPtr > (other.value);
+        value.copy< OptionBinding::WeakPtr > (other.value);
         break;
 
       case 42: // bindings
-        value.copy< OptionBindingContainer::SharedPtr > (other.value);
+        value.copy< OptionBindingContainer::WeakPtr > (other.value);
         break;
 
       case 27: // usage_section
@@ -869,7 +869,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        value.copy< SharedPtrNode > (other.value);
+        value.copy< WeakPtrNode > (other.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -900,30 +900,30 @@ namespace clidoc {
       switch (this->type_get ())
     {
       case 39: // default_value
-        value.copy< DefaultValue::SharedPtr > (v);
+        value.copy< DefaultValue::WeakPtr > (v);
         break;
 
       case 26: // doc
-        value.copy< Doc::SharedPtr > (v);
+        value.copy< Doc::WeakPtr > (v);
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        value.copy< LogicAnd::SharedPtr > (v);
+        value.copy< LogicAnd::WeakPtr > (v);
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        value.copy< LogicXor::SharedPtr > (v);
+        value.copy< LogicXor::WeakPtr > (v);
         break;
 
       case 43: // single_binding
-        value.copy< OptionBinding::SharedPtr > (v);
+        value.copy< OptionBinding::WeakPtr > (v);
         break;
 
       case 42: // bindings
-        value.copy< OptionBindingContainer::SharedPtr > (v);
+        value.copy< OptionBindingContainer::WeakPtr > (v);
         break;
 
       case 27: // usage_section
@@ -935,7 +935,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        value.copy< SharedPtrNode > (v);
+        value.copy< WeakPtrNode > (v);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -964,43 +964,43 @@ namespace clidoc {
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const DefaultValue::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const DefaultValue::WeakPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const Doc::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const Doc::WeakPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicAnd::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicAnd::WeakPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicXor::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicXor::WeakPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBinding::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBinding::WeakPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBindingContainer::SharedPtr v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OptionBindingContainer::WeakPtr v)
     : Base (t)
     , value (v)
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const SharedPtrNode v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const WeakPtrNode v)
     : Base (t)
     , value (v)
   {}
@@ -1028,30 +1028,30 @@ namespace clidoc {
     switch (yytype)
     {
       case 39: // default_value
-        value.template destroy< DefaultValue::SharedPtr > ();
+        value.template destroy< DefaultValue::WeakPtr > ();
         break;
 
       case 26: // doc
-        value.template destroy< Doc::SharedPtr > ();
+        value.template destroy< Doc::WeakPtr > ();
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        value.template destroy< LogicAnd::SharedPtr > ();
+        value.template destroy< LogicAnd::WeakPtr > ();
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        value.template destroy< LogicXor::SharedPtr > ();
+        value.template destroy< LogicXor::WeakPtr > ();
         break;
 
       case 43: // single_binding
-        value.template destroy< OptionBinding::SharedPtr > ();
+        value.template destroy< OptionBinding::WeakPtr > ();
         break;
 
       case 42: // bindings
-        value.template destroy< OptionBindingContainer::SharedPtr > ();
+        value.template destroy< OptionBindingContainer::WeakPtr > ();
         break;
 
       case 27: // usage_section
@@ -1063,7 +1063,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        value.template destroy< SharedPtrNode > ();
+        value.template destroy< WeakPtrNode > ();
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -1092,30 +1092,30 @@ namespace clidoc {
       switch (this->type_get ())
     {
       case 39: // default_value
-        value.move< DefaultValue::SharedPtr > (s.value);
+        value.move< DefaultValue::WeakPtr > (s.value);
         break;
 
       case 26: // doc
-        value.move< Doc::SharedPtr > (s.value);
+        value.move< Doc::WeakPtr > (s.value);
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        value.move< LogicAnd::SharedPtr > (s.value);
+        value.move< LogicAnd::WeakPtr > (s.value);
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        value.move< LogicXor::SharedPtr > (s.value);
+        value.move< LogicXor::WeakPtr > (s.value);
         break;
 
       case 43: // single_binding
-        value.move< OptionBinding::SharedPtr > (s.value);
+        value.move< OptionBinding::WeakPtr > (s.value);
         break;
 
       case 42: // bindings
-        value.move< OptionBindingContainer::SharedPtr > (s.value);
+        value.move< OptionBindingContainer::WeakPtr > (s.value);
         break;
 
       case 27: // usage_section
@@ -1127,7 +1127,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        value.move< SharedPtrNode > (s.value);
+        value.move< WeakPtrNode > (s.value);
         break;
 
       case 3: // OPTION_ARGUEMENT

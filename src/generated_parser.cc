@@ -201,30 +201,30 @@ namespace clidoc {
       switch (that.type_get ())
     {
       case 39: // default_value
-        value.move< DefaultValue::SharedPtr > (that.value);
+        value.move< DefaultValue::WeakPtr > (that.value);
         break;
 
       case 26: // doc
-        value.move< Doc::SharedPtr > (that.value);
+        value.move< Doc::WeakPtr > (that.value);
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        value.move< LogicAnd::SharedPtr > (that.value);
+        value.move< LogicAnd::WeakPtr > (that.value);
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        value.move< LogicXor::SharedPtr > (that.value);
+        value.move< LogicXor::WeakPtr > (that.value);
         break;
 
       case 43: // single_binding
-        value.move< OptionBinding::SharedPtr > (that.value);
+        value.move< OptionBinding::WeakPtr > (that.value);
         break;
 
       case 42: // bindings
-        value.move< OptionBindingContainer::SharedPtr > (that.value);
+        value.move< OptionBindingContainer::WeakPtr > (that.value);
         break;
 
       case 27: // usage_section
@@ -236,7 +236,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        value.move< SharedPtrNode > (that.value);
+        value.move< WeakPtrNode > (that.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -266,30 +266,30 @@ namespace clidoc {
       switch (that.type_get ())
     {
       case 39: // default_value
-        value.copy< DefaultValue::SharedPtr > (that.value);
+        value.copy< DefaultValue::WeakPtr > (that.value);
         break;
 
       case 26: // doc
-        value.copy< Doc::SharedPtr > (that.value);
+        value.copy< Doc::WeakPtr > (that.value);
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        value.copy< LogicAnd::SharedPtr > (that.value);
+        value.copy< LogicAnd::WeakPtr > (that.value);
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        value.copy< LogicXor::SharedPtr > (that.value);
+        value.copy< LogicXor::WeakPtr > (that.value);
         break;
 
       case 43: // single_binding
-        value.copy< OptionBinding::SharedPtr > (that.value);
+        value.copy< OptionBinding::WeakPtr > (that.value);
         break;
 
       case 42: // bindings
-        value.copy< OptionBindingContainer::SharedPtr > (that.value);
+        value.copy< OptionBindingContainer::WeakPtr > (that.value);
         break;
 
       case 27: // usage_section
@@ -301,7 +301,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        value.copy< SharedPtrNode > (that.value);
+        value.copy< WeakPtrNode > (that.value);
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -542,30 +542,30 @@ namespace clidoc {
         switch (yyr1_[yyn])
     {
       case 39: // default_value
-        yylhs.value.build< DefaultValue::SharedPtr > ();
+        yylhs.value.build< DefaultValue::WeakPtr > ();
         break;
 
       case 26: // doc
-        yylhs.value.build< Doc::SharedPtr > ();
+        yylhs.value.build< Doc::WeakPtr > ();
         break;
 
       case 31: // seqs
       case 37: // descriptions
       case 40: // comments
-        yylhs.value.build< LogicAnd::SharedPtr > ();
+        yylhs.value.build< LogicAnd::WeakPtr > ();
         break;
 
       case 28: // utilities
       case 30: // or_exprs
-        yylhs.value.build< LogicXor::SharedPtr > ();
+        yylhs.value.build< LogicXor::WeakPtr > ();
         break;
 
       case 43: // single_binding
-        yylhs.value.build< OptionBinding::SharedPtr > ();
+        yylhs.value.build< OptionBinding::WeakPtr > ();
         break;
 
       case 42: // bindings
-        yylhs.value.build< OptionBindingContainer::SharedPtr > ();
+        yylhs.value.build< OptionBindingContainer::WeakPtr > ();
         break;
 
       case 27: // usage_section
@@ -577,7 +577,7 @@ namespace clidoc {
       case 36: // options_section
       case 38: // single_description
       case 41: // single_comment
-        yylhs.value.build< SharedPtrNode > ();
+        yylhs.value.build< WeakPtrNode > ();
         break;
 
       case 3: // OPTION_ARGUEMENT
@@ -607,9 +607,9 @@ namespace clidoc {
 #line 115 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto doc = Doc::Init();
-  doc->children_.push_back(yystack_[1].value.as< SharedPtrNode > ());
+  doc->children_.push_back(yystack_[1].value.as< WeakPtrNode > ().lock());
   *doc_ptr = doc;
-  yylhs.value.as< Doc::SharedPtr > () = doc;
+  yylhs.value.as< Doc::WeakPtr > () = doc;
 }
 #line 615 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -617,7 +617,7 @@ namespace clidoc {
   case 3:
 #line 126 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< LogicXor::SharedPtr > ();
+  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
 }
 #line 623 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -625,8 +625,8 @@ namespace clidoc {
   case 4:
 #line 135 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yystack_[1].value.as< LogicXor::SharedPtr > ()->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
-  yylhs.value.as< LogicXor::SharedPtr > () = yystack_[1].value.as< LogicXor::SharedPtr > ();
+  yystack_[1].value.as< LogicXor::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
+  yylhs.value.as< LogicXor::WeakPtr > () = yystack_[1].value.as< LogicXor::WeakPtr > ();
 }
 #line 632 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -635,8 +635,8 @@ namespace clidoc {
 #line 139 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_xor = LogicXor::Init();
-  logic_xor->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
-  yylhs.value.as< LogicXor::SharedPtr > () = logic_xor;
+  logic_xor->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
+  yylhs.value.as< LogicXor::WeakPtr > () = logic_xor;
 }
 #line 642 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -644,7 +644,7 @@ namespace clidoc {
   case 6:
 #line 149 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< LogicXor::SharedPtr > ();
+  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
 }
 #line 650 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -652,8 +652,8 @@ namespace clidoc {
   case 7:
 #line 158 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yystack_[2].value.as< LogicXor::SharedPtr > ()->children_.push_back(yystack_[0].value.as< LogicAnd::SharedPtr > ());
-  yylhs.value.as< LogicXor::SharedPtr > () = yystack_[2].value.as< LogicXor::SharedPtr > ();
+  yystack_[2].value.as< LogicXor::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< LogicAnd::WeakPtr > ().lock());
+  yylhs.value.as< LogicXor::WeakPtr > () = yystack_[2].value.as< LogicXor::WeakPtr > ();
 }
 #line 659 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -662,8 +662,8 @@ namespace clidoc {
 #line 162 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_xor = LogicXor::Init();
-  logic_xor->children_.push_back(yystack_[0].value.as< LogicAnd::SharedPtr > ());
-  yylhs.value.as< LogicXor::SharedPtr > () = logic_xor;
+  logic_xor->children_.push_back(yystack_[0].value.as< LogicAnd::WeakPtr > ().lock());
+  yylhs.value.as< LogicXor::WeakPtr > () = logic_xor;
 }
 #line 669 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -671,8 +671,8 @@ namespace clidoc {
   case 9:
 #line 173 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yystack_[1].value.as< LogicAnd::SharedPtr > ()->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
-  yylhs.value.as< LogicAnd::SharedPtr > () = yystack_[1].value.as< LogicAnd::SharedPtr > ();
+  yystack_[1].value.as< LogicAnd::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
+  yylhs.value.as< LogicAnd::WeakPtr > () = yystack_[1].value.as< LogicAnd::WeakPtr > ();
 }
 #line 678 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -681,8 +681,8 @@ namespace clidoc {
 #line 177 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(yystack_[0].value.as< SharedPtrNode > ());
-  yylhs.value.as< LogicAnd::SharedPtr > () = logic_and;
+  logic_and->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
+  yylhs.value.as< LogicAnd::WeakPtr > () = logic_and;
 }
 #line 688 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -690,7 +690,7 @@ namespace clidoc {
   case 11:
 #line 188 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< SharedPtrNode > ();
+  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
 }
 #line 696 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -699,8 +699,8 @@ namespace clidoc {
 #line 191 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_one_or_more = LogicOneOrMore::Init();
-  logic_one_or_more->children_.push_back(yystack_[1].value.as< SharedPtrNode > ());
-  yylhs.value.as< SharedPtrNode > () = logic_one_or_more;
+  logic_one_or_more->children_.push_back(yystack_[1].value.as< WeakPtrNode > ().lock());
+  yylhs.value.as< WeakPtrNode > () = logic_one_or_more;
 }
 #line 706 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -709,8 +709,8 @@ namespace clidoc {
 #line 207 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(yystack_[1].value.as< LogicXor::SharedPtr > ());
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  logic_and->children_.push_back(yystack_[1].value.as< LogicXor::WeakPtr > ().lock());
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 716 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -719,8 +719,8 @@ namespace clidoc {
 #line 212 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_optional = LogicOptional::Init();
-  logic_optional->children_.push_back(yystack_[1].value.as< LogicXor::SharedPtr > ());
-  yylhs.value.as< SharedPtrNode > () = logic_optional;
+  logic_optional->children_.push_back(yystack_[1].value.as< LogicXor::WeakPtr > ().lock());
+  yylhs.value.as< WeakPtrNode > () = logic_optional;
 }
 #line 726 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -728,7 +728,7 @@ namespace clidoc {
   case 15:
 #line 217 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< SharedPtrNode > ();
+  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
 }
 #line 734 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -736,7 +736,7 @@ namespace clidoc {
   case 16:
 #line 220 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< SharedPtrNode > () = yystack_[0].value.as< SharedPtrNode > ();
+  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
 }
 #line 742 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -748,7 +748,7 @@ namespace clidoc {
       OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(option_argument);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 754 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -760,7 +760,7 @@ namespace clidoc {
       Operand::Init(InitToken(TypeID::OPERAND, yystack_[0].value.as< std::string > ()));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(operand);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 766 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -772,7 +772,7 @@ namespace clidoc {
       KOptions::Init(InitToken(TypeID::K_OPTIONS, ""));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(k_options);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 778 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -784,7 +784,7 @@ namespace clidoc {
       PosixOption::Init(InitToken(TypeID::POSIX_OPTION, yystack_[0].value.as< std::string > ()));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(posix_option);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 790 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -796,7 +796,7 @@ namespace clidoc {
       GroupedOptions::Init(InitToken(TypeID::GROUPED_OPTIONS, yystack_[0].value.as< std::string > ()));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(grouped_option);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 802 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -807,7 +807,7 @@ namespace clidoc {
   auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, yystack_[0].value.as< std::string > ()));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(gnu_option);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 813 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -822,7 +822,7 @@ namespace clidoc {
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(gnu_option);
   logic_and->children_.push_back(option_argument);
-  yylhs.value.as< SharedPtrNode > () = logic_and;
+  yylhs.value.as< WeakPtrNode > () = logic_and;
 }
 #line 828 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -858,7 +858,7 @@ namespace clidoc {
     {  
   auto default_value =
       DefaultValue::Init(InitToken(TypeID::OPTION_DEFAULT_VALUE, yystack_[1].value.as< std::string > ()));
-  yylhs.value.as< DefaultValue::SharedPtr > () = default_value;
+  yylhs.value.as< DefaultValue::WeakPtr > () = default_value;
 }
 #line 864 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -866,7 +866,7 @@ namespace clidoc {
   case 29:
 #line 313 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yylhs.value.as< DefaultValue::SharedPtr > () = DefaultValue::Init();
+  yylhs.value.as< DefaultValue::WeakPtr > () = DefaultValue::Init();
 }
 #line 872 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -898,8 +898,8 @@ namespace clidoc {
   case 34:
 #line 332 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
-  yystack_[1].value.as< OptionBindingContainer::SharedPtr > ()->children_.push_back(yystack_[0].value.as< OptionBinding::SharedPtr > ());
-  yylhs.value.as< OptionBindingContainer::SharedPtr > () = yystack_[1].value.as< OptionBindingContainer::SharedPtr > ();
+  yystack_[1].value.as< OptionBindingContainer::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< OptionBinding::WeakPtr > ().lock());
+  yylhs.value.as< OptionBindingContainer::WeakPtr > () = yystack_[1].value.as< OptionBindingContainer::WeakPtr > ();
 
 }
 #line 906 "generated_parser.cc" // lalr1.cc:847
@@ -909,8 +909,8 @@ namespace clidoc {
 #line 337 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto bindings = OptionBindingContainer::Init();
-  bindings->children_.push_back(yystack_[0].value.as< OptionBinding::SharedPtr > ());
-  yylhs.value.as< OptionBindingContainer::SharedPtr > () = bindings;
+  bindings->children_.push_back(yystack_[0].value.as< OptionBinding::WeakPtr > ().lock());
+  yylhs.value.as< OptionBindingContainer::WeakPtr > () = bindings;
 }
 #line 916 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -920,7 +920,7 @@ namespace clidoc {
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, yystack_[0].value.as< std::string > ()));
-  yylhs.value.as< OptionBinding::SharedPtr > () = binding;
+  yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
 #line 926 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -930,7 +930,7 @@ namespace clidoc {
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, yystack_[0].value.as< std::string > ()));
-  yylhs.value.as< OptionBinding::SharedPtr > () = binding;
+  yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
 #line 936 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -941,7 +941,7 @@ namespace clidoc {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, yystack_[1].value.as< std::string > ()),
                           InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
-  yylhs.value.as< OptionBinding::SharedPtr > () = binding;
+  yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
 #line 947 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -952,7 +952,7 @@ namespace clidoc {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, yystack_[1].value.as< std::string > ()),
                           InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
-  yylhs.value.as< OptionBinding::SharedPtr > () = binding;
+  yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
 #line 958 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -963,7 +963,7 @@ namespace clidoc {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, yystack_[2].value.as< std::string > ()),
                           InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
-  yylhs.value.as< OptionBinding::SharedPtr > () = binding;
+  yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
 #line 969 "generated_parser.cc" // lalr1.cc:847
     break;

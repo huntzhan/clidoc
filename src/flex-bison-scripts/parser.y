@@ -86,26 +86,26 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 ;
 
 // Logical                  nodes.
-%type <Doc::SharedPtr>      doc
-%type <LogicAnd::SharedPtr> seqs
-%type <LogicAnd::SharedPtr> descriptions
-%type <LogicAnd::SharedPtr> comments
-%type <LogicXor::SharedPtr> utilities
-%type <LogicXor::SharedPtr> or_exprs
+%type <Doc::WeakPtr>      doc
+%type <LogicAnd::WeakPtr> seqs
+%type <LogicAnd::WeakPtr> descriptions
+%type <LogicAnd::WeakPtr> comments
+%type <LogicXor::WeakPtr> utilities
+%type <LogicXor::WeakPtr> or_exprs
 
-%type <SharedPtrNode>       usage_section
-%type <SharedPtrNode>       single_seq
-%type <SharedPtrNode>       atom
-%type <SharedPtrNode>       single_utility
-%type <SharedPtrNode>       gnu_option_unit
-%type <SharedPtrNode>       posix_option_unit
+%type <WeakPtrNode>       usage_section
+%type <WeakPtrNode>       single_seq
+%type <WeakPtrNode>       atom
+%type <WeakPtrNode>       single_utility
+%type <WeakPtrNode>       gnu_option_unit
+%type <WeakPtrNode>       posix_option_unit
 
-%type <SharedPtrNode>                     options_section
-%type <SharedPtrNode>                     single_description
-%type <OptionBindingContainer::SharedPtr> bindings
-%type <OptionBinding::SharedPtr>          single_binding
-%type <DefaultValue::SharedPtr>           default_value
-%type <SharedPtrNode>                     single_comment
+%type <WeakPtrNode>                     options_section
+%type <WeakPtrNode>                     single_description
+%type <OptionBindingContainer::WeakPtr> bindings
+%type <OptionBinding::WeakPtr>          single_binding
+%type <DefaultValue::WeakPtr>           default_value
+%type <WeakPtrNode>                     single_comment
 
 %%
 
@@ -114,7 +114,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 // ;
 doc : usage_section options_section {
   auto doc = Doc::Init();
-  doc->children_.push_back($1);
+  doc->children_.push_back($1.lock());
   *doc_ptr = doc;
   $$ = doc;
 }
@@ -133,12 +133,12 @@ usage_section : K_USAGE_COLON utilities {
 //           | single_utility
 // ;
 utilities : utilities single_utility {
-  $1->children_.push_back($2);
+  $1.lock()->children_.push_back($2.lock());
   $$ = $1;
 }
           | single_utility {
   auto logic_xor = LogicXor::Init();
-  logic_xor->children_.push_back($1);
+  logic_xor->children_.push_back($1.lock());
   $$ = logic_xor;
 }
 ;
@@ -156,12 +156,12 @@ single_utility : K_UTILITY_DELIMITER or_exprs {
 //          | seqs
 // ;
 or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
-  $1->children_.push_back($3);
+  $1.lock()->children_.push_back($3.lock());
   $$ = $1;
 }
          | seqs {
   auto logic_xor = LogicXor::Init();
-  logic_xor->children_.push_back($1);
+  logic_xor->children_.push_back($1.lock());
   $$ = logic_xor;
 }
 ;
@@ -171,12 +171,12 @@ or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
 //      | single_seq
 // ;
 seqs : seqs single_seq {
-  $1->children_.push_back($2);
+  $1.lock()->children_.push_back($2.lock());
   $$ = $1;
 }
      | single_seq {
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back($1);
+  logic_and->children_.push_back($1.lock());
   $$ = logic_and;
 }
 ;
@@ -190,7 +190,7 @@ single_seq : atom {
 }
            | atom K_ELLIPSES {
   auto logic_one_or_more = LogicOneOrMore::Init();
-  logic_one_or_more->children_.push_back($1);
+  logic_one_or_more->children_.push_back($1.lock());
   $$ = logic_one_or_more;
 }
 ;
@@ -206,12 +206,12 @@ single_seq : atom {
 // ;
 atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back($2);
+  logic_and->children_.push_back($2.lock());
   $$ = logic_and;
 }
      | K_L_BRACKET or_exprs K_R_BRACKET {
   auto logic_optional = LogicOptional::Init();
-  logic_optional->children_.push_back($2);
+  logic_optional->children_.push_back($2.lock());
   $$ = logic_optional;
 }
      | posix_option_unit {
@@ -330,13 +330,13 @@ single_comment : COMMENT K_DESC_DELIMITER { }
 //          | single_binding {  }
 // ;
 bindings : bindings single_binding {
-  $1->children_.push_back($2);
+  $1.lock()->children_.push_back($2.lock());
   $$ = $1;
 
 }
          | single_binding {
   auto bindings = OptionBindingContainer::Init();
-  bindings->children_.push_back($1);
+  bindings->children_.push_back($1.lock());
   $$ = bindings;
 }
 ;

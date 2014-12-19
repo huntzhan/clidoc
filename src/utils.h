@@ -72,20 +72,46 @@ class Token {
 };
 
 template <typename Derived>
-class SharedPtrInterface {
+class SmartPtrInterface {
  public:
-  // type alias for shared_ptr.
+  // type alias.
   using SharedPtr = std::shared_ptr<Derived>;
+  using WeakPtr = std::weak_ptr<Derived>;
   // function for init shared_ptr.
   template <typename... Args>
   static SharedPtr Init(Args&&... args);
+  // manually free cache.
+  static void FreeCached();
+
+ private:
+  static std::vector<std::shared_ptr<void>> cached_container_;
 };
 
 template <typename Derived>
 template <typename... Args>
-typename SharedPtrInterface<Derived>::SharedPtr
-    SharedPtrInterface<Derived>::Init(Args&&... args) {
-  return std::make_shared<Derived>(std::forward<Args>(args)...);
+typename SmartPtrInterface<Derived>::SharedPtr
+    SmartPtrInterface<Derived>::Init(Args&&... args) {
+  // Since the bison generated parser use placement new to create an instance
+  // during parsing, shared_ptr should not be used as non-terminal types. As an
+  // intuitive approach, I tried to use weak_ptr as non-terminal types, but in
+  // what approach could I store the corrensponding shared_ptr? Luckly, the
+  // shared_ptr has a feature called "type ensure":
+  // http://stackoverflow.com/questions/3899790/shared-ptr-magic
+  // Hence, Init(...) generated shared_ptr would place an copy to the
+  // `cached_container_`, the value_type of which is std::shared_ptr<void>.
+  auto ptr = std::make_shared<Derived>(std::forward<Args>(args)...);
+  cached_container_.push_back(ptr);
+  return ptr;
+}
+
+// init of static data member.
+template <typename Derived>
+std::vector<std::shared_ptr<void>>
+SmartPtrInterface<Derived>::cached_container_;
+
+template <typename Derived>
+void SmartPtrInterface<Derived>::FreeCached() {
+  cached_container_.clear();
 }
 
 // Contains tokenized arguments during semantic analysis.
@@ -101,12 +127,13 @@ class NodeInterface {
 };
 
 using SharedPtrNode = std::shared_ptr<NodeInterface>;
+using WeakPtrNode = std::weak_ptr<NodeInterface>;
 using VecSharedPtrNode = std::vector<SharedPtrNode>;
 
 // Template for terminal types.
 template <TerminalType T>
 class Terminal : public NodeInterface,
-                 public SharedPtrInterface<Terminal<T>> {
+                 public SmartPtrInterface<Terminal<T>> {
  public:
   explicit Terminal(const Token &token) : token_(token) { /* empty */ }
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
@@ -117,7 +144,7 @@ class Terminal : public NodeInterface,
 // Template for non-terminal types.
 template <NonTerminalType T>
 class NonTerminal : public NodeInterface,
-                    public SharedPtrInterface<NonTerminal<T>> {
+                    public SmartPtrInterface<NonTerminal<T>> {
  public:
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
 
@@ -144,7 +171,7 @@ using LogicOptional      = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
 using LogicOneOrMore     = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
 
 // For capturing option bindings.
-class OptionBinding : public SharedPtrInterface<OptionBinding> {
+class OptionBinding : public SmartPtrInterface<OptionBinding> {
  public:
   // binding without argument, for synonym options, i.e. "-h, --help".
   explicit OptionBinding(const Token &token_option)
@@ -160,13 +187,13 @@ class OptionBinding : public SharedPtrInterface<OptionBinding> {
 };
 
 class OptionBindingContainer
-    : public SharedPtrInterface<OptionBindingContainer> {
+    : public SmartPtrInterface<OptionBindingContainer> {
  public:
   std::vector<OptionBinding::SharedPtr> children_;
 };
 
 // For capturing default value of option(s) argument.
-class DefaultValue : public SharedPtrInterface<DefaultValue> {
+class DefaultValue : public SmartPtrInterface<DefaultValue> {
  public:
   DefaultValue() = default;
   explicit DefaultValue(const Token &default_value)
