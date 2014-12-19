@@ -5,9 +5,9 @@
 #include <ostream>
 
 // Macro `#if defined(yyFlexLexer) || ! defined(yyFlexLexerOnce)` in
-// `FlexLexer.h` would cause the the definition of class yyFlexLexer being
+// `FlexLexer.h` cause the definition of class yyFlexLexer being
 // included more than once, since the flex generated file would always define
-// `yyFlexLexer`. Following macro could this behavior.
+// the variable `yyFlexLexer`. Following macro could this behavior.
 #ifndef __FLEX_LEXER_H
 #include "FlexLexer.h"
 #endif

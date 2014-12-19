@@ -39,19 +39,36 @@ enum class NonTerminalType {
 class Token {
  public:
   // constructors.
+  Token() = default;
   explicit Token(TerminalType type)
       : has_value_(false), type_(type) { /* empty */ }
   Token(TerminalType type, const std::string &value)
       : has_value_(true), type_(type), value_(value) { /* empty */ }
 
+  // support std::map.
+  bool operator<(const Token &other) const {
+    return value_ < other.value_;
+  }
+  // support equality test.
+  bool operator==(const Token &other) const {
+    return (has_value_ == other.has_value()
+            && type_ == other.type()
+            && value_ == other.value());
+  }
+  bool operator!=(const Token &other) const {
+    return !(*this== other);
+  }
+
+  bool IsEmpty() const { return type_ == TerminalType::OTHER; }
   bool has_value() const { return has_value_; }
-  std::string value() const { return value_; }
   TerminalType type() const { return type_; }
+  std::string value() const { return value_; }
+  void set_value(const std::string &value) { value_ = value; }
 
  private:
-  const bool has_value_;
-  const TerminalType type_;
-  const std::string value_;
+  bool has_value_ = false;
+  TerminalType type_ = TerminalType::OTHER;
+  std::string value_;
 };
 
 template <typename Derived>
@@ -139,7 +156,7 @@ class OptionBinding : public SharedPtrInterface<OptionBinding> {
         token_option_argument_(token_optin_argument) { /* empty */ }
 
   const Token token_option_;
-  const Token token_option_argument_ = Token(TerminalType::OTHER);
+  const Token token_option_argument_ = Token();
 };
 
 class OptionBindingContainer
@@ -153,9 +170,16 @@ class DefaultValue : public SharedPtrInterface<DefaultValue> {
  public:
   DefaultValue() = default;
   explicit DefaultValue(const Token &default_value)
-      : default_value_(default_value) { /* empty */ }
+      : default_value_(default_value) {
+    // the default value is surrounded by double-quote marks, extract it.
+    std::string raw_text = default_value_.value();
+    std::string extracted_text(raw_text.begin() + 1, raw_text.end() - 1);
+    if (!default_value_.IsEmpty()) {
+      default_value_.set_value(extracted_text);
+    }
+  }
 
-  const Token default_value_ = Token(TerminalType::OTHER);
+  Token default_value_;
 };
 
 }  // namespace clidoc
