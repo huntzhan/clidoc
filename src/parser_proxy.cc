@@ -152,4 +152,45 @@ void OptionBindingRecorder::RecordBinding(
   }
 }
 
+void OptionBindingRecorder::RecordBinding(
+    const Token &option, const Token &option_argument) {
+  auto pos_iter = option_to_option_argument_cache_.find(option);
+  if (pos_iter == option_to_option_argument_cache_.end()) {
+    option_to_option_argument_cache_[option] = option_argument;
+  } else if (option_argument != pos_iter->second) {
+    throw "NotImplementedError.";
+  }
+}
+
+void OptionBindingRecorder::ProcessCachedBindings() {
+  for (const auto &binding : option_to_option_argument_cache_) {
+    const Token &option = binding.first;
+    const Token &option_argument = binding.second;
+    // get representative_option.
+    if (option_to_representative_option_.find(option)
+        == option_to_representative_option_.end()) {
+      // no corresponding representative_option.
+      // just bind to itself.
+      option_to_representative_option_[option] = option;
+    }
+    const auto &representative_option =
+        option_to_representative_option_[option];
+    // handle option_argument.
+    auto pos_iter =
+        representative_option_to_property_.find(representative_option);
+    if (pos_iter == representative_option_to_property_.end()) {
+      CreateRepresentativeOptionProperty(
+          representative_option,
+          option_argument,
+          Token());
+    } else {
+      UpdateRepresentativeOptionProperty(
+          representative_option,
+          option_argument,
+          Token(),
+          &pos_iter->second);
+    }
+  }
+}
+
 }  // namespace clidoc

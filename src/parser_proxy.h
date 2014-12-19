@@ -26,10 +26,12 @@ class OptionBindingRecorder {
       OptionBindingContainer::SharedPtr container_ptr,
       DefaultValue::SharedPtr default_value_ptr);
   void RecordBinding(const Token &option, const Token &option_argument);
+  void ProcessCachedBindings();
 
   std::map<Token, Token> option_to_representative_option_;
   std::map<Token, RepresentativeOptionProperty>
       representative_option_to_property_;
+  // store option -> option_argument binding when parsing usage section.
   std::map<Token, Token> option_to_option_argument_cache_;
 
  private:
@@ -51,6 +53,7 @@ class OptionBindingRecorder {
 
 class ParserProxy {
  public:
+
 };
 
 }  // namespace clidoc
