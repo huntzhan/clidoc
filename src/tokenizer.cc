@@ -1,4 +1,3 @@
-#include "tokenizer.h"
 
 #include <fstream>
 #include <sstream>
@@ -6,6 +5,7 @@
 #include <vector>
 
 #include "generated_scanner.h"
+#include "tokenizer.h"
 #include "utils.h"
 
 using std::string;
@@ -20,7 +20,7 @@ case TypeID::name:             \
 namespace clidoc {
 namespace tokenizer {
 
-inline TerminalType ToTerminalType(const Type &type_id) {
+TerminalType ToTerminalType(const Type &type_id) {
   switch (type_id) {
     TokenTypeMapping(OPTION_ARGUEMENT);
     TokenTypeMapping(GNU_OPTION);
@@ -36,7 +36,7 @@ inline TerminalType ToTerminalType(const Type &type_id) {
   }
 }
 
-inline bool TokenHasValue(const TerminalType &type) {
+bool TokenHasValue(const TerminalType &type) {
   switch (type) {
     // Only for doc processing.
     case TerminalType::OPTION_ARGUEMENT:
@@ -55,7 +55,7 @@ inline bool TokenHasValue(const TerminalType &type) {
   }
 }
 
-inline Token InitToken(const TerminalType &type, const string &value) {
+Token InitToken(const TerminalType &type, const string &value) {
   if (TokenHasValue(type)) {
     return Token(type, value);
   } else {
@@ -63,7 +63,7 @@ inline Token InitToken(const TerminalType &type, const string &value) {
   }
 }
 
-inline Token InitToken(const Type &type_id, const string &value) {
+Token InitToken(const Type &type_id, const string &value) {
   auto terminal_type = ToTerminalType(type_id);
   return InitToken(terminal_type, value);
 }

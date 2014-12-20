@@ -10,5 +10,6 @@ set_target_properties(
   PROPERTIES
   COMPILE_FLAGS "-w")
 
-target_link_libraries (generated_parser utils)
-target_link_libraries (parser_proxy generated_parser utils)
+target_link_libraries (generated_parser
+  utils tokenizer generated_scanner_for_doc)
+target_link_libraries (parser_proxy generated_parser)

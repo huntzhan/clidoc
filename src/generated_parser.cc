@@ -51,13 +51,12 @@
 
 #line 53 "generated_parser.cc" // lalr1.cc:407
 // Unqualified %code blocks.
-#line 27 "flex-bison-scripts/parser.y" // lalr1.cc:408
+#line 28 "flex-bison-scripts/parser.y" // lalr1.cc:408
 
 #include "generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
 
-#include <memory>
 #include "parser_proxy.h"
 #include "tokenizer.h"
 #include "utils.h"
@@ -65,9 +64,12 @@
 using namespace clidoc::tokenizer;
 
 // Error report function.
-void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
+void clidoc::BisonGeneratedParser::error(const std::string &msg) {
+  std::cerr << msg << std::endl;
+}
 
-#line 71 "generated_parser.cc" // lalr1.cc:408
+
+#line 73 "generated_parser.cc" // lalr1.cc:408
 
 
 #ifndef YY_
@@ -134,7 +136,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 
 namespace clidoc {
-#line 138 "generated_parser.cc" // lalr1.cc:474
+#line 140 "generated_parser.cc" // lalr1.cc:474
 
   /// Build a parser object.
   BisonGeneratedParser::BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_ptr_yyarg, clidoc::OptionBindingRecorder *option_binding_recorder_ptr_yyarg)
@@ -604,145 +606,145 @@ namespace clidoc {
           switch (yyn)
             {
   case 2:
-#line 117 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 120 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto doc = Doc::Init();
   doc->children_.push_back(yystack_[1].value.as< WeakPtrNode > ().lock());
   *doc_ptr = doc;
   yylhs.value.as< Doc::WeakPtr > () = doc;
 }
-#line 615 "generated_parser.cc" // lalr1.cc:847
+#line 617 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 3:
-#line 128 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 131 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
 }
-#line 623 "generated_parser.cc" // lalr1.cc:847
+#line 625 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 4:
-#line 137 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 140 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yystack_[1].value.as< LogicXor::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
   yylhs.value.as< LogicXor::WeakPtr > () = yystack_[1].value.as< LogicXor::WeakPtr > ();
 }
-#line 632 "generated_parser.cc" // lalr1.cc:847
+#line 634 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 5:
-#line 141 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 144 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_xor = LogicXor::Init();
   logic_xor->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
   yylhs.value.as< LogicXor::WeakPtr > () = logic_xor;
 }
-#line 642 "generated_parser.cc" // lalr1.cc:847
+#line 644 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 6:
-#line 151 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 154 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
 }
-#line 650 "generated_parser.cc" // lalr1.cc:847
+#line 652 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 7:
-#line 160 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 163 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yystack_[2].value.as< LogicXor::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< LogicAnd::WeakPtr > ().lock());
   yylhs.value.as< LogicXor::WeakPtr > () = yystack_[2].value.as< LogicXor::WeakPtr > ();
 }
-#line 659 "generated_parser.cc" // lalr1.cc:847
+#line 661 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 8:
-#line 164 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 167 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_xor = LogicXor::Init();
   logic_xor->children_.push_back(yystack_[0].value.as< LogicAnd::WeakPtr > ().lock());
   yylhs.value.as< LogicXor::WeakPtr > () = logic_xor;
 }
-#line 669 "generated_parser.cc" // lalr1.cc:847
+#line 671 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 9:
-#line 175 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 178 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yystack_[1].value.as< LogicAnd::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
   yylhs.value.as< LogicAnd::WeakPtr > () = yystack_[1].value.as< LogicAnd::WeakPtr > ();
 }
-#line 678 "generated_parser.cc" // lalr1.cc:847
+#line 680 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 10:
-#line 179 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 182 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(yystack_[0].value.as< WeakPtrNode > ().lock());
   yylhs.value.as< LogicAnd::WeakPtr > () = logic_and;
 }
-#line 688 "generated_parser.cc" // lalr1.cc:847
+#line 690 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 11:
-#line 190 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 193 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
 }
-#line 696 "generated_parser.cc" // lalr1.cc:847
+#line 698 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 12:
-#line 193 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 196 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_one_or_more = LogicOneOrMore::Init();
   logic_one_or_more->children_.push_back(yystack_[1].value.as< WeakPtrNode > ().lock());
   yylhs.value.as< WeakPtrNode > () = logic_one_or_more;
 }
-#line 706 "generated_parser.cc" // lalr1.cc:847
+#line 708 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 13:
-#line 209 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 212 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(yystack_[1].value.as< LogicXor::WeakPtr > ().lock());
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 716 "generated_parser.cc" // lalr1.cc:847
+#line 718 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 14:
-#line 214 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 217 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto logic_optional = LogicOptional::Init();
   logic_optional->children_.push_back(yystack_[1].value.as< LogicXor::WeakPtr > ().lock());
   yylhs.value.as< WeakPtrNode > () = logic_optional;
 }
-#line 726 "generated_parser.cc" // lalr1.cc:847
+#line 728 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 15:
-#line 219 "flex-bison-scripts/parser.y" // lalr1.cc:847
-    {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
-}
-#line 734 "generated_parser.cc" // lalr1.cc:847
-    break;
-
-  case 16:
 #line 222 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
 }
-#line 742 "generated_parser.cc" // lalr1.cc:847
+#line 736 "generated_parser.cc" // lalr1.cc:847
+    break;
+
+  case 16:
+#line 225 "flex-bison-scripts/parser.y" // lalr1.cc:847
+    {
+  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
+}
+#line 744 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 17:
-#line 225 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 228 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto option_argument =
       OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
@@ -750,11 +752,11 @@ namespace clidoc {
   logic_and->children_.push_back(option_argument);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 754 "generated_parser.cc" // lalr1.cc:847
+#line 756 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 18:
-#line 232 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 235 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto operand =
       Operand::Init(InitToken(TypeID::OPERAND, yystack_[0].value.as< std::string > ()));
@@ -762,11 +764,11 @@ namespace clidoc {
   logic_and->children_.push_back(operand);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 766 "generated_parser.cc" // lalr1.cc:847
+#line 768 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 19:
-#line 239 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 242 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto k_options =
       KOptions::Init(InitToken(TypeID::K_OPTIONS, ""));
@@ -774,11 +776,11 @@ namespace clidoc {
   logic_and->children_.push_back(k_options);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 778 "generated_parser.cc" // lalr1.cc:847
+#line 780 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 20:
-#line 252 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 255 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto posix_option =
       PosixOption::Init(InitToken(TypeID::POSIX_OPTION, yystack_[0].value.as< std::string > ()));
@@ -786,11 +788,11 @@ namespace clidoc {
   logic_and->children_.push_back(posix_option);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 790 "generated_parser.cc" // lalr1.cc:847
+#line 792 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 21:
-#line 259 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 262 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto grouped_option =
       GroupedOptions::Init(InitToken(TypeID::GROUPED_OPTIONS, yystack_[0].value.as< std::string > ()));
@@ -798,22 +800,22 @@ namespace clidoc {
   logic_and->children_.push_back(grouped_option);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 802 "generated_parser.cc" // lalr1.cc:847
+#line 804 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 22:
-#line 272 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 275 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, yystack_[0].value.as< std::string > ()));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(gnu_option);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 813 "generated_parser.cc" // lalr1.cc:847
+#line 815 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 23:
-#line 278 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 281 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   // recording binding.
   option_binding_recorder_ptr->RecordBinding(
@@ -829,159 +831,159 @@ namespace clidoc {
   logic_and->children_.push_back(option_argument);
   yylhs.value.as< WeakPtrNode > () = logic_and;
 }
-#line 833 "generated_parser.cc" // lalr1.cc:847
+#line 835 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 24:
-#line 298 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 301 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 839 "generated_parser.cc" // lalr1.cc:847
+#line 841 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 25:
-#line 299 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 302 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 845 "generated_parser.cc" // lalr1.cc:847
+#line 847 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 26:
-#line 303 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 306 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 851 "generated_parser.cc" // lalr1.cc:847
+#line 853 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 27:
-#line 304 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 307 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 857 "generated_parser.cc" // lalr1.cc:847
+#line 859 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 28:
-#line 310 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 313 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   option_binding_recorder_ptr->RecordBinding(
       yystack_[2].value.as< OptionBindingContainer::WeakPtr > ().lock(), yystack_[1].value.as< DefaultValue::WeakPtr > ().lock());
 }
-#line 866 "generated_parser.cc" // lalr1.cc:847
+#line 868 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 29:
-#line 317 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 320 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  
   auto default_value =
       DefaultValue::Init(InitToken(TypeID::OPTION_DEFAULT_VALUE, yystack_[1].value.as< std::string > ()));
   yylhs.value.as< DefaultValue::WeakPtr > () = default_value;
 }
-#line 876 "generated_parser.cc" // lalr1.cc:847
+#line 878 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 30:
-#line 322 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 325 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< DefaultValue::WeakPtr > () = DefaultValue::Init();
 }
-#line 884 "generated_parser.cc" // lalr1.cc:847
+#line 886 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 31:
-#line 328 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 331 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 890 "generated_parser.cc" // lalr1.cc:847
+#line 892 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 32:
-#line 329 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 332 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {  }
-#line 896 "generated_parser.cc" // lalr1.cc:847
+#line 898 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 33:
-#line 333 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 336 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 902 "generated_parser.cc" // lalr1.cc:847
+#line 904 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 34:
-#line 334 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 337 "flex-bison-scripts/parser.y" // lalr1.cc:847
     { }
-#line 908 "generated_parser.cc" // lalr1.cc:847
+#line 910 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 35:
-#line 341 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 344 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yystack_[1].value.as< OptionBindingContainer::WeakPtr > ().lock()->children_.push_back(yystack_[0].value.as< OptionBinding::WeakPtr > ().lock());
   yylhs.value.as< OptionBindingContainer::WeakPtr > () = yystack_[1].value.as< OptionBindingContainer::WeakPtr > ();
 
 }
-#line 918 "generated_parser.cc" // lalr1.cc:847
+#line 920 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 36:
-#line 346 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 349 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto bindings = OptionBindingContainer::Init();
   bindings->children_.push_back(yystack_[0].value.as< OptionBinding::WeakPtr > ().lock());
   yylhs.value.as< OptionBindingContainer::WeakPtr > () = bindings;
 }
-#line 928 "generated_parser.cc" // lalr1.cc:847
+#line 930 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 37:
-#line 360 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 363 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, yystack_[0].value.as< std::string > ()));
   yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
-#line 938 "generated_parser.cc" // lalr1.cc:847
+#line 940 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 38:
-#line 365 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 368 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, yystack_[0].value.as< std::string > ()));
   yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
-#line 948 "generated_parser.cc" // lalr1.cc:847
+#line 950 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 39:
-#line 370 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 373 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, yystack_[1].value.as< std::string > ()),
                           InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
   yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
-#line 959 "generated_parser.cc" // lalr1.cc:847
+#line 961 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 40:
-#line 376 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 379 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, yystack_[1].value.as< std::string > ()),
                           InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
   yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
-#line 970 "generated_parser.cc" // lalr1.cc:847
+#line 972 "generated_parser.cc" // lalr1.cc:847
     break;
 
   case 41:
-#line 382 "flex-bison-scripts/parser.y" // lalr1.cc:847
+#line 385 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, yystack_[2].value.as< std::string > ()),
                           InitToken(TypeID::OPTION_ARGUEMENT, yystack_[0].value.as< std::string > ()));
   yylhs.value.as< OptionBinding::WeakPtr > () = binding;
 }
-#line 981 "generated_parser.cc" // lalr1.cc:847
+#line 983 "generated_parser.cc" // lalr1.cc:847
     break;
 
 
-#line 985 "generated_parser.cc" // lalr1.cc:847
+#line 987 "generated_parser.cc" // lalr1.cc:847
             default:
               break;
             }
@@ -1257,11 +1259,11 @@ namespace clidoc {
   const unsigned short int
   BisonGeneratedParser::yyrline_[] =
   {
-       0,   117,   117,   128,   137,   141,   151,   160,   164,   175,
-     179,   190,   193,   209,   214,   219,   222,   225,   232,   239,
-     252,   259,   272,   278,   298,   299,   303,   304,   310,   317,
-     322,   328,   329,   333,   334,   341,   346,   360,   365,   370,
-     376,   382
+       0,   120,   120,   131,   140,   144,   154,   163,   167,   178,
+     182,   193,   196,   212,   217,   222,   225,   228,   235,   242,
+     255,   262,   275,   281,   301,   302,   306,   307,   313,   320,
+     325,   331,   332,   336,   337,   344,   349,   363,   368,   373,
+     379,   385
   };
 
   // Print the state stack on the debug stream.
@@ -1296,6 +1298,6 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1300 "generated_parser.cc" // lalr1.cc:1155
-#line 390 "flex-bison-scripts/parser.y" // lalr1.cc:1156
+#line 1302 "generated_parser.cc" // lalr1.cc:1155
+#line 393 "flex-bison-scripts/parser.y" // lalr1.cc:1156
 

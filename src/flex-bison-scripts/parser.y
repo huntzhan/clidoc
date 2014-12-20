@@ -11,6 +11,7 @@
 %define api.value.type variant
 
 %code requires {
+#include <iostream>
 #include <string>
 #include "utils.h"
 
@@ -29,7 +30,6 @@ class OptionBindingRecorder;
 #undef yylex
 #define yylex lexer_ptr->lex
 
-#include <memory>
 #include "parser_proxy.h"
 #include "tokenizer.h"
 #include "utils.h"
@@ -37,7 +37,10 @@ class OptionBindingRecorder;
 using namespace clidoc::tokenizer;
 
 // Error report function.
-void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
+void clidoc::BisonGeneratedParser::error(const std::string &msg) {
+  std::cerr << msg << std::endl;
+}
+
 }
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }

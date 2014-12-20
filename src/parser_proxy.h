@@ -3,7 +3,6 @@
 
 #include <map>
 #include <string>
-#include "generated_parser.h"
 #include "utils.h"
 
 namespace clidoc {

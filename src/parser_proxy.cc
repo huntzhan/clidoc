@@ -1,8 +1,11 @@
 
+#include <fstream>
 #include <iterator>
 #include <map>
 #include <regex>
+#include <sstream>
 #include <string>
+#include "generated_scanner.h"
 #include "generated_parser.h"
 #include "utils.h"
 #include "parser_proxy.h"
@@ -13,6 +16,8 @@ using std::smatch;
 using std::regex_replace;
 using std::regex_search;
 using std::back_inserter;
+using std::ofstream;
+using std::istringstream;
 
 namespace clidoc {
 
@@ -309,6 +314,20 @@ string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
   string options_section =
       DocPreprocessor::ExtractAndProcessOptionsSection(internal_text);
   return usage_section + options_section;
+}
+
+void ParserProxy::ParseByBison(
+    const string &preprocessed_doc,
+    Doc::SharedPtr *doc_ptr,
+    OptionBindingRecorder *option_binding_recorder_ptr) {
+  // setup scanner.
+  ofstream null_ostream("/dev/null");
+  istringstream input_stream(preprocessed_doc);
+  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
+  // init parser.
+  BisonGeneratedParser bison_parser(
+      &lexer, doc_ptr, option_binding_recorder_ptr);
+  bison_parser.parse();
 }
 
 }  // namespace clidoc
