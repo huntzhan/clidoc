@@ -45,13 +45,16 @@
 #include <string>
 #include "utils.h"
 
+// Forward declarations.
 namespace clidoc {
-// Forward declaration `FlexGeneratedScanner` to resolve cyclic #include.
+
 class FlexGeneratedScanner;
+class OptionBindingRecorder;
+
 }  // namespace clidoc
 
 
-#line 55 "generated_parser.h" // lalr1.cc:387
+#line 58 "generated_parser.h" // lalr1.cc:387
 
 
 # include <vector>
@@ -127,7 +130,7 @@ class FlexGeneratedScanner;
 
 
 namespace clidoc {
-#line 131 "generated_parser.h" // lalr1.cc:387
+#line 134 "generated_parser.h" // lalr1.cc:387
 
 
 
@@ -555,7 +558,7 @@ namespace clidoc {
 
 
     /// Build a parser object.
-    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_ptr_yyarg);
+    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_ptr_yyarg, clidoc::OptionBindingRecorder *option_binding_recorder_ptr_yyarg);
     virtual ~BisonGeneratedParser ();
 
     /// Parse.
@@ -762,6 +765,7 @@ namespace clidoc {
     // User arguments.
     clidoc::FlexGeneratedScanner *lexer_ptr;
     clidoc::Doc::SharedPtr *doc_ptr;
+    clidoc::OptionBindingRecorder *option_binding_recorder_ptr;
   };
 
   // Symbol number corresponding to token number t.
@@ -1336,7 +1340,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1340 "generated_parser.h" // lalr1.cc:387
+#line 1344 "generated_parser.h" // lalr1.cc:387
 
 
 

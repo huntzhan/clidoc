@@ -51,7 +51,7 @@ class OptionBindingRecorder {
       RepresentativeOptionProperty *property_ptr);
 };
 
-struct RawTextPreprocessor {
+struct DocPreprocessor {
   // Exrtact a section targeted by `section_name` and formalize section name.
   static bool ExtractSection(
       const std::string &section_name,
@@ -68,9 +68,9 @@ struct RawTextPreprocessor {
 
 class ParserProxy {
  public:
-  std::string PreprocessRawText(const std::string &raw_text);
+  std::string PreprocessRawDoc(const std::string &raw_doc);
   void ParseByBison(
-      const std::string &preprocessed_text,
+      const std::string &preprocessed_doc,
       Doc::SharedPtr *doc_ptr,
       OptionBindingRecorder *option_binding_recorder_ptr);
 

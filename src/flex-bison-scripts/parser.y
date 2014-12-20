@@ -14,9 +14,12 @@
 #include <string>
 #include "utils.h"
 
+// Forward declarations.
 namespace clidoc {
-// Forward declaration `FlexGeneratedScanner` to resolve cyclic #include.
+
 class FlexGeneratedScanner;
+class OptionBindingRecorder;
+
 }  // namespace clidoc
 
 }
@@ -27,8 +30,7 @@ class FlexGeneratedScanner;
 #define yylex lexer_ptr->lex
 
 #include <memory>
-// TODO:
-// #include "parser_proxy.h"
+#include "parser_proxy.h"
 #include "tokenizer.h"
 #include "utils.h"
 
@@ -40,7 +42,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
 %parse-param { clidoc::Doc::SharedPtr *doc_ptr }
-// %parse-param { clidoc::OptionBindingRecorder *option_binding_recorder_ptr }
+%parse-param { clidoc::OptionBindingRecorder *option_binding_recorder_ptr }
 
 // Terminal with value.
 %token <std::string>
@@ -274,7 +276,12 @@ gnu_option_unit : GNU_OPTION {
   $$ = logic_and;
 }
                 | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
-  // The driver must crate binding for option and option_argument.
+  // recording binding.
+  option_binding_recorder_ptr->RecordBinding(
+      InitToken(TypeID::GNU_OPTION, $1),
+      InitToken(TypeID::OPTION_ARGUEMENT, $3));
+
+  // normal works.
   auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
   auto option_argument =
       OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, $3));
@@ -301,7 +308,8 @@ descriptions : descriptions single_description {  }
 // single_description : bindings default_value comments {  }
 // ;
 single_description : bindings default_value comments {
-  // record bindings and default value.
+  option_binding_recorder_ptr->RecordBinding(
+      $1.lock(), $2.lock());
 }
 ;
 

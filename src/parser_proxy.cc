@@ -200,12 +200,12 @@ void OptionBindingRecorder::ProcessCachedBindings() {
   }
 }
 
-string RawTextPreprocessor::RemoveEmptyLine(const string &text) {
+string DocPreprocessor::RemoveEmptyLine(const string &text) {
   regex pattern("(\n[ \t]*)+");
   return regex_replace(text, pattern, "\n");
 }
 
-bool RawTextPreprocessor::ExtractSection(
+bool DocPreprocessor::ExtractSection(
     const string &section_name,
     const string &text,
     string *output) {
@@ -249,7 +249,7 @@ bool RawTextPreprocessor::ExtractSection(
   return true;
 }
 
-string RawTextPreprocessor::ExtractAndProcessUsageSection(const string &text) {
+string DocPreprocessor::ExtractAndProcessUsageSection(const string &text) {
   string usage_section;
   if (!ExtractSection("Usage", text, &usage_section)) {
     // can't find usage section, which must exist.
@@ -269,7 +269,7 @@ string RawTextPreprocessor::ExtractAndProcessUsageSection(const string &text) {
       "*UTILITY_DELIMITER*");
 }
 
-string RawTextPreprocessor::ExtractAndProcessOptionsSection(
+string DocPreprocessor::ExtractAndProcessOptionsSection(
     const string &text) {
   string options_section;
   if (!ExtractSection("Options", text, &options_section)) {
@@ -302,7 +302,13 @@ string RawTextPreprocessor::ExtractAndProcessOptionsSection(
   return result;
 }
 
-string ParserProxy::PreprocessRawText(const string &raw_text) {
+string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
+  string internal_text = DocPreprocessor::RemoveEmptyLine(raw_doc);
+  string usage_section =
+      DocPreprocessor::ExtractAndProcessUsageSection(internal_text);
+  string options_section =
+      DocPreprocessor::ExtractAndProcessOptionsSection(internal_text);
+  return usage_section + options_section;
 }
 
 }  // namespace clidoc
