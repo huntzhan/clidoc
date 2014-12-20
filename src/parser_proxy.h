@@ -51,8 +51,28 @@ class OptionBindingRecorder {
       RepresentativeOptionProperty *property_ptr);
 };
 
+struct RawTextPreprocessor {
+  // Exrtact a section targeted by `section_name` and formalize section name.
+  static bool ExtractSection(
+      const std::string &section_name,
+      const std::string &text,
+      std::string *output);
+  // 1. Remove empty lines.
+  static std::string RemoveEmptyLine(const std::string &text);
+  // 2. Detect utility name in usage section, then replace it with
+  // K_UTILITY_DELIMITER.
+  static std::string ExtractAndProcessUsageSection(const std::string &text);
+  // 3. Insert K_DESC_DELIMITER brefore each NEWLINE in option section.
+  static std::string ExtractAndProcessOptionsSection(const std::string &text);
+};
+
 class ParserProxy {
  public:
+  std::string PreprocessRawText(const std::string &raw_text);
+  void ParseByBison(
+      const std::string &preprocessed_text,
+      Doc::SharedPtr *doc_ptr,
+      OptionBindingRecorder *option_binding_recorder_ptr);
 
 };
 

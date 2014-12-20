@@ -40,7 +40,7 @@ void clidoc::BisonGeneratedParser::error (const std::string&) { /* empty */ }
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
 %parse-param { clidoc::Doc::SharedPtr *doc_ptr }
-// %parse-param { clidoc::OptionsBindingRecorder *option_binding_recorder_ptr }
+// %parse-param { clidoc::OptionBindingRecorder *option_binding_recorder_ptr }
 
 // Terminal with value.
 %token <std::string>
@@ -289,6 +289,7 @@ gnu_option_unit : GNU_OPTION {
 // follow
 
 options_section : K_OPTIONS_COLON descriptions {  }
+                | %empty { }
 ;
 
 

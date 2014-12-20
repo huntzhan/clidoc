@@ -1,11 +1,18 @@
 
+#include <iterator>
 #include <map>
+#include <regex>
 #include <string>
 #include "generated_parser.h"
 #include "utils.h"
 #include "parser_proxy.h"
 
 using std::string;
+using std::regex;
+using std::smatch;
+using std::regex_replace;
+using std::regex_search;
+using std::back_inserter;
 
 namespace clidoc {
 
@@ -17,7 +24,7 @@ void RepresentativeOptionProperty::set_option_argument(
 }
 
 void RepresentativeOptionProperty::set_default_value(
-    const std::string &default_value) {
+    const string &default_value) {
   if (has_default_value_) { throw "NotImplementedError."; }
   has_default_value_ = true;
   default_value_ = default_value;
@@ -95,7 +102,7 @@ void OptionBindingRecorder::CreateRepresentativeOptionProperty(
   representative_option_to_property_[representative_option] = property;
 }
 
-void UpdateRepresentativeOptionProperty(
+void OptionBindingRecorder::UpdateRepresentativeOptionProperty(
     const Token &representative_option,
     const Token &bound_option_argument,
     const Token &default_value,
@@ -191,6 +198,111 @@ void OptionBindingRecorder::ProcessCachedBindings() {
           &pos_iter->second);
     }
   }
+}
+
+string RawTextPreprocessor::RemoveEmptyLine(const string &text) {
+  regex pattern("(\n[ \t]*)+");
+  return regex_replace(text, pattern, "\n");
+}
+
+bool RawTextPreprocessor::ExtractSection(
+    const string &section_name,
+    const string &text,
+    string *output) {
+  regex target_section_pattern(
+      "(" + section_name + ")[ \t]*:",
+      std::regex_constants::icase);
+  regex next_section_pattern(
+      "(.+?)[ \t]*:",
+      std::regex_constants::icase);
+  smatch match_result;
+  auto pos_iter = text.cbegin();
+  auto text_end_iter = text.cend();
+
+  bool is_success = false;
+  // search section_name.
+  is_success = regex_search(
+      pos_iter, text_end_iter,
+      match_result,
+      target_section_pattern);
+  if (!is_success) {
+    // can't find the section.
+    return false;
+  }
+
+  auto section_begin_iter = match_result[0].first;
+  pos_iter = match_result.suffix().first;
+  
+  // seach enf of section.
+  is_success = regex_search(
+      pos_iter, text_end_iter,
+      match_result,
+      next_section_pattern);
+  auto section_end_iter = is_success ? match_result[0].first : text_end_iter;
+
+  // remove blank in section name.
+  string extract_text(section_begin_iter, section_end_iter);
+  *output = regex_replace(
+      extract_text,
+      next_section_pattern,
+      "$1:");
+  return true;
+}
+
+string RawTextPreprocessor::ExtractAndProcessUsageSection(const string &text) {
+  string usage_section;
+  if (!ExtractSection("Usage", text, &usage_section)) {
+    // can't find usage section, which must exist.
+    throw "NotImplementedError.";
+  }
+  regex utility_name_pattern(
+      "usage:\\s*(\\S+)",
+      std::regex_constants::icase);
+  smatch match_result;
+  if (!regex_search(usage_section, match_result, utility_name_pattern)) {
+    throw "NotImplementedError.";
+  }
+  string utility_name = match_result.str(1);
+  return regex_replace(
+      usage_section,
+      regex("(?:" + utility_name + ")"),
+      "*UTILITY_DELIMITER*");
+}
+
+string RawTextPreprocessor::ExtractAndProcessOptionsSection(
+    const string &text) {
+  string options_section;
+  if (!ExtractSection("Options", text, &options_section)) {
+    // Since options section is optional, if the program cannot find such
+    // section, the program will return an empty string.
+    return "";
+  }
+  // insertion point:
+  // Options: \n[NOT here]
+  //   -x, -xxx # brbrbr. \n[HERE!]
+  //   ...
+  regex options_section_name_pattern(
+      "options:\\s*",
+      std::regex_constants::icase);
+  smatch match_result;
+  // have no chance to fail.
+  regex_search(options_section, match_result, options_section_name_pattern);
+  if (match_result.suffix().first == options_section.end()) {
+    // case happen if nothing is following the name of options section
+    // ("Options:").
+    throw "NotImplementedError.";
+  }
+  string result = match_result.str();
+  auto pos_iter = match_result.suffix().first;
+  regex_replace(
+      back_inserter(result),
+      pos_iter, options_section.cend(),
+      regex("\n"),
+      "\n*DESC_DELIMITER*");
+  return result;
+}
+
+string ParserProxy::PreprocessRawText(const string &raw_text) {
 }
 
 }  // namespace clidoc
