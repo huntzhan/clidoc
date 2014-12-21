@@ -130,20 +130,19 @@ typename SmartPtrInterface<Derived>::SharedPtr
   return ptr;
 }
 
-// Contains tokenized arguments during semantic analysis.
-class TokenInProcessCollection {
- public:
-};
 
 // Interface for symbols in parsing tree.
 class NodeInterface {
  public:
   virtual ~NodeInterface() { /* empty */ }
-  virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
-  // use string to represent the structure of parsing tree.
+
+  // inline member helps generating indented prefix.
   std::string GetIndent(const int &indent) const;
-  virtual std::string GetInfo() = 0;
+  // get the string identify CURRENT node.
+  virtual std::string GetID() = 0;
+  // encode the tree structure rooted by current node as string.
   virtual std::string ToString() = 0;
+  // indented version of ToString().
   virtual std::string ToString(const int &indent) = 0;
 };
 
@@ -157,8 +156,7 @@ class Terminal : public NodeInterface,
                  public SmartPtrInterface<Terminal<T>> {
  public:
   explicit Terminal(const Token &token) : token_(token) { /* empty */ }
-  bool ProcessToken(TokenInProcessCollection *token_collection) override;
-  std::string GetInfo() override;
+  std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
 
@@ -170,8 +168,7 @@ template <NonTerminalType T>
 class NonTerminal : public NodeInterface,
                     public SmartPtrInterface<NonTerminal<T>> {
  public:
-  bool ProcessToken(TokenInProcessCollection *token_collection) override;
-  std::string GetInfo() override;
+  std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
 

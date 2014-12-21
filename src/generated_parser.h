@@ -42,7 +42,6 @@
 // //                    "%code requires" blocks.
 #line 13 "flex-bison-scripts/parser.y" // lalr1.cc:387
 
-#include <iostream>
 #include <string>
 #include "utils.h"
 
@@ -55,7 +54,7 @@ class OptionBindingRecorder;
 }  // namespace clidoc
 
 
-#line 59 "generated_parser.h" // lalr1.cc:387
+#line 58 "generated_parser.h" // lalr1.cc:387
 
 
 # include <vector>
@@ -131,7 +130,7 @@ class OptionBindingRecorder;
 
 
 namespace clidoc {
-#line 135 "generated_parser.h" // lalr1.cc:387
+#line 134 "generated_parser.h" // lalr1.cc:387
 
 
 
@@ -1341,7 +1340,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1345 "generated_parser.h" // lalr1.cc:387
+#line 1344 "generated_parser.h" // lalr1.cc:387
 
 
 

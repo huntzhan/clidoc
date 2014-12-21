@@ -13,19 +13,7 @@ inline std::string NodeInterface::GetIndent(const int &indent) const {
 }
 
 template <TerminalType T>
-bool Terminal<T>::ProcessToken(
-    TokenInProcessCollection *token_collection) {
-  throw "NotImplementedError.";
-}
-
-template <NonTerminalType T>
-bool NonTerminal<T>::ProcessToken(
-    TokenInProcessCollection *token_collection) {
-  throw "NotImplementedError.";
-}
-
-template <TerminalType T>
-std::string Terminal<T>::GetInfo() {
+std::string Terminal<T>::GetID() {
   std::string token_value = token_.has_value() ? token_.value() : "NoValue";
   return kTermianlClassName.at(T) + "[" + token_value + "]";
 }
@@ -33,17 +21,17 @@ std::string Terminal<T>::GetInfo() {
 template <TerminalType T>
 std::string Terminal<T>::ToString(const int &indent) {
   std::ostringstream strm;
-  strm << GetIndent(indent) << GetInfo() << std::endl;
+  strm << GetIndent(indent) << GetID() << std::endl;
   return strm.str();
 }
 
 template <TerminalType T>
 std::string Terminal<T>::ToString() {
-  return GetInfo();
+  return GetID();
 }
 
 template <NonTerminalType T>
-std::string NonTerminal<T>::GetInfo() {
+std::string NonTerminal<T>::GetID() {
   return kNonTermianlClassName.at(T);
 }
 
@@ -51,7 +39,7 @@ template <NonTerminalType T>
 std::string NonTerminal<T>::ToString(const int &indent) {
   std::ostringstream strm;
   auto prefix = GetIndent(indent);
-  strm << prefix << GetInfo() << "(" << std::endl;
+  strm << prefix << GetID() << "(" << std::endl;
   for (auto ptr : children_) {
     strm << ptr->ToString(indent + 1);
   }
@@ -62,7 +50,7 @@ std::string NonTerminal<T>::ToString(const int &indent) {
 template <NonTerminalType T>
 std::string NonTerminal<T>::ToString() {
   std::ostringstream strm;
-  strm << GetInfo() << "(";
+  strm << GetID() << "(";
   int index = 0;
   for (auto ptr : children_) {
     strm << ptr->ToString();

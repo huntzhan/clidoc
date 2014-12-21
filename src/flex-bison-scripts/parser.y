@@ -11,7 +11,6 @@
 %define api.value.type variant
 
 %code requires {
-#include <iostream>
 #include <string>
 #include "utils.h"
 
@@ -26,6 +25,8 @@ class OptionBindingRecorder;
 }
 
 %code {
+#include <iostream>
+
 #include "generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
