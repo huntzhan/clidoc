@@ -13,3 +13,7 @@ add_gtest (smart_ptr)
 add_executable (test_parser_proxy parser_proxy.cc)
 target_link_libraries (test_parser_proxy parser_proxy)
 add_gtest (test_parser_proxy)
+
+add_executable (symbol symbol.cc)
+target_link_libraries (symbol utils)
+add_gtest (symbol)

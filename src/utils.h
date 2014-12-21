@@ -1,6 +1,7 @@
 #ifndef SRC_UTILS_H_
 #define SRC_UTILS_H_
 
+#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -24,6 +25,18 @@ enum class TerminalType {
   OTHER,
 };
 
+const std::map<TerminalType, std::string> kTermianlClassName = {
+  {TerminalType::OPTION_ARGUEMENT,     "OptionArguement"},
+  {TerminalType::GNU_OPTION,           "GnuOption"},
+  {TerminalType::OPERAND,              "Operand"},
+  {TerminalType::COMMENT,              "Comment"},
+  {TerminalType::OPTION_DEFAULT_VALUE, "OptionDefaultValue"},
+  {TerminalType::POSIX_OPTION,         "PosixOption"},
+  {TerminalType::GROUPED_OPTIONS,      "GroupedOptions"},
+  {TerminalType::K_DOUBLE_HYPHEN,      "KDoubleHyphen"},
+  {TerminalType::K_OPTIONS,            "KOptions"},
+};
+
 // Defines non-terminal types.
 enum class NonTerminalType {
   // logical.
@@ -34,6 +47,14 @@ enum class NonTerminalType {
   LOGIC_EMPTY,
   // start node.
   DOC,
+};
+
+const std::map<NonTerminalType, std::string> kNonTermianlClassName = {
+  {NonTerminalType::DOC,             "Doc"},
+  {NonTerminalType::LOGIX_AND,       "LogicAnd"},
+  {NonTerminalType::LOGIC_XOR,       "LogicXor"},
+  {NonTerminalType::LOGIC_OPTIONAL,  "LogicOptional"},
+  {NonTerminalType::LOGIC_ONEORMORE, "LogicOneOrMore"},
 };
 
 class Token {
@@ -117,6 +138,9 @@ class TokenInProcessCollection {
 class NodeInterface {
  public:
   virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
+  // use string to represent the structure of parsing tree.
+  virtual std::string GetInfo() = 0;
+  virtual std::string ToString() = 0;
   virtual ~NodeInterface() { /* empty */ }
 };
 
@@ -131,6 +155,8 @@ class Terminal : public NodeInterface,
  public:
   explicit Terminal(const Token &token) : token_(token) { /* empty */ }
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
+  std::string GetInfo() override;
+  std::string ToString() override;
 
   const Token token_;
 };
@@ -141,6 +167,8 @@ class NonTerminal : public NodeInterface,
                     public SmartPtrInterface<NonTerminal<T>> {
  public:
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
+  std::string GetInfo() override;
+  std::string ToString() override;
 
   // Container of symbols.
   VecSharedPtrNode children_;

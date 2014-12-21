@@ -18,3 +18,12 @@ def gen_non_terminal_class(text, is_terminal=True):
             name,
         )
         print r
+
+def gen_class_name_brackets(lines):
+    import re
+    template = "{{{0}::{1}, \"{2}\"}},"
+    for line in lines:
+        match_obj = re.search("using (\w+).+?(\w+)::(\w+)>;", line)
+        print template.format(
+                match_obj.group(2), match_obj.group(3),
+                match_obj.group(1))
