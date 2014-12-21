@@ -3,6 +3,7 @@
 
 #include <map>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -137,11 +138,13 @@ class TokenInProcessCollection {
 // Interface for symbols in parsing tree.
 class NodeInterface {
  public:
+  virtual ~NodeInterface() { /* empty */ }
   virtual bool ProcessToken(TokenInProcessCollection *token_collection) = 0;
   // use string to represent the structure of parsing tree.
+  std::string GetIndent(const int &indent) const;
   virtual std::string GetInfo() = 0;
   virtual std::string ToString() = 0;
-  virtual ~NodeInterface() { /* empty */ }
+  virtual std::string ToString(const int &indent) = 0;
 };
 
 using SharedPtrNode = std::shared_ptr<NodeInterface>;
@@ -157,6 +160,7 @@ class Terminal : public NodeInterface,
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
   std::string GetInfo() override;
   std::string ToString() override;
+  std::string ToString(const int &indent) override;
 
   const Token token_;
 };
@@ -169,6 +173,7 @@ class NonTerminal : public NodeInterface,
   bool ProcessToken(TokenInProcessCollection *token_collection) override;
   std::string GetInfo() override;
   std::string ToString() override;
+  std::string ToString(const int &indent) override;
 
   // Container of symbols.
   VecSharedPtrNode children_;

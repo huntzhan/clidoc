@@ -2,6 +2,7 @@
 #include <string>
 #include "gtest/gtest.h"
 #include "parser_proxy.h"
+#include "utils.h"
 
 using namespace clidoc;
 using std::string;
