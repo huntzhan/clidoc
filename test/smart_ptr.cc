@@ -1,5 +1,6 @@
 
 #include "gtest/gtest.h"
+#include "smart_ptr_interface.h"
 #include "utils.h"
 
 using namespace clidoc;

@@ -5,8 +5,9 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include <utility>
 #include <vector>
+
+#include "smart_ptr_interface.h"
 
 namespace clidoc {
 
@@ -82,9 +83,11 @@ class Token {
   }
 
   bool IsEmpty() const { return type_ == TerminalType::OTHER; }
+  // accessors.
   bool has_value() const { return has_value_; }
   TerminalType type() const { return type_; }
   std::string value() const { return value_; }
+  // mutator.
   void set_value(const std::string &value) { value_ = value; }
 
  private:
@@ -92,43 +95,6 @@ class Token {
   TerminalType type_ = TerminalType::OTHER;
   std::string value_;
 };
-
-// SPI stands for SmartPtrInterface.
-struct SPIStaticDataMember {
-  // manually free cache.
-  static void FreeCached();
-  // static data member can not be placed in class template in this case.
-  static std::vector<std::shared_ptr<void>> cached_container_;
-};
-
-template <typename Derived>
-class SmartPtrInterface {
- public:
-  // type alias.
-  using SharedPtr = std::shared_ptr<Derived>;
-  using WeakPtr = std::weak_ptr<Derived>;
-  // function for init shared_ptr.
-  template <typename... Args>
-  static SharedPtr Init(Args&&... args);
-};
-
-template <typename Derived>
-template <typename... Args>
-typename SmartPtrInterface<Derived>::SharedPtr
-    SmartPtrInterface<Derived>::Init(Args&&... args) {
-  // Since the bison generated parser use placement new to create an instance
-  // during parsing, and hence shared_ptr should not be used as non-terminal
-  // types. As an intuitive approach, I tried to use weak_ptr as non-terminal
-  // types, but in what approach could I store the corrensponding shared_ptr?
-  // Luckly, the shared_ptr has a feature called "type ensure":
-  // http://stackoverflow.com/questions/3899790/shared-ptr-magic
-  // Hence, Init(...) generated shared_ptr would place an copy to the
-  // `SPIStaticDataMember::cached_container_`, the value_type of which is
-  // std::shared_ptr<void>.
-  auto ptr = std::make_shared<Derived>(std::forward<Args>(args)...);
-  SPIStaticDataMember::cached_container_.push_back(ptr);
-  return ptr;
-}
 
 
 // Interface for symbols in parsing tree.

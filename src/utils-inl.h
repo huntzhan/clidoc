@@ -19,32 +19,20 @@ std::string Terminal<T>::GetID() {
 }
 
 template <TerminalType T>
+std::string Terminal<T>::ToString() {
+  return GetID();
+}
+
+template <TerminalType T>
 std::string Terminal<T>::ToString(const int &indent) {
   std::ostringstream strm;
   strm << GetIndent(indent) << GetID() << std::endl;
   return strm.str();
 }
 
-template <TerminalType T>
-std::string Terminal<T>::ToString() {
-  return GetID();
-}
-
 template <NonTerminalType T>
 std::string NonTerminal<T>::GetID() {
   return kNonTermianlClassName.at(T);
-}
-
-template <NonTerminalType T>
-std::string NonTerminal<T>::ToString(const int &indent) {
-  std::ostringstream strm;
-  auto prefix = GetIndent(indent);
-  strm << prefix << GetID() << "(" << std::endl;
-  for (auto ptr : children_) {
-    strm << ptr->ToString(indent + 1);
-  }
-  strm << prefix << ")" << std::endl;
-  return strm.str();
 }
 
 template <NonTerminalType T>
@@ -60,6 +48,18 @@ std::string NonTerminal<T>::ToString() {
     }
   }
   strm << ")";
+  return strm.str();
+}
+
+template <NonTerminalType T>
+std::string NonTerminal<T>::ToString(const int &indent) {
+  std::ostringstream strm;
+  auto prefix = GetIndent(indent);
+  strm << prefix << GetID() << "(" << std::endl;
+  for (auto ptr : children_) {
+    strm << ptr->ToString(indent + 1);
+  }
+  strm << prefix << ")" << std::endl;
   return strm.str();
 }
 
