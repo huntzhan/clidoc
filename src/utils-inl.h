@@ -31,8 +31,8 @@ std::string Terminal<T>::ToString(const int &indent) {
 }
 
 template <TerminalType T>
-void Terminal<T>::Accept(NodeVistorInterface *node_ptr) {
-  node_ptr->ProcessGeneralTerminal(this->shared_from_this());
+void Terminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
+  visitor_ptr->ProcessGeneralTerminal(this->shared_from_this());
 }
 
 template <NonTerminalType T>
@@ -69,8 +69,8 @@ std::string NonTerminal<T>::ToString(const int &indent) {
 }
 
 template <NonTerminalType T>
-void NonTerminal<T>::Accept(NodeVistorInterface *vistor_ptr) {
-  vistor_ptr->ProcessGeneralNonTerminal(&children_);
+void NonTerminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
+  visitor_ptr->ProcessGeneralNonTerminal(&children_);
 }
 
 }  // namespace clidoc

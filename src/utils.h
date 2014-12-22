@@ -19,7 +19,7 @@ class Terminal : public NodeInterface,
   std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
-  void Accept(NodeVistorInterface *vistor_ptr) override;
+  void Accept(NodeVistorInterface *visitor_ptr) override;
 
   const Token token_;
 };
@@ -32,7 +32,7 @@ class NonTerminal : public NodeInterface,
   std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
-  void Accept(NodeVistorInterface *vistor_ptr) override;
+  void Accept(NodeVistorInterface *visitor_ptr) override;
 
   // Container of symbols.
   VecSharedPtrNode children_;
