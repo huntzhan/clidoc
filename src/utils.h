@@ -38,6 +38,72 @@ class NonTerminal : public NodeInterface,
   VecSharedPtrNode children_;
 };
 
+// classes for visitor.
+template <TerminalType... T>
+struct TerminalVistorInterface;
+
+template <NonTerminalType... T>
+struct NonTerminalVistorInterface;
+
+template <TerminalType type, TerminalType... rest_type>
+struct TerminalVistorInterface<type, rest_type...>
+    : public TerminalVistorInterface<rest_type...> {
+  // import interfaces.
+  using TerminalVistorInterface<rest_type...>::ProcessNode;
+  // interface for Terminal<type>::SharedPtr.
+  virtual void ProcessNode(typename Terminal<type>::SharedPtr node_ptr) {
+    throw "NotImplementedError.";
+  }
+};
+
+template <>
+struct TerminalVistorInterface<> {
+  // should not be call anyway.
+  virtual void ProcessNode() {
+    throw "NotImplementedError.";
+  }
+};
+
+using ConcreteTerminalVistorInterface = TerminalVistorInterface<
+  TerminalType::OPTION_ARGUEMENT,
+  TerminalType::GNU_OPTION,
+  TerminalType::OPERAND,
+  TerminalType::COMMENT,
+  TerminalType::OPTION_DEFAULT_VALUE,
+  TerminalType::POSIX_OPTION,
+  TerminalType::GROUPED_OPTIONS,
+  TerminalType::K_DOUBLE_HYPHEN,
+  TerminalType::K_OPTIONS>;
+
+template <NonTerminalType type, NonTerminalType... rest_type>
+struct NonTerminalVistorInterface<type, rest_type...>
+    : public NonTerminalVistorInterface<rest_type...> {
+  // same wth TerminalVistorInterface.
+  using NonTerminalVistorInterface<rest_type...>::ProcessNode;
+  virtual void ProcessNode(typename NonTerminal<type>::SharedPtr node_ptr) {
+    throw "NotImplementedError.";
+  }
+};
+
+template <>
+struct NonTerminalVistorInterface<>
+    // Derived from terminal interface.
+    : public ConcreteTerminalVistorInterface {
+  // import interfaces for terminals.
+  using ConcreteTerminalVistorInterface::ProcessNode;
+};
+
+using ConcreteNonTerminalVistorInterface = NonTerminalVistorInterface<
+  NonTerminalType::DOC,
+  NonTerminalType::LOGIX_AND,
+  NonTerminalType::LOGIC_XOR,
+  NonTerminalType::LOGIC_OPTIONAL,
+  NonTerminalType::LOGIC_ONEORMORE>;
+
+struct NodeVistorInterface : public ConcreteNonTerminalVistorInterface {
+  // here we go.
+};
+
 // Terminal classes.
 using OptionArguement    = Terminal<TerminalType::OPTION_ARGUEMENT>;
 using GnuOption          = Terminal<TerminalType::GNU_OPTION>;

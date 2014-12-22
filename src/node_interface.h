@@ -79,11 +79,6 @@ using SharedPtrNode = std::shared_ptr<NodeInterface>;
 using WeakPtrNode = std::weak_ptr<NodeInterface>;
 using VecSharedPtrNode = std::vector<SharedPtrNode>;
 
-struct NodeVistorInterface {
-  virtual void ProcessGeneralNonTerminal(VecSharedPtrNode *children_ptr) = 0;
-  virtual void ProcessGeneralTerminal(SharedPtrNode node_ptr) = 0;
-};
-
 // Basic element to store data.
 class Token {
  public:

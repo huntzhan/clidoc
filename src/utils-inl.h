@@ -32,7 +32,7 @@ std::string Terminal<T>::ToString(const int &indent) {
 
 template <TerminalType T>
 void Terminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
-  visitor_ptr->ProcessGeneralTerminal(this->shared_from_this());
+  visitor_ptr->ProcessNode(this->shared_from_this());
 }
 
 template <NonTerminalType T>
@@ -70,7 +70,7 @@ std::string NonTerminal<T>::ToString(const int &indent) {
 
 template <NonTerminalType T>
 void NonTerminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
-  visitor_ptr->ProcessGeneralNonTerminal(&children_);
+  visitor_ptr->ProcessNode(this->shared_from_this());
 }
 
 }  // namespace clidoc
