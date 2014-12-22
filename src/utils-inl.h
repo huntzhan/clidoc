@@ -30,6 +30,11 @@ std::string Terminal<T>::ToString(const int &indent) {
   return strm.str();
 }
 
+template <TerminalType T>
+void Terminal<T>::Accept(NodeVistorInterface *node_ptr) {
+  node_ptr->ProcessGeneralTerminal(this->shared_from_this());
+}
+
 template <NonTerminalType T>
 std::string NonTerminal<T>::GetID() {
   return kNonTermianlClassName.at(T);
@@ -61,6 +66,11 @@ std::string NonTerminal<T>::ToString(const int &indent) {
   }
   strm << prefix << ")" << std::endl;
   return strm.str();
+}
+
+template <NonTerminalType T>
+void NonTerminal<T>::Accept(NodeVistorInterface *vistor_ptr) {
+  vistor_ptr->ProcessGeneralNonTerminal(&children_);
 }
 
 }  // namespace clidoc

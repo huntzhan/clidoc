@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "generated_scanner.h"
-#include "utils.h"
+#include "node_interface.h"
 
 namespace clidoc {
 namespace tokenizer {

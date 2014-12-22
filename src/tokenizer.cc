@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "generated_scanner.h"
+#include "node_interface.h"
 #include "tokenizer.h"
-#include "utils.h"
 
 using std::string;
 using std::vector;

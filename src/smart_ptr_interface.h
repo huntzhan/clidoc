@@ -16,7 +16,9 @@ struct SPIStaticDataMember {
 };
 
 template <typename Derived>
-class SmartPtrInterface {
+class SmartPtrInterface
+    // enable `this->shared_from_this()`.
+    : public std::enable_shared_from_this<Derived> {
  public:
   // type alias.
   using SharedPtr = std::shared_ptr<Derived>;

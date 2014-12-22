@@ -1,0 +1,127 @@
+#ifndef SRC_NODE_INTERFACE_H_
+#define SRC_NODE_INTERFACE_H_
+
+#include <map>
+#include <memory>
+#include <vector>
+
+namespace clidoc {
+
+// Defines terminal types.
+enum class TerminalType {
+  OPTION_ARGUEMENT,
+  GNU_OPTION,
+  OPERAND,
+  COMMENT,
+  ARGUMENT,
+  K_OPTIONS,
+  K_DOUBLE_HYPHEN,
+  OPTION_DEFAULT_VALUE,
+  POSIX_OPTION,
+  GROUPED_OPTIONS,
+  // for terminals that would not be instaniation.
+  OTHER,
+};
+
+// Defines non-terminal types.
+enum class NonTerminalType {
+  // logical.
+  LOGIX_AND,
+  LOGIC_XOR,
+  LOGIC_OPTIONAL,
+  LOGIC_ONEORMORE,
+  LOGIC_EMPTY,
+  // start node.
+  DOC,
+};
+
+const std::map<TerminalType, std::string> kTermianlClassName = {
+  {TerminalType::OPTION_ARGUEMENT,     "OptionArguement"},
+  {TerminalType::GNU_OPTION,           "GnuOption"},
+  {TerminalType::OPERAND,              "Operand"},
+  {TerminalType::COMMENT,              "Comment"},
+  {TerminalType::OPTION_DEFAULT_VALUE, "OptionDefaultValue"},
+  {TerminalType::POSIX_OPTION,         "PosixOption"},
+  {TerminalType::GROUPED_OPTIONS,      "GroupedOptions"},
+  {TerminalType::K_DOUBLE_HYPHEN,      "KDoubleHyphen"},
+  {TerminalType::K_OPTIONS,            "KOptions"},
+};
+
+const std::map<NonTerminalType, std::string> kNonTermianlClassName = {
+  {NonTerminalType::DOC,             "Doc"},
+  {NonTerminalType::LOGIX_AND,       "LogicAnd"},
+  {NonTerminalType::LOGIC_XOR,       "LogicXor"},
+  {NonTerminalType::LOGIC_OPTIONAL,  "LogicOptional"},
+  {NonTerminalType::LOGIC_ONEORMORE, "LogicOneOrMore"},
+};
+
+struct NodeVistorInterface;
+
+// Interface for symbols in parsing tree.
+class NodeInterface {
+ public:
+  virtual ~NodeInterface() { /* empty */ }
+
+  // inline member helps generating indented prefix.
+  std::string GetIndent(const int &indent) const;
+  // get the string identify CURRENT node.
+  virtual std::string GetID() = 0;
+  // encode the tree structure rooted by current node as string.
+  virtual std::string ToString() = 0;
+  // indented version of ToString().
+  virtual std::string ToString(const int &indent) = 0;
+
+  // Apply vistor design pattern!
+  virtual void Accept(NodeVistorInterface *vistor_ptr) = 0;
+};
+
+using SharedPtrNode = std::shared_ptr<NodeInterface>;
+using WeakPtrNode = std::weak_ptr<NodeInterface>;
+using VecSharedPtrNode = std::vector<SharedPtrNode>;
+
+struct NodeVistorInterface {
+  virtual void ProcessGeneralNonTerminal(VecSharedPtrNode *children_ptr) = 0;
+  virtual void ProcessGeneralTerminal(SharedPtrNode node_ptr) = 0;
+};
+
+// Basic element to store data.
+class Token {
+ public:
+  // constructors.
+  Token() = default;
+  explicit Token(TerminalType type)
+      : has_value_(false), type_(type) { /* empty */ }
+  Token(TerminalType type, const std::string &value)
+      : has_value_(true), type_(type), value_(value) { /* empty */ }
+
+  // support std::map.
+  bool operator<(const Token &other) const {
+    return value_ < other.value_;
+  }
+  // support equality test.
+  bool operator==(const Token &other) const {
+    return (has_value_ == other.has_value()
+            && type_ == other.type()
+            && value_ == other.value());
+  }
+  bool operator!=(const Token &other) const {
+    return !(*this== other);
+  }
+
+  bool IsEmpty() const { return type_ == TerminalType::OTHER; }
+  // accessors.
+  bool has_value() const { return has_value_; }
+  TerminalType type() const { return type_; }
+  std::string value() const { return value_; }
+  // mutator.
+  void set_value(const std::string &value) { value_ = value; }
+
+ private:
+  bool has_value_ = false;
+  TerminalType type_ = TerminalType::OTHER;
+  std::string value_;
+};
+
+}  // namespace clidoc
+
+#endif  // SRC_NODE_INTERFACE_H_
