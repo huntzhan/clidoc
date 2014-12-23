@@ -17,3 +17,7 @@ add_gtest (test_parser_proxy)
 add_executable (symbol symbol.cc)
 target_link_libraries (symbol smart_ptr_interface)
 add_gtest (symbol)
+
+add_executable (test_process_logic process_logic.cc)
+target_link_libraries (test_process_logic smart_ptr_interface)
+add_gtest (test_process_logic)

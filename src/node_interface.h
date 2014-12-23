@@ -26,7 +26,7 @@ enum class TerminalType {
 // Defines non-terminal types.
 enum class NonTerminalType {
   // logical.
-  LOGIX_AND,
+  LOGIC_AND,
   LOGIC_XOR,
   LOGIC_OPTIONAL,
   LOGIC_ONEORMORE,
@@ -49,7 +49,7 @@ const std::map<TerminalType, std::string> kTermianlClassName = {
 
 const std::map<NonTerminalType, std::string> kNonTermianlClassName = {
   {NonTerminalType::DOC,             "Doc"},
-  {NonTerminalType::LOGIX_AND,       "LogicAnd"},
+  {NonTerminalType::LOGIC_AND,       "LogicAnd"},
   {NonTerminalType::LOGIC_XOR,       "LogicXor"},
   {NonTerminalType::LOGIC_OPTIONAL,  "LogicOptional"},
   {NonTerminalType::LOGIC_ONEORMORE, "LogicOneOrMore"},

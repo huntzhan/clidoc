@@ -52,7 +52,7 @@ struct TerminalVistorInterface<type, rest_type...>
   using TerminalVistorInterface<rest_type...>::ProcessNode;
   // interface for Terminal<type>::SharedPtr.
   virtual void ProcessNode(typename Terminal<type>::SharedPtr node_ptr) {
-    throw "NotImplementedError.";
+    // empty.
   }
 };
 
@@ -81,7 +81,7 @@ struct NonTerminalVistorInterface<type, rest_type...>
   // same wth TerminalVistorInterface.
   using NonTerminalVistorInterface<rest_type...>::ProcessNode;
   virtual void ProcessNode(typename NonTerminal<type>::SharedPtr node_ptr) {
-    throw "NotImplementedError.";
+    // empty.
   }
 };
 
@@ -95,7 +95,7 @@ struct NonTerminalVistorInterface<>
 
 using ConcreteNonTerminalVistorInterface = NonTerminalVistorInterface<
   NonTerminalType::DOC,
-  NonTerminalType::LOGIX_AND,
+  NonTerminalType::LOGIC_AND,
   NonTerminalType::LOGIC_XOR,
   NonTerminalType::LOGIC_OPTIONAL,
   NonTerminalType::LOGIC_ONEORMORE>;
@@ -117,7 +117,7 @@ using KOptions           = Terminal<TerminalType::K_OPTIONS>;
 
 // Non-terminal classes.
 using Doc                = NonTerminal<NonTerminalType::DOC>;
-using LogicAnd           = NonTerminal<NonTerminalType::LOGIX_AND>;
+using LogicAnd           = NonTerminal<NonTerminalType::LOGIC_AND>;
 using LogicXor           = NonTerminal<NonTerminalType::LOGIC_XOR>;
 using LogicOptional      = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
 using LogicOneOrMore     = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
