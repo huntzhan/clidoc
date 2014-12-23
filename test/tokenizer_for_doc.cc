@@ -53,6 +53,12 @@ TEST(tokenizer_for_doc, raw_token_type) {
         TypeID::OPERAND,
       });
   CheckRawTokenTypes(
+      "<arg t> <another arg> <<<<<<<<<<q>", {
+        TypeID::OPTION_ARGUEMENT,
+        TypeID::OPTION_ARGUEMENT,
+        TypeID::OPTION_ARGUEMENT,
+      });
+  CheckRawTokenTypes(
       "\"1.414 whatever\" # long long comment", {
         TypeID::OPTION_DEFAULT_VALUE,
         TypeID::COMMENT,
