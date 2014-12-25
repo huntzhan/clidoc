@@ -68,7 +68,6 @@ using ConcreteTerminalVistorInterface = TerminalVistorInterface<
   TerminalType::OPTION_ARGUEMENT,
   TerminalType::GNU_OPTION,
   TerminalType::OPERAND,
-  TerminalType::COMMENT,
   TerminalType::OPTION_DEFAULT_VALUE,
   TerminalType::POSIX_OPTION,
   TerminalType::GROUPED_OPTIONS,
@@ -108,7 +107,6 @@ struct NodeVistorInterface : public ConcreteNonTerminalVistorInterface {
 using OptionArguement    = Terminal<TerminalType::OPTION_ARGUEMENT>;
 using GnuOption          = Terminal<TerminalType::GNU_OPTION>;
 using Operand            = Terminal<TerminalType::OPERAND>;
-using Comment            = Terminal<TerminalType::COMMENT>;
 using OptionDefaultValue = Terminal<TerminalType::OPTION_DEFAULT_VALUE>;
 using PosixOption        = Terminal<TerminalType::POSIX_OPTION>;
 using GroupedOptions     = Terminal<TerminalType::GROUPED_OPTIONS>;

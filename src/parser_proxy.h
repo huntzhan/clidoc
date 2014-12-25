@@ -56,7 +56,8 @@ struct DocPreprocessor {
       const std::string &section_name,
       const std::string &text,
       std::string *output);
-  // 1. Remove empty lines.
+  // 1. Remove comment and empty lines.
+  static std::string RemoveComment(const std::string &text);
   static std::string RemoveEmptyLine(const std::string &text);
   // 2. Detect utility name in usage section, then replace it with
   // K_UTILITY_DELIMITER.

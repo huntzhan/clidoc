@@ -9,10 +9,9 @@ TEST(utils, smart_ptr_count) {
   {
     auto ptr_1 = LogicAnd::Init();
     auto ptr_2 = LogicXor::Init();
-    auto ptr_3 = Comment::Init(Token());
-    auto ptr_4 = Operand::Init(Token());
+    auto ptr_3 = Operand::Init(Token());
   }
-  EXPECT_EQ(4, SPIStaticDataMember::cached_container_.size());
+  EXPECT_EQ(3, SPIStaticDataMember::cached_container_.size());
 }
 
 

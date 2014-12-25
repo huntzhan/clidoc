@@ -25,7 +25,6 @@ TerminalType ToTerminalType(const Type &type_id) {
     TokenTypeMapping(OPTION_ARGUEMENT);
     TokenTypeMapping(GNU_OPTION);
     TokenTypeMapping(OPERAND);
-    TokenTypeMapping(COMMENT);
     TokenTypeMapping(ARGUMENT);
     TokenTypeMapping(K_DOUBLE_HYPHEN);
     TokenTypeMapping(OPTION_DEFAULT_VALUE);
@@ -42,7 +41,6 @@ bool TokenHasValue(const TerminalType &type) {
     case TerminalType::OPTION_ARGUEMENT:
     case TerminalType::GNU_OPTION:
     case TerminalType::OPERAND:
-    case TerminalType::COMMENT:
     // Only for argument processing.
     case TerminalType::ARGUMENT:
     // Shared.

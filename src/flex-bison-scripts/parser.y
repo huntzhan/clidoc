@@ -54,7 +54,6 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
   OPTION_ARGUEMENT
   OPERAND
   OPTION_DEFAULT_VALUE
-  COMMENT
 
   // Only for argument processing.
   ARGUMENT
@@ -95,7 +94,6 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 %type <Doc::WeakPtr>      doc
 %type <LogicAnd::WeakPtr> seqs
 %type <LogicAnd::WeakPtr> descriptions
-%type <LogicAnd::WeakPtr> comments
 %type <LogicXor::WeakPtr> utilities
 %type <LogicXor::WeakPtr> or_exprs
 
@@ -111,7 +109,6 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 %type <OptionBindingContainer::WeakPtr> bindings
 %type <OptionBinding::WeakPtr>          single_binding
 %type <DefaultValue::WeakPtr>           default_value
-%type <WeakPtrNode>                     single_comment
 
 %%
 
@@ -309,9 +306,9 @@ descriptions : descriptions single_description {  }
 ;
 
 
-// single_description : bindings default_value comments {  }
+// single_description : bindings default_value K_DESC_DELIMITER {  }
 // ;
-single_description : bindings default_value comments {
+single_description : bindings default_value K_DESC_DELIMITER {
   option_binding_recorder_ptr->RecordBinding(
       $1.lock(), $2.lock());
 }
@@ -326,16 +323,6 @@ default_value : K_L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE K_R_BRACKET {
               | %empty {
   $$ = DefaultValue::Init();
 }
-;
-
-
-comments : comments single_comment {  }
-         | single_comment {  }
-;
-
-
-single_comment : COMMENT K_DESC_DELIMITER { }
-               | K_DESC_DELIMITER { }
 ;
 
 

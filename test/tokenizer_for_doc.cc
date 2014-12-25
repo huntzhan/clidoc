@@ -13,9 +13,8 @@ TEST(tokenizer_for_doc, token_type) {
         TerminalType::OPERAND,
       });
   CheckTokenTypes(
-      "\"1.414 whatever\" # long long comment", {
+      "\"1.414 whatever\"", {
         TerminalType::OPTION_DEFAULT_VALUE,
-        TerminalType::COMMENT,
       });
 }
 
@@ -59,9 +58,8 @@ TEST(tokenizer_for_doc, raw_token_type) {
         TypeID::OPTION_ARGUEMENT,
       });
   CheckRawTokenTypes(
-      "\"1.414 whatever\" # long long comment", {
+      "\"1.414 whatever\"", {
         TypeID::OPTION_DEFAULT_VALUE,
-        TypeID::COMMENT,
       });
 }
 

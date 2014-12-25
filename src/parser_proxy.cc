@@ -207,6 +207,11 @@ void OptionBindingRecorder::ProcessCachedBindings() {
   }
 }
 
+string DocPreprocessor::RemoveComment(const string &text) {
+  regex pattern("#.*");
+  return regex_replace(text, pattern, "");
+}
+
 string DocPreprocessor::RemoveEmptyLine(const string &text) {
   regex pattern("(\n[ \t]*)+");
   return regex_replace(text, pattern, "\n");
@@ -310,9 +315,14 @@ string DocPreprocessor::ExtractAndProcessOptionsSection(
 }
 
 string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
-  string internal_text = DocPreprocessor::RemoveEmptyLine(raw_doc);
+  string internal_text;
+  // remove string.
+  internal_text = DocPreprocessor::RemoveComment(raw_doc);
+  internal_text = DocPreprocessor::RemoveEmptyLine(internal_text);
+  // extract and preprocess usage section.
   string usage_section =
       DocPreprocessor::ExtractAndProcessUsageSection(internal_text);
+  // extract and preprocess options section.
   string options_section =
       DocPreprocessor::ExtractAndProcessOptionsSection(internal_text);
   return usage_section + options_section;

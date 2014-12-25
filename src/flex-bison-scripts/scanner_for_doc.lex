@@ -41,7 +41,6 @@ GNU_OPTION           --{ALNUM}+
 OPTION_ARGUEMENT     (<[^>\n]+>)|({UPPERCASE_DIGIT}+)
 OPERAND              {ALNUM}+|"-"
 OPTION_DEFAULT_VALUE \".*\"
-COMMENT              #.*
 
 %%
 {K_L_PARENTHESIS}      return clidoc::BisonGeneratedParser::make_K_L_PARENTHESIS();
@@ -64,7 +63,6 @@ COMMENT              #.*
 {OPTION_ARGUEMENT}     return clidoc::BisonGeneratedParser::make_OPTION_ARGUEMENT(YYText());
 {OPERAND}              return clidoc::BisonGeneratedParser::make_OPERAND(YYText());
 {OPTION_DEFAULT_VALUE} return clidoc::BisonGeneratedParser::make_OPTION_DEFAULT_VALUE(YYText());
-{COMMENT}              return clidoc::BisonGeneratedParser::make_COMMENT(YYText());
 
 [:space:]              { /* do nothing. */ }
 <<EOF>>                return clidoc::BisonGeneratedParser::make_END();
