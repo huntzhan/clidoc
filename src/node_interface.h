@@ -58,7 +58,7 @@ struct NodeVistorInterface;
 // Interface for symbols in parsing tree.
 class NodeInterface {
  public:
-  virtual ~NodeInterface() { /* empty */ }
+  virtual ~NodeInterface() = default;
 
   // inline member helps generating indented prefix.
   std::string GetIndent(const int &indent) const;
