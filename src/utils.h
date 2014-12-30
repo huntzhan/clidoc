@@ -65,14 +65,15 @@ struct TerminalVistorInterface<> {
 };
 
 using ConcreteTerminalVistorInterface = TerminalVistorInterface<
-  TerminalType::OPTION_ARGUEMENT,
-  TerminalType::GNU_OPTION,
-  TerminalType::OPERAND,
-  TerminalType::OPTION_DEFAULT_VALUE,
+  TerminalType::K_DOUBLE_HYPHEN,
+  TerminalType::K_OPTIONS,
+
   TerminalType::POSIX_OPTION,
   TerminalType::GROUPED_OPTIONS,
-  TerminalType::K_DOUBLE_HYPHEN,
-  TerminalType::K_OPTIONS>;
+  TerminalType::GNU_OPTION,
+  TerminalType::ARGUMENT,
+  TerminalType::DEFAULT_VALUE,
+  TerminalType::COMMAND>;
 
 template <NonTerminalType type, NonTerminalType... rest_type>
 struct NonTerminalVistorInterface<type, rest_type...>
@@ -104,21 +105,21 @@ struct NodeVistorInterface : public ConcreteNonTerminalVistorInterface {
 };
 
 // Terminal classes.
-using OptionArguement    = Terminal<TerminalType::OPTION_ARGUEMENT>;
-using GnuOption          = Terminal<TerminalType::GNU_OPTION>;
-using Operand            = Terminal<TerminalType::OPERAND>;
-using OptionDefaultValue = Terminal<TerminalType::OPTION_DEFAULT_VALUE>;
-using PosixOption        = Terminal<TerminalType::POSIX_OPTION>;
-using GroupedOptions     = Terminal<TerminalType::GROUPED_OPTIONS>;
-using KDoubleHyphen      = Terminal<TerminalType::K_DOUBLE_HYPHEN>;
-using KOptions           = Terminal<TerminalType::K_OPTIONS>;
+using KDoubleHyphen  = Terminal<TerminalType::K_DOUBLE_HYPHEN>;
+using KOptions       = Terminal<TerminalType::K_OPTIONS>;
+
+using PosixOption    = Terminal<TerminalType::POSIX_OPTION>;
+using GroupedOptions = Terminal<TerminalType::GROUPED_OPTIONS>;
+using GnuOption      = Terminal<TerminalType::GNU_OPTION>;
+using Argument       = Terminal<TerminalType::ARGUMENT>;
+using Command        = Terminal<TerminalType::COMMAND>;
 
 // Non-terminal classes.
-using Doc                = NonTerminal<NonTerminalType::DOC>;
-using LogicAnd           = NonTerminal<NonTerminalType::LOGIC_AND>;
-using LogicXor           = NonTerminal<NonTerminalType::LOGIC_XOR>;
-using LogicOptional      = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
-using LogicOneOrMore     = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
+using Doc            = NonTerminal<NonTerminalType::DOC>;
+using LogicAnd       = NonTerminal<NonTerminalType::LOGIC_AND>;
+using LogicXor       = NonTerminal<NonTerminalType::LOGIC_XOR>;
+using LogicOptional  = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
+using LogicOneOrMore = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
 
 // For capturing option bindings.
 class OptionBinding : public SmartPtrInterface<OptionBinding> {
