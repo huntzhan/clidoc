@@ -9,7 +9,7 @@ TEST(tokenizer_for_argv, token_type) {
   CheckTokenTypes(
       "--long SOME_VALUE", {
         TerminalType::GNU_OPTION,
-        TerminalType::ARGUMENT,
+        TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
       "-c --long -afjb", {
@@ -20,10 +20,10 @@ TEST(tokenizer_for_argv, token_type) {
   CheckTokenTypes(
       "-f test_file.py FILE abc 42.19243", {
         TerminalType::POSIX_OPTION,
-        TerminalType::ARGUMENT,
-        TerminalType::ARGUMENT,
-        TerminalType::ARGUMENT,
-        TerminalType::ARGUMENT,
+        TerminalType::GENERAL_ELEMENT,
+        TerminalType::GENERAL_ELEMENT,
+        TerminalType::GENERAL_ELEMENT,
+        TerminalType::GENERAL_ELEMENT,
       });
 }
 
@@ -32,7 +32,7 @@ TEST(tokenizer_for_argv, raw_token_type) {
       "--long = SOME_VALUE", {
         TypeID::GNU_OPTION,
         TypeID::K_EQUAL_SIGN,
-        TypeID::ARGUMENT,
+        TypeID::GENERAL_ELEMENT,
       });
 }
 
@@ -41,21 +41,21 @@ TEST(tokenizer_for_argv, ambiguous) {
   CheckTokenTypes(
       "--long = SOME_VALUE", {
         TerminalType::GNU_OPTION,
-        TerminalType::ARGUMENT,
+        TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
       "--long= SOME_VALUE", {
-        TerminalType::ARGUMENT,
-        TerminalType::ARGUMENT,
+        TerminalType::GENERAL_ELEMENT,
+        TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
       "--long =SOME_VALUE", {
         TerminalType::GNU_OPTION,
-        TerminalType::ARGUMENT,
+        TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
       "--long=SOME_VALUE", {
-        TerminalType::ARGUMENT,
+        TerminalType::GENERAL_ELEMENT,
       });
 }
 

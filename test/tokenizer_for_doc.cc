@@ -4,17 +4,17 @@
 
 TEST(tokenizer_for_doc, token_type) {
   CheckTokenTypes(
-      "-c --long -afciFEj <arg> ARG operand", {
+      "-c --long -afciFEj <arg> ARG command", {
         TerminalType::POSIX_OPTION,
         TerminalType::GNU_OPTION,
         TerminalType::GROUPED_OPTIONS,
-        TerminalType::OPTION_ARGUEMENT,
-        TerminalType::OPTION_ARGUEMENT,
-        TerminalType::OPERAND,
+        TerminalType::ARGUMENT,
+        TerminalType::ARGUMENT,
+        TerminalType::COMMAND,
       });
   CheckTokenTypes(
       "\"1.414 whatever\"", {
-        TerminalType::OPTION_DEFAULT_VALUE,
+        TerminalType::DEFAULT_VALUE,
       });
 }
 
@@ -44,32 +44,33 @@ TEST(tokenizer_for_doc, raw_token_type) {
         TypeID::K_DESC_DELIMITER,
       });
   CheckRawTokenTypes(
-      "-c --long <arg> ARG operand", {
+      "-c --long --output-file <arg> ARG OUTPUT-FILE command", {
         TypeID::POSIX_OPTION,
         TypeID::GNU_OPTION,
-        TypeID::OPTION_ARGUEMENT,
-        TypeID::OPTION_ARGUEMENT,
-        TypeID::OPERAND,
+        TypeID::GNU_OPTION,
+        TypeID::ARGUMENT,
+        TypeID::ARGUMENT,
+        TypeID::ARGUMENT,
+        TypeID::COMMAND,
       });
   CheckRawTokenTypes(
-      "<arg t> <another arg> <<<<<<<<<<q>", {
-        TypeID::OPTION_ARGUEMENT,
-        TypeID::OPTION_ARGUEMENT,
-        TypeID::OPTION_ARGUEMENT,
+      "<arg t> <another arg>", {
+        TypeID::ARGUMENT,
+        TypeID::ARGUMENT,
       });
   CheckRawTokenTypes(
       "\"1.414 whatever\"", {
-        TypeID::OPTION_DEFAULT_VALUE,
+        TypeID::DEFAULT_VALUE,
       });
 }
 
 TEST(tokenizer_for_doc, token_value) {
   CheckTokenValues(
-      "-c  - --long ",
-      {"-c", "-", "--long"});
+      "-c  - --long   --output-file",
+      {"-c", "-", "--long", "--output-file"});
   CheckTokenValues(
-      "-c FILE",
-      {"-c", "FILE"});
+      "-c FILE OUTPUT-FILE",
+      {"-c", "FILE", "OUTPUT-FILE"});
 }
 
 TEST(tokenizer_for_doc, raw_token_value) {

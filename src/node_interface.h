@@ -9,15 +9,18 @@ namespace clidoc {
 
 // Defines terminal types.
 enum class TerminalType {
-  OPTION_ARGUEMENT,
-  GNU_OPTION,
-  OPERAND,
-  ARGUMENT,
   K_OPTIONS,
   K_DOUBLE_HYPHEN,
-  OPTION_DEFAULT_VALUE,
+
   POSIX_OPTION,
   GROUPED_OPTIONS,
+  GNU_OPTION,
+  ARGUMENT,
+  DEFAULT_VALUE,
+  COMMAND,
+
+  GENERAL_ELEMENT,
+
   // for terminals that would not be instaniation.
   OTHER,
 };
@@ -35,14 +38,16 @@ enum class NonTerminalType {
 };
 
 const std::map<TerminalType, std::string> kTermianlClassName = {
-  {TerminalType::OPTION_ARGUEMENT,     "OptionArguement"},
-  {TerminalType::GNU_OPTION,           "GnuOption"},
-  {TerminalType::OPERAND,              "Operand"},
-  {TerminalType::OPTION_DEFAULT_VALUE, "OptionDefaultValue"},
-  {TerminalType::POSIX_OPTION,         "PosixOption"},
-  {TerminalType::GROUPED_OPTIONS,      "GroupedOptions"},
-  {TerminalType::K_DOUBLE_HYPHEN,      "KDoubleHyphen"},
-  {TerminalType::K_OPTIONS,            "KOptions"},
+  {TerminalType::K_OPTIONS,       "KOptions"},
+  {TerminalType::K_DOUBLE_HYPHEN, "KDoubleHyphen"},
+
+  {TerminalType::POSIX_OPTION,    "PosixOption"},
+  {TerminalType::GROUPED_OPTIONS, "GroupedOptions"},
+  {TerminalType::GNU_OPTION,      "GnuOption"},
+  {TerminalType::ARGUMENT,        "Argument"},
+  {TerminalType::COMMAND,         "Command"},
+
+  {TerminalType::GENERAL_ELEMENT, "GeneralElement"},
 };
 
 const std::map<NonTerminalType, std::string> kNonTermianlClassName = {

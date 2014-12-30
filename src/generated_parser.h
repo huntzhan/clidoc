@@ -307,13 +307,13 @@ namespace clidoc {
       // single_description
       char dummy7[sizeof(WeakPtrNode)];
 
-      // OPTION_ARGUEMENT
-      // OPERAND
-      // OPTION_DEFAULT_VALUE
-      // ARGUMENT
       // POSIX_OPTION
       // GROUPED_OPTIONS
       // GNU_OPTION
+      // ARGUMENT
+      // DEFAULT_VALUE
+      // COMMAND
+      // GENERAL_ELEMENT
       char dummy8[sizeof(std::string)];
 };
 
@@ -335,13 +335,13 @@ namespace clidoc {
       enum yytokentype
       {
         END = 0,
-        OPTION_ARGUEMENT = 258,
-        OPERAND = 259,
-        OPTION_DEFAULT_VALUE = 260,
+        POSIX_OPTION = 258,
+        GROUPED_OPTIONS = 259,
+        GNU_OPTION = 260,
         ARGUMENT = 261,
-        POSIX_OPTION = 262,
-        GROUPED_OPTIONS = 263,
-        GNU_OPTION = 264,
+        DEFAULT_VALUE = 262,
+        COMMAND = 263,
+        GENERAL_ELEMENT = 264,
         K_L_PARENTHESIS = 265,
         K_R_PARENTHESIS = 266,
         K_L_BRACKET = 267,
@@ -466,22 +466,6 @@ namespace clidoc {
 
     static inline
     symbol_type
-    make_OPTION_ARGUEMENT (const std::string& v);
-
-    static inline
-    symbol_type
-    make_OPERAND (const std::string& v);
-
-    static inline
-    symbol_type
-    make_OPTION_DEFAULT_VALUE (const std::string& v);
-
-    static inline
-    symbol_type
-    make_ARGUMENT (const std::string& v);
-
-    static inline
-    symbol_type
     make_POSIX_OPTION (const std::string& v);
 
     static inline
@@ -491,6 +475,22 @@ namespace clidoc {
     static inline
     symbol_type
     make_GNU_OPTION (const std::string& v);
+
+    static inline
+    symbol_type
+    make_ARGUMENT (const std::string& v);
+
+    static inline
+    symbol_type
+    make_DEFAULT_VALUE (const std::string& v);
+
+    static inline
+    symbol_type
+    make_COMMAND (const std::string& v);
+
+    static inline
+    symbol_type
+    make_GENERAL_ELEMENT (const std::string& v);
 
     static inline
     symbol_type
@@ -744,7 +744,7 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 43,     ///< Last index in yytable_.
+      yylast_ = 46,     ///< Last index in yytable_.
       yynnts_ = 17,  ///< Number of nonterminal symbols.
       yyempty_ = -2,
       yyfinal_ = 7, ///< Termination state number.
@@ -866,13 +866,13 @@ namespace clidoc {
         value.copy< WeakPtrNode > (other.value);
         break;
 
-      case 3: // OPTION_ARGUEMENT
-      case 4: // OPERAND
-      case 5: // OPTION_DEFAULT_VALUE
+      case 3: // POSIX_OPTION
+      case 4: // GROUPED_OPTIONS
+      case 5: // GNU_OPTION
       case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
+      case 7: // DEFAULT_VALUE
+      case 8: // COMMAND
+      case 9: // GENERAL_ELEMENT
         value.copy< std::string > (other.value);
         break;
 
@@ -929,13 +929,13 @@ namespace clidoc {
         value.copy< WeakPtrNode > (v);
         break;
 
-      case 3: // OPTION_ARGUEMENT
-      case 4: // OPERAND
-      case 5: // OPTION_DEFAULT_VALUE
+      case 3: // POSIX_OPTION
+      case 4: // GROUPED_OPTIONS
+      case 5: // GNU_OPTION
       case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
+      case 7: // DEFAULT_VALUE
+      case 8: // COMMAND
+      case 9: // GENERAL_ELEMENT
         value.copy< std::string > (v);
         break;
 
@@ -1054,13 +1054,13 @@ namespace clidoc {
         value.template destroy< WeakPtrNode > ();
         break;
 
-      case 3: // OPTION_ARGUEMENT
-      case 4: // OPERAND
-      case 5: // OPTION_DEFAULT_VALUE
+      case 3: // POSIX_OPTION
+      case 4: // GROUPED_OPTIONS
+      case 5: // GNU_OPTION
       case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
+      case 7: // DEFAULT_VALUE
+      case 8: // COMMAND
+      case 9: // GENERAL_ELEMENT
         value.template destroy< std::string > ();
         break;
 
@@ -1115,13 +1115,13 @@ namespace clidoc {
         value.move< WeakPtrNode > (s.value);
         break;
 
-      case 3: // OPTION_ARGUEMENT
-      case 4: // OPERAND
-      case 5: // OPTION_DEFAULT_VALUE
+      case 3: // POSIX_OPTION
+      case 4: // GROUPED_OPTIONS
+      case 5: // GNU_OPTION
       case 6: // ARGUMENT
-      case 7: // POSIX_OPTION
-      case 8: // GROUPED_OPTIONS
-      case 9: // GNU_OPTION
+      case 7: // DEFAULT_VALUE
+      case 8: // COMMAND
+      case 9: // GENERAL_ELEMENT
         value.move< std::string > (s.value);
         break;
 
@@ -1186,30 +1186,6 @@ namespace clidoc {
   }
 
   BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_OPTION_ARGUEMENT (const std::string& v)
-  {
-    return symbol_type (token::OPTION_ARGUEMENT, v);
-  }
-
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_OPERAND (const std::string& v)
-  {
-    return symbol_type (token::OPERAND, v);
-  }
-
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_OPTION_DEFAULT_VALUE (const std::string& v)
-  {
-    return symbol_type (token::OPTION_DEFAULT_VALUE, v);
-  }
-
-  BisonGeneratedParser::symbol_type
-  BisonGeneratedParser::make_ARGUMENT (const std::string& v)
-  {
-    return symbol_type (token::ARGUMENT, v);
-  }
-
-  BisonGeneratedParser::symbol_type
   BisonGeneratedParser::make_POSIX_OPTION (const std::string& v)
   {
     return symbol_type (token::POSIX_OPTION, v);
@@ -1225,6 +1201,30 @@ namespace clidoc {
   BisonGeneratedParser::make_GNU_OPTION (const std::string& v)
   {
     return symbol_type (token::GNU_OPTION, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_ARGUMENT (const std::string& v)
+  {
+    return symbol_type (token::ARGUMENT, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_DEFAULT_VALUE (const std::string& v)
+  {
+    return symbol_type (token::DEFAULT_VALUE, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_COMMAND (const std::string& v)
+  {
+    return symbol_type (token::COMMAND, v);
+  }
+
+  BisonGeneratedParser::symbol_type
+  BisonGeneratedParser::make_GENERAL_ELEMENT (const std::string& v)
+  {
+    return symbol_type (token::GENERAL_ELEMENT, v);
   }
 
   BisonGeneratedParser::symbol_type

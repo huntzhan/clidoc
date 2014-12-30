@@ -22,14 +22,17 @@ namespace tokenizer {
 
 TerminalType ToTerminalType(const Type &type_id) {
   switch (type_id) {
-    TokenTypeMapping(OPTION_ARGUEMENT);
-    TokenTypeMapping(GNU_OPTION);
-    TokenTypeMapping(OPERAND);
-    TokenTypeMapping(ARGUMENT);
+    TokenTypeMapping(K_OPTIONS);
     TokenTypeMapping(K_DOUBLE_HYPHEN);
-    TokenTypeMapping(OPTION_DEFAULT_VALUE);
+
     TokenTypeMapping(POSIX_OPTION);
     TokenTypeMapping(GROUPED_OPTIONS);
+    TokenTypeMapping(GNU_OPTION);
+    TokenTypeMapping(ARGUMENT);
+    TokenTypeMapping(DEFAULT_VALUE);
+    TokenTypeMapping(COMMAND);
+
+    TokenTypeMapping(GENERAL_ELEMENT);
     default:
       return TerminalType::OTHER;
   }
@@ -37,16 +40,15 @@ TerminalType ToTerminalType(const Type &type_id) {
 
 bool TokenHasValue(const TerminalType &type) {
   switch (type) {
-    // Only for doc processing.
-    case TerminalType::OPTION_ARGUEMENT:
-    case TerminalType::GNU_OPTION:
-    case TerminalType::OPERAND:
-    // Only for argument processing.
-    case TerminalType::ARGUMENT:
-    // Shared.
-    case TerminalType::OPTION_DEFAULT_VALUE:
     case TerminalType::POSIX_OPTION:
     case TerminalType::GROUPED_OPTIONS:
+    case TerminalType::GNU_OPTION:
+
+    case TerminalType::ARGUMENT:
+    case TerminalType::DEFAULT_VALUE:
+    case TerminalType::COMMAND:
+
+    case TerminalType::GENERAL_ELEMENT:
       return true;
     default:
       return false;

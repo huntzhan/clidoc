@@ -50,59 +50,57 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 
 // Terminal with value.
 %token <std::string>
-  // Only for doc processing.
-  OPTION_ARGUEMENT
-  OPERAND
-  OPTION_DEFAULT_VALUE
-
-  // Only for argument processing.
-  ARGUMENT
-
   // Shared.
   POSIX_OPTION
   GROUPED_OPTIONS
   GNU_OPTION
+
+  // Only for doc processing.
+  ARGUMENT
+  DEFAULT_VALUE
+  COMMAND
+
+  // Only for argument processing.
+  GENERAL_ELEMENT
 ;
 
 // Terminal without value.
 %token
   // Only for doc processing.
-  K_L_PARENTHESIS     "("
-  K_R_PARENTHESIS     ")"
-  K_L_BRACKET         "["
-  K_R_BRACKET         "]"
-  K_EXCLUSIVE_OR      "|"
-  K_ELLIPSES          "..."
-  K_USAGE_COLON       "usage:"
-  K_OPTIONS_COLON     "options:"
-  K_DEFAULT_COLON     "default:"
-  K_OPTIONS           "options"
-  K_UTILITY_DELIMITER "*UTILITY_DELIMITER*"
-  K_DESC_DELIMITER    "*DESC_DELIMITER*"
-
-  // Only for argument processing.
-  K_DOUBLE_HYPHEN     "--"
+  K_L_PARENTHESIS     
+  K_R_PARENTHESIS     
+  K_L_BRACKET         
+  K_R_BRACKET         
+  K_EXCLUSIVE_OR      
+  K_ELLIPSES          
+  K_USAGE_COLON       
+  K_OPTIONS_COLON     
+  K_DEFAULT_COLON     
+  K_OPTIONS           
+  K_UTILITY_DELIMITER 
+  K_DESC_DELIMITER    
 
   // Shared.
-  K_EQUAL_SIGN        "="
+  K_DOUBLE_HYPHEN     
+  K_EQUAL_SIGN        
 
   // end-of-file.
   END                 0
 ;
 
 // Logical nodes.
-%type <Doc::WeakPtr>      doc
-%type <LogicAnd::WeakPtr> seqs
-%type <LogicAnd::WeakPtr> descriptions
-%type <LogicXor::WeakPtr> utilities
-%type <LogicXor::WeakPtr> or_exprs
+%type <Doc::WeakPtr>                    doc
+%type <LogicAnd::WeakPtr>               seqs
+%type <LogicAnd::WeakPtr>               descriptions
+%type <LogicXor::WeakPtr>               utilities
+%type <LogicXor::WeakPtr>               or_exprs
 
-%type <WeakPtrNode>       usage_section
-%type <WeakPtrNode>       single_seq
-%type <WeakPtrNode>       atom
-%type <WeakPtrNode>       single_utility
-%type <WeakPtrNode>       gnu_option_unit
-%type <WeakPtrNode>       posix_option_unit
+%type <WeakPtrNode>                     usage_section
+%type <WeakPtrNode>                     single_seq
+%type <WeakPtrNode>                     atom
+%type <WeakPtrNode>                     single_utility
+%type <WeakPtrNode>                     gnu_option_unit
+%type <WeakPtrNode>                     posix_option_unit
 
 %type <WeakPtrNode>                     options_section
 %type <WeakPtrNode>                     single_description
@@ -203,8 +201,8 @@ single_seq : atom {
 //      | K_L_BRACKET or_exprs K_R_BRACKET
 //      | posix_option_unit
 //      | gnu_option_unit
-//      | OPTION_ARGUEMENT
-//      | OPERAND
+//      | ARGUMENT
+//      | COMMAND
 //      | K_OPTIONS
 // ;
 atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
@@ -223,18 +221,18 @@ atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
      | gnu_option_unit {
   $$ = $1;
 }
-     | OPTION_ARGUEMENT {
-  auto option_argument =
-      OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, $1));
+     | ARGUMENT {
+  auto argument =
+      Argument::Init(InitToken(TypeID::ARGUMENT, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(option_argument);
+  logic_and->children_.push_back(argument);
   $$ = logic_and;
 }
-     | OPERAND {
-  auto operand =
-      Operand::Init(InitToken(TypeID::OPERAND, $1));
+     | COMMAND {
+  auto command =
+      Command::Init(InitToken(TypeID::COMMAND, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(operand);
+  logic_and->children_.push_back(command);
   $$ = logic_and;
 }
      | K_OPTIONS {
@@ -268,7 +266,7 @@ posix_option_unit : POSIX_OPTION {
 
 
 // gnu_option_unit : GNU_OPTION
-//                 | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT
+//                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT
 // ;
 gnu_option_unit : GNU_OPTION {
   auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
@@ -276,19 +274,19 @@ gnu_option_unit : GNU_OPTION {
   logic_and->children_.push_back(gnu_option);
   $$ = logic_and;
 }
-                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
+                | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   // recording binding.
   option_binding_recorder_ptr->RecordBinding(
       InitToken(TypeID::GNU_OPTION, $1),
-      InitToken(TypeID::OPTION_ARGUEMENT, $3));
+      InitToken(TypeID::ARGUMENT, $3));
 
   // normal works.
   auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
-  auto option_argument =
-      OptionArguement::Init(InitToken(TypeID::OPTION_ARGUEMENT, $3));
+  auto argument =
+      Argument::Init(InitToken(TypeID::ARGUMENT, $3));
   auto logic_and = LogicAnd::Init();
   logic_and->children_.push_back(gnu_option);
-  logic_and->children_.push_back(option_argument);
+  logic_and->children_.push_back(argument);
   $$ = logic_and;
 }
 ;
@@ -315,9 +313,9 @@ single_description : bindings default_value K_DESC_DELIMITER {
 ;
 
 
-default_value : K_L_BRACKET K_DEFAULT_COLON OPTION_DEFAULT_VALUE K_R_BRACKET {  
+default_value : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET {  
   auto default_value =
-      DefaultValue::Init(InitToken(TypeID::OPTION_DEFAULT_VALUE, $3));
+      DefaultValue::Init(InitToken(TypeID::DEFAULT_VALUE, $3));
   $$ = default_value;
 }
               | %empty {
@@ -344,9 +342,9 @@ bindings : bindings single_binding {
 
 // single_binding : POSIX_OPTION
 //                | GNU_OPTION
-//                | POSIX_OPTION OPTION_ARGUEMENT
-//                | GNU_OPTION OPTION_ARGUEMENT
-//                | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT
+//                | POSIX_OPTION ARGUMENT
+//                | GNU_OPTION ARGUMENT
+//                | GNU_OPTION K_EQUAL_SIGN ARGUMENT
 // ;
 single_binding : POSIX_OPTION {
   auto binding =
@@ -358,22 +356,22 @@ single_binding : POSIX_OPTION {
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1));
   $$ = binding;
 }
-               | POSIX_OPTION OPTION_ARGUEMENT {
+               | POSIX_OPTION ARGUMENT {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, $1),
-                          InitToken(TypeID::OPTION_ARGUEMENT, $2));
+                          InitToken(TypeID::ARGUMENT, $2));
   $$ = binding;
 }
-               | GNU_OPTION OPTION_ARGUEMENT {
+               | GNU_OPTION ARGUMENT {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1),
-                          InitToken(TypeID::OPTION_ARGUEMENT, $2));
+                          InitToken(TypeID::ARGUMENT, $2));
   $$ = binding;
 }
-               | GNU_OPTION K_EQUAL_SIGN OPTION_ARGUEMENT {
+               | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   auto binding =
       OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1),
-                          InitToken(TypeID::OPTION_ARGUEMENT, $3));
+                          InitToken(TypeID::ARGUMENT, $3));
   $$ = binding;
 }
 ;
