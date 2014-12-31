@@ -102,9 +102,9 @@ TEST(parser_proxy, preprocess_process_options_section) {
 
 TEST(parser_proxy, preprocess_all_in_one) {
   string input = ("Usage  :\n"
-                  "   some_program.py this is line one.\n"
+                  "   some_program.py [-f] FILE [options] -- this\n"
                   "     # brbrbr.\n"
-                  "   some_program.py this is line two.\n"
+                  "   some_program.py (foo|bar) --long=<newline>\n"
                   "\n\t \n\n"
                   "Options \t:\n"
                   "   this is line one.\n"
@@ -112,8 +112,8 @@ TEST(parser_proxy, preprocess_all_in_one) {
                   "\n\n\n");
 
   string expect = ("Usage:"
-                   " *UTILITY_DELIMITER* this is line one."
-                   " *UTILITY_DELIMITER* this is line two."
+                   " *UTILITY_DELIMITER* [ -f ] FILE [ options ] -- this"
+                   " *UTILITY_DELIMITER* ( foo | bar ) --long = <newline>"
                    " Options:"
                    " this is line one. *DESC_DELIMITER*"
                    " this is line two. *DESC_DELIMITER*");

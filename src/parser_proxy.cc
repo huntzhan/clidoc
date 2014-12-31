@@ -318,6 +318,9 @@ string DocPreprocessor::InsertDesDelimiter(const string &options_section) {
   return result;
 }
 
+// TODO: Added a strategy to prevent `DisambiguateByInsertSpace` modifying
+//   1. angle bracket surrounded argument.
+//   2. operands behind `--`.
 string DocPreprocessor::DisambiguateByInsertSpace(const string &text) {
   vector<string> keywords = {
     "(",
