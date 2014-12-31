@@ -5,6 +5,8 @@
 #include <string>
 #include "utils.h"
 
+#include "gtest/gtest_prod.h"
+
 namespace clidoc {
 
 struct RepresentativeOptionProperty {
@@ -50,7 +52,18 @@ class OptionBindingRecorder {
       RepresentativeOptionProperty *property_ptr);
 };
 
-struct DocPreprocessor {
+class DocPreprocessor {
+ public:
+  std::string PreprocessRawDoc(const std::string &raw_doc);
+
+ private:
+  // gtest related.
+  FRIEND_TEST(DocPreprocessorTest, RemoveComment);
+  FRIEND_TEST(DocPreprocessorTest, RemoveEmptyLine);
+  FRIEND_TEST(DocPreprocessorTest, ExtractSection);
+  FRIEND_TEST(DocPreprocessorTest, ReplaceUtilityName);
+  FRIEND_TEST(DocPreprocessorTest, ExtractAndProcessOptionsSection);
+
   // Exrtact a section targeted by `section_name` and formalize section name.
   static bool ExtractSection(
       const std::string &section_name,
@@ -60,19 +73,24 @@ struct DocPreprocessor {
       std::string *text_ptr,
       const std::string &old_substring,
       const std::string &new_substring);
+
+  void ExtractAndProcessUsageSection();
+  void ExtractAndProcessOptionsSection();
+
   // 1. Remove comment and empty line and tailing whitespace.
-  static std::string RemoveComment(const std::string &text);
-  static std::string RemoveEmptyLine(const std::string &text);
+  void RemoveComment();
+  void RemoveEmptyLine();
   // 2. Detect utility name in usage section, then replace it with
   // K_UTILITY_DELIMITER.
-  static std::string ReplaceUtilityName(const std::string &usage_section);
+  void ReplaceUtilityName();
   // 3. Insert K_DESC_DELIMITER brefore each NEWLINE in option section.
-  static std::string InsertDesDelimiter(const std::string &options_section);
+  void InsertDesDelimiter();
   // 4. Insert space to both sides of every keyword.
-  static std::string DisambiguateByInsertSpace(const std::string &text);
+  void DisambiguateByInsertSpace();
 
-  static std::string ExtractAndProcessUsageSection(const std::string &text);
-  static std::string ExtractAndProcessOptionsSection(const std::string &text);
+  std::string text_;
+  std::string usage_section_;
+  std::string options_section_;
 };
 
 class ParserProxy {
@@ -82,7 +100,6 @@ class ParserProxy {
       const std::string &preprocessed_doc,
       Doc::SharedPtr *doc_ptr,
       OptionBindingRecorder *option_binding_recorder_ptr);
-
 };
 
 }  // namespace clidoc

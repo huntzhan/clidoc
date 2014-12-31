@@ -217,6 +217,7 @@ bool DocPreprocessor::ExtractSection(
     string *output) {
   regex target_section_pattern(
       "(" + section_name + ")[ \t]*:",
+      // case-insensitive.
       std::regex_constants::icase);
   regex next_section_pattern(
       "(.+?)[ \t]*:",
@@ -268,31 +269,29 @@ void DocPreprocessor::ReplaceAll(
   }
 }
 
-string DocPreprocessor::RemoveComment(const string &text) {
+void DocPreprocessor::RemoveComment() {
   regex pattern("#.*");
-  return regex_replace(text, pattern, "");
+  text_ = regex_replace(text_, pattern, "");
 }
 
-string DocPreprocessor::RemoveEmptyLine(const string &text) {
+void DocPreprocessor::RemoveEmptyLine() {
   regex pattern("(\n[ \t]*)+");
-  return regex_replace(text, pattern, "\n");
+  text_ = regex_replace(text_, pattern, "\n");
 }
 
-string DocPreprocessor::ReplaceUtilityName(const string &usage_section) {
+void DocPreprocessor::ReplaceUtilityName() {
   regex utility_name_pattern(
       "usage:\\s*(\\S+)",
       std::regex_constants::icase);
   smatch match_result;
-  if (!regex_search(usage_section, match_result, utility_name_pattern)) {
+  if (!regex_search(usage_section_, match_result, utility_name_pattern)) {
     throw "NotImplementedError.";
   }
   string utility_name = match_result.str(1);
-  string result = usage_section;
-  ReplaceAll(&result, utility_name, "*UTILITY_DELIMITER*");
-  return result;
+  ReplaceAll(&usage_section_, utility_name, "*UTILITY_DELIMITER*");
 }
 
-string DocPreprocessor::InsertDesDelimiter(const string &options_section) {
+void DocPreprocessor::InsertDesDelimiter() {
   // insertion point:
   // Options: \n[NOT here]
   //   -x, -xxx # brbrbr. \n[HERE!]
@@ -302,26 +301,26 @@ string DocPreprocessor::InsertDesDelimiter(const string &options_section) {
       std::regex_constants::icase);
   smatch match_result;
   // have no chance to fail.
-  regex_search(options_section, match_result, options_section_name_pattern);
-  if (match_result.suffix().first == options_section.end()) {
+  regex_search(options_section_, match_result, options_section_name_pattern);
+  if (match_result.suffix().first == options_section_.end()) {
     // case happen if nothing is following the name of options section
     // ("Options:").
     throw "NotImplementedError.";
   }
-  string result = match_result.str();
+  string processed_options_section = match_result.str();
   auto pos_iter = match_result.suffix().first;
   regex_replace(
-      back_inserter(result),
-      pos_iter, options_section.cend(),
+      back_inserter(processed_options_section),
+      pos_iter, options_section_.cend(),
       regex("\n"),
       "\n*DESC_DELIMITER*");
-  return result;
+  options_section_ = processed_options_section;
 }
 
 // TODO: Added a strategy to prevent `DisambiguateByInsertSpace` modifying
 //   1. angle bracket surrounded argument.
 //   2. operands behind `--`.
-string DocPreprocessor::DisambiguateByInsertSpace(const string &text) {
+void DocPreprocessor::DisambiguateByInsertSpace() {
   vector<string> keywords = {
     "(",
     ")",
@@ -334,56 +333,56 @@ string DocPreprocessor::DisambiguateByInsertSpace(const string &text) {
     "*UTILITY_DELIMITER*",
     "*DESC_DELIMITER*" ,
   };
-  string result = text;
   // first, insert spaces.
   for (const string &keyword : keywords) {
-    ReplaceAll(&result, keyword, " " + keyword + " ");
+    ReplaceAll(&text_, keyword, " " + keyword + " ");
   }
   // collapse spaces.
-  result = regex_replace(
-      result,
+  text_ = regex_replace(
+      text_,
       regex("\\s+"),
       " ");
-  if (result.back() == ' ') {
-    result.pop_back();
+  if (text_.back() == ' ') {
+    text_.pop_back();
   }
-  return result;
 }
 
-string DocPreprocessor::ExtractAndProcessUsageSection(const string &text) {
-  string usage_section;
-  if (!ExtractSection("Usage", text, &usage_section)) {
+void DocPreprocessor::ExtractAndProcessUsageSection() {
+  if (!ExtractSection("Usage", text_, &usage_section_)) {
     // can't find usage section, which must exist.
     throw "NotImplementedError.";
   }
-  return ReplaceUtilityName(usage_section);
+  ReplaceUtilityName();
 }
 
-string DocPreprocessor::ExtractAndProcessOptionsSection(
-    const string &text) {
-  string options_section;
-  if (!ExtractSection("Options", text, &options_section)) {
+void DocPreprocessor::ExtractAndProcessOptionsSection() {
+  if (!ExtractSection("Options", text_, &options_section_)) {
     // Since options section is optional, if the program cannot find such
     // section, the program will return an empty string.
-    return "";
+    options_section_ = "";
+    return; 
   }
-  return InsertDesDelimiter(options_section);
+  InsertDesDelimiter();
+}
+
+string DocPreprocessor::PreprocessRawDoc(const string &raw_doc) {
+  text_ = raw_doc;
+  // remove string.
+  RemoveComment();
+  RemoveEmptyLine();
+  // extract and preprocess usage section.
+  ExtractAndProcessUsageSection();
+  // extract and preprocess options section.
+  ExtractAndProcessOptionsSection();
+  // disambiguate. 
+  text_ = usage_section_ + options_section_;
+  DisambiguateByInsertSpace();
+  return text_;
 }
 
 string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
-  string internal_text;
-  // remove string.
-  internal_text = DocPreprocessor::RemoveComment(raw_doc);
-  internal_text = DocPreprocessor::RemoveEmptyLine(internal_text);
-  // extract and preprocess usage section.
-  string usage_section =
-      DocPreprocessor::ExtractAndProcessUsageSection(internal_text);
-  // extract and preprocess options section.
-  string options_section =
-      DocPreprocessor::ExtractAndProcessOptionsSection(internal_text);
-  // disambiguate. 
-  return DocPreprocessor::DisambiguateByInsertSpace(
-      usage_section + options_section);
+  DocPreprocessor preprocessor;
+  return preprocessor.PreprocessRawDoc(raw_doc);
 }
 
 void ParserProxy::ParseByBison(
