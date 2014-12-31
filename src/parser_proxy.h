@@ -56,13 +56,22 @@ struct DocPreprocessor {
       const std::string &section_name,
       const std::string &text,
       std::string *output);
-  // 1. Remove comment and empty lines.
+  static void ReplaceAll(
+      std::string *text_ptr,
+      const std::string &old_substring,
+      const std::string &new_substring);
+  // 1. Remove comment and empty line and tailing whitespace.
   static std::string RemoveComment(const std::string &text);
   static std::string RemoveEmptyLine(const std::string &text);
   // 2. Detect utility name in usage section, then replace it with
   // K_UTILITY_DELIMITER.
-  static std::string ExtractAndProcessUsageSection(const std::string &text);
+  static std::string ReplaceUtilityName(const std::string &usage_section);
   // 3. Insert K_DESC_DELIMITER brefore each NEWLINE in option section.
+  static std::string InsertDesDelimiter(const std::string &options_section);
+  // 4. Insert space to both sides of every keyword.
+  static std::string DisambiguateByInsertSpace(const std::string &text);
+
+  static std::string ExtractAndProcessUsageSection(const std::string &text);
   static std::string ExtractAndProcessOptionsSection(const std::string &text);
 };
 

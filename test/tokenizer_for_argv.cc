@@ -7,7 +7,7 @@ TEST(tokenizer_for_argv, token_type) {
         TerminalType::K_DOUBLE_HYPHEN,
       });
   CheckTokenTypes(
-      "--long SOME_VALUE", {
+      "--long SOME-VALUE", {
         TerminalType::GNU_OPTION,
         TerminalType::GENERAL_ELEMENT,
       });
@@ -29,7 +29,7 @@ TEST(tokenizer_for_argv, token_type) {
 
 TEST(tokenizer_for_argv, raw_token_type) {
   CheckRawTokenTypes(
-      "--long = SOME_VALUE", {
+      "--long = SOME-VALUE", {
         TypeID::GNU_OPTION,
         TypeID::K_EQUAL_SIGN,
         TypeID::GENERAL_ELEMENT,
@@ -39,27 +39,30 @@ TEST(tokenizer_for_argv, raw_token_type) {
 TEST(tokenizer_for_argv, ambiguous) {
   // such kind of ambiguity should be handle after tokenized.
   CheckTokenTypes(
-      "--long = SOME_VALUE", {
+      "--long = SOME-VALUE", {
         TerminalType::GNU_OPTION,
         TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
-      "--long= SOME_VALUE", {
+      "--long= SOME-VALUE", {
         TerminalType::GENERAL_ELEMENT,
         TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
-      "--long =SOME_VALUE", {
+      "--long =SOME-VALUE", {
         TerminalType::GNU_OPTION,
         TerminalType::GENERAL_ELEMENT,
       });
   CheckTokenTypes(
-      "--long=SOME_VALUE", {
+      "--long=SOME-VALUE", {
         TerminalType::GENERAL_ELEMENT,
       });
 }
 
 TEST(tokenizer_for_argv, token_value) {
+  CheckTokenValues(
+      "SOME-VALUE",
+      {"SOME-VALUE"});
   CheckTokenValues(
       "-f test_file.py FILE abc 42.19243", 
       {"-f", "test_file.py", "FILE", "abc", "42.19243"});

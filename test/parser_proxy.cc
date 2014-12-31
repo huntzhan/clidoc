@@ -81,8 +81,8 @@ TEST(parser_proxy, preprocess_extract_section_3) {
 
 TEST(parser_proxy, preprocess_replace_utility_name) {
   string input = ("Usage:\n"
-                  "   some_program.py -f --long command\n"
-                  "   some_program.py [whatever] command2\n");
+                  "   some_program+py -f --long command\n"
+                  "   some_program+py [whatever] command2\n");
   string expect = ("Usage:\n"
                    "   *UTILITY_DELIMITER* -f --long command\n"
                    "   *UTILITY_DELIMITER* [whatever] command2\n");
@@ -111,12 +111,12 @@ TEST(parser_proxy, preprocess_all_in_one) {
                   "   this is line two.\n"
                   "\n\n\n");
 
-  string expect = ("Usage:\n"
-                   "*UTILITY_DELIMITER* this is line one.\n"
-                   "*UTILITY_DELIMITER* this is line two.\n"
-                   "Options:\n"
-                   "this is line one.\n*DESC_DELIMITER*"
-                   "this is line two.\n*DESC_DELIMITER*");
+  string expect = ("Usage:"
+                   " *UTILITY_DELIMITER* this is line one."
+                   " *UTILITY_DELIMITER* this is line two."
+                   " Options:"
+                   " this is line one. *DESC_DELIMITER*"
+                   " this is line two. *DESC_DELIMITER*");
   ParserProxy proxy;
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }
