@@ -2,7 +2,9 @@
 #define SRC_PARSER_PROXY_H_
 
 #include <map>
+#include <regex>
 #include <string>
+#include <vector>
 #include "utils.h"
 
 #include "gtest/gtest_prod.h"
@@ -86,6 +88,12 @@ class DocPreprocessor {
   // 3. Insert K_DESC_DELIMITER brefore each NEWLINE in option section.
   void InsertDesDelimiter();
   // 4. Insert space to both sides of every keyword.
+  void ReplaceElementWithRegularExpression(
+      std::string *text_ptr,
+      const std::regex &pattern,
+      std::vector<std::string> *elements_ptr);
+  std::vector<std::string> ReplaceSpeicalElement();
+  void RestoreSpeicalElement(const std::vector<std::string> &elements);
   void DisambiguateByInsertSpace();
 
   std::string text_;

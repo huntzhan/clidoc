@@ -123,7 +123,7 @@ TEST(DocPreprocessorTest, ExtractAndProcessOptionsSection) {
 
 TEST(parser_proxy, preprocess_all_in_one) {
   string input = ("Usage  :\n"
-                  "   some_program.py [-f] FILE [options] -- this\n"
+                  "   some_program.py [-f] FILE [options] -- <foo  \t bar>\n"
                   "     # brbrbr.\n"
                   "   some_program.py (foo|bar) --long=<newline>\n"
                   "\n\t \n\n"
@@ -133,7 +133,7 @@ TEST(parser_proxy, preprocess_all_in_one) {
                   "\n\n\n");
 
   string expect = ("Usage:"
-                   " *UTILITY_DELIMITER* [ -f ] FILE [ options ] -- this"
+                   " *UTILITY_DELIMITER* [ -f ] FILE [ options ] -- <foo  \t bar>"
                    " *UTILITY_DELIMITER* ( foo | bar ) --long = <newline>"
                    " Options:"
                    " this is line one. *DESC_DELIMITER*"

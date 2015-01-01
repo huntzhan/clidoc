@@ -24,6 +24,7 @@ using std::ofstream;
 using std::istringstream;
 using std::vector;
 using std::size_t;
+using std::to_string;
 
 namespace clidoc {
 
@@ -316,11 +317,65 @@ void DocPreprocessor::InsertDesDelimiter() {
       "\n*DESC_DELIMITER*");
   options_section_ = processed_options_section;
 }
+void DocPreprocessor::ReplaceElementWithRegularExpression(
+    std::string *text_ptr,
+    const regex &pattern,
+    std::vector<std::string> *elements_ptr) {
+  smatch match_result;
+  while (regex_search(*text_ptr, match_result, pattern)) {
+    auto element = match_result.str(1);
+    // `__id__`.
+    string content = "__" + to_string(elements_ptr->size()) + "__";
+    ReplaceAll(text_ptr, element, content);
+    elements_ptr->push_back(element);
+  }
+}
 
-// TODO: Added a strategy to prevent `DisambiguateByInsertSpace` modifying
-//   1. angle bracket surrounded argument.
-//   2. operands behind `--`.
+// modify `text_`.
+vector<string> DocPreprocessor::ReplaceSpeicalElement() {
+  vector<string> elements;
+  // process operands after `--`.
+  regex operands_pattern("(-- (.|\n)*?)(\\s*)(\\*UTILITY_DELIMITER\\*)");
+  // append delimiter in order to catch special operands of the last line.
+  usage_section_ += "*UTILITY_DELIMITER*";
+  ReplaceElementWithRegularExpression(
+      &usage_section_,
+      operands_pattern,
+      &elements);
+  // remove previous added dilimiter.
+  usage_section_ = regex_replace(
+      usage_section_,
+      regex("\\*UTILITY_DELIMITER\\*$"),
+      "");
+  // process <argument>.
+  regex argument_pattern("(<.*?>)");
+  ReplaceElementWithRegularExpression(
+      &usage_section_,
+      argument_pattern,
+      &elements);
+  ReplaceElementWithRegularExpression(
+      &options_section_,
+      argument_pattern,
+      &elements);
+  // update `text_`.
+  text_ = usage_section_ + options_section_;
+  return elements;
+}
+
+// restore `text_`.
+void DocPreprocessor::RestoreSpeicalElement(
+    const std::vector<std::string> &elements) {
+  int index = 0;
+  for (const string &element : elements) {
+    string content = "__" + to_string(index) + "__";
+    ReplaceAll(&text_, content, element);
+    ++index;
+  }
+}
+
 void DocPreprocessor::DisambiguateByInsertSpace() {
+  // preprocess.
+  auto elements = ReplaceSpeicalElement();
   vector<string> keywords = {
     "(",
     ")",
@@ -345,6 +400,8 @@ void DocPreprocessor::DisambiguateByInsertSpace() {
   if (text_.back() == ' ') {
     text_.pop_back();
   }
+  // postprocess.
+  RestoreSpeicalElement(elements);
 }
 
 void DocPreprocessor::ExtractAndProcessUsageSection() {
@@ -375,7 +432,6 @@ string DocPreprocessor::PreprocessRawDoc(const string &raw_doc) {
   // extract and preprocess options section.
   ExtractAndProcessOptionsSection();
   // disambiguate. 
-  text_ = usage_section_ + options_section_;
   DisambiguateByInsertSpace();
   return text_;
 }
