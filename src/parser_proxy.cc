@@ -271,7 +271,7 @@ void DocPreprocessor::ReplaceAll(
 }
 
 void DocPreprocessor::RemoveComment() {
-  regex pattern("#.*");
+  regex pattern("#.*\n");  // must remove the tailing NEWLINE character.
   text_ = regex_replace(text_, pattern, "");
 }
 

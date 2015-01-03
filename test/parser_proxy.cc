@@ -16,11 +16,12 @@ TEST(DocPreprocessorTest, RemoveComment) {
   preprocessor.text_ =
       "  line one #  whatever.\n"
       "line two on comment.\n"
+      "# to be remove\n"
       "line three#test.\n\n";
   string expect =
-      "  line one \n"
+      "  line one "
       "line two on comment.\n"
-      "line three\n\n";
+      "line three\n";
   preprocessor.RemoveComment();
   EXPECT_EQ(expect, preprocessor.text_);
 }
