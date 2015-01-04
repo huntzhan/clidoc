@@ -1,4 +1,5 @@
 
+#include <stdexcept>
 #include <cstddef>
 #include <fstream>
 #include <iterator>
@@ -25,19 +26,24 @@ using std::istringstream;
 using std::vector;
 using std::size_t;
 using std::to_string;
+using std::logic_error;
 
 namespace clidoc {
 
 void RepresentativeOptionProperty::set_option_argument(
     const Token &option_argument) {
-  if (has_option_argument_) { throw "NotImplementedError."; }
+  if (has_option_argument_) {
+    throw logic_error("set_option_argument error");
+  }
   has_option_argument_ = true;
   option_argument_ = option_argument;
 }
 
 void RepresentativeOptionProperty::set_default_value(
     const string &default_value) {
-  if (has_default_value_) { throw "NotImplementedError."; }
+  if (has_default_value_) {
+    throw logic_error("set_default_value");
+  }
   has_default_value_ = true;
   default_value_ = default_value;
 }
@@ -64,7 +70,7 @@ Token OptionBindingRecorder::GetRepresentativeOption(
     }
   }
   if (representative_option_ptr == nullptr) {
-    throw "NotImplementedError.";
+    throw logic_error("GetRepresentativeOption");
   }
   return Token(*representative_option_ptr);
 }
@@ -85,7 +91,7 @@ Token OptionBindingRecorder::GetBoundOptionArgument(
       if (option_argument_ptr == nullptr) {
         option_argument_ptr = &option_argument;
       } else if (*option_argument_ptr != option_argument) {
-        throw "NotImplementedError.";
+        throw logic_error("GetBoundOptionArgument");
       }
     }
   }
@@ -125,7 +131,7 @@ void OptionBindingRecorder::UpdateRepresentativeOptionProperty(
     if (!bound_option_argument.IsEmpty()
         && property_ptr->option_argument_ != bound_option_argument) {
       // option argument not match!
-      throw "NotImplementedError.";
+      throw logic_error("UpdateRepresentativeOptionProperty_1");
     }
   } else if (!bound_option_argument.IsEmpty()) {
     // no option_argument has been set, just set it.
@@ -137,7 +143,7 @@ void OptionBindingRecorder::UpdateRepresentativeOptionProperty(
     // check equality.
     if (!default_value.IsEmpty()
         && property_ptr->default_value_ != default_value.value()) {
-      throw "NotImplementedError.";
+      throw logic_error("UpdateRepresentativeOptionProperty_2");
     }
   } else if (!default_value.IsEmpty()) {
     // similar with option argument.
@@ -177,7 +183,7 @@ void OptionBindingRecorder::RecordBinding(
   if (pos_iter == option_to_option_argument_cache_.end()) {
     option_to_option_argument_cache_[option] = option_argument;
   } else if (option_argument != pos_iter->second) {
-    throw "NotImplementedError.";
+    throw logic_error("RecordBinding");
   }
 }
 
@@ -221,14 +227,14 @@ bool DocPreprocessor::ExtractSection(
       // case-insensitive.
       std::regex_constants::icase);
   regex next_section_pattern(
-      "(.+?)[ \t]*:",
+      "(\\w+?)[ \t]*:",
       std::regex_constants::icase);
   smatch match_result;
   auto pos_iter = text.cbegin();
   auto text_end_iter = text.cend();
 
   bool is_success = false;
-  // search section_name.
+  // search the begin of section.
   is_success = regex_search(
       pos_iter, text_end_iter,
       match_result,
@@ -237,16 +243,20 @@ bool DocPreprocessor::ExtractSection(
     // can't find the section.
     return false;
   }
-
   auto section_begin_iter = match_result[0].first;
   pos_iter = match_result.suffix().first;
   
-  // seach enf of section.
+  // seach the end of section.
   is_success = regex_search(
       pos_iter, text_end_iter,
       match_result,
       next_section_pattern);
-  auto section_end_iter = is_success ? match_result[0].first : text_end_iter;
+
+  auto section_end_iter = text_end_iter;
+  if (is_success && match_result.str(1) != "default") {
+    // ignroe `[default: "xxx"]`.
+    section_end_iter = match_result[0].first;
+  }
 
   // remove blank in section name.
   string extract_text(section_begin_iter, section_end_iter);
@@ -286,7 +296,7 @@ void DocPreprocessor::ReplaceUtilityName() {
       std::regex_constants::icase);
   smatch match_result;
   if (!regex_search(usage_section_, match_result, utility_name_pattern)) {
-    throw "NotImplementedError.";
+    throw logic_error("ReplaceUtilityName");
   }
   string utility_name = match_result.str(1);
   ReplaceAll(&usage_section_, utility_name, "*UTILITY_DELIMITER*");
@@ -306,7 +316,7 @@ void DocPreprocessor::InsertDesDelimiter() {
   if (match_result.suffix().first == options_section_.end()) {
     // case happen if nothing is following the name of options section
     // ("Options:").
-    throw "NotImplementedError.";
+    throw logic_error("InsertDesDelimiter");
   }
   string processed_options_section = match_result.str();
   auto pos_iter = match_result.suffix().first;
@@ -356,6 +366,12 @@ vector<string> DocPreprocessor::ReplaceSpeicalElement() {
   ReplaceElementWithRegularExpression(
       &options_section_,
       argument_pattern,
+      &elements);
+  // process default value.
+  regex default_value_pattern("(\".*\")");
+  ReplaceElementWithRegularExpression(
+      &options_section_,
+      default_value_pattern,
       &elements);
   // update `text_`.
   text_ = usage_section_ + options_section_;
@@ -407,7 +423,7 @@ void DocPreprocessor::DisambiguateByInsertSpace() {
 void DocPreprocessor::ExtractAndProcessUsageSection() {
   if (!ExtractSection("Usage", text_, &usage_section_)) {
     // can't find usage section, which must exist.
-    throw "NotImplementedError.";
+    throw logic_error("ExtractAndProcessUsageSection");
   }
   ReplaceUtilityName();
 }

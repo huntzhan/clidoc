@@ -1,13 +1,17 @@
 
+// for printing parsing tree.
+#include <iostream>
 #include <string>
 #include "gtest/gtest.h"
+
 #include "parser_proxy.h"
 #include "utils.h"
-
-#include <iostream>
 #include "process_logic.h"
+#include "tokenizer.h"
+#include "node_interface.h"
 
 using std::string;
+using namespace clidoc::tokenizer;
 
 namespace clidoc {
 
@@ -75,11 +79,13 @@ TEST(DocPreprocessorTest, ExtractSection) {
       "   this is line two.\n"
       "Options:\n"
       "   this is line one.\n"
-      "   this is line two.\n";
+      "   this is line two. [default: \"42\"]\n"
+      "   this is line three.\n";
   string expect3 =
       "Options:\n"
       "   this is line one.\n"
-      "   this is line two.\n";
+      "   this is line two. [default: \"42\"]\n"
+      "   this is line three.\n";
 
   string output1;
   EXPECT_TRUE(DocPreprocessor::ExtractSection("Usage", input1, &output1));
@@ -123,30 +129,33 @@ TEST(DocPreprocessorTest, ExtractAndProcessOptionsSection) {
 }
 
 TEST(parser_proxy, preprocess_all_in_one) {
-  string input = ("Usage  :\n"
-                  "   some_program.py [-f] FILE [options] -- <foo  \t bar>\n"
-                  "     # brbrbr.\n"
-                  "   some_program.py (foo|bar) --long=<newline>\n"
-                  "\n\t \n\n"
-                  "Options \t:\n"
-                  "   this is line one.\n"
-                  "   this is line two.\n"
-                  "\n\n\n");
+  string input =
+      "Usage  :\n"
+      "   some_program.py [-f] FILE [options] -- <foo  \t bar>\n"
+      "     # brbrbr.\n"
+      "   some_program.py (foo|bar) --long=<newline>\n"
+      "\n\t \n\n"
+      "Options \t:\n"
+      "   this is line one. [default: \"a   b\"]\n"
+      "   this is line two.\n"
+      "\n\n\n";
 
-  string expect = ("Usage:"
-                   " *UTILITY_DELIMITER* [ -f ] FILE [ options ] -- <foo  \t bar>"
-                   " *UTILITY_DELIMITER* ( foo | bar ) --long = <newline>"
-                   " Options:"
-                   " this is line one. *DESC_DELIMITER*"
-                   " this is line two. *DESC_DELIMITER*");
+  string expect =
+    "Usage:"
+    " *UTILITY_DELIMITER* [ -f ] FILE [ options ] -- <foo  \t bar>"
+    " *UTILITY_DELIMITER* ( foo | bar ) --long = <newline>"
+    " Options:"
+    " this is line one. [ default: \"a   b\" ] *DESC_DELIMITER*"
+    " this is line two. *DESC_DELIMITER*";
   ParserProxy proxy;
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }
 
 TEST(parser_proxy, DISABLED_simple) {
-  string input = ("Usage:\n"
-                  "   some_program.py -c <some arg>\n"
-                  "   some_program.py --long=SOMEARG\n");
+  string input =
+      "Usage:\n"
+      "   some_program.py -c <some arg>\n"
+      "   some_program.py --long=SOMEARG\n";
 
   ParserProxy proxy;
   auto preprocess_doc = proxy.PreprocessRawDoc(input);
@@ -157,6 +166,72 @@ TEST(parser_proxy, DISABLED_simple) {
   StructureOptimizer visitor;
   doc_ptr->Accept(&visitor);
   std::cout << doc_ptr->ToString(0) << std::endl;
+}
+
+void BuildRecord(const string &input, OptionBindingRecorder *recorder_ptr) {
+  // clean up recorder.
+  recorder_ptr->option_to_representative_option_.clear();
+  recorder_ptr->representative_option_to_property_.clear();
+  // build.
+  ParserProxy proxy;
+  auto preprocess_doc = proxy.PreprocessRawDoc(input);
+  Doc::SharedPtr doc_ptr;
+  proxy.ParseByBison(preprocess_doc, &doc_ptr, recorder_ptr);
+}
+
+// black box.
+TEST(OptionBindingRecorderTest, RecordBinding) {
+  string input;
+  OptionBindingRecorder recorder;
+
+  auto option_h = InitToken(TerminalType::POSIX_OPTION, "-h");
+  auto option_help = InitToken(TerminalType::GNU_OPTION, "--help");
+  auto argument_1 = InitToken(TerminalType::ARGUMENT, "<arg 1>");
+  auto argument_2 = InitToken(TerminalType::ARGUMENT, "ARG-2");
+  RepresentativeOptionProperty *rop_ptr;
+
+  // case 1.
+  input =
+      "Usage:\n"
+      " utility_name -c <some arg>\n"
+      " Options:\n"
+      " -h --help\n";
+  BuildRecord(input, &recorder);
+
+  EXPECT_EQ(
+      option_help,
+      recorder.option_to_representative_option_[option_h]);
+  EXPECT_EQ(
+      option_help,
+      recorder.option_to_representative_option_[option_help]);
+
+  //case 2.
+  // bind -h, --help to <arg 1>, no default value.
+  input =
+      "Usage:\n"
+      " utility_name -c <some arg>\n"
+      " Options:\n"
+      " -h <arg 1> --help=<arg 1>\n";
+  BuildRecord(input, &recorder);
+  EXPECT_EQ(
+      option_help,
+      recorder.option_to_representative_option_[option_h]);
+  rop_ptr = &recorder.representative_option_to_property_[option_help];
+  EXPECT_EQ(argument_1, rop_ptr->option_argument_);
+  EXPECT_FALSE(rop_ptr->has_default_value_);
+
+  // case 3.
+  // bind -h to ARG-2, with default value "42".
+  input =
+      "Usage:\n"
+      " utility_name -c <some arg>\n"
+      " Options:\n"
+      " -h <arg 1> --help=<arg 1>"
+      " [default: \"42\"]\n";
+  BuildRecord(input, &recorder);
+  rop_ptr = &recorder.representative_option_to_property_[option_help];
+  EXPECT_TRUE(rop_ptr->has_default_value_);
+  EXPECT_EQ("42", rop_ptr->default_value_);
 }
 
 }  // namespace clidoc

@@ -34,8 +34,6 @@ class OptionBindingRecorder {
   std::map<Token, Token> option_to_representative_option_;
   std::map<Token, RepresentativeOptionProperty>
       representative_option_to_property_;
-  // store option -> option_argument binding when parsing usage section.
-  std::map<Token, Token> option_to_option_argument_cache_;
 
  private:
   Token GetRepresentativeOption(
@@ -52,6 +50,9 @@ class OptionBindingRecorder {
       const Token &bound_option_argument,
       const Token &default_value,
       RepresentativeOptionProperty *property_ptr);
+
+  // store option -> option_argument binding when parsing usage section.
+  std::map<Token, Token> option_to_option_argument_cache_;
 };
 
 class DocPreprocessor {
