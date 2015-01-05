@@ -25,30 +25,11 @@ struct StructureOptimizer : public NodeVistorInterface {
     RemoveDuplicatedNodes(node_ptr);
   }
 
-  VecSharedPtrNode children_of_child;
+  VecSharedPtrNode children_of_child_;
 };
 
-template <NonTerminalType T>
-void StructureOptimizer::RemoveDuplicatedNodes(
-    std::shared_ptr<NonTerminal<T>> node_ptr) {
-  VecSharedPtrNode optimized_children;
-  for (auto child_ptr : node_ptr->children_) {
-    child_ptr->Accept(this);
-    if (child_ptr->GetID() == node_ptr->GetID()) {
-      // same non-terminal nodes.
-      optimized_children.insert(
-          optimized_children.end(),
-          children_of_child.begin(), children_of_child.end());
-    } else {
-      optimized_children.push_back(child_ptr);
-    }
-  }
-  // make a copy of children of current node, which are accessiable to the
-  // parent of current node.
-  node_ptr->children_ = optimized_children;
-  children_of_child = optimized_children;
-}
-
 }  // namespace clidoc
+
+#include "process_logic-inl.h"
 
 #endif  //  SRC_PROCESS_LOGIC_H_

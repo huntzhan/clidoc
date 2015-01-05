@@ -1,5 +1,4 @@
 
-#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -10,9 +9,10 @@
 
 using std::string;
 using std::vector;
-using std::ofstream;
 using std::istringstream;
+using std::ostringstream;
 
+// I know this is ugly. Fix it if you have a better plan.
 #define TokenTypeMapping(name) \
 case TypeID::name:             \
   return TerminalType::name    \
@@ -70,7 +70,7 @@ Token InitToken(const Type &type_id, const string &value) {
 
 vector<Token> FromString(const string &text) {
   // TODO: handle invalid input.
-  ofstream null_ostream("/dev/null");
+  ostringstream null_ostream;
   istringstream input_stream(text);
   // Since `FlexGeneratedScanner` accepts istream as argument, lexer->lex()
   // would always return a token with TypeID::END when finished processing

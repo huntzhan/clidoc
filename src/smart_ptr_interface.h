@@ -10,7 +10,7 @@ namespace clidoc {
 // SPI stands for SmartPtrInterface.
 struct SPIStaticDataMember {
   // manually free cache.
-  static void FreeCached();
+  static void FreeCache();
   // static data member can not be placed in class template in this case.
   static std::vector<std::shared_ptr<void>> cached_container_;
 };

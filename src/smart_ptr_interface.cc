@@ -11,7 +11,7 @@ namespace clidoc {
 // definition of static data member.
 vector<shared_ptr<void>> SPIStaticDataMember::cached_container_;
 
-void SPIStaticDataMember::FreeCached() {
+void SPIStaticDataMember::FreeCache() {
   cached_container_.clear();
 }
 

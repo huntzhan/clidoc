@@ -1,7 +1,6 @@
 
 #include <stdexcept>
 #include <cstddef>
-#include <fstream>
 #include <iterator>
 #include <map>
 #include <regex>
@@ -21,8 +20,8 @@ using std::smatch;
 using std::regex_replace;
 using std::regex_search;
 using std::back_inserter;
-using std::ofstream;
 using std::istringstream;
+using std::ostringstream;
 using std::vector;
 using std::size_t;
 using std::to_string;
@@ -462,13 +461,16 @@ void ParserProxy::ParseByBison(
     Doc::SharedPtr *doc_ptr,
     OptionBindingRecorder *option_binding_recorder_ptr) {
   // setup scanner.
-  ofstream null_ostream("/dev/null");
+  ostringstream null_ostream;
   istringstream input_stream(preprocessed_doc);
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
   // init parser.
   BisonGeneratedParser bison_parser(
       &lexer, doc_ptr, option_binding_recorder_ptr);
   bison_parser.parse();
+
+  // free smart pointer cached.
+  SPIStaticDataMember::FreeCache();
 }
 
 }  // namespace clidoc

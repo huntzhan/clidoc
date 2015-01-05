@@ -18,6 +18,6 @@ TEST(utils, smart_ptr_count) {
 TEST(utils, smart_ptr_free) {
   auto ptr = LogicAnd::Init();
   EXPECT_EQ(2, ptr.use_count());
-  SPIStaticDataMember::FreeCached();
+  SPIStaticDataMember::FreeCache();
   EXPECT_EQ(1, ptr.use_count());
 }
