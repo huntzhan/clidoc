@@ -142,7 +142,7 @@ TEST(parser_proxy, preprocess_all_in_one) {
       "       # whatever\n"
       "   this is line two. [default: \"a   b\"] \n"
       " -h <arg 1> [default: \"42\"]\n"
-      " --help=ARG-2 [default: \"43\"]\n"
+      " --help=ARG-2 [default:\"43\"]\n"
       "\n\n\n";
 
   string expect =
@@ -235,7 +235,7 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
       " utility_name -c <some arg>\n"
       " Options:\n"
       " -h <arg 1> [default: \"42\"]\n"
-      " --help=ARG-2 [default: \"43\"]\n";
+      " --help=ARG-2 [default:\"43\"]\n";
   std::cout << recorder.representative_option_to_property_.size() << std::endl;
   
   BuildRecord(input, &recorder);

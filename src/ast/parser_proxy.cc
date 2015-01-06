@@ -267,7 +267,7 @@ bool DocPreprocessor::ExtractSection(
   string extract_text(section_begin_iter, section_end_iter);
   *output = regex_replace(
       extract_text,
-      next_section_pattern,
+      target_section_pattern,
       "$1:");
   return true;
 }
@@ -339,8 +339,8 @@ void DocPreprocessor::ReplaceElementWithRegularExpression(
   smatch match_result;
   while (regex_search(*text_ptr, match_result, pattern)) {
     auto element = match_result.str(1);
-    // `__id__`.
-    string content = "__" + to_string(elements_ptr->size()) + "__";
+    // ` __id__ `. Notice that `__id__` is surrounded by spaces.
+    string content = " __" + to_string(elements_ptr->size()) + "__ ";
     ReplaceAll(text_ptr, element, content);
     elements_ptr->push_back(element);
   }
@@ -373,7 +373,7 @@ vector<string> DocPreprocessor::ReplaceSpeicalElement() {
       argument_pattern,
       &elements);
   // process default value.
-  regex default_value_pattern("(\".*\")");
+  regex default_value_pattern("(\".*?\")");
   ReplaceElementWithRegularExpression(
       &options_section_,
       default_value_pattern,
