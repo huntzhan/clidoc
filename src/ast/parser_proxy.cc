@@ -19,6 +19,7 @@ using std::regex;
 using std::smatch;
 using std::regex_replace;
 using std::regex_search;
+using std::regex_match;
 using std::back_inserter;
 using std::istringstream;
 using std::ostringstream;
@@ -258,9 +259,14 @@ bool DocPreprocessor::ExtractSection(
       next_section_pattern);
 
   auto section_end_iter = text_end_iter;
-  if (is_success && match_result.str(1) != "default") {
+  if (is_success) {
     // ignroe `[default: "xxx"]`.
-    section_end_iter = match_result[0].first;
+    bool not_default = !regex_match(
+        match_result.str(1),
+        regex("default", std::regex_constants::icase));
+    if (not_default) {
+      section_end_iter = match_result[0].first;
+    }
   }
 
   // remove blank in section name.
@@ -426,21 +432,22 @@ void DocPreprocessor::DisambiguateByInsertSpace() {
 }
 
 void DocPreprocessor::ExtractAndProcessUsageSection() {
-  if (!ExtractSection("Usage", text_, &usage_section_)) {
+  if (ExtractSection("Usage", text_, &usage_section_)) {
+    ReplaceUtilityName();
+  } else {
     // can't find usage section, which must exist.
     throw logic_error("ExtractAndProcessUsageSection");
   }
-  ReplaceUtilityName();
 }
 
 void DocPreprocessor::ExtractAndProcessOptionsSection() {
-  if (!ExtractSection("Options", text_, &options_section_)) {
+  if (ExtractSection("Options", text_, &options_section_)) {
+    InsertDesDelimiter();
+  } else {
     // Since options section is optional, if the program cannot find such
     // section, the program will return an empty string.
     options_section_ = "";
-    return; 
   }
-  InsertDesDelimiter();
 }
 
 string DocPreprocessor::PreprocessRawDoc(const string &raw_doc) {
