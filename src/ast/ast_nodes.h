@@ -1,6 +1,7 @@
 #ifndef SRC_AST_AST_NODES_H_
 #define SRC_AST_AST_NODES_H_
 
+#include <cstddef>
 #include <sstream>
 #include <string>
 #include <vector>

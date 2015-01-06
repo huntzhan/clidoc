@@ -1,17 +1,23 @@
-#include <fstream>
 #include <sstream>
+#include <cstddef>
 #include <string>
 #include <vector>
+
 #include "gtest/gtest.h"
-#include "utils.h"
-#include "tokenizer.h"
+
+#include "ast/ast_node_interface.h"
+#include "ast/ast_nodes.h"
+#include "ast/generated_scanner.h"
+#include "ast/token_proxy.h"
+#include "shared/tokenizer.h"
 
 using namespace clidoc;
-using namespace clidoc::tokenizer;
+
+using std::size_t;
 using std::string;
 using std::vector;
-using std::ofstream;
 using std::istringstream;
+using std::ostringstream;
 
 vector<TerminalType> ExtractTokenType(const vector<Token> &tokens) {
   vector<TerminalType> types;
@@ -43,10 +49,10 @@ void CheckTokenValues(const string &text,
 
 void CheckRawTokenTypes(const string &text,
                         const vector<Type> types) {
-  ofstream null_ostream("/dev/null");
+  ostringstream null_ostream;
   istringstream input_stream(text);
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
-  int index = 0;
+  size_t index = 0;
   while (true) {
     auto item = lexer.lex();
     auto type_id = item.token();
@@ -61,10 +67,10 @@ void CheckRawTokenTypes(const string &text,
 
 void CheckRawTokenValues(const string &text,
                          const vector<string> values) {
-  ofstream null_ostream("/dev/null");
+  ostringstream null_ostream;
   istringstream input_stream(text);
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
-  int index = 0;
+  size_t index = 0;
   while (true) {
     auto item = lexer.lex();
     auto type_id = item.token();

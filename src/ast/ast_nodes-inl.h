@@ -44,7 +44,7 @@ template <NonTerminalType T>
 std::string NonTerminal<T>::ToString() {
   std::ostringstream strm;
   strm << GetID() << "(";
-  int index = 0;
+  std::size_t index = 0;
   for (auto ptr : children_) {
     strm << ptr->ToString();
     if (index != children_.size() - 1) {

@@ -38,4 +38,4 @@ include_directories(src)
 include_directories(test)
 
 add_subdirectory(src)
-# add_subdirectory(test)
+add_subdirectory(test)

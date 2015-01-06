@@ -1,7 +1,7 @@
 
 #include <string>
 #include "gtest/gtest.h"
-#include "utils.h"
+#include "ast/ast_nodes.h"
 
 using namespace clidoc;
 using std::string;

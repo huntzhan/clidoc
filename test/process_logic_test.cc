@@ -1,7 +1,7 @@
 
 #include "gtest/gtest.h"
-#include "process_logic.h"
-#include "utils.h"
+#include "ast/process_logic.h"
+#include "ast/ast_nodes.h"
 
 using namespace clidoc;
 

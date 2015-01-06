@@ -4,14 +4,13 @@
 #include <string>
 #include "gtest/gtest.h"
 
-#include "parser_proxy.h"
-#include "utils.h"
-#include "process_logic.h"
-#include "tokenizer.h"
-#include "node_interface.h"
+#include "ast/ast_node_interface.h"
+#include "ast/ast_nodes.h"
+#include "ast/parser_proxy.h"
+#include "ast/process_logic.h"
+#include "ast/token_proxy.h"
 
 using std::string;
-using namespace clidoc::tokenizer;
 
 namespace clidoc {
 
