@@ -49,6 +49,9 @@ void RepresentativeOptionProperty::set_default_value(
 
 Token OptionBindingRecorder::GetRepresentativeOption(
     OptionBindingContainer::SharedPtr container_ptr) {
+  if (container_ptr->children_.empty()) {
+    throw logic_error("GetRepresentativeOption");
+  }
   // Get `representative_option`. If no `representative_option` is found in
   // `option_to_representative_option_`, then the first GNU_OPTION would be
   // selected as `representative_option`.
@@ -69,7 +72,10 @@ Token OptionBindingRecorder::GetRepresentativeOption(
     }
   }
   if (representative_option_ptr == nullptr) {
-    throw logic_error("GetRepresentativeOption");
+    // there is no GNU_OPTION, and no recorded bindings.
+    representative_option_ptr =
+        &container_ptr->children_.front()  // first OptionBinding.
+                      ->token_option_;     // token.
   }
   return Token(*representative_option_ptr);
 }
@@ -280,7 +286,7 @@ void DocPreprocessor::ReplaceAll(
 }
 
 void DocPreprocessor::RemoveComment() {
-  regex pattern("#.*\n");  // must remove the tailing NEWLINE character.
+  regex pattern("#.*");  // must NOT remove the tailing NEWLINE character.
   text_ = regex_replace(text_, pattern, "");
 }
 

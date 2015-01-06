@@ -43,9 +43,9 @@ GNU_OPTION           {HYPHEN}{2}{ALNUM}({ALNUM}|{HYPHEN})+
 
 ARGUMENT_FORM_ONE    <[^>\n]+>
 ARGUMENT_FORM_TWO    {UPPERCASE_DIGIT}({UPPERCASE_DIGIT}|{HYPHEN})*
-ARGUMENT            {ARGUMENT_FORM_ONE}|{ARGUMENT_FORM_TWO}
+ARGUMENT             {ARGUMENT_FORM_ONE}|{ARGUMENT_FORM_TWO}
 
-DEFAULT_VALUE        \".*\"
+DEFAULT_VALUE        \"[^\n\"]*\"
 
 COMMAND              {NON_SPACE}+
 
@@ -69,11 +69,11 @@ COMMAND              {NON_SPACE}+
 {POSIX_OPTION}        return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
 {GROUPED_OPTIONS}     return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
 {GNU_OPTION}          return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
-{ARGUMENT}           return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
+{ARGUMENT}            return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
 {DEFAULT_VALUE}       return clidoc::BisonGeneratedParser::make_DEFAULT_VALUE(YYText());
 {COMMAND}             return clidoc::BisonGeneratedParser::make_COMMAND(YYText());
 
-<<EOF>>                return clidoc::BisonGeneratedParser::make_END();
+<<EOF>>               return clidoc::BisonGeneratedParser::make_END();
 
 %%
 // Bug fix.

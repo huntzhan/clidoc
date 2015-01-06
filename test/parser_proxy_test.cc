@@ -22,9 +22,10 @@ TEST(DocPreprocessorTest, RemoveComment) {
       "# to be remove\n"
       "line three#test.\n\n";
   string expect =
-      "  line one "
+      "  line one \n"
       "line two on comment.\n"
-      "line three\n";
+      "\n"
+      "line three\n\n";
   preprocessor.RemoveComment();
   EXPECT_EQ(expect, preprocessor.text_);
 }
@@ -79,10 +80,12 @@ TEST(DocPreprocessorTest, ExtractSection) {
       "Options:\n"
       "   this is line one.\n"
       "   this is line two. [default: \"42\"]\n"
+      "   this is line two. [default: \"42\"]\n"
       "   this is line three.\n";
   string expect3 =
       "Options:\n"
       "   this is line one.\n"
+      "   this is line two. [default: \"42\"]\n"
       "   this is line two. [default: \"42\"]\n"
       "   this is line three.\n";
 
@@ -135,8 +138,11 @@ TEST(parser_proxy, preprocess_all_in_one) {
       "   some_program.py (foo|bar) --long=<newline>\n"
       "\n\t \n\n"
       "Options \t:\n"
-      "   this is line one. [default: \"a   b\"]\n"
-      "   this is line two.\n"
+      "   this is line one. [default: \"a   b\"] # whatever\n"
+      "       # whatever\n"
+      "   this is line two. [default: \"a   b\"] \n"
+      " -h <arg 1> [default: \"42\"]\n"
+      " --help=ARG-2 [default: \"43\"]\n"
       "\n\n\n";
 
   string expect =
@@ -145,7 +151,9 @@ TEST(parser_proxy, preprocess_all_in_one) {
     " *UTILITY_DELIMITER* ( foo | bar ) --long = <newline>"
     " Options:"
     " this is line one. [ default: \"a   b\" ] *DESC_DELIMITER*"
-    " this is line two. *DESC_DELIMITER*";
+    " this is line two. [ default: \"a   b\" ] *DESC_DELIMITER*"
+    " -h <arg 1> [ default: \"42\" ] *DESC_DELIMITER*"
+    " --help = ARG-2 [ default: \"43\" ] *DESC_DELIMITER*";
   ParserProxy proxy;
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }
@@ -220,17 +228,23 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
   EXPECT_FALSE(rop_ptr->has_default_value_);
 
   // case 3.
-  // bind -h to ARG-2, with default value "42".
+  // bind -h to <arg 1>, with default value "42";
+  // bind --help to ARG-2, with default value "43";
   input =
       "Usage:\n"
       " utility_name -c <some arg>\n"
       " Options:\n"
-      " -h <arg 1> --help=<arg 1>"
-      " [default: \"42\"]\n";
+      " -h <arg 1> [default: \"42\"]\n"
+      " --help=ARG-2 [default: \"43\"]\n";
+  std::cout << recorder.representative_option_to_property_.size() << std::endl;
+  
   BuildRecord(input, &recorder);
-  rop_ptr = &recorder.representative_option_to_property_[option_help];
+  rop_ptr = &recorder.representative_option_to_property_[option_h];
   EXPECT_TRUE(rop_ptr->has_default_value_);
   EXPECT_EQ("42", rop_ptr->default_value_);
+  rop_ptr = &recorder.representative_option_to_property_[option_help];
+  EXPECT_TRUE(rop_ptr->has_default_value_);
+  EXPECT_EQ("43", rop_ptr->default_value_);
 }
 
 }  // namespace clidoc
