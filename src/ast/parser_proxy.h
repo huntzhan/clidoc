@@ -5,8 +5,8 @@
 #include <regex>
 #include <string>
 #include <vector>
-#include "utils.h"
 
+#include "ast/ast_nodes.h"
 #include "gtest/gtest_prod.h"
 
 namespace clidoc {

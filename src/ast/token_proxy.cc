@@ -1,16 +1,10 @@
 
-#include <sstream>
 #include <string>
-#include <vector>
 
-#include "generated_scanner.h"
-#include "node_interface.h"
-#include "tokenizer.h"
+#include "ast/ast_node_interface.h"
+#include "ast/token_proxy.h"
 
 using std::string;
-using std::vector;
-using std::istringstream;
-using std::ostringstream;
 
 // I know this is ugly. Fix it if you have a better plan.
 #define TokenTypeMapping(name) \
@@ -18,7 +12,6 @@ case TypeID::name:             \
   return TerminalType::name    \
 
 namespace clidoc {
-namespace tokenizer {
 
 TerminalType ToTerminalType(const Type &type_id) {
   switch (type_id) {
@@ -68,33 +61,4 @@ Token InitToken(const Type &type_id, const string &value) {
   return InitToken(terminal_type, value);
 }
 
-vector<Token> FromString(const string &text) {
-  // TODO: handle invalid input.
-  ostringstream null_ostream;
-  istringstream input_stream(text);
-  // Since `FlexGeneratedScanner` accepts istream as argument, lexer->lex()
-  // would always return a token with TypeID::END when finished processing
-  // `text`.
-  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
-
-  vector<Token> tokens;
-  while (true) {
-    auto item = lexer.lex();
-    auto type_id = item.token();
-    auto terminal_type = ToTerminalType(type_id);
-    auto value = item.value.as<string>();
-    if (type_id == TypeID::END) {
-      // finish.
-      break;
-    }
-    if (terminal_type == TerminalType::OTHER) {
-      // terminals that would not be instaniation.
-      continue;
-    }
-    tokens.push_back(InitToken(terminal_type, value));
-  }
-  return tokens;
-}
-
-}  // namespace clidoc::tokenizer
 }  // namespace clidoc

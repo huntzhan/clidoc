@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <stack>
-#include "utils.h"
+#include "ast/ast_nodes.h"
 
 namespace clidoc {
 

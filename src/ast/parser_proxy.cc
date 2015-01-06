@@ -8,11 +8,11 @@
 #include <string>
 #include <vector>
 
-#include "generated_scanner.h"
-#include "generated_parser.h"
-#include "node_interface.h"
-#include "parser_proxy.h"
-#include "utils.h"
+#include "ast/generated_scanner.h"
+#include "ast/generated_parser.h"
+#include "ast/parser_proxy.h"
+#include "ast/ast_nodes.h"
+#include "ast/ast_node_interface.h"
 
 using std::string;
 using std::regex;

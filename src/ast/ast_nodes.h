@@ -1,12 +1,12 @@
-#ifndef SRC_UTILS_H_
-#define SRC_UTILS_H_
+#ifndef SRC_AST_AST_NODES_H_
+#define SRC_AST_AST_NODES_H_
 
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "smart_ptr_interface.h"
-#include "node_interface.h"
+#include "ast/ast_node_interface.h"
+#include "shared/smart_ptr_interface.h"
 
 namespace clidoc {
 
@@ -162,6 +162,6 @@ class DefaultValue : public SmartPtrInterface<DefaultValue> {
 
 }  // namespace clidoc
 
-#include "utils-inl.h"
+#include "ast_nodes-inl.h"
 
-#endif  // SRC_UTILS_H_
+#endif  // SRC_AST_AST_NODES_H_

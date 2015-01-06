@@ -1,5 +1,5 @@
-#ifndef SRC_NODE_INTERFACE_H_
-#define SRC_NODE_INTERFACE_H_
+#ifndef SRC_AST_NODE_INTERFACE_H_
+#define SRC_AST_NODE_INTERFACE_H_
 
 #include <map>
 #include <memory>
@@ -122,4 +122,4 @@ class Token {
 
 }  // namespace clidoc
 
-#endif  // SRC_NODE_INTERFACE_H_
+#endif  // SRC_AST_NODE_INTERFACE_H_

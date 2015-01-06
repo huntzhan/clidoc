@@ -498,8 +498,8 @@ static yyconst flex_int16_t yy_rule_linenum[7] =
 #line 1 "flex-bison-scripts/scanner_for_argv.lex"
 #line 2 "flex-bison-scripts/scanner_for_argv.lex"
 // Use parser defined tokens.
-#include "generated_scanner.h"
-#include "generated_parser.h"
+#include "ast/generated_scanner.h"
+#include "ast/generated_parser.h"
 
 #define YY_DECL                             \
   clidoc::BisonGeneratedParser::symbol_type \

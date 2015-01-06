@@ -1,27 +1,22 @@
-#ifndef SRC_TOKENIZER_H_
-#define SRC_TOKENIZER_H_
+#ifndef SRC_TOKEN_PROXY_H_
+#define SRC_TOKEN_PROXY_H_
 
 #include <string>
-#include <vector>
-#include <memory>
 
-#include "generated_scanner.h"
-#include "node_interface.h"
+#include "ast/generated_parser.h"
+#include "ast/ast_node_interface.h"
 
 namespace clidoc {
-namespace tokenizer {
 
 // facilitate usage.
 using Type = BisonGeneratedParser::token_type;
 using TypeID = BisonGeneratedParser::token;
+
 TerminalType ToTerminalType(const Type &type_id);
+bool TokenHasValue(const TerminalType &type);
+
 Token InitToken(const TerminalType &terminal_type, const std::string &value);
 Token InitToken(const Type &type_id, const std::string &value);
 
-// encapsulated operations.
-bool TokenHasValue(const TerminalType &type);
-std::vector<Token> FromString(const std::string &text);
-
-}  // namespace clidoc::tokenizer
 }  // namespace clidoc
-#endif  // SRC_TOKENIZER_H_
+#endif  // SRC_TOKEN_PROXY_H_

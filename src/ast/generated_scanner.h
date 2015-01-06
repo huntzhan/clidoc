@@ -12,7 +12,7 @@
 #include "FlexLexer.h"
 #endif
 
-#include "generated_parser.h"
+#include "ast/generated_parser.h"
 
 namespace clidoc {
 

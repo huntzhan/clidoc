@@ -10,9 +10,11 @@
 %define api.token.constructor
 %define api.value.type variant
 
+// code inserted in header.
 %code requires {
+
 #include <string>
-#include "utils.h"
+#include "ast/ast_nodes.h"
 
 // Forward declarations.
 namespace clidoc {
@@ -22,27 +24,27 @@ class OptionBindingRecorder;
 
 }  // namespace clidoc
 
-}
+}  // %code requires
 
+// code inserted in implementation.
 %code {
+
 #include <iostream>
 
-#include "generated_scanner.h"
+#include "ast/ast_nodes.h"
+#include "ast/generated_scanner.h"
+#include "ast/parser_proxy.h"
+#include "ast/token_proxy.h"
+
 #undef yylex
 #define yylex lexer_ptr->lex
-
-#include "parser_proxy.h"
-#include "tokenizer.h"
-#include "utils.h"
-
-using namespace clidoc::tokenizer;
 
 // Error report function.
 void clidoc::BisonGeneratedParser::error(const std::string &msg) {
   std::cerr << msg << std::endl;
 }
 
-}
+}  // %code
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
 %parse-param { clidoc::Doc::SharedPtr *doc_ptr }

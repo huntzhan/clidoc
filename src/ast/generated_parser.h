@@ -40,10 +40,11 @@
 #ifndef YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 # define YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 // //                    "%code requires" blocks.
-#line 13 "flex-bison-scripts/parser.y" // lalr1.cc:387
+#line 14 "flex-bison-scripts/parser.y" // lalr1.cc:387
+
 
 #include <string>
-#include "utils.h"
+#include "ast/ast_nodes.h"
 
 // Forward declarations.
 namespace clidoc {
@@ -54,7 +55,7 @@ class OptionBindingRecorder;
 }  // namespace clidoc
 
 
-#line 58 "generated_parser.h" // lalr1.cc:387
+#line 59 "generated_parser.h" // lalr1.cc:387
 
 
 # include <vector>
@@ -130,7 +131,7 @@ class OptionBindingRecorder;
 
 
 namespace clidoc {
-#line 134 "generated_parser.h" // lalr1.cc:387
+#line 135 "generated_parser.h" // lalr1.cc:387
 
 
 
@@ -1314,7 +1315,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1318 "generated_parser.h" // lalr1.cc:387
+#line 1319 "generated_parser.h" // lalr1.cc:387
 
 
 

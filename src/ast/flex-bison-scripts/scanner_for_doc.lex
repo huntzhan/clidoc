@@ -1,7 +1,7 @@
 %{
 // Use parser defined tokens.
-#include "generated_scanner.h"
-#include "generated_parser.h"
+#include "ast/generated_scanner.h"
+#include "ast/generated_parser.h"
 
 #define YY_DECL                             \
   clidoc::BisonGeneratedParser::symbol_type \
