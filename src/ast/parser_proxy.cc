@@ -11,6 +11,7 @@
 #include "ast/generated_scanner.h"
 #include "ast/generated_parser.h"
 #include "ast/parser_proxy.h"
+#include "ast/process_logic.h"
 #include "ast/ast_nodes.h"
 #include "ast/ast_node_interface.h"
 
@@ -481,9 +482,14 @@ void ParserProxy::ParseByBison(
   BisonGeneratedParser bison_parser(
       &lexer, doc_ptr, option_binding_recorder_ptr);
   bison_parser.parse();
-
   // free smart pointer cached.
   SPIStaticDataMember::FreeCache();
+}
+
+void ParserProxy::PostProcessedAST(Doc::SharedPtr doc_ptr) {
+  // remove duplicated nodes.
+  StructureOptimizer structure_optimizer;
+  doc_ptr->Accept(&structure_optimizer);
 }
 
 }  // namespace clidoc

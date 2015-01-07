@@ -117,7 +117,7 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 // ;
 doc : usage_section options_section {
   auto doc = Doc::Init();
-  doc->children_.push_back($1.lock());
+  doc->AddChild($1.lock());
   *doc_ptr = doc;
   $$ = doc;
 }
@@ -136,12 +136,12 @@ usage_section : K_USAGE_COLON utilities {
 //           | single_utility
 // ;
 utilities : utilities single_utility {
-  $1.lock()->children_.push_back($2.lock());
+  $1.lock()->AddChild($2.lock());
   $$ = $1;
 }
           | single_utility {
   auto logic_xor = LogicXor::Init();
-  logic_xor->children_.push_back($1.lock());
+  logic_xor->AddChild($1.lock());
   $$ = logic_xor;
 }
 ;
@@ -159,12 +159,12 @@ single_utility : K_UTILITY_DELIMITER or_exprs {
 //          | seqs
 // ;
 or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
-  $1.lock()->children_.push_back($3.lock());
+  $1.lock()->AddChild($3.lock());
   $$ = $1;
 }
          | seqs {
   auto logic_xor = LogicXor::Init();
-  logic_xor->children_.push_back($1.lock());
+  logic_xor->AddChild($1.lock());
   $$ = logic_xor;
 }
 ;
@@ -174,12 +174,12 @@ or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
 //      | single_seq
 // ;
 seqs : seqs single_seq {
-  $1.lock()->children_.push_back($2.lock());
+  $1.lock()->AddChild($2.lock());
   $$ = $1;
 }
      | single_seq {
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back($1.lock());
+  logic_and->AddChild($1.lock());
   $$ = logic_and;
 }
 ;
@@ -193,7 +193,7 @@ single_seq : atom {
 }
            | atom K_ELLIPSES {
   auto logic_one_or_more = LogicOneOrMore::Init();
-  logic_one_or_more->children_.push_back($1.lock());
+  logic_one_or_more->AddChild($1.lock());
   $$ = logic_one_or_more;
 }
 ;
@@ -209,12 +209,12 @@ single_seq : atom {
 // ;
 atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back($2.lock());
+  logic_and->AddChild($2.lock());
   $$ = logic_and;
 }
      | K_L_BRACKET or_exprs K_R_BRACKET {
   auto logic_optional = LogicOptional::Init();
-  logic_optional->children_.push_back($2.lock());
+  logic_optional->AddChild($2.lock());
   $$ = logic_optional;
 }
      | posix_option_unit {
@@ -227,21 +227,21 @@ atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
   auto argument =
       Argument::Init(InitToken(TypeID::ARGUMENT, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(argument);
+  logic_and->AddChild(argument);
   $$ = logic_and;
 }
      | COMMAND {
   auto command =
       Command::Init(InitToken(TypeID::COMMAND, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(command);
+  logic_and->AddChild(command);
   $$ = logic_and;
 }
      | K_OPTIONS {
   auto k_options =
       KOptions::Init(InitToken(TypeID::K_OPTIONS, ""));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(k_options);
+  logic_and->AddChild(k_options);
   $$ = logic_and;
 }
 ;
@@ -254,14 +254,14 @@ posix_option_unit : POSIX_OPTION {
   auto posix_option =
       PosixOption::Init(InitToken(TypeID::POSIX_OPTION, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(posix_option);
+  logic_and->AddChild(posix_option);
   $$ = logic_and;
 }
                   | GROUPED_OPTIONS {
   auto grouped_option =
       GroupedOptions::Init(InitToken(TypeID::GROUPED_OPTIONS, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(grouped_option);
+  logic_and->AddChild(grouped_option);
   $$ = logic_and;
 }
 ;
@@ -273,7 +273,7 @@ posix_option_unit : POSIX_OPTION {
 gnu_option_unit : GNU_OPTION {
   auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(gnu_option);
+  logic_and->AddChild(gnu_option);
   $$ = logic_and;
 }
                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
@@ -287,14 +287,12 @@ gnu_option_unit : GNU_OPTION {
   auto argument =
       Argument::Init(InitToken(TypeID::ARGUMENT, $3));
   auto logic_and = LogicAnd::Init();
-  logic_and->children_.push_back(gnu_option);
-  logic_and->children_.push_back(argument);
+  logic_and->AddChild(gnu_option);
+  logic_and->AddChild(argument);
   $$ = logic_and;
 }
 ;
 
-
-// follow
 
 options_section : K_OPTIONS_COLON descriptions {  }
                 | %empty { }
@@ -330,13 +328,13 @@ default_value : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET {
 //          | single_binding {  }
 // ;
 bindings : bindings single_binding {
-  $1.lock()->children_.push_back($2.lock());
+  $1.lock()->AddChild($2.lock());
   $$ = $1;
 
 }
          | single_binding {
   auto bindings = OptionBindingContainer::Init();
-  bindings->children_.push_back($1.lock());
+  bindings->AddChild($1.lock());
   $$ = bindings;
 }
 ;

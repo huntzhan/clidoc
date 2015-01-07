@@ -2,7 +2,7 @@ add_executable (parser_proxy_test parser_proxy_test.cc)
 target_link_libraries (parser_proxy_test parser_proxy)
 
 add_executable (process_logic_test process_logic_test.cc)
-target_link_libraries (process_logic_test smart_ptr_interface)
+target_link_libraries (process_logic_test smart_ptr_interface process_logic)
 
 add_executable (smart_ptr_test smart_ptr_test.cc)
 target_link_libraries (smart_ptr_test smart_ptr_interface)

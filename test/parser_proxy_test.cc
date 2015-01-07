@@ -130,7 +130,7 @@ TEST(DocPreprocessorTest, ExtractAndProcessOptionsSection) {
   EXPECT_EQ(expect, preprocessor.options_section_);
 }
 
-TEST(parser_proxy, preprocess_all_in_one) {
+TEST(ParserProxyTest, PreprocessRawDoc) {
   string input =
       "Usage  :\n"
       "   some_program.py [-f] FILE [options] -- <foo  \t bar>\n"
@@ -158,36 +158,36 @@ TEST(parser_proxy, preprocess_all_in_one) {
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }
 
-TEST(parser_proxy, DISABLED_simple) {
-  string input =
-      "Usage:\n"
-      "   some_program.py -c <some arg>\n"
-      "   some_program.py --long=SOMEARG\n";
-
-  ParserProxy proxy;
-  auto preprocess_doc = proxy.PreprocessRawDoc(input);
-  Doc::SharedPtr doc_ptr;
-  OptionBindingRecorder recorder;
-  proxy.ParseByBison(preprocess_doc, &doc_ptr, &recorder);
-  
-  StructureOptimizer visitor;
-  doc_ptr->Accept(&visitor);
-  std::cout << doc_ptr->ToString(0) << std::endl;
-}
-
-void BuildRecord(const string &input, OptionBindingRecorder *recorder_ptr) {
-  // clean up recorder.
-  recorder_ptr->option_to_representative_option_.clear();
-  recorder_ptr->representative_option_to_property_.clear();
-  // build.
-  ParserProxy proxy;
-  auto preprocess_doc = proxy.PreprocessRawDoc(input);
-  Doc::SharedPtr doc_ptr;
-  proxy.ParseByBison(preprocess_doc, &doc_ptr, recorder_ptr);
-}
+// TEST(ParserProxyTest, DISABLED_simple) {
+//   string input =
+//       "Usage:\n"
+//       "   some_program.py -c <some arg>\n"
+//       "   some_program.py --long=SOMEARG\n";
+// 
+//   ParserProxy proxy;
+//   auto preprocess_doc = proxy.PreprocessRawDoc(input);
+//   Doc::SharedPtr doc_ptr;
+//   OptionBindingRecorder recorder;
+//   proxy.ParseByBison(preprocess_doc, &doc_ptr, &recorder);
+//   
+//   StructureOptimizer visitor;
+//   doc_ptr->Accept(&visitor);
+//   std::cout << doc_ptr->ToString(0) << std::endl;
+// }
 
 // black box.
 TEST(OptionBindingRecorderTest, RecordBinding) {
+  auto BuildRecord = [](const string &input,
+                        OptionBindingRecorder *recorder_ptr) {
+    // clean up recorder.
+    recorder_ptr->option_to_representative_option_.clear();
+    recorder_ptr->representative_option_to_property_.clear();
+    // build.
+    ParserProxy proxy;
+    auto preprocess_doc = proxy.PreprocessRawDoc(input);
+    Doc::SharedPtr doc_ptr;
+    proxy.ParseByBison(preprocess_doc, &doc_ptr, recorder_ptr);
+  };
   string input;
   OptionBindingRecorder recorder;
 

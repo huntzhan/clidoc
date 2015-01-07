@@ -103,12 +103,16 @@ class DocPreprocessor {
 };
 
 class ParserProxy {
- public:
+ private:
+  FRIEND_TEST(ParserProxyTest, PreprocessRawDoc);
+  FRIEND_TEST(OptionBindingRecorderTest, RecordBinding);
+
   std::string PreprocessRawDoc(const std::string &raw_doc);
   void ParseByBison(
       const std::string &preprocessed_doc,
       Doc::SharedPtr *doc_ptr,
       OptionBindingRecorder *option_binding_recorder_ptr);
+  void PostProcessedAST(Doc::SharedPtr doc_ptr);
 };
 
 }  // namespace clidoc

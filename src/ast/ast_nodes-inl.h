@@ -73,4 +73,11 @@ void NonTerminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
   visitor_ptr->ProcessNode(this->shared_from_this());
 }
 
+template <NonTerminalType T>
+void NonTerminal<T>::AddChild(SharedPtrNode node_ptr) {
+  children_.push_back(node_ptr);
+  // make connection.
+  node_ptr->node_connection.ConnectParent(this);
+}
+
 }  // namespace clidoc

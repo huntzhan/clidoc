@@ -58,6 +58,28 @@ const std::map<NonTerminalType, std::string> kNonTermianlClassName = {
   {NonTerminalType::LOGIC_ONEORMORE, "LogicOneOrMore"},
 };
 
+// forward declaration for `SharedPtrNode`...
+class NodeInterface;
+// forward declaration for `NodeConnection::ConnectParent`.
+template <NonTerminalType T>
+class NonTerminal;
+
+using SharedPtrNode = std::shared_ptr<NodeInterface>;
+using WeakPtrNode = std::weak_ptr<NodeInterface>;
+using VecSharedPtrNode = std::vector<SharedPtrNode>;
+
+// Record the binding of parent and child.
+struct NodeConnection {
+  template <NonTerminalType T>
+  void ConnectParent(NonTerminal<T> *parent_ptr) {
+    this_child_ptr_ = &parent_ptr->children_.back();
+    children_of_parent_ptr_ = &parent_ptr->children_;
+  }
+
+  SharedPtrNode *this_child_ptr_ = nullptr;
+  VecSharedPtrNode *children_of_parent_ptr_ = nullptr;
+};
+
 struct NodeVistorInterface;
 
 // Interface for symbols in parsing tree.
@@ -73,14 +95,12 @@ class NodeInterface {
   virtual std::string ToString() = 0;
   // indented version of ToString().
   virtual std::string ToString(const int &indent) = 0;
-
   // Apply vistor design pattern!
   virtual void Accept(NodeVistorInterface *vistor_ptr) = 0;
+  // Connection of nodes in AST.
+  NodeConnection node_connection;
 };
 
-using SharedPtrNode = std::shared_ptr<NodeInterface>;
-using WeakPtrNode = std::weak_ptr<NodeInterface>;
-using VecSharedPtrNode = std::vector<SharedPtrNode>;
 
 // Basic element to store data.
 class Token {

@@ -19,3 +19,10 @@ TEST(process_logic, simple_case) {
 
   EXPECT_EQ("LogicAnd(Command[whatever])", and_1->ToString());
 }
+
+TEST(process_logic, simple_case_2) {
+  auto and_1 = LogicAnd::Init();
+  
+  AmbiguityHandler visitor(nullptr);
+  and_1->Accept(&visitor);
+}

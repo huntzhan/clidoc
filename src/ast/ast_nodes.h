@@ -35,6 +35,7 @@ class NonTerminal : public NodeInterface,
   std::string ToString(const int &indent) override;
   void Accept(NodeVistorInterface *visitor_ptr) override;
 
+  void AddChild(SharedPtrNode node_ptr);
   // Container of symbols.
   VecSharedPtrNode children_;
 };
@@ -82,7 +83,13 @@ struct NonTerminalVistorInterface<type, rest_type...>
   // same wth TerminalVistorInterface.
   using NonTerminalVistorInterface<rest_type...>::ProcessNode;
   virtual void ProcessNode(typename NonTerminal<type>::SharedPtr node_ptr) {
-    // empty.
+    // Apply vistor to children.
+    // Fix it if you have better way to do it.
+    for (auto child_ptr : node_ptr->children_) {
+      // child_ptr->Accept(dynamic_cast<NodeVistorInterface *>(this));
+      // use `static_cast` since RTTI check is unnecessary.
+      child_ptr->Accept(static_cast<NodeVistorInterface *>(this));
+    }
   }
 };
 
@@ -141,6 +148,9 @@ class OptionBinding : public SmartPtrInterface<OptionBinding> {
 class OptionBindingContainer
     : public SmartPtrInterface<OptionBindingContainer> {
  public:
+  void AddChild(OptionBinding::SharedPtr node_ptr) {
+    children_.push_back(node_ptr);
+  }
   std::vector<OptionBinding::SharedPtr> children_;
 };
 
