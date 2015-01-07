@@ -45,12 +45,12 @@
 
 #include <string>
 #include "ast/ast_nodes.h"
+#include "ast/option_record.h"
 
 // Forward declarations.
 namespace clidoc {
 
 class FlexGeneratedScanner;
-class OptionBindingRecorder;
 
 }  // namespace clidoc
 

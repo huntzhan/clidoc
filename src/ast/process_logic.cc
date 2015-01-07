@@ -8,6 +8,21 @@ using std::string;
 
 namespace clidoc {
 
+void StructureOptimizer::ProcessNode(
+    Doc::SharedPtr node_ptr) {
+  RemoveDuplicatedNodes(node_ptr);
+}
+
+void StructureOptimizer::ProcessNode(
+    LogicAnd::SharedPtr node_ptr) {
+  RemoveDuplicatedNodes(node_ptr);
+}
+
+void StructureOptimizer::ProcessNode(
+    LogicXor::SharedPtr node_ptr) {
+  RemoveDuplicatedNodes(node_ptr);
+}
+
 void AmbiguityHandler::ProcessNode(
     GroupedOptions::SharedPtr grouped_options_ptr) {
   // loop over every character of `GROUPED_OPTIONS` and treat each character as

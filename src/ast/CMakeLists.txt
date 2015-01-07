@@ -5,6 +5,7 @@ add_library (generated_parser           generated_parser.cc)
 add_library (parser_proxy               parser_proxy.cc)
 add_library (token_proxy                token_proxy.cc)
 add_library (process_logic              process_logic.cc)
+add_library (option_record              option_record.cc)
 
 # ignore all warning, might exists a better way to do this.
 set_target_properties(

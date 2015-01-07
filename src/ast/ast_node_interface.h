@@ -3,6 +3,7 @@
 
 #include <map>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 namespace clidoc {
@@ -107,36 +108,23 @@ class Token {
  public:
   // constructors.
   Token() = default;
-  explicit Token(TerminalType type)
-      : has_value_(false), type_(type) { /* empty */ }
-  Token(TerminalType type, const std::string &value)
-      : has_value_(true), type_(type), value_(value) { /* empty */ }
+  explicit Token(TerminalType type);
+  Token(TerminalType type, const std::string &value);
 
   // support std::map.
-  bool operator<(const Token &other) const {
-    return value_ < other.value_;
-  }
+  bool operator<(const Token &other) const;
   // support equality test.
-  bool operator==(const Token &other) const {
-    return has_value_ == other.has_value()
-           && type_ == other.type()
-           && value_ == other.value();
-  }
-  bool operator!=(const Token &other) const {
-    return !(*this== other);
-  }
+  bool operator==(const Token &other) const;
+  bool operator!=(const Token &other) const;
 
-  bool IsEmpty() const {
-    // is TerminalType::OTHER or has empty value.
-    return type_ == TerminalType::OTHER
-           || (has_value_ && value_.empty());
-  }
+  bool IsEmpty() const;
+
   // accessors.
-  bool has_value() const { return has_value_; }
-  TerminalType type() const { return type_; }
-  std::string value() const { return value_; }
+  bool has_value() const;
+  TerminalType type() const;
+  std::string value() const;
   // mutator.
-  void set_value(const std::string &value) { value_ = value; }
+  void set_value(const std::string &value);
 
  private:
   bool has_value_ = false;
@@ -145,5 +133,7 @@ class Token {
 };
 
 }  // namespace clidoc
+
+#include "ast/ast_node_interface-inl.h"
 
 #endif  // SRC_AST_NODE_INTERFACE_H_

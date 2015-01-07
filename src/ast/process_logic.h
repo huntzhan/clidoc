@@ -12,15 +12,9 @@ class StructureOptimizer : public NodeVistorInterface {
  public:
   using NodeVistorInterface::ProcessNode;
 
-  void ProcessNode(Doc::SharedPtr node_ptr) override {
-    RemoveDuplicatedNodes(node_ptr);
-  }
-  void ProcessNode(LogicAnd::SharedPtr node_ptr) override {
-    RemoveDuplicatedNodes(node_ptr);
-  }
-  void ProcessNode(LogicXor::SharedPtr node_ptr) override {
-    RemoveDuplicatedNodes(node_ptr);
-  }
+  void ProcessNode(Doc::SharedPtr node_ptr) override;
+  void ProcessNode(LogicAnd::SharedPtr node_ptr) override;
+  void ProcessNode(LogicXor::SharedPtr node_ptr) override;
 
  private:
   // Since "The nested-name-specifier (everything to the left of the scope

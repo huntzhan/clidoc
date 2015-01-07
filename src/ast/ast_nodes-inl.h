@@ -1,16 +1,14 @@
 
 namespace clidoc {
 
-// This member function must be marked inline, otherwise a linkage error would
-// be raised.
-inline std::string NodeInterface::GetIndent(const int &indent) const {
-  std::string indent_element = "  ";
-  std::ostringstream strm;
-  for (int repeat_times = 0; repeat_times < indent; ++repeat_times) {
-    strm << indent_element;
-  }
-  return strm.str();
+template <TerminalType T>
+inline Terminal<T>::Terminal(const Token &token) : token_(token) {
+  if (token.type() != T) { throw std::logic_error("Terminal"); }
 }
+
+template <TerminalType T>
+inline Terminal<T>::Terminal(const std::string &value)
+    : token_(T, value) { /* empty */ }
 
 template <TerminalType T>
 std::string Terminal<T>::GetID() {
