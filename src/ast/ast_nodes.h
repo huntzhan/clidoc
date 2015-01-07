@@ -40,78 +40,6 @@ class NonTerminal : public NodeInterface,
   VecSharedPtrNode children_;
 };
 
-// classes for visitor.
-template <TerminalType... T>
-struct TerminalVistorInterface;
-
-template <NonTerminalType... T>
-struct NonTerminalVistorInterface;
-
-template <TerminalType type, TerminalType... rest_type>
-struct TerminalVistorInterface<type, rest_type...>
-    : public TerminalVistorInterface<rest_type...> {
-  // import interfaces.
-  using TerminalVistorInterface<rest_type...>::ProcessNode;
-  // interface for Terminal<type>::SharedPtr.
-  virtual void ProcessNode(typename Terminal<type>::SharedPtr node_ptr) {
-    // empty.
-  }
-};
-
-template <>
-struct TerminalVistorInterface<> {
-  // should not be call anyway.
-  virtual void ProcessNode() {
-    throw "NotImplementedError.";
-  }
-};
-
-using ConcreteTerminalVistorInterface = TerminalVistorInterface<
-  TerminalType::K_DOUBLE_HYPHEN,
-  TerminalType::K_OPTIONS,
-
-  TerminalType::POSIX_OPTION,
-  TerminalType::GROUPED_OPTIONS,
-  TerminalType::GNU_OPTION,
-  TerminalType::ARGUMENT,
-  TerminalType::DEFAULT_VALUE,
-  TerminalType::COMMAND>;
-
-template <NonTerminalType type, NonTerminalType... rest_type>
-struct NonTerminalVistorInterface<type, rest_type...>
-    : public NonTerminalVistorInterface<rest_type...> {
-  // same wth TerminalVistorInterface.
-  using NonTerminalVistorInterface<rest_type...>::ProcessNode;
-  virtual void ProcessNode(typename NonTerminal<type>::SharedPtr node_ptr) {
-    // Apply vistor to children.
-    // Fix it if you have better way to do it.
-    for (auto child_ptr : node_ptr->children_) {
-      // child_ptr->Accept(dynamic_cast<NodeVistorInterface *>(this));
-      // use `static_cast` since RTTI check is unnecessary.
-      child_ptr->Accept(static_cast<NodeVistorInterface *>(this));
-    }
-  }
-};
-
-template <>
-struct NonTerminalVistorInterface<>
-    // Derived from terminal interface.
-    : public ConcreteTerminalVistorInterface {
-  // import interfaces for terminals.
-  using ConcreteTerminalVistorInterface::ProcessNode;
-};
-
-using ConcreteNonTerminalVistorInterface = NonTerminalVistorInterface<
-  NonTerminalType::DOC,
-  NonTerminalType::LOGIC_AND,
-  NonTerminalType::LOGIC_XOR,
-  NonTerminalType::LOGIC_OPTIONAL,
-  NonTerminalType::LOGIC_ONEORMORE>;
-
-struct NodeVistorInterface : public ConcreteNonTerminalVistorInterface {
-  // here we go.
-};
-
 // Terminal classes.
 using KDoubleHyphen  = Terminal<TerminalType::K_DOUBLE_HYPHEN>;
 using KOptions       = Terminal<TerminalType::K_OPTIONS>;
@@ -173,6 +101,7 @@ class DefaultValue : public SmartPtrInterface<DefaultValue> {
 
 }  // namespace clidoc
 
+#include "ast/ast_nodes_visitor-inl.h"
 #include "ast_nodes-inl.h"
 
 #endif  // SRC_AST_AST_NODES_H_
