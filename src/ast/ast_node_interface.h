@@ -118,15 +118,19 @@ class Token {
   }
   // support equality test.
   bool operator==(const Token &other) const {
-    return (has_value_ == other.has_value()
-            && type_ == other.type()
-            && value_ == other.value());
+    return has_value_ == other.has_value()
+           && type_ == other.type()
+           && value_ == other.value();
   }
   bool operator!=(const Token &other) const {
     return !(*this== other);
   }
 
-  bool IsEmpty() const { return type_ == TerminalType::OTHER; }
+  bool IsEmpty() const {
+    // is TerminalType::OTHER or has empty value.
+    return type_ == TerminalType::OTHER
+           || (has_value_ && value_.empty());
+  }
   // accessors.
   bool has_value() const { return has_value_; }
   TerminalType type() const { return type_; }

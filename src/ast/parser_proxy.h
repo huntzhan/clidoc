@@ -12,6 +12,7 @@
 namespace clidoc {
 
 struct RepresentativeOptionProperty {
+  bool IsEmpty() const;
   // mutators.
   void set_option_argument(const Token &option_argument);
   void set_default_value(const std::string &default_value);

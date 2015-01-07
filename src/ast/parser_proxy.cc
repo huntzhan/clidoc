@@ -31,6 +31,10 @@ using std::logic_error;
 
 namespace clidoc {
 
+bool RepresentativeOptionProperty::IsEmpty() const {
+  return option_argument_.IsEmpty();
+}
+
 void RepresentativeOptionProperty::set_option_argument(
     const Token &option_argument) {
   if (has_option_argument_) {
@@ -482,6 +486,9 @@ void ParserProxy::ParseByBison(
   BisonGeneratedParser bison_parser(
       &lexer, doc_ptr, option_binding_recorder_ptr);
   bison_parser.parse();
+
+  // postprocess.
+  option_binding_recorder_ptr->ProcessCachedBindings();
   // free smart pointer cached.
   SPIStaticDataMember::FreeCache();
 }
