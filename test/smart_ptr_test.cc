@@ -12,7 +12,7 @@ TEST(utils, smart_ptr_count) {
   {
     auto ptr_1 = LogicAnd::Init();
     auto ptr_2 = LogicXor::Init();
-    auto ptr_3 = Command::Init(Token());
+    auto ptr_3 = LogicXor::Init();
   }
   EXPECT_EQ(size_t(3), SPIStaticDataMember::cached_container_.size());
 }

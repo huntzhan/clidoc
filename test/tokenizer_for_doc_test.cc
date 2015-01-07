@@ -1,7 +1,6 @@
 
 #include "utils-inl.h"
 
-
 TEST(tokenizer_for_doc, token_type) {
   CheckTokenTypes(
       "-c --long -afciFEj <arg> ARG command", {

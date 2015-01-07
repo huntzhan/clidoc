@@ -7,13 +7,10 @@
 
 using namespace clidoc;
 
-auto t_command = Token(TerminalType::COMMAND, "whatever");
-auto t_grouped_options = Token(TerminalType::GROUPED_OPTIONS, "-oFILE");
-
 TEST(process_logic, StructureOptimizer) {
   auto and_1 = LogicAnd::Init();
   auto and_2 = LogicAnd::Init();
-  auto command_ptr = Command::Init(t_command);
+  auto command_ptr = Command::Init("whatever");
   and_1->AddChild(and_2);
   and_2->AddChild(command_ptr);
   
@@ -25,7 +22,7 @@ TEST(process_logic, StructureOptimizer) {
 
 TEST(process_logic, AmbiguityHandler) {
   auto xor_1 = LogicXor::Init();
-  xor_1->AddChild(GroupedOptions::Init(t_grouped_options));
+  xor_1->AddChild(GroupedOptions::Init("-oFILE"));
   
   OptionBindingRecorder recorder;
   recorder.RecordBinding(

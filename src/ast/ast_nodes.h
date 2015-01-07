@@ -1,6 +1,7 @@
 #ifndef SRC_AST_AST_NODES_H_
 #define SRC_AST_AST_NODES_H_
 
+#include <stdexcept>
 #include <cstddef>
 #include <sstream>
 #include <string>
@@ -16,7 +17,11 @@ template <TerminalType T>
 class Terminal : public NodeInterface,
                  public SmartPtrInterface<Terminal<T>> {
  public:
-  explicit Terminal(const Token &token) : token_(token) { /* empty */ }
+  explicit Terminal(const Token &token) : token_(token) {
+    if (token.type() != T) { throw std::logic_error("Terminal"); }
+  }
+  explicit Terminal(const std::string &value)
+      : token_(Token(T, value)) { /* empty */ }
   std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
