@@ -67,6 +67,8 @@ void AmbiguityHandler::ProcessNode(
     auto remain = InitToken(TerminalType::ARGUMENT,
                             string(iter + 1, value.cend()));
     if (!remain.IsEmpty()) {
+      // recording option -> remain binding.
+      recorder_ptr_->RecordBinding(option, remain);
       // add `remain`.
       auto argument_node = Argument::Init(remain);
       logic_and->AddChild(argument_node);
@@ -77,6 +79,8 @@ void AmbiguityHandler::ProcessNode(
   SharedPtrNode &ptr_in_parent =
       *grouped_options_ptr->node_connection.this_child_ptr_;
   ptr_in_parent = logic_and;
+  // process bindings.
+  recorder_ptr_->ProcessCachedBindings();
 }
 
 }  // namespace clidoc

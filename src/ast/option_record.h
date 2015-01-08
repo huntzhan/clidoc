@@ -56,6 +56,9 @@ class OptionBindingRecorder {
   void RecordBinding(
       OptionBindingContainer::SharedPtr container_ptr,
       DefaultValue::SharedPtr default_value_ptr);
+  // `RecordBinding(const Token &option, const Token &option_argument)` do
+  // nothing but record the token pairs in cache. `ProcessCachedBindings` must
+  // be called for actual processing.
   void RecordBinding(const Token &option, const Token &option_argument);
   void ProcessCachedBindings();
 
