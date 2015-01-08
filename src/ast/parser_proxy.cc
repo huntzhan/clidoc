@@ -47,13 +47,13 @@ bool DocPreprocessor::ExtractSection(
   auto pos_iter = text.cbegin();
   auto text_end_iter = text.cend();
 
-  bool is_success = false;
+  bool found = false;
   // search the begin of section.
-  is_success = regex_search(
+  found = regex_search(
       pos_iter, text_end_iter,
       match_result,
       target_section_pattern);
-  if (!is_success) {
+  if (!found) {
     // can't find the section.
     return false;
   }
@@ -61,18 +61,18 @@ bool DocPreprocessor::ExtractSection(
   pos_iter = match_result.suffix().first;
 
   // seach the end of section.
-  is_success = regex_search(
+  found = regex_search(
       pos_iter, text_end_iter,
       match_result,
       next_section_pattern);
 
   auto section_end_iter = text_end_iter;
-  if (is_success) {
+  if (found) {
     // ignroe `[default: "xxx"]`.
-    bool not_default = !regex_match(
+    bool found = regex_match(
         match_result.str(1),
         regex("default", std::regex_constants::icase));
-    if (not_default) {
+    if (!found) {
       section_end_iter = match_result[0].first;
     }
   }
@@ -114,7 +114,11 @@ void DocPreprocessor::ReplaceUtilityName() {
       "usage:\\s*(\\S+)",
       std::regex_constants::icase);
   smatch match_result;
-  if (!regex_search(usage_section_, match_result, utility_name_pattern)) {
+  bool found = regex_search(
+      usage_section_,
+      match_result,
+      utility_name_pattern);
+  if (!found) {
     throw logic_error("ReplaceUtilityName");
   }
   string utility_name = match_result.str(1);

@@ -71,10 +71,10 @@ Token OptionBindingRecorder::GetRepresentativeOption(
       representative_option_ptr = &option;
     }
     // search in `option_to_representative_option_`.
-    auto pos_iter = option_to_representative_option_.find(option);
-    if (pos_iter != option_to_representative_option_.end()) {
+    if (IsRecorded(option)) {
       // binding already exists.
-      representative_option_ptr = &pos_iter->second;
+      representative_option_ptr =
+          &option_to_representative_option_[option];
       break;
     }
   }
@@ -172,8 +172,8 @@ void OptionBindingRecorder::RecordBinding(
       representative_option, container_ptr);
 
   // fill `representative_option_to_property_`.
-  auto pos_iter = representative_option_to_property_.find(
-      representative_option);
+  auto pos_iter =
+      representative_option_to_property_.find(representative_option);
   if (pos_iter == representative_option_to_property_.end()) {
     CreateRepresentativeOptionProperty(
         representative_option,
@@ -228,6 +228,19 @@ void OptionBindingRecorder::ProcessCachedBindings() {
           &pos_iter->second);
     }
   }
+}
+
+bool OptionBindingRecorder::IsRecorded(const Token &option) const {
+  return option_to_representative_option_.find(option)
+         != option_to_representative_option_.end();
+}
+
+bool OptionBindingRecorder::HasArgument(const Token &option) const {
+  if (!IsRecorded(option)) {
+    return false;
+  }
+  const auto &rep_option = option_to_representative_option_.at(option);
+  return !representative_option_to_property_.at(rep_option).IsEmpty();
 }
 
 }  // namespace clidoc

@@ -62,6 +62,9 @@ class OptionBindingRecorder {
   void RecordBinding(const Token &option, const Token &option_argument);
   void ProcessCachedBindings();
 
+  bool IsRecorded(const Token &option) const;
+  bool HasArgument(const Token &option) const;
+
   std::map<Token, Token> option_to_representative_option_;
   std::map<Token, RepresentativeOptionProperty>
       representative_option_to_property_;
