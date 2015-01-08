@@ -56,7 +56,7 @@ void AmbiguityHandler::ProcessNode(
       // `option` not recorded.
       recorder_ptr_->RecordBinding(option, Token());
       continue;
-    } 
+    }
 
     auto representative_option = o2ro[option];
     if (ro2pty[representative_option].IsEmpty()) {

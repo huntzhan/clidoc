@@ -1,5 +1,5 @@
-#ifndef SRC_SMART_PTR_INTERFACE_H_
-#define SRC_SMART_PTR_INTERFACE_H_
+#ifndef SRC_SHARED_SMART_PTR_INTERFACE_H_
+#define SRC_SHARED_SMART_PTR_INTERFACE_H_
 
 #include <memory>
 #include <utility>
@@ -48,4 +48,4 @@ typename SmartPtrInterface<Derived>::SharedPtr
 
 }  // namespace clidoc
 
-#endif  // SRC_SMART_PTR_INTERFACE_H_
+#endif  // SRC_SHARED_SMART_PTR_INTERFACE_H_

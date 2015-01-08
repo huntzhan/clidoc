@@ -1,5 +1,5 @@
-#ifndef SRC_GENERATED_SCANNER_H_
-#define SRC_GENERATED_SCANNER_H_
+#ifndef SRC_AST_GENERATED_SCANNER_H_
+#define SRC_AST_GENERATED_SCANNER_H_
 
 #include <istream>
 #include <ostream>
@@ -27,4 +27,4 @@ class FlexGeneratedScanner : public yyFlexLexer {
 
 }  // namespace clidoc
 
-#endif  // SRC_GENERATED_SCANNER_H_
+#endif  // SRC_AST_GENERATED_SCANNER_H_

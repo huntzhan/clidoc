@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "ast/ast_node_interface.h"
 #include "shared/smart_ptr_interface.h"

@@ -1,5 +1,5 @@
-#ifndef SRC_TOKEN_PROXY_H_
-#define SRC_TOKEN_PROXY_H_
+#ifndef SRC_AST_TOKEN_PROXY_H_
+#define SRC_AST_TOKEN_PROXY_H_
 
 #include <string>
 
@@ -19,4 +19,4 @@ Token InitToken(const TerminalType &terminal_type, const std::string &value);
 Token InitToken(const Type &type_id, const std::string &value);
 
 }  // namespace clidoc
-#endif  // SRC_TOKEN_PROXY_H_
+#endif  // SRC_AST_TOKEN_PROXY_H_

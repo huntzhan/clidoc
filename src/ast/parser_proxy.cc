@@ -59,7 +59,7 @@ bool DocPreprocessor::ExtractSection(
   }
   auto section_begin_iter = match_result[0].first;
   pos_iter = match_result.suffix().first;
-  
+
   // seach the end of section.
   is_success = regex_search(
       pos_iter, text_end_iter,
@@ -267,7 +267,7 @@ string DocPreprocessor::PreprocessRawDoc(const string &raw_doc) {
   ExtractAndProcessUsageSection();
   // extract and preprocess options section.
   ExtractAndProcessOptionsSection();
-  // disambiguate. 
+  // disambiguate.
   DisambiguateByInsertSpace();
   return text_;
 }

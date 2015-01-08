@@ -15,7 +15,7 @@ using std::ostringstream;
 namespace clidoc {
 
 vector<Token> FromString(const string &text) {
-  // TODO: handle invalid input.
+  // TODO(huntzhan): handle invalid input.
   ostringstream null_ostream;
   istringstream input_stream(text);
   // Since `FlexGeneratedScanner` accepts istream as argument, lexer->lex()

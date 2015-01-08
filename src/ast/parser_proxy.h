@@ -1,5 +1,5 @@
-#ifndef SRC_PARSER_PROXY_H_
-#define SRC_PARSER_PROXY_H_
+#ifndef SRC_AST_PARSER_PROXY_H_
+#define SRC_AST_PARSER_PROXY_H_
 
 #include <regex>
 #include <string>
@@ -72,4 +72,4 @@ class ParserProxy {
 };
 
 }  // namespace clidoc
-#endif  // SRC_PARSER_PROXY_H_
+#endif  // SRC_AST_PARSER_PROXY_H_
