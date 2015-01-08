@@ -68,7 +68,9 @@ class ParserProxy {
       const std::string &preprocessed_doc,
       Doc::SharedPtr *doc_ptr,
       OptionBindingRecorder *option_binding_recorder_ptr);
-  void PostProcessedAST(Doc::SharedPtr doc_ptr);
+  void PostProcessedAST(
+      Doc::SharedPtr doc_ptr,
+      OptionBindingRecorder *option_binding_recorder_ptr);
 };
 
 }  // namespace clidoc

@@ -35,3 +35,32 @@ TEST(process_logic, AmbiguityHandler) {
   EXPECT_EQ("LogicXor(LogicAnd(PosixOption[-o], Argument[FILE]))",
             xor_1->ToString());
 }
+
+TEST(process_logic, TerminalTypeModifier) {
+  auto and_1 = LogicAnd::Init();
+  and_1->AddChild(PosixOption::Init("-c"));
+  and_1->AddChild(Command::Init(">whatever<"));
+  and_1->AddChild(GnuOption::Init("--long"));
+
+  TerminalTypeModifier<Argument> type_modifier;
+  and_1->Accept(&type_modifier);
+
+  EXPECT_EQ("LogicAnd("
+            "Argument[-c], Argument[>whatever<], Argument[--long])",
+            and_1->ToString());
+}
+
+TEST(process_logic, DoubleHyphenHandler) {
+  auto and_1 = LogicAnd::Init();
+  and_1->AddChild(PosixOption::Init("-c"));
+  and_1->AddChild(KDoubleHyphen::Init("--"));
+  and_1->AddChild(PosixOption::Init("-c"));
+  and_1->AddChild(Command::Init(">whatever<"));
+  and_1->AddChild(GnuOption::Init("--long"));
+
+  DoubleHyphenHandler visitor;
+  and_1->Accept(&visitor);
+  EXPECT_EQ("LogicAnd(PosixOption[-c], "
+            "Argument[-c], Argument[>whatever<], Argument[--long])",
+            and_1->ToString());
+}

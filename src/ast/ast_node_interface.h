@@ -5,7 +5,8 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include <vector>
+#include <list>
+#include <iterator>
 
 namespace clidoc {
 
@@ -68,18 +69,22 @@ class NonTerminal;
 
 using SharedPtrNode = std::shared_ptr<NodeInterface>;
 using WeakPtrNode = std::weak_ptr<NodeInterface>;
-using VecSharedPtrNode = std::vector<SharedPtrNode>;
+using SharedPtrNodeContainer = std::list<SharedPtrNode>;
 
 // Record the binding of parent and child.
 struct NodeConnection {
+  // by copying the setting of other.
+  void ConnectParent(NodeConnection *other);
+  // by manually set.
+  void ConnectParent(
+      SharedPtrNodeContainer::iterator other_this_iter,
+      SharedPtrNodeContainer *other_children_of_parent_ptr);
+  // by connect to the last child of parent.
   template <NonTerminalType T>
-  void ConnectParent(NonTerminal<T> *parent_ptr) {
-    this_child_ptr_ = &parent_ptr->children_.back();
-    children_of_parent_ptr_ = &parent_ptr->children_;
-  }
+  void ConnectParent(NonTerminal<T> *parent_ptr);
 
-  SharedPtrNode *this_child_ptr_ = nullptr;
-  VecSharedPtrNode *children_of_parent_ptr_ = nullptr;
+  SharedPtrNodeContainer::iterator this_iter_;
+  SharedPtrNodeContainer *children_of_parent_ptr_ = nullptr;
 };
 
 struct NodeVistorInterface;
@@ -136,6 +141,24 @@ class Token {
 }  // namespace clidoc
 
 namespace clidoc {
+
+inline void NodeConnection::ConnectParent(NodeConnection *other) {
+  this_iter_ = other->this_iter_;
+  children_of_parent_ptr_ = other->children_of_parent_ptr_;
+}
+
+inline void NodeConnection::ConnectParent(
+    SharedPtrNodeContainer::iterator other_this_iter,
+    SharedPtrNodeContainer *other_children_of_parent_ptr) {
+  this_iter_ = other_this_iter;
+  children_of_parent_ptr_ = other_children_of_parent_ptr;
+}
+
+template <NonTerminalType T>
+void NodeConnection::ConnectParent(NonTerminal<T> *parent_ptr) {
+  this_iter_ = std::prev(parent_ptr->children_.end());
+  children_of_parent_ptr_ = &parent_ptr->children_;
+}
 
 // This member function must be marked inline, otherwise a linkage error would
 // be raised.

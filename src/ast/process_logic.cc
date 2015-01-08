@@ -1,9 +1,12 @@
+#include <algorithm>
 #include <string>
+#include <iterator>
 
 #include "ast/ast_node_interface.h"
 #include "ast/token_proxy.h"
 #include "ast/process_logic.h"
 
+using std::next;
 using std::string;
 
 namespace clidoc {
@@ -22,6 +25,9 @@ void StructureOptimizer::ProcessNode(
     LogicXor::SharedPtr node_ptr) {
   RemoveDuplicatedNodes(node_ptr);
 }
+
+AmbiguityHandler::AmbiguityHandler(OptionBindingRecorder *recorder_ptr)
+      : recorder_ptr_(recorder_ptr) {/* empty */}
 
 void AmbiguityHandler::ProcessNode(
     GroupedOptions::SharedPtr grouped_options_ptr) {
@@ -68,11 +74,28 @@ void AmbiguityHandler::ProcessNode(
     }
   }
   // replace original `GroupedOptions`.
-  SharedPtrNode &ptr_in_parent =
-      *grouped_options_ptr->node_connection.this_child_ptr_;
-  ptr_in_parent = logic_and;
+  *grouped_options_ptr->node_connection.this_iter_ = logic_and;
+  logic_and->node_connection.ConnectParent(
+      &grouped_options_ptr->node_connection);
   // process bindings.
   recorder_ptr_->ProcessCachedBindings();
 }
+
+void DoubleHyphenHandler::ProcessNode(
+    KDoubleHyphen::SharedPtr double_hyphen_ptr) {
+  // change the type of all elements after `--` to `OPERAND`.
+  TerminalTypeModifier<Argument> type_modifier;
+  auto &conn = double_hyphen_ptr->node_connection;
+  for (auto iter = next(conn.this_iter_);
+       iter != conn.children_of_parent_ptr_->end(); ++iter) {
+    (*iter)->Accept(&type_modifier);
+  }
+  // remove `--`.
+  conn.children_of_parent_ptr_->erase(conn.this_iter_);
+}
+
+// FocusedElementCollector::FocusedElementCollector(
+//     OptionBindingRecorder *recorder_ptr)
+//     : recorder_ptr_(recorder_ptr) {/* empty */}
 
 }  // namespace clidoc

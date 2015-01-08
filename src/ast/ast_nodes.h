@@ -18,11 +18,7 @@ class Terminal : public NodeInterface,
  public:
   explicit Terminal(const Token &token);
   explicit Terminal(const std::string &value);
-  // explicit Terminal(const Token &token) : token_(token) {
-  //   if (token.type() != T) { throw std::logic_error("Terminal"); }
-  // }
-  // explicit Terminal(const std::string &value)
-  //     : token_(Token(T, value)) { /* empty */ }
+
   std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
@@ -43,7 +39,7 @@ class NonTerminal : public NodeInterface,
 
   void AddChild(SharedPtrNode node_ptr);
   // Container of symbols.
-  VecSharedPtrNode children_;
+  SharedPtrNodeContainer children_;
 };
 
 // Terminal classes.
@@ -151,8 +147,11 @@ struct NodeVistorInterface : public ConcreteTerminalVistorInterface,
 namespace clidoc {
 
 template <TerminalType T>
-inline Terminal<T>::Terminal(const Token &token) : token_(token) {
-  if (token.type() != T) { throw std::logic_error("Terminal"); }
+inline Terminal<T>::Terminal(const Token &token)
+    : token_(token) {
+  if (token.type() != T) {
+    throw std::logic_error("Terminal Type Not Match.");
+  }
 }
 
 template <TerminalType T>

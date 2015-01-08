@@ -300,10 +300,15 @@ void ParserProxy::ParseByBison(
   SPIStaticDataMember::FreeCache();
 }
 
-void ParserProxy::PostProcessedAST(Doc::SharedPtr doc_ptr) {
+void ParserProxy::PostProcessedAST(
+    Doc::SharedPtr doc_ptr,
+    OptionBindingRecorder *option_binding_recorder_ptr) {
   // remove duplicated nodes.
   StructureOptimizer structure_optimizer;
   doc_ptr->Accept(&structure_optimizer);
+  // Handle ambiguous syntax.
+  AmbiguityHandler ambiguity_handler(option_binding_recorder_ptr);
+  doc_ptr->Accept(&ambiguity_handler);
 }
 
 }  // namespace clidoc
