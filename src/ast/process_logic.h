@@ -1,7 +1,6 @@
 #ifndef SRC_AST_PROCESS_LOGIC_H_
 #define SRC_AST_PROCESS_LOGIC_H_
 
-#include <memory>
 #include <stack>
 #include <iterator>
 
@@ -23,8 +22,8 @@ class StructureOptimizer : public NodeVistorInterface {
   // resolution operator ::) of a type that was specified using a
   // qualified-id." is one of "Non-deduced contexts",
   // `NonTerminalType<T>::SharedPtr` could not be the function parameter.
-  template <NonTerminalType T>
-  void RemoveDuplicatedNodes(std::shared_ptr<NonTerminal<T>> node_ptr);
+  template <typename NonTerminalTypeSharedPtr>
+  void RemoveDuplicatedNodes(NonTerminalTypeSharedPtr node_ptr);
   SharedPtrNodeContainer children_of_child_;
 };
 
@@ -43,8 +42,8 @@ class TerminalTypeModifier : public NodeVistorInterface {
   void ProcessNode(Command::SharedPtr node_ptr) override;
 
  private:
-  template <TerminalType T>
-  void ChangeType(std::shared_ptr<Terminal<T>> node_ptr);
+  template <typename TerminalTypeSharedPtr>
+  void ChangeType(TerminalTypeSharedPtr node_ptr);
 };
 
 
@@ -81,9 +80,10 @@ class AmbiguityHandler : public NodeVistorInterface {
 
 namespace clidoc {
 
-template <NonTerminalType T>
+template <typename NonTerminalTypeSharedPtr>
 void StructureOptimizer::RemoveDuplicatedNodes(
-    std::shared_ptr<NonTerminal<T>> node_ptr) {
+    NonTerminalTypeSharedPtr node_ptr) {
+  // container for processed elements.
   SharedPtrNodeContainer optimized_children;
   for (auto child_ptr : node_ptr->children_) {
     child_ptr->Accept(this);
@@ -106,10 +106,9 @@ void StructureOptimizer::RemoveDuplicatedNodes(
 }
 
 template <typename TargetType>
-template <TerminalType T>
+template <typename TerminalTypeSharedPtr>
 void TerminalTypeModifier<TargetType>::ChangeType(
-    std::shared_ptr<Terminal<T>> node_ptr) {
-
+    TerminalTypeSharedPtr node_ptr) {
   auto new_node = TargetType::Init(node_ptr->token_.value());
   node_ptr->node_connection.ReplacedWith(new_node);
 }

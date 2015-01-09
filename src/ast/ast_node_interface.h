@@ -81,8 +81,8 @@ struct NodeConnection {
       SharedPtrNodeContainer::iterator other_this_iter,
       SharedPtrNodeContainer *other_children_of_parent_ptr);
   // by connect to the last child of parent.
-  template <NonTerminalType T>
-  void ConnectParent(std::shared_ptr<NonTerminal<T>> parent_ptr); 
+  template <typename NonTerminalTypeSharedPtr>
+  void ConnectParent(NonTerminalTypeSharedPtr parent_ptr); 
 
   // Replace this node with another node.
   template <typename NodeTypeSharedPtr>
@@ -159,9 +159,8 @@ inline void NodeConnection::ConnectParent(
   children_of_parent_ptr_ = other_children_of_parent_ptr;
 }
 
-template <NonTerminalType T>
-void NodeConnection::ConnectParent(
-    std::shared_ptr<NonTerminal<T>> parent_ptr) {
+template <typename NonTerminalTypeSharedPtr>
+void NodeConnection::ConnectParent(NonTerminalTypeSharedPtr parent_ptr) {
   this_iter_ = std::prev(parent_ptr->children_.end());
   children_of_parent_ptr_ = &parent_ptr->children_;
 }
