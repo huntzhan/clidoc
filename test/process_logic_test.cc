@@ -26,8 +26,8 @@ TEST(process_logic, AmbiguityHandler) {
   
   OptionBindingRecorder recorder;
   recorder.RecordBinding(
-      InitToken(TypeID::POSIX_OPTION, "-o"),
-      InitToken(TypeID::ARGUMENT, "FILE"));
+      InitToken(TerminalType::POSIX_OPTION, "-o"),
+      InitToken(TerminalType::ARGUMENT, "FILE"));
   recorder.ProcessCachedBindings();
 
   AmbiguityHandler visitor(&recorder);
@@ -63,4 +63,31 @@ TEST(process_logic, DoubleHyphenHandler) {
   EXPECT_EQ("LogicAnd(PosixOption[-c], "
             "Argument[-c], Argument[>whatever<], Argument[--long])",
             and_1->ToString());
+}
+
+TEST(process_logic, FocusedElementCollector) {
+  auto and_1 = LogicAnd::Init();
+  and_1->AddChild(PosixOption::Init("-c"));
+  and_1->AddChild(Argument::Init("ARG1"));
+  and_1->AddChild(Argument::Init("ARG2"));
+  and_1->AddChild(GnuOption::Init("--output"));
+  and_1->AddChild(Argument::Init("FILE"));
+
+  OptionBindingRecorder recorder;
+  recorder.RecordBinding(
+      InitToken(TerminalType::POSIX_OPTION, "-c"),
+      InitToken(TerminalType::ARGUMENT, "ARG1"));
+  recorder.RecordBinding(
+      InitToken(TerminalType::GNU_OPTION, "--output"),
+      InitToken(TerminalType::ARGUMENT, "FILE"));
+  recorder.ProcessCachedBindings();
+
+  FocusedElementCollector visitor(&recorder);
+  and_1->Accept(&visitor);
+  auto focused_elements = visitor.GetFocusedElement();
+
+  EXPECT_EQ(3, focused_elements.size());
+  EXPECT_EQ("--output", focused_elements[0].value());
+  EXPECT_EQ("-c", focused_elements[1].value());
+  EXPECT_EQ("ARG2", focused_elements[2].value());
 }

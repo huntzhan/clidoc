@@ -1,10 +1,12 @@
 #ifndef SRC_AST_PROCESS_LOGIC_H_
 #define SRC_AST_PROCESS_LOGIC_H_
 
-#include <stack>
 #include <iterator>
+#include <vector>
 
+#include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
+#include "ast/option_record.h"
 #include "ast/parser_proxy.h"
 
 namespace clidoc {
@@ -66,15 +68,22 @@ class AmbiguityHandler : public NodeVistorInterface {
   OptionBindingRecorder *recorder_ptr_;
 };
 
-// class FocusedElementCollector : public NodeVistorInterface {
-//  public:
-//   using NodeVistorInterface::ProcessNode;
-//
-//   explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
-//
-//  private:
-//   OptionBindingRecorder *recorder_ptr_;
-// };
+class FocusedElementCollector : public NodeVistorInterface {
+ public:
+  using NodeVistorInterface::ProcessNode;
+
+  explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
+  std::vector<Token> GetFocusedElement();
+
+  // See discussion in issue #5.
+  void ProcessNode(PosixOption::SharedPtr node_ptr) override;
+  void ProcessNode(GnuOption::SharedPtr node_ptr) override;
+  void ProcessNode(Argument::SharedPtr node_ptr) override;
+
+ private:
+  OptionBindingRecorder *recorder_ptr_;
+  std::vector<Token> operand_candidates_;
+};
 
 }  // namespace clidoc
 

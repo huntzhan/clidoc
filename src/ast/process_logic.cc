@@ -1,11 +1,16 @@
 #include <algorithm>
 #include <string>
 #include <iterator>
+#include <vector>
+#include <set>
 
 #include "ast/ast_node_interface.h"
+#include "ast/option_record.h"
 #include "ast/token_proxy.h"
 #include "ast/process_logic.h"
 
+using std::vector;
+using std::set;
 using std::next;
 using std::string;
 
@@ -92,8 +97,46 @@ void DoubleHyphenHandler::ProcessNode(
   conn.children_of_parent_ptr_->erase(conn.this_iter_);
 }
 
-// FocusedElementCollector::FocusedElementCollector(
-//     OptionBindingRecorder *recorder_ptr)
-//     : recorder_ptr_(recorder_ptr) {/* empty */}
+FocusedElementCollector::FocusedElementCollector(
+    OptionBindingRecorder *recorder_ptr)
+    : recorder_ptr_(recorder_ptr) {/* empty */}
+
+vector<Token> FocusedElementCollector::GetFocusedElement() {
+  vector<Token> focused_elements;
+  set<Token> bound_arguments;
+  const auto &rep_to_property =
+      recorder_ptr_->representative_option_to_property_;
+  // include all representative options.
+  for (auto iter = rep_to_property.cbegin();
+       iter != rep_to_property.cend(); ++iter) {
+    focused_elements.push_back(iter->first);
+    if (!iter->second.IsEmpty()) {
+      bound_arguments.insert(iter->second.option_argument_);
+    }
+  }
+  // include unbound arguments.
+  for (const auto &argument : operand_candidates_) {
+    if (bound_arguments.find(argument) == bound_arguments.end()) {
+      focused_elements.push_back(argument);
+    }
+  }
+  return focused_elements;
+}
+
+void FocusedElementCollector::ProcessNode(PosixOption::SharedPtr node_ptr) {
+  if (!recorder_ptr_->IsRecorded(node_ptr->token_)) {
+    recorder_ptr_->RecordBinding(node_ptr->token_, Token());
+  }
+}
+
+void FocusedElementCollector::ProcessNode(GnuOption::SharedPtr node_ptr) {
+  if (!recorder_ptr_->IsRecorded(node_ptr->token_)) {
+    recorder_ptr_->RecordBinding(node_ptr->token_, Token());
+  }
+}
+
+void FocusedElementCollector::ProcessNode(Argument::SharedPtr node_ptr) {
+  operand_candidates_.push_back(node_ptr->token_);
+}
 
 }  // namespace clidoc
