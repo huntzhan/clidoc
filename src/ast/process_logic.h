@@ -70,9 +70,9 @@ class AmbiguityHandler : public NodeVistorInterface {
 // class FocusedElementCollector : public NodeVistorInterface {
 //  public:
 //   using NodeVistorInterface::ProcessNode;
-// 
+//
 //   explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
-// 
+//
 //  private:
 //   OptionBindingRecorder *recorder_ptr_;
 // };
@@ -100,11 +100,7 @@ void StructureOptimizer::RemoveDuplicatedNodes(
   // parent of current node.
   node_ptr->children_.clear();
   for (auto child_ptr : optimized_children) {
-    node_ptr->children_.push_back(child_ptr);
-    // make connection.
-    child_ptr->node_connection.ConnectParent(
-        std::prev(node_ptr->children_.end()),
-        &node_ptr->children_);
+    node_ptr->AddChild(child_ptr);
   }
   children_of_child_ = optimized_children;
 }
@@ -115,10 +111,7 @@ void TerminalTypeModifier<TargetType>::ChangeType(
     std::shared_ptr<Terminal<T>> node_ptr) {
 
   auto new_node = TargetType::Init(node_ptr->token_.value());
-  *node_ptr->node_connection.this_iter_ = new_node;
-
-  new_node->node_connection.ConnectParent(
-      &node_ptr->node_connection);
+  node_ptr->node_connection.ReplacedWith(new_node);
 }
 
 template <typename TargetType>

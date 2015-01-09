@@ -73,6 +73,7 @@ using SharedPtrNodeContainer = std::list<SharedPtrNode>;
 
 // Record the binding of parent and child.
 struct NodeConnection {
+  // `ConnectParent` make connection with parent node.
   // by copying the setting of other.
   void ConnectParent(NodeConnection *other);
   // by manually set.
@@ -81,7 +82,11 @@ struct NodeConnection {
       SharedPtrNodeContainer *other_children_of_parent_ptr);
   // by connect to the last child of parent.
   template <NonTerminalType T>
-  void ConnectParent(NonTerminal<T> *parent_ptr);
+  void ConnectParent(std::shared_ptr<NonTerminal<T>> parent_ptr); 
+
+  // Replace this node with another node.
+  template <typename NodeTypeSharedPtr>
+  void ReplacedWith(NodeTypeSharedPtr node_ptr);
 
   SharedPtrNodeContainer::iterator this_iter_;
   SharedPtrNodeContainer *children_of_parent_ptr_ = nullptr;
@@ -155,9 +160,16 @@ inline void NodeConnection::ConnectParent(
 }
 
 template <NonTerminalType T>
-void NodeConnection::ConnectParent(NonTerminal<T> *parent_ptr) {
+void NodeConnection::ConnectParent(
+    std::shared_ptr<NonTerminal<T>> parent_ptr) {
   this_iter_ = std::prev(parent_ptr->children_.end());
   children_of_parent_ptr_ = &parent_ptr->children_;
+}
+
+template <typename NodeTypeSharedPtr>
+void NodeConnection::ReplacedWith(NodeTypeSharedPtr node_ptr) {
+  *this_iter_ = node_ptr;
+  node_ptr->node_connection.ConnectParent(this);
 }
 
 // This member function must be marked inline, otherwise a linkage error would

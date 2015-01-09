@@ -74,9 +74,7 @@ void AmbiguityHandler::ProcessNode(
     }
   }
   // replace original `GroupedOptions`.
-  *grouped_options_ptr->node_connection.this_iter_ = logic_and;
-  logic_and->node_connection.ConnectParent(
-      &grouped_options_ptr->node_connection);
+  grouped_options_ptr->node_connection.ReplacedWith(logic_and);
   // process bindings.
   recorder_ptr_->ProcessCachedBindings();
 }

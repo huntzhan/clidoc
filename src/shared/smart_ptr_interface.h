@@ -12,7 +12,7 @@ struct SPIStaticDataMember {
   // manually free cache.
   static void FreeCache();
   // static data member can not be placed in class template in this case.
-  static std::vector<std::shared_ptr<void>> cached_container_;
+  static std::vector<std::shared_ptr<void>> cache_container_;
 };
 
 template <typename Derived>
@@ -39,10 +39,10 @@ typename SmartPtrInterface<Derived>::SharedPtr
   // Luckly, the shared_ptr has a feature called "type ensure":
   // http://stackoverflow.com/questions/3899790/shared-ptr-magic
   // Hence, Init(...) generated shared_ptr would place an copy to the
-  // `SPIStaticDataMember::cached_container_`, the value_type of which is
+  // `SPIStaticDataMember::cache_container_`, the value_type of which is
   // std::shared_ptr<void>.
   auto ptr = std::make_shared<Derived>(std::forward<Args>(args)...);
-  SPIStaticDataMember::cached_container_.push_back(ptr);
+  SPIStaticDataMember::cache_container_.push_back(ptr);
   return ptr;
 }
 
