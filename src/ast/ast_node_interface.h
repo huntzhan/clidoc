@@ -74,12 +74,12 @@ using SharedPtrNodeContainer = std::list<SharedPtrNode>;
 // Record the binding of parent and child.
 struct NodeConnection {
   // `ConnectParent` make connection with parent node.
-  // by copying the setting of other.
-  void ConnectParent(NodeConnection *other);
   // by manually set.
   void ConnectParent(
       SharedPtrNodeContainer::iterator other_this_iter,
       SharedPtrNodeContainer *other_children_of_parent_ptr);
+  // by copying the setting of other.
+  void ConnectParent(NodeConnection *other);
   // by connect to the last child of parent.
   template <typename NonTerminalTypeSharedPtr>
   void ConnectParent(NonTerminalTypeSharedPtr parent_ptr); 
@@ -147,11 +147,6 @@ class Token {
 
 namespace clidoc {
 
-inline void NodeConnection::ConnectParent(NodeConnection *other) {
-  this_iter_ = other->this_iter_;
-  children_of_parent_ptr_ = other->children_of_parent_ptr_;
-}
-
 inline void NodeConnection::ConnectParent(
     SharedPtrNodeContainer::iterator other_this_iter,
     SharedPtrNodeContainer *other_children_of_parent_ptr) {
@@ -159,10 +154,15 @@ inline void NodeConnection::ConnectParent(
   children_of_parent_ptr_ = other_children_of_parent_ptr;
 }
 
+
+inline void NodeConnection::ConnectParent(NodeConnection *other) {
+  ConnectParent(other->this_iter_, other->children_of_parent_ptr_);
+}
+
 template <typename NonTerminalTypeSharedPtr>
 void NodeConnection::ConnectParent(NonTerminalTypeSharedPtr parent_ptr) {
-  this_iter_ = std::prev(parent_ptr->children_.end());
-  children_of_parent_ptr_ = &parent_ptr->children_;
+  ConnectParent(std::prev(parent_ptr->children_.end()),
+                &parent_ptr->children_);
 }
 
 template <typename NodeTypeSharedPtr>

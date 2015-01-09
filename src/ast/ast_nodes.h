@@ -107,11 +107,9 @@ struct NonTerminalVistorInterface<T, RestType...>
   // interface for NonTerminal<T>::SharedPtr.
   virtual void ProcessNode(typename NonTerminal<T>::SharedPtr node_ptr) {
     // Apply vistor to children.
-    // Fix it if you have better way to do it.
-    for (auto child_ptr : node_ptr->children_) {
-      // child_ptr->Accept(dynamic_cast<NodeVistorInterface *>(this));
-      // use `static_cast` since RTTI check is unnecessary.
-      child_ptr->Accept(static_cast<NodeVistorInterface *>(this));
+    auto cache_children = node_ptr->children_;
+    for (auto child_ptr : cache_children) {
+      child_ptr->Accept(dynamic_cast<NodeVistorInterface *>(this));
     }
   }
 };

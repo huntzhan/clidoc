@@ -86,7 +86,7 @@ TEST(process_logic, FocusedElementCollector) {
   and_1->Accept(&visitor);
   auto focused_elements = visitor.GetFocusedElement();
 
-  EXPECT_EQ(3, focused_elements.size());
+  EXPECT_EQ(unsigned(3), focused_elements.size());
   EXPECT_EQ("--output", focused_elements[0].value());
   EXPECT_EQ("-c", focused_elements[1].value());
   EXPECT_EQ("ARG2", focused_elements[2].value());
