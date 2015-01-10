@@ -137,6 +137,9 @@ void FocusedElementCollector::ProcessNode(Argument::SharedPtr node) {
   operand_candidates_.insert(node->token_);
 }
 
+void FocusedElementCollector::ProcessNode(Command::SharedPtr node) {
+  operand_candidates_.insert(node->token_);
+}
 
 BoundArgumentCleaner::BoundArgumentCleaner(
     const std::set<Token> &bound_arguments)

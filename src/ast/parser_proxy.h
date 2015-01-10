@@ -4,6 +4,7 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include <set>
 
 #include "ast/ast_nodes.h"
 #include "ast/option_record.h"
@@ -63,7 +64,8 @@ class ParserProxy {
   void Parse(
       const std::string &doc,
       Doc::SharedPtr *doc_node_ptr,
-      OptionBindingRecorder *recorder_ptr);
+      OptionBindingRecorder *recorder_ptr,
+      std::set<Token> *focused_elements_ptr);
 
  private:
   FRIEND_TEST(ParserProxyTest, PreprocessRawDoc);
@@ -76,7 +78,8 @@ class ParserProxy {
       OptionBindingRecorder *recorder_ptr);
   void PostProcessedAST(
       Doc::SharedPtr doc_node,
-      OptionBindingRecorder *recorder_ptr);
+      OptionBindingRecorder *recorder_ptr,
+      std::set<Token> *focused_elements_ptr);
 };
 
 }  // namespace clidoc

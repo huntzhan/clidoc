@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <set>
 
 #include "ast/generated_scanner.h"
 #include "ast/generated_parser.h"
@@ -28,6 +29,7 @@ using std::vector;
 using std::size_t;
 using std::to_string;
 using std::logic_error;
+using std::set;
 
 namespace clidoc {
 
@@ -301,7 +303,8 @@ void ParserProxy::ParseByBison(
 
 void ParserProxy::PostProcessedAST(
     Doc::SharedPtr doc_node,
-    OptionBindingRecorder *recorder_ptr) {
+    OptionBindingRecorder *recorder_ptr,
+    set<Token> *focused_elements_ptr) {
   // 1. remove duplicated nodes.
   StructureOptimizer structure_optimizer;
   doc_node->Accept(&structure_optimizer);
@@ -313,8 +316,8 @@ void ParserProxy::PostProcessedAST(
   doc_node->Accept(&ambiguity_handler);
   // 4. collect focused elements.
   FocusedElementCollector focused_element_collector(recorder_ptr);
-  doc_node->Accept(&ambiguity_handler);
-  auto focused_elements = focused_element_collector.GetFocusedElement();
+  doc_node->Accept(&focused_element_collector);
+  *focused_elements_ptr = focused_element_collector.GetFocusedElement();
   // 5.TODO(huntzhan): issue #17.
   // 6. Remove bound arguments.
   auto bound_arguments = recorder_ptr->GetBoundArguments();
@@ -325,10 +328,11 @@ void ParserProxy::PostProcessedAST(
 void ParserProxy::Parse(
     const std::string &doc,
     Doc::SharedPtr *doc_node_ptr,
-    OptionBindingRecorder *recorder_ptr) {
+    OptionBindingRecorder *recorder_ptr,
+    set<Token> *focused_elements_ptr) {
   auto preprocessed_doc = PreprocessRawDoc(doc);
   ParseByBison(preprocessed_doc, doc_node_ptr, recorder_ptr);
-  PostProcessedAST(*doc_node_ptr, recorder_ptr);
+  PostProcessedAST(*doc_node_ptr, recorder_ptr, focused_elements_ptr);
 }
 
 }  // namespace clidoc

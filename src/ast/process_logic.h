@@ -79,6 +79,7 @@ class FocusedElementCollector : public NodeVistorInterface {
   void ProcessNode(PosixOption::SharedPtr node) override;
   void ProcessNode(GnuOption::SharedPtr node) override;
   void ProcessNode(Argument::SharedPtr node) override;
+  void ProcessNode(Command::SharedPtr node) override;
 
  private:
   OptionBindingRecorder *recorder_ptr_;

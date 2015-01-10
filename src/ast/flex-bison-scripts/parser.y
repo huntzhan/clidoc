@@ -43,7 +43,8 @@ class FlexGeneratedScanner;
 
 // Error report function.
 void clidoc::BisonGeneratedParser::error(const std::string &msg) {
-  std::cerr << msg << std::endl;
+  std::cerr << "clidoc::BisonGeneratedParser::error" << std::endl
+            << msg << std::endl;
 }
 
 }  // %code
