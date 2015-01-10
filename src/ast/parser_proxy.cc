@@ -282,7 +282,7 @@ string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
 
 void ParserProxy::ParseByBison(
     const string &preprocessed_doc,
-    Doc::SharedPtr *doc_ptr,
+    Doc::SharedPtr *doc_node_ptr,
     OptionBindingRecorder *recorder_ptr) {
   // setup scanner.
   ostringstream null_ostream;
@@ -290,7 +290,7 @@ void ParserProxy::ParseByBison(
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
   // init parser.
   BisonGeneratedParser bison_parser(
-      &lexer, doc_ptr, recorder_ptr);
+      &lexer, doc_node_ptr, recorder_ptr);
   bison_parser.parse();
 
   // postprocess.
@@ -300,26 +300,35 @@ void ParserProxy::ParseByBison(
 }
 
 void ParserProxy::PostProcessedAST(
-    Doc::SharedPtr doc_ptr,
+    Doc::SharedPtr doc_node,
     OptionBindingRecorder *recorder_ptr) {
   // 1. remove duplicated nodes.
   StructureOptimizer structure_optimizer;
-  doc_ptr->Accept(&structure_optimizer);
+  doc_node->Accept(&structure_optimizer);
   // 2. process `--`.
   DoubleHyphenHandler double_dash_handler;
-  doc_ptr->Accept(&double_dash_handler);
+  doc_node->Accept(&double_dash_handler);
   // 3. handle ambiguous syntax.
   AmbiguityHandler ambiguity_handler(recorder_ptr);
-  doc_ptr->Accept(&ambiguity_handler);
+  doc_node->Accept(&ambiguity_handler);
   // 4. collect focused elements.
   FocusedElementCollector focused_element_collector(recorder_ptr);
-  doc_ptr->Accept(&ambiguity_handler);
+  doc_node->Accept(&ambiguity_handler);
   auto focused_elements = focused_element_collector.GetFocusedElement();
   // 5.TODO(huntzhan): issue #17.
   // 6. Remove bound arguments.
   auto bound_arguments = recorder_ptr->GetBoundArguments();
   BoundArgumentCleaner bound_argument_cleaner(bound_arguments);
-  doc_ptr->Accept(&bound_argument_cleaner);
+  doc_node->Accept(&bound_argument_cleaner);
+}
+
+void ParserProxy::Parse(
+    const std::string &doc,
+    Doc::SharedPtr *doc_node_ptr,
+    OptionBindingRecorder *recorder_ptr) {
+  auto preprocessed_doc = PreprocessRawDoc(doc);
+  ParseByBison(preprocessed_doc, doc_node_ptr, recorder_ptr);
+  PostProcessedAST(*doc_node_ptr, recorder_ptr);
 }
 
 }  // namespace clidoc

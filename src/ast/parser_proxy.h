@@ -59,6 +59,12 @@ class DocPreprocessor {
 };
 
 class ParserProxy {
+ public:
+  void Parse(
+      const std::string &doc,
+      Doc::SharedPtr *doc_node_ptr,
+      OptionBindingRecorder *recorder_ptr);
+
  private:
   FRIEND_TEST(ParserProxyTest, PreprocessRawDoc);
   FRIEND_TEST(OptionBindingRecorderTest, RecordBinding);
@@ -66,10 +72,10 @@ class ParserProxy {
   std::string PreprocessRawDoc(const std::string &raw_doc);
   void ParseByBison(
       const std::string &preprocessed_doc,
-      Doc::SharedPtr *doc_ptr,
+      Doc::SharedPtr *doc_node_ptr,
       OptionBindingRecorder *recorder_ptr);
   void PostProcessedAST(
-      Doc::SharedPtr doc_ptr,
+      Doc::SharedPtr doc_node,
       OptionBindingRecorder *recorder_ptr);
 };
 
