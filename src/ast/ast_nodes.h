@@ -55,6 +55,7 @@ using Command        = Terminal<TerminalType::COMMAND>;
 // Non-terminal classes.
 using Doc            = NonTerminal<NonTerminalType::DOC>;
 using LogicAnd       = NonTerminal<NonTerminalType::LOGIC_AND>;
+using LogicOr        = NonTerminal<NonTerminalType::LOGIC_OR>;
 using LogicXor       = NonTerminal<NonTerminalType::LOGIC_XOR>;
 using LogicOptional  = NonTerminal<NonTerminalType::LOGIC_OPTIONAL>;
 using LogicOneOrMore = NonTerminal<NonTerminalType::LOGIC_ONEORMORE>;
@@ -129,6 +130,7 @@ using ConcreteTerminalVistorInterface = TerminalVistorInterface<
 using ConcreteNonTerminalVistorInterface = NonTerminalVistorInterface<
   NonTerminalType::DOC,
   NonTerminalType::LOGIC_AND,
+  NonTerminalType::LOGIC_OR,
   NonTerminalType::LOGIC_XOR,
   NonTerminalType::LOGIC_OPTIONAL,
   NonTerminalType::LOGIC_ONEORMORE>;

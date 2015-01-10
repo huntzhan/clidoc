@@ -32,7 +32,7 @@ TEST(process_logic, AmbiguityHandler) {
 
   AmbiguityHandler visitor(&recorder);
   xor_1->Accept(&visitor);
-  EXPECT_EQ("LogicXor(LogicAnd(PosixOption[-o], Argument[FILE]))",
+  EXPECT_EQ("LogicXor(LogicOr(PosixOption[-o], Argument[FILE]))",
             xor_1->ToString());
 }
 

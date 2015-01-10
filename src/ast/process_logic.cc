@@ -47,8 +47,8 @@ void AmbiguityHandler::ProcessNode(
   //   argument, then the loop would be moved forward.
   //   2. `option` is the last character in `GROUPED_OPTIONS`: nothing happend.
 
-  // `-hso` -> `-h -s -o`.
-  auto logic_and = LogicAnd::Init();
+  // `-hso` -> LogicOr(`-h`, `-s`, `-o`).
+  auto logic_or = LogicOr::Init();
   string value = grouped_options_ptr->token_.value();
 
   for (auto iter = value.cbegin() + 1;  // ignore prefix `-`.
@@ -59,7 +59,7 @@ void AmbiguityHandler::ProcessNode(
     auto remain = InitToken(TerminalType::ARGUMENT,
                             string(iter + 1, value.cend()));
     // add `option`.
-    logic_and->AddChild(PosixOption::Init(option));
+    logic_or->AddChild(PosixOption::Init(option));
 
     if (!recorder_ptr_->IsRecorded(option)) {
       // `option` not recorded.
@@ -74,12 +74,12 @@ void AmbiguityHandler::ProcessNode(
       // recording option -> remain binding.
       recorder_ptr_->RecordBinding(option, remain);
       // add `remain`.
-      logic_and->AddChild(Argument::Init(remain));
+      logic_or->AddChild(Argument::Init(remain));
       break;
     }
   }
   // replace original `GroupedOptions`.
-  grouped_options_ptr->node_connection.ReplacedWith(logic_and);
+  grouped_options_ptr->node_connection.ReplacedWith(logic_or);
   // process bindings.
   recorder_ptr_->ProcessCachedBindings();
 }

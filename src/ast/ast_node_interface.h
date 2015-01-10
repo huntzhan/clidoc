@@ -32,6 +32,7 @@ enum class TerminalType {
 enum class NonTerminalType {
   // logical.
   LOGIC_AND,
+  LOGIC_OR,
   LOGIC_XOR,
   LOGIC_OPTIONAL,
   LOGIC_ONEORMORE,
@@ -56,6 +57,7 @@ const std::map<TerminalType, std::string> kTermianlClassName = {
 const std::map<NonTerminalType, std::string> kNonTermianlClassName = {
   {NonTerminalType::DOC,             "Doc"},
   {NonTerminalType::LOGIC_AND,       "LogicAnd"},
+  {NonTerminalType::LOGIC_OR,        "LogicOr"},
   {NonTerminalType::LOGIC_XOR,       "LogicXor"},
   {NonTerminalType::LOGIC_OPTIONAL,  "LogicOptional"},
   {NonTerminalType::LOGIC_ONEORMORE, "LogicOneOrMore"},
@@ -82,7 +84,7 @@ struct NodeConnection {
   void ConnectParent(NodeConnection *other);
   // by connect to the last child of parent.
   template <typename NonTerminalTypeSharedPtr>
-  void ConnectParent(NonTerminalTypeSharedPtr parent_ptr); 
+  void ConnectParent(NonTerminalTypeSharedPtr parent_ptr);
 
   // Replace this node with another node.
   template <typename NodeTypeSharedPtr>
