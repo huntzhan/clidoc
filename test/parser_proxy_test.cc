@@ -236,7 +236,6 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
       " Options:\n"
       " -h <arg 1> [default: \"42\"]\n"
       " --help=ARG-2 [DeFaUlt:\"43\"]\n";
-  std::cout << recorder.representative_option_to_property_.size() << std::endl;
   
   BuildRecord(input, &recorder);
   rop_ptr = &recorder.representative_option_to_property_[option_h];

@@ -303,12 +303,20 @@ void ParserProxy::ParseByBison(
 void ParserProxy::PostProcessedAST(
     Doc::SharedPtr doc_ptr,
     OptionBindingRecorder *option_binding_recorder_ptr) {
-  // remove duplicated nodes.
+  // 1. remove duplicated nodes.
   StructureOptimizer structure_optimizer;
   doc_ptr->Accept(&structure_optimizer);
-  // Handle ambiguous syntax.
+  // 2. process `--`.
+  DoubleHyphenHandler double_dash_handler;
+  doc_ptr->Accept(&double_dash_handler);
+  // 3. handle ambiguous syntax.
   AmbiguityHandler ambiguity_handler(option_binding_recorder_ptr);
   doc_ptr->Accept(&ambiguity_handler);
+  // 4. collect focused elements.
+  FocusedElementCollector focused_element_collector(
+      option_binding_recorder_ptr);
+  doc_ptr->Accept(&ambiguity_handler);
+  auto focused_elements = focused_element_collector.GetFocusedElement();
 }
 
 }  // namespace clidoc
