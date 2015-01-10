@@ -1,11 +1,13 @@
 
 #include <stdexcept>
 #include <string>
+#include <set>
 
 #include "ast/ast_node_interface.h"
 #include "ast/option_record.h"
 
 using std::string;
+using std::set;
 using std::logic_error;
 
 namespace clidoc {
@@ -241,6 +243,17 @@ bool OptionBindingRecorder::HasArgument(const Token &option) const {
   }
   const auto &rep_option = option_to_representative_option_.at(option);
   return !representative_option_to_property_.at(rep_option).IsEmpty();
+}
+
+set<Token> OptionBindingRecorder::GetBoundArguments() const {
+  set<Token> bound_arguments;
+  for (const auto &map_pair : representative_option_to_property_) {
+    const auto &property = map_pair.second;
+    if (property.has_option_argument_) {
+      bound_arguments.insert(property.option_argument_);
+    }
+  }
+  return bound_arguments;
 }
 
 }  // namespace clidoc

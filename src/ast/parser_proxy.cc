@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <cstddef>
 #include <iterator>
-#include <map>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -284,25 +283,25 @@ string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
 void ParserProxy::ParseByBison(
     const string &preprocessed_doc,
     Doc::SharedPtr *doc_ptr,
-    OptionBindingRecorder *option_binding_recorder_ptr) {
+    OptionBindingRecorder *recorder_ptr) {
   // setup scanner.
   ostringstream null_ostream;
   istringstream input_stream(preprocessed_doc);
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
   // init parser.
   BisonGeneratedParser bison_parser(
-      &lexer, doc_ptr, option_binding_recorder_ptr);
+      &lexer, doc_ptr, recorder_ptr);
   bison_parser.parse();
 
   // postprocess.
-  option_binding_recorder_ptr->ProcessCachedBindings();
+  recorder_ptr->ProcessCachedBindings();
   // free smart pointer cached.
   SPIStaticDataMember::FreeCache();
 }
 
 void ParserProxy::PostProcessedAST(
     Doc::SharedPtr doc_ptr,
-    OptionBindingRecorder *option_binding_recorder_ptr) {
+    OptionBindingRecorder *recorder_ptr) {
   // 1. remove duplicated nodes.
   StructureOptimizer structure_optimizer;
   doc_ptr->Accept(&structure_optimizer);
@@ -310,13 +309,17 @@ void ParserProxy::PostProcessedAST(
   DoubleHyphenHandler double_dash_handler;
   doc_ptr->Accept(&double_dash_handler);
   // 3. handle ambiguous syntax.
-  AmbiguityHandler ambiguity_handler(option_binding_recorder_ptr);
+  AmbiguityHandler ambiguity_handler(recorder_ptr);
   doc_ptr->Accept(&ambiguity_handler);
   // 4. collect focused elements.
-  FocusedElementCollector focused_element_collector(
-      option_binding_recorder_ptr);
+  FocusedElementCollector focused_element_collector(recorder_ptr);
   doc_ptr->Accept(&ambiguity_handler);
   auto focused_elements = focused_element_collector.GetFocusedElement();
+  // 5.TODO(huntzhan): issue #17.
+  // 6. Remove bound arguments.
+  auto bound_arguments = recorder_ptr->GetBoundArguments();
+  BoundArgumentCleaner bound_argument_cleaner(bound_arguments);
+  doc_ptr->Accept(&bound_argument_cleaner);
 }
 
 }  // namespace clidoc

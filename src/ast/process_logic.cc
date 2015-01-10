@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <string>
 #include <iterator>
-#include <vector>
 #include <set>
 
 #include "ast/ast_node_interface.h"
@@ -9,7 +8,6 @@
 #include "ast/token_proxy.h"
 #include "ast/process_logic.h"
 
-using std::vector;
 using std::set;
 using std::next;
 using std::string;
@@ -101,15 +99,15 @@ FocusedElementCollector::FocusedElementCollector(
     OptionBindingRecorder *recorder_ptr)
     : recorder_ptr_(recorder_ptr) {/* empty */}
 
-vector<Token> FocusedElementCollector::GetFocusedElement() {
-  vector<Token> focused_elements;
+set<Token> FocusedElementCollector::GetFocusedElement() {
+  set<Token> focused_elements;
   set<Token> bound_arguments;
   const auto &rep_to_property =
       recorder_ptr_->representative_option_to_property_;
   // include all representative options.
   for (auto iter = rep_to_property.cbegin();
        iter != rep_to_property.cend(); ++iter) {
-    focused_elements.push_back(iter->first);
+    focused_elements.insert(iter->first);
     if (!iter->second.IsEmpty()) {
       bound_arguments.insert(iter->second.option_argument_);
     }
@@ -117,7 +115,7 @@ vector<Token> FocusedElementCollector::GetFocusedElement() {
   // include unbound arguments.
   for (const auto &argument : operand_candidates_) {
     if (bound_arguments.find(argument) == bound_arguments.end()) {
-      focused_elements.push_back(argument);
+      focused_elements.insert(argument);
     }
   }
   return focused_elements;
@@ -136,7 +134,20 @@ void FocusedElementCollector::ProcessNode(GnuOption::SharedPtr node_ptr) {
 }
 
 void FocusedElementCollector::ProcessNode(Argument::SharedPtr node_ptr) {
-  operand_candidates_.push_back(node_ptr->token_);
+  operand_candidates_.insert(node_ptr->token_);
+}
+
+
+BoundArgumentCleaner::BoundArgumentCleaner(
+    const std::set<Token> &bound_arguments)
+    : bound_arguments_(bound_arguments) { /* empty */ }
+
+void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node_ptr) {
+  auto &conn = node_ptr->node_connection;
+  if (bound_arguments_.find(node_ptr->token_) != bound_arguments_.end()) {
+    // is bound argument.
+    conn.children_of_parent_ptr_->erase(conn.this_iter_);
+  }
 }
 
 }  // namespace clidoc

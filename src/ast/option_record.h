@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <set>
 #include <string>
 
 #include "ast/ast_node_interface.h"
@@ -64,6 +65,7 @@ class OptionBindingRecorder {
 
   bool IsRecorded(const Token &option) const;
   bool HasArgument(const Token &option) const;
+  std::set<Token> GetBoundArguments() const;
 
   std::map<Token, Token> option_to_representative_option_;
   std::map<Token, RepresentativeOptionProperty>

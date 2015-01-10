@@ -2,7 +2,7 @@
 #define SRC_AST_PROCESS_LOGIC_H_
 
 #include <iterator>
-#include <vector>
+#include <set>
 
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
@@ -73,7 +73,7 @@ class FocusedElementCollector : public NodeVistorInterface {
   using NodeVistorInterface::ProcessNode;
 
   explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
-  std::vector<Token> GetFocusedElement();
+  std::set<Token> GetFocusedElement();
 
   // See discussion in issue #5.
   void ProcessNode(PosixOption::SharedPtr node_ptr) override;
@@ -82,7 +82,18 @@ class FocusedElementCollector : public NodeVistorInterface {
 
  private:
   OptionBindingRecorder *recorder_ptr_;
-  std::vector<Token> operand_candidates_;
+  std::set<Token> operand_candidates_;
+};
+
+class BoundArgumentCleaner : public NodeVistorInterface {
+ public:
+  using NodeVistorInterface::ProcessNode;
+
+  explicit BoundArgumentCleaner(const std::set<Token> &bound_arguments);
+  void ProcessNode(Argument::SharedPtr node_ptr) override;
+
+ private:
+  const std::set<Token> &bound_arguments_;
 };
 
 }  // namespace clidoc

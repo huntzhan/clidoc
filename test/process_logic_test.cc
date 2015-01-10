@@ -87,7 +87,27 @@ TEST(process_logic, FocusedElementCollector) {
   auto focused_elements = visitor.GetFocusedElement();
 
   EXPECT_EQ(unsigned(3), focused_elements.size());
-  EXPECT_EQ("--output", focused_elements[0].value());
-  EXPECT_EQ("-c", focused_elements[1].value());
-  EXPECT_EQ("ARG2", focused_elements[2].value());
+  auto iter = focused_elements.begin();
+  EXPECT_EQ("--output", (iter++)->value());
+  EXPECT_EQ("-c", (iter++)->value());
+  EXPECT_EQ("ARG2", (iter++)->value()); 
+}
+
+TEST(process_logic, BoundArgumentCleaner) {
+  auto and_1 = LogicAnd::Init();
+  and_1->AddChild(PosixOption::Init("-c"));
+  and_1->AddChild(Argument::Init("ARG1"));
+  and_1->AddChild(Argument::Init("ARG2"));
+
+  OptionBindingRecorder recorder;
+  recorder.RecordBinding(
+      InitToken(TerminalType::POSIX_OPTION, "-c"),
+      InitToken(TerminalType::ARGUMENT, "ARG1"));
+  recorder.ProcessCachedBindings();
+
+  auto bound_arguments = recorder.GetBoundArguments();
+  BoundArgumentCleaner visitor(bound_arguments);
+  and_1->Accept(&visitor);
+  EXPECT_EQ("LogicAnd(PosixOption[-c], Argument[ARG2])",
+            and_1->ToString());
 }
