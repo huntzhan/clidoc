@@ -15,9 +15,11 @@ class StructureOptimizer : public NodeVistorInterface {
  public:
   using NodeVistorInterface::ProcessNode;
 
-  void ProcessNode(Doc::SharedPtr node) override;
   void ProcessNode(LogicAnd::SharedPtr node) override;
   void ProcessNode(LogicXor::SharedPtr node) override;
+  void ProcessNode(LogicOr::SharedPtr node) override;
+  void ProcessNode(LogicOptional::SharedPtr node) override;
+  void ProcessNode(LogicOneOrMore::SharedPtr node) override;
 
  private:
   // Since "The nested-name-specifier (everything to the left of the scope
@@ -106,22 +108,41 @@ void StructureOptimizer::RemoveDuplicatedNodes(
     NonTerminalTypeSharedPtr node) {
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
-  for (auto child_ptr : node->children_) {
-    child_ptr->Accept(this);
-    if (child_ptr->GetID() == node->GetID()) {
+  for (auto child : node->children_) {
+    child->Accept(this);
+    // decide expand or not.
+    bool child_is_logic_and =
+        child->GetID() == kNonTermianlClassName.at(NonTerminalType::LOGIC_AND);
+    bool child_is_logic_xor =
+        child->GetID() == kNonTermianlClassName.at(NonTerminalType::LOGIC_XOR);
+    bool child_is_logic_or =
+        child->GetID() == kNonTermianlClassName.at(NonTerminalType::LOGIC_OR);
+    bool equivalent = false;
+    // 1. equivalent if they have the same id.
+    if (node->GetID() == child->GetID()) {
+      equivalent = true;
+    }
+    // 2. when child is one of (LogicAnd, LogicXor, LogicOr), and
+    // child->GetSizeOfChildren() equals to 1, remove the child.
+    if ((child_is_logic_and || child_is_logic_xor || child_is_logic_or)
+        && child->GetSizeOfChildren() == 1) {
+      equivalent = true;
+    }
+    // canoot be accessed.
+    if (equivalent) {
       // same non-terminal nodes.
       optimized_children.insert(
           optimized_children.end(),
           children_of_child_.begin(), children_of_child_.end());
     } else {
-      optimized_children.push_back(child_ptr);
+      optimized_children.push_back(child);
     }
   }
   // make a copy of children of current node, which are accessiable to the
   // parent of current node.
   node->children_.clear();
-  for (auto child_ptr : optimized_children) {
-    node->AddChild(child_ptr);
+  for (auto child : optimized_children) {
+    node->AddChild(child);
   }
   children_of_child_ = optimized_children;
 }

@@ -15,17 +15,27 @@ using std::string;
 namespace clidoc {
 
 void StructureOptimizer::ProcessNode(
-    Doc::SharedPtr node) {
-  RemoveDuplicatedNodes(node);
-}
-
-void StructureOptimizer::ProcessNode(
     LogicAnd::SharedPtr node) {
   RemoveDuplicatedNodes(node);
 }
 
 void StructureOptimizer::ProcessNode(
     LogicXor::SharedPtr node) {
+  RemoveDuplicatedNodes(node);
+}
+
+void StructureOptimizer::ProcessNode(
+    LogicOr::SharedPtr node) {
+  RemoveDuplicatedNodes(node);
+}
+
+void StructureOptimizer::ProcessNode(
+    LogicOptional::SharedPtr node) {
+  RemoveDuplicatedNodes(node);
+}
+
+void StructureOptimizer::ProcessNode(
+    LogicOneOrMore::SharedPtr node) {
   RemoveDuplicatedNodes(node);
 }
 

@@ -289,7 +289,7 @@ namespace clidoc {
       char dummy3[sizeof(LogicAnd::WeakPtr)];
 
       // utilities
-      // or_exprs
+      // xor_exprs
       char dummy4[sizeof(LogicXor::WeakPtr)];
 
       // single_binding
@@ -844,7 +844,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         value.copy< LogicXor::WeakPtr > (other.value);
         break;
 
@@ -907,7 +907,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         value.copy< LogicXor::WeakPtr > (v);
         break;
 
@@ -1032,7 +1032,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         value.template destroy< LogicXor::WeakPtr > ();
         break;
 
@@ -1093,7 +1093,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         value.move< LogicXor::WeakPtr > (s.value);
         break;
 

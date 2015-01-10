@@ -98,7 +98,7 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 %type <LogicAnd::WeakPtr>               seqs
 %type <LogicAnd::WeakPtr>               descriptions
 %type <LogicXor::WeakPtr>               utilities
-%type <LogicXor::WeakPtr>               or_exprs
+%type <LogicXor::WeakPtr>               xor_exprs
 
 %type <WeakPtrNode>                     usage_section
 %type <WeakPtrNode>                     single_seq
@@ -150,18 +150,18 @@ utilities : utilities single_utility {
 ;
 
 
-// single_utility : K_UTILITY_DELIMITER or_exprs
+// single_utility : K_UTILITY_DELIMITER xor_exprs
 // ;
-single_utility : K_UTILITY_DELIMITER or_exprs {
+single_utility : K_UTILITY_DELIMITER xor_exprs {
   $$ = $2;
 }
 ;
 
 
-// or_exprs : or_exprs K_EXCLUSIVE_OR seqs
+// xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs
 //          | seqs
 // ;
-or_exprs : or_exprs K_EXCLUSIVE_OR seqs {
+xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs {
   $1.lock()->AddChild($3.lock());
   $$ = $1;
 }
@@ -202,20 +202,20 @@ single_seq : atom {
 ;
 
 
-// atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS
-//      | K_L_BRACKET or_exprs K_R_BRACKET
+// atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS
+//      | K_L_BRACKET xor_exprs K_R_BRACKET
 //      | posix_option_unit
 //      | gnu_option_unit
 //      | ARGUMENT
 //      | COMMAND
 //      | K_OPTIONS
 // ;
-atom : K_L_PARENTHESIS or_exprs K_R_PARENTHESIS {
+atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
   auto logic_and = LogicAnd::Init();
   logic_and->AddChild($2.lock());
   $$ = logic_and;
 }
-     | K_L_BRACKET or_exprs K_R_BRACKET {
+     | K_L_BRACKET xor_exprs K_R_BRACKET {
   auto logic_optional = LogicOptional::Init();
   logic_optional->AddChild($2.lock());
   $$ = logic_optional;

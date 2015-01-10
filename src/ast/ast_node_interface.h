@@ -1,6 +1,7 @@
 #ifndef SRC_AST_AST_NODE_INTERFACE_H_
 #define SRC_AST_AST_NODE_INTERFACE_H_
 
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -105,6 +106,8 @@ class NodeInterface {
   std::string GetIndent(const int &indent) const;
   // get the string identify CURRENT node.
   virtual std::string GetID() = 0;
+  // get the size of children. terminal type would return 0.
+  virtual std::size_t GetSizeOfChildren() = 0;
   // encode the tree structure rooted by current node as string.
   virtual std::string ToString() = 0;
   // indented version of ToString().

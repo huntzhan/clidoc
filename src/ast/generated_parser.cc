@@ -220,7 +220,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         value.move< LogicXor::WeakPtr > (that.value);
         break;
 
@@ -282,7 +282,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         value.copy< LogicXor::WeakPtr > (that.value);
         break;
 
@@ -555,7 +555,7 @@ namespace clidoc {
         break;
 
       case 27: // utilities
-      case 29: // or_exprs
+      case 29: // xor_exprs
         yylhs.value.build< LogicXor::WeakPtr > ();
         break;
 
@@ -1217,7 +1217,7 @@ namespace clidoc {
   "K_EXCLUSIVE_OR", "K_ELLIPSES", "K_USAGE_COLON", "K_OPTIONS_COLON",
   "K_DEFAULT_COLON", "K_OPTIONS", "K_UTILITY_DELIMITER",
   "K_DESC_DELIMITER", "K_DOUBLE_HYPHEN", "K_EQUAL_SIGN", "$accept", "doc",
-  "usage_section", "utilities", "single_utility", "or_exprs", "seqs",
+  "usage_section", "utilities", "single_utility", "xor_exprs", "seqs",
   "single_seq", "atom", "posix_option_unit", "gnu_option_unit",
   "options_section", "descriptions", "single_description", "default_value",
   "bindings", "single_binding", YY_NULLPTR

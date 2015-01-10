@@ -323,6 +323,8 @@ void ParserProxy::PostProcessedAST(
   auto bound_arguments = recorder_ptr->GetBoundArguments();
   BoundArgumentCleaner bound_argument_cleaner(bound_arguments);
   doc_node->Accept(&bound_argument_cleaner);
+  // 7. remove duplicated nodes again.
+  doc_node->Accept(&structure_optimizer);
 }
 
 void ParserProxy::Parse(
