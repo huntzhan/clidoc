@@ -15,25 +15,25 @@ using std::string;
 namespace clidoc {
 
 void StructureOptimizer::ProcessNode(
-    Doc::SharedPtr node_ptr) {
-  RemoveDuplicatedNodes(node_ptr);
+    Doc::SharedPtr node) {
+  RemoveDuplicatedNodes(node);
 }
 
 void StructureOptimizer::ProcessNode(
-    LogicAnd::SharedPtr node_ptr) {
-  RemoveDuplicatedNodes(node_ptr);
+    LogicAnd::SharedPtr node) {
+  RemoveDuplicatedNodes(node);
 }
 
 void StructureOptimizer::ProcessNode(
-    LogicXor::SharedPtr node_ptr) {
-  RemoveDuplicatedNodes(node_ptr);
+    LogicXor::SharedPtr node) {
+  RemoveDuplicatedNodes(node);
 }
 
 AmbiguityHandler::AmbiguityHandler(OptionBindingRecorder *recorder_ptr)
       : recorder_ptr_(recorder_ptr) {/* empty */}
 
 void AmbiguityHandler::ProcessNode(
-    GroupedOptions::SharedPtr grouped_options_ptr) {
+    GroupedOptions::SharedPtr grouped_options_node) {
   // loop over every character of `GROUPED_OPTIONS` and treat each character as
   // `POSIX_OPTION`, say `option`. If `option` is not recorded yet(not appeared
   // in `Options Section`), record it; If `option` is recorded, there are two
@@ -47,7 +47,7 @@ void AmbiguityHandler::ProcessNode(
 
   // `-hso` -> LogicOr(`-h`, `-s`, `-o`).
   auto logic_or = LogicOr::Init();
-  string value = grouped_options_ptr->token_.value();
+  string value = grouped_options_node->token_.value();
 
   for (auto iter = value.cbegin() + 1;  // ignore prefix `-`.
        iter != value.cend(); ++iter) {
@@ -77,16 +77,16 @@ void AmbiguityHandler::ProcessNode(
     }
   }
   // replace original `GroupedOptions`.
-  grouped_options_ptr->node_connection.ReplacedWith(logic_or);
+  grouped_options_node->node_connection.ReplacedWith(logic_or);
   // process bindings.
   recorder_ptr_->ProcessCachedBindings();
 }
 
 void DoubleHyphenHandler::ProcessNode(
-    KDoubleHyphen::SharedPtr double_hyphen_ptr) {
+    KDoubleHyphen::SharedPtr double_hyphen_node) {
   // change the type of all elements after `--` to `OPERAND`.
   TerminalTypeModifier<Argument> type_modifier;
-  auto &conn = double_hyphen_ptr->node_connection;
+  auto &conn = double_hyphen_node->node_connection;
   for (auto iter = next(conn.this_iter_);
        iter != conn.children_of_parent_ptr_->end(); ++iter) {
     (*iter)->Accept(&type_modifier);
@@ -121,20 +121,20 @@ set<Token> FocusedElementCollector::GetFocusedElement() {
   return focused_elements;
 }
 
-void FocusedElementCollector::ProcessNode(PosixOption::SharedPtr node_ptr) {
-  if (!recorder_ptr_->IsRecorded(node_ptr->token_)) {
-    recorder_ptr_->RecordBinding(node_ptr->token_, Token());
+void FocusedElementCollector::ProcessNode(PosixOption::SharedPtr node) {
+  if (!recorder_ptr_->IsRecorded(node->token_)) {
+    recorder_ptr_->RecordBinding(node->token_, Token());
   }
 }
 
-void FocusedElementCollector::ProcessNode(GnuOption::SharedPtr node_ptr) {
-  if (!recorder_ptr_->IsRecorded(node_ptr->token_)) {
-    recorder_ptr_->RecordBinding(node_ptr->token_, Token());
+void FocusedElementCollector::ProcessNode(GnuOption::SharedPtr node) {
+  if (!recorder_ptr_->IsRecorded(node->token_)) {
+    recorder_ptr_->RecordBinding(node->token_, Token());
   }
 }
 
-void FocusedElementCollector::ProcessNode(Argument::SharedPtr node_ptr) {
-  operand_candidates_.insert(node_ptr->token_);
+void FocusedElementCollector::ProcessNode(Argument::SharedPtr node) {
+  operand_candidates_.insert(node->token_);
 }
 
 
@@ -142,9 +142,9 @@ BoundArgumentCleaner::BoundArgumentCleaner(
     const std::set<Token> &bound_arguments)
     : bound_arguments_(bound_arguments) { /* empty */ }
 
-void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node_ptr) {
-  auto &conn = node_ptr->node_connection;
-  if (bound_arguments_.find(node_ptr->token_) != bound_arguments_.end()) {
+void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node) {
+  auto &conn = node->node_connection;
+  if (bound_arguments_.find(node->token_) != bound_arguments_.end()) {
     // is bound argument.
     conn.children_of_parent_ptr_->erase(conn.this_iter_);
   }

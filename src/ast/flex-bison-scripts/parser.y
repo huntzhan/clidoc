@@ -31,14 +31,15 @@ class FlexGeneratedScanner;
 
 #include <iostream>
 
-#include "ast/ast_nodes.h"
-#include "ast/option_record.h"
-#include "ast/generated_scanner.h"
 #include "ast/parser_proxy.h"
-#include "ast/token_proxy.h"
-
+#include "ast/generated_scanner.h"
 #undef yylex
 #define yylex lexer_ptr->lex
+
+#include "ast/ast_nodes.h"
+#include "ast/option_record.h"
+#include "ast/token_proxy.h"
+
 
 // Error report function.
 void clidoc::BisonGeneratedParser::error(const std::string &msg) {
@@ -48,8 +49,8 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 }  // %code
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
-%parse-param { clidoc::Doc::SharedPtr *doc_ptr }
-%parse-param { clidoc::OptionBindingRecorder *option_binding_recorder_ptr }
+%parse-param { clidoc::Doc::SharedPtr *doc_node_ptr }
+%parse-param { clidoc::OptionBindingRecorder *recorder_ptr }
 
 // Terminal with value.
 %token <std::string>
@@ -119,7 +120,7 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 doc : usage_section options_section {
   auto doc = Doc::Init();
   doc->AddChild($1.lock());
-  *doc_ptr = doc;
+  *doc_node_ptr = doc;
   $$ = doc;
 }
 ;
@@ -279,7 +280,7 @@ gnu_option_unit : GNU_OPTION {
 }
                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   // recording binding.
-  option_binding_recorder_ptr->RecordBinding(
+  recorder_ptr->RecordBinding(
       InitToken(TypeID::GNU_OPTION, $1),
       InitToken(TypeID::ARGUMENT, $3));
 
@@ -308,8 +309,7 @@ descriptions : descriptions single_description {  }
 // single_description : bindings default_value K_DESC_DELIMITER {  }
 // ;
 single_description : bindings default_value K_DESC_DELIMITER {
-  option_binding_recorder_ptr->RecordBinding(
-      $1.lock(), $2.lock());
+  recorder_ptr->RecordBinding($1.lock(), $2.lock());
 }
 ;
 

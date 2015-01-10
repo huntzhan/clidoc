@@ -37,7 +37,7 @@ class NonTerminal : public NodeInterface,
   std::string ToString(const int &indent) override;
   void Accept(NodeVistorInterface *visitor_ptr) override;
 
-  void AddChild(SharedPtrNode node_ptr);
+  void AddChild(SharedPtrNode node);
   // Container of symbols.
   SharedPtrNodeContainer children_;
 };
@@ -94,7 +94,7 @@ struct TerminalVistorInterface<T, RestType...>
   using TerminalVistorInterface<RestType...>::ProcessNode;
 
   // interface for Terminal<T>::SharedPtr.
-  virtual void ProcessNode(typename Terminal<T>::SharedPtr node_ptr) {
+  virtual void ProcessNode(typename Terminal<T>::SharedPtr node) {
     // empty.
   }
 };
@@ -106,9 +106,9 @@ struct NonTerminalVistorInterface<T, RestType...>
   using NonTerminalVistorInterface<RestType...>::ProcessNode;
 
   // interface for NonTerminal<T>::SharedPtr.
-  virtual void ProcessNode(typename NonTerminal<T>::SharedPtr node_ptr) {
+  virtual void ProcessNode(typename NonTerminal<T>::SharedPtr node) {
     // Apply vistor to children.
-    auto cache_children = node_ptr->children_;
+    auto cache_children = node->children_;
     for (auto child_ptr : cache_children) {
       child_ptr->Accept(dynamic_cast<NodeVistorInterface *>(this));
     }
@@ -220,10 +220,10 @@ void NonTerminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
 }
 
 template <NonTerminalType T>
-void NonTerminal<T>::AddChild(SharedPtrNode node_ptr) {
-  children_.push_back(node_ptr);
+void NonTerminal<T>::AddChild(SharedPtrNode node) {
+  children_.push_back(node);
   // make connection.
-  node_ptr->node_connection.ConnectParent(this->shared_from_this());
+  node->node_connection.ConnectParent(this->shared_from_this());
 }
 
 }  // namespace clidoc

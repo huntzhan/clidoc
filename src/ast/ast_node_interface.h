@@ -84,7 +84,7 @@ struct NodeConnection {
   void ConnectParent(NodeConnection *other);
   // by connect to the last child of parent.
   template <typename NonTerminalTypeSharedPtr>
-  void ConnectParent(NonTerminalTypeSharedPtr parent_ptr);
+  void ConnectParent(NonTerminalTypeSharedPtr parent_node);
 
   // Replace this node with another node.
   template <typename NodeTypeSharedPtr>
@@ -162,9 +162,9 @@ inline void NodeConnection::ConnectParent(NodeConnection *other) {
 }
 
 template <typename NonTerminalTypeSharedPtr>
-void NodeConnection::ConnectParent(NonTerminalTypeSharedPtr parent_ptr) {
-  ConnectParent(std::prev(parent_ptr->children_.end()),
-                &parent_ptr->children_);
+void NodeConnection::ConnectParent(NonTerminalTypeSharedPtr parent_node) {
+  ConnectParent(std::prev(parent_node->children_.end()),
+                &parent_node->children_);
 }
 
 template <typename NodeTypeSharedPtr>

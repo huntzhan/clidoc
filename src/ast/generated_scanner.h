@@ -18,12 +18,13 @@ namespace clidoc {
 
 class FlexGeneratedScanner : public yyFlexLexer {
  public:
-  FlexGeneratedScanner(std::istream *arg_yyin = 0,
-                       std::ostream *arg_yyout = 0)
-      : yyFlexLexer(arg_yyin, arg_yyout) { /* empty */ }
-
+  FlexGeneratedScanner(std::istream *arg_yyin, std::ostream *arg_yyout);
   BisonGeneratedParser::symbol_type lex();
 };
+
+inline FlexGeneratedScanner::FlexGeneratedScanner(
+    std::istream *arg_yyin, std::ostream *arg_yyout)
+    : yyFlexLexer(arg_yyin, arg_yyout) { /* empty */ }
 
 }  // namespace clidoc
 

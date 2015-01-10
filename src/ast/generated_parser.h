@@ -551,7 +551,7 @@ namespace clidoc {
 
 
     /// Build a parser object.
-    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_ptr_yyarg, clidoc::OptionBindingRecorder *option_binding_recorder_ptr_yyarg);
+    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_node_ptr_yyarg, clidoc::OptionBindingRecorder *recorder_ptr_yyarg);
     virtual ~BisonGeneratedParser ();
 
     /// Parse.
@@ -757,8 +757,8 @@ namespace clidoc {
 
     // User arguments.
     clidoc::FlexGeneratedScanner *lexer_ptr;
-    clidoc::Doc::SharedPtr *doc_ptr;
-    clidoc::OptionBindingRecorder *option_binding_recorder_ptr;
+    clidoc::Doc::SharedPtr *doc_node_ptr;
+    clidoc::OptionBindingRecorder *recorder_ptr;
   };
 
   // Symbol number corresponding to token number t.

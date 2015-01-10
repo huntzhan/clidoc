@@ -26,7 +26,7 @@ class OptionBinding : public SmartPtrInterface<OptionBinding> {
 class OptionBindingContainer
     : public SmartPtrInterface<OptionBindingContainer> {
  public:
-  void AddChild(OptionBinding::SharedPtr node_ptr);
+  void AddChild(OptionBinding::SharedPtr node);
   std::vector<OptionBinding::SharedPtr> children_;
 };
 
@@ -55,7 +55,7 @@ struct RepresentativeOptionProperty {
 class OptionBindingRecorder {
  public:
   void RecordBinding(
-      OptionBindingContainer::SharedPtr container_ptr,
+      OptionBindingContainer::SharedPtr node_container,
       DefaultValue::SharedPtr default_value_ptr);
   // `RecordBinding(const Token &option, const Token &option_argument)` do
   // nothing but record the token pairs in cache. `ProcessCachedBindings` must
@@ -73,10 +73,10 @@ class OptionBindingRecorder {
 
  private:
   Token GetRepresentativeOption(
-      OptionBindingContainer::SharedPtr container_ptr);
+      OptionBindingContainer::SharedPtr node_container);
   Token GetBoundOptionArgument(
       const Token &representative_option,
-      OptionBindingContainer::SharedPtr container_ptr);
+      OptionBindingContainer::SharedPtr node_container);
   void CreateRepresentativeOptionProperty(
       const Token &representative_option,
       const Token &bound_option_argument,

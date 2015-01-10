@@ -20,8 +20,8 @@ OptionBinding::OptionBinding(const Token &token_option,
     : token_option_(token_option),
       token_option_argument_(token_optin_argument) { /* empty */ }
 
-void OptionBindingContainer::AddChild(OptionBinding::SharedPtr node_ptr) {
-    children_.push_back(node_ptr);
+void OptionBindingContainer::AddChild(OptionBinding::SharedPtr node) {
+    children_.push_back(node);
 }
 
 DefaultValue::DefaultValue(const Token &default_value)
@@ -57,15 +57,15 @@ void RepresentativeOptionProperty::set_default_value(
 }
 
 Token OptionBindingRecorder::GetRepresentativeOption(
-    OptionBindingContainer::SharedPtr container_ptr) {
-  if (container_ptr->children_.empty()) {
+    OptionBindingContainer::SharedPtr node_container) {
+  if (node_container->children_.empty()) {
     throw logic_error("GetRepresentativeOption");
   }
   // Get `representative_option`. If no `representative_option` is found in
   // `option_to_representative_option_`, then the first GNU_OPTION would be
   // selected as `representative_option`.
   const Token *representative_option_ptr = nullptr;
-  for (auto binding_ptr : container_ptr->children_) {
+  for (auto binding_ptr : node_container->children_) {
     const Token &option = binding_ptr->token_option_;
     // catch first GNU_OPTION.
     if (option.type() == TerminalType::GNU_OPTION
@@ -83,7 +83,7 @@ Token OptionBindingRecorder::GetRepresentativeOption(
   if (representative_option_ptr == nullptr) {
     // there is no GNU_OPTION, and no recorded bindings.
     representative_option_ptr =
-        &container_ptr->children_.front()  // first OptionBinding.
+        &node_container->children_.front()  // first OptionBinding.
                       ->token_option_;     // token.
   }
   return Token(*representative_option_ptr);
@@ -91,10 +91,10 @@ Token OptionBindingRecorder::GetRepresentativeOption(
 
 Token OptionBindingRecorder::GetBoundOptionArgument(
     const Token &representative_option,
-    OptionBindingContainer::SharedPtr container_ptr) {
+    OptionBindingContainer::SharedPtr node_container) {
   // fill `option_to_representative_option_` and extract `option_argument`.
   const Token *option_argument_ptr = nullptr;
-  for (auto binding_ptr : container_ptr->children_) {
+  for (auto binding_ptr : node_container->children_) {
     const Token &option = binding_ptr->token_option_;
     const Token &option_argument = binding_ptr->token_option_argument_;
     // create binding.
@@ -166,12 +166,12 @@ void OptionBindingRecorder::UpdateRepresentativeOptionProperty(
 }
 
 void OptionBindingRecorder::RecordBinding(
-    OptionBindingContainer::SharedPtr container_ptr,
+    OptionBindingContainer::SharedPtr node_container,
     DefaultValue::SharedPtr default_value_ptr) {
 
-  Token representative_option = GetRepresentativeOption(container_ptr);
+  Token representative_option = GetRepresentativeOption(node_container);
   Token bound_option_argument = GetBoundOptionArgument(
-      representative_option, container_ptr);
+      representative_option, node_container);
 
   // fill `representative_option_to_property_`.
   auto pos_iter =
