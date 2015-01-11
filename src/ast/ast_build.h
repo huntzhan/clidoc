@@ -14,7 +14,7 @@ namespace clidoc {
 // 2. Collect necessary information for code gen procedure.
 struct CodeGenInfo {
   void Prepare(const std::string &raw_doc);
-  
+
   Doc::SharedPtr doc_node;
   OptionBindingRecorder recorder;
   std::set<Token> focused_bound_options;

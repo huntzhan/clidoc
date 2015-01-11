@@ -11,25 +11,13 @@
 
 namespace clidoc {
 
-// class for `DoubleHyphenHandler`.
 template <typename TargetType>
-class NodeTypeModifier : public NodeVistorInterface {
- public:
-  using NodeVistorInterface::ProcessNode;
-
+struct NodeTypeModifier {
   // Could be invoked other visitors.
   template <typename TerminalTypeSharedPtr>
   static void ChangeTerminalType(TerminalTypeSharedPtr node);
   template <typename NonTerminalTypeSharedPtr>
   static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
-
-  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
-  void ProcessNode(KOptions::SharedPtr node) override;
-  void ProcessNode(PosixOption::SharedPtr node) override;
-  void ProcessNode(GroupedOptions::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
 };
 
 class StructureOptimizer : public NodeVistorInterface {
@@ -43,13 +31,28 @@ class StructureOptimizer : public NodeVistorInterface {
   void ProcessNode(LogicOneOrMore::SharedPtr node) override;
 
  private:
-  // Since "The nested-name-specifier (everything to the left of the scope
-  // resolution operator ::) of a type that was specified using a
-  // qualified-id." is one of "Non-deduced contexts",
-  // `NonTerminalType<T>::SharedPtr` could not be the function parameter.
+  template <typename NodeTypeOfParent, typename NodeTypeOfChild>
+  bool CanRemoveChild(NodeTypeOfParent parent_node,
+                      NodeTypeOfChild child_node);
+
   template <typename NonTerminalTypeSharedPtr>
   void RemoveDuplicatedNodes(NonTerminalTypeSharedPtr node);
   SharedPtrNodeContainer children_of_child_;
+};
+
+// class for `DoubleHyphenHandler`.
+template <typename TargetType>
+class TerminalTypeModifier : public NodeVistorInterface {
+ public:
+  using NodeVistorInterface::ProcessNode;
+
+  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
+  void ProcessNode(KOptions::SharedPtr node) override;
+  void ProcessNode(PosixOption::SharedPtr node) override;
+  void ProcessNode(GroupedOptions::SharedPtr node) override;
+  void ProcessNode(GnuOption::SharedPtr node) override;
+  void ProcessNode(Argument::SharedPtr node) override;
+  void ProcessNode(Command::SharedPtr node) override;
 };
 
 class DoubleHyphenHandler : public NodeVistorInterface {
@@ -104,46 +107,56 @@ class BoundArgumentCleaner : public NodeVistorInterface {
 
 namespace clidoc {
 
+template <typename NodeTypeOfParent, typename NodeTypeOfChild>
+bool StructureOptimizer::CanRemoveChild(
+    NodeTypeOfParent parent_node,
+    NodeTypeOfChild child_node) {
+  const auto &logic_and_name =
+      kNonTermianlClassName.at(NonTerminalType::LOGIC_AND);
+  const auto &logic_xor_name =
+      kNonTermianlClassName.at(NonTerminalType::LOGIC_XOR);
+  const auto &logic_or_name =
+      kNonTermianlClassName.at(NonTerminalType::LOGIC_OR);
+  // decide expand or not.
+  bool child_is_logic_and = child_node->GetID() == logic_and_name;
+  bool child_is_logic_xor = child_node->GetID() == logic_xor_name;
+  bool child_is_logic_or = child_node->GetID() == logic_or_name;
+
+  bool equivalent = false;
+  // 1. equivalent if they have the same id.
+  if (parent_node->GetID() == child_node->GetID()) {
+    equivalent = true;
+  }
+  // 2. when child_node is one of (`LogicAnd`, `LogicXor`, `LogicOr`), and
+  // child_node->GetSizeOfChildren() equals to 1, remove the child_node.
+  if ((child_is_logic_and || child_is_logic_xor || child_is_logic_or)
+      && child_node->GetSizeOfChildren() == 1) {
+    equivalent = true;
+  }
+  return equivalent;
+}
+
 template <typename NonTerminalTypeSharedPtr>
 void StructureOptimizer::RemoveDuplicatedNodes(
     NonTerminalTypeSharedPtr node) {
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
-  for (auto child : node->children_) {
-    child->Accept(this);
-    // decide expand or not.
-    bool child_is_logic_and =
-        child->GetID() == kNonTermianlClassName.at(NonTerminalType::LOGIC_AND);
-    bool child_is_logic_xor =
-        child->GetID() == kNonTermianlClassName.at(NonTerminalType::LOGIC_XOR);
-    bool child_is_logic_or =
-        child->GetID() == kNonTermianlClassName.at(NonTerminalType::LOGIC_OR);
-    bool equivalent = false;
-    // 1. equivalent if they have the same id.
-    if (node->GetID() == child->GetID()) {
-      equivalent = true;
-    }
-    // 2. when child is one of (`LogicAnd`, `LogicXor`, `LogicOr`), and
-    // child->GetSizeOfChildren() equals to 1, remove the child.
-    if ((child_is_logic_and || child_is_logic_xor || child_is_logic_or)
-        && child->GetSizeOfChildren() == 1) {
-      equivalent = true;
-    }
-    // remove non-terminal based on `equivalent`.
-    if (equivalent) {
+  for (auto child_node : node->children_) {
+    child_node->Accept(this);
+    if (CanRemoveChild(node, child_node)) {
       // same non-terminal nodes.
       optimized_children.insert(
           optimized_children.end(),
           children_of_child_.begin(), children_of_child_.end());
     } else {
-      optimized_children.push_back(child);
+      optimized_children.push_back(child_node);
     }
   }
   // make a copy of children of current node, which are accessiable to the
   // parent of current node.
   node->children_.clear();
-  for (auto child : optimized_children) {
-    node->AddChild(child);
+  for (auto child_node : optimized_children) {
+    node->AddChild(child_node);
   }
   children_of_child_ = optimized_children;
 }
@@ -168,45 +181,45 @@ void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     KDoubleHyphen::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     KOptions::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     PosixOption::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     GroupedOptions::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     GnuOption::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     Argument::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void NodeTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     Command::SharedPtr node) {
-  ChangeTerminalType(node);
+  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 }  // namespace clidoc

@@ -35,13 +35,13 @@ TEST(process_logic, AmbiguityHandler) {
             xor_1->ToString());
 }
 
-TEST(process_logic, NodeTypeModifier) {
+TEST(process_logic, TerminalTypeModifier) {
   auto and_1 = LogicAnd::Init();
   and_1->AddChild(PosixOption::Init("-c"));
   and_1->AddChild(Command::Init(">whatever<"));
   and_1->AddChild(GnuOption::Init("--long"));
 
-  NodeTypeModifier<Argument> type_modifier;
+  TerminalTypeModifier<Argument> type_modifier;
   and_1->Accept(&type_modifier);
 
   EXPECT_EQ("LogicAnd("

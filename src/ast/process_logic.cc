@@ -102,7 +102,7 @@ void AmbiguityHandler::ProcessNode(
 void DoubleHyphenHandler::ProcessNode(
     KDoubleHyphen::SharedPtr double_hyphen_node) {
   // change the type of all elements after `--` to `OPERAND`.
-  NodeTypeModifier<Argument> type_modifier;
+  TerminalTypeModifier<Argument> type_modifier;
   auto &conn = double_hyphen_node->node_connection;
   for (auto iter = next(conn.this_iter_);
        iter != conn.children_of_parent_ptr_->end(); ++iter) {

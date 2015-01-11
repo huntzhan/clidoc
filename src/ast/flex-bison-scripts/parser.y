@@ -354,11 +354,11 @@ single_binding : POSIX_OPTION {
 }
                | GNU_OPTION ARGUMENT {
   $$ = OptionBinding::Init(Token(TerminalType::GNU_OPTION, $1),
-                                 Token(TerminalType::ARGUMENT, $2));
+                           Token(TerminalType::ARGUMENT, $2));
 }
                | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   $$ = OptionBinding::Init(Token(TerminalType::GNU_OPTION, $1),
-                                 Token(TerminalType::ARGUMENT, $3));
+                           Token(TerminalType::ARGUMENT, $3));
 }
 ;
 
