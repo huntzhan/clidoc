@@ -745,7 +745,7 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 46,     ///< Last index in yytable_.
+      yylast_ = 44,     ///< Last index in yytable_.
       yynnts_ = 17,  ///< Number of nonterminal symbols.
       yyempty_ = -2,
       yyfinal_ = 7, ///< Termination state number.

@@ -209,6 +209,7 @@ single_seq : atom {
 //      | ARGUMENT
 //      | COMMAND
 //      | K_OPTIONS
+//      | K_DOUBLE_HYPHEN
 // ;
 atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
   auto logic_and = LogicAnd::Init();
@@ -245,6 +246,13 @@ atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
       KOptions::Init(InitToken(TypeID::K_OPTIONS, ""));
   auto logic_and = LogicAnd::Init();
   logic_and->AddChild(k_options);
+  $$ = logic_and;
+}
+     | K_DOUBLE_HYPHEN {
+  auto k_double_hyphen =
+      KDoubleHyphen::Init(InitToken(TypeID::K_DOUBLE_HYPHEN, ""));
+  auto logic_and = LogicAnd::Init();
+  logic_and->AddChild(k_double_hyphen);
   $$ = logic_and;
 }
 ;

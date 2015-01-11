@@ -252,7 +252,7 @@ TEST(ParserProxyTest, Parse) {
   string input =
 R"doc(
 Usage:
-  naval_fate.py -abc
+  naval_fate.py -abc -- --whatever
   naval_fate.py ship new <name>...
   naval_fate.py ship <name> move <x> <y> [--speed=<kn>]
   naval_fate.py ship shoot <x> <y>
@@ -282,6 +282,7 @@ Options:
   EXPECT_EQ("--moored",   (iter++)->value());
   EXPECT_EQ("--speed",    (iter++)->value());
   EXPECT_EQ("--version",  (iter++)->value());
+  EXPECT_EQ("--whatever", (iter++)->value());
   EXPECT_EQ("-a",         (iter++)->value());
   EXPECT_EQ("<name>",     (iter++)->value());
   EXPECT_EQ("<x>",        (iter++)->value());
