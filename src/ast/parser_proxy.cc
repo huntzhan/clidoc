@@ -263,7 +263,7 @@ void DocPreprocessor::ExtractAndProcessOptionsSection() {
   }
 }
 
-string DocPreprocessor::PreprocessRawDoc(const string &raw_doc) {
+string DocPreprocessor::PreprocessRawDocForParsing(const string &raw_doc) {
   text_ = raw_doc;
   // remove string.
   RemoveComment();
@@ -277,9 +277,14 @@ string DocPreprocessor::PreprocessRawDoc(const string &raw_doc) {
   return text_;
 }
 
+string DocPreprocessor::PreprocessRawDocForCodeGen(const string &raw_doc) {
+  regex pattern("#[ \t]*");  // Replace # and following space or tab.
+  return regex_replace(text_, pattern, "");
+}
+
 string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
   DocPreprocessor preprocessor;
-  return preprocessor.PreprocessRawDoc(raw_doc);
+  return preprocessor.PreprocessRawDocForParsing(raw_doc);
 }
 
 void ParserProxy::ParseByBison(

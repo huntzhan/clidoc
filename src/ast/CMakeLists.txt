@@ -6,6 +6,7 @@ add_library (parser_proxy               parser_proxy.cc)
 add_library (token_proxy                token_proxy.cc)
 add_library (process_logic              process_logic.cc)
 add_library (option_record              option_record.cc)
+add_library (ast_build                  ast_build.cc)
 
 # ignore all warning, might exists a better way to do this.
 set_target_properties(
@@ -16,5 +17,6 @@ set_target_properties(
 target_link_libraries (
   generated_parser
   smart_ptr_interface token_proxy generated_scanner_for_doc)
-target_link_libraries (parser_proxy generated_parser)
 target_link_libraries (process_logic token_proxy parser_proxy)
+target_link_libraries (parser_proxy generated_parser)
+target_link_libraries (ast_build parser_proxy)

@@ -14,7 +14,8 @@ namespace clidoc {
 
 class DocPreprocessor {
  public:
-  std::string PreprocessRawDoc(const std::string &raw_doc);
+  std::string PreprocessRawDocForParsing(const std::string &raw_doc);
+  std::string PreprocessRawDocForCodeGen(const std::string &raw_doc);
 
  private:
   // gtest related.
