@@ -36,13 +36,13 @@ TEST(process_logic, AmbiguityHandler) {
             xor_1->ToString());
 }
 
-TEST(process_logic, TerminalTypeModifier) {
+TEST(process_logic, NodeTypeModifier) {
   auto and_1 = LogicAnd::Init();
   and_1->AddChild(PosixOption::Init("-c"));
   and_1->AddChild(Command::Init(">whatever<"));
   and_1->AddChild(GnuOption::Init("--long"));
 
-  TerminalTypeModifier<Argument> type_modifier;
+  NodeTypeModifier<Argument> type_modifier;
   and_1->Accept(&type_modifier);
 
   EXPECT_EQ("LogicAnd("
@@ -86,11 +86,12 @@ TEST(process_logic, FocusedElementCollector) {
   and_1->Accept(&visitor);
   auto focused_elements = visitor.GetFocusedElement();
 
-  EXPECT_EQ(unsigned(3), focused_elements.size());
+  EXPECT_EQ(3u, focused_elements.size());
   auto iter = focused_elements.begin();
   EXPECT_EQ("--output", (iter++)->value());
   EXPECT_EQ("-c", (iter++)->value());
   EXPECT_EQ("ARG2", (iter++)->value()); 
+  EXPECT_EQ(focused_elements.end(), iter); 
 }
 
 TEST(process_logic, BoundArgumentCleaner) {

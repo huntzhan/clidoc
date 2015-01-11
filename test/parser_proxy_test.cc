@@ -293,6 +293,7 @@ Options:
   EXPECT_EQ("set",        (iter++)->value());
   EXPECT_EQ("ship",       (iter++)->value());
   EXPECT_EQ("shoot",      (iter++)->value());
+  EXPECT_EQ(iter, focused_elements.end());
 }
 
 }  // namespace clidoc

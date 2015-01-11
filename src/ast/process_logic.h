@@ -11,6 +11,27 @@
 
 namespace clidoc {
 
+// class for `DoubleHyphenHandler`.
+template <typename TargetType>
+class NodeTypeModifier : public NodeVistorInterface {
+ public:
+  using NodeVistorInterface::ProcessNode;
+
+  // Could be invoked other visitors.
+  template <typename TerminalTypeSharedPtr>
+  static void ChangeTerminalType(TerminalTypeSharedPtr node);
+  template <typename NonTerminalTypeSharedPtr>
+  static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
+
+  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
+  void ProcessNode(KOptions::SharedPtr node) override;
+  void ProcessNode(PosixOption::SharedPtr node) override;
+  void ProcessNode(GroupedOptions::SharedPtr node) override;
+  void ProcessNode(GnuOption::SharedPtr node) override;
+  void ProcessNode(Argument::SharedPtr node) override;
+  void ProcessNode(Command::SharedPtr node) override;
+};
+
 class StructureOptimizer : public NodeVistorInterface {
  public:
   using NodeVistorInterface::ProcessNode;
@@ -30,26 +51,6 @@ class StructureOptimizer : public NodeVistorInterface {
   void RemoveDuplicatedNodes(NonTerminalTypeSharedPtr node);
   SharedPtrNodeContainer children_of_child_;
 };
-
-// class for `DoubleHyphenHandler`.
-template <typename TargetType>
-class TerminalTypeModifier : public NodeVistorInterface {
- public:
-  using NodeVistorInterface::ProcessNode;
-
-  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
-  void ProcessNode(KOptions::SharedPtr node) override;
-  void ProcessNode(PosixOption::SharedPtr node) override;
-  void ProcessNode(GroupedOptions::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
-
- private:
-  template <typename TerminalTypeSharedPtr>
-  void ChangeType(TerminalTypeSharedPtr node);
-};
-
 
 class DoubleHyphenHandler : public NodeVistorInterface {
  public:
@@ -122,13 +123,13 @@ void StructureOptimizer::RemoveDuplicatedNodes(
     if (node->GetID() == child->GetID()) {
       equivalent = true;
     }
-    // 2. when child is one of (LogicAnd, LogicXor, LogicOr), and
+    // 2. when child is one of (`LogicAnd`, `LogicXor`, `LogicOr`), and
     // child->GetSizeOfChildren() equals to 1, remove the child.
     if ((child_is_logic_and || child_is_logic_xor || child_is_logic_or)
         && child->GetSizeOfChildren() == 1) {
       equivalent = true;
     }
-    // canoot be accessed.
+    // remove non-terminal based on `equivalent`.
     if (equivalent) {
       // same non-terminal nodes.
       optimized_children.insert(
@@ -149,52 +150,63 @@ void StructureOptimizer::RemoveDuplicatedNodes(
 
 template <typename TargetType>
 template <typename TerminalTypeSharedPtr>
-void TerminalTypeModifier<TargetType>::ChangeType(
+void NodeTypeModifier<TargetType>::ChangeTerminalType(
     TerminalTypeSharedPtr node) {
   auto new_node = TargetType::Init(node->token_.value());
   node->node_connection.ReplacedWith(new_node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+template <typename NonTerminalTypeSharedPtr>
+void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
+    NonTerminalTypeSharedPtr node) {
+  auto new_node = TargetType::Init();
+  for (auto child : node->children_) {
+    new_node->AddChild(child);
+  }
+  node->node_connection.ReplacedWith(new_node);
+}
+
+template <typename TargetType>
+void NodeTypeModifier<TargetType>::ProcessNode(
     KDoubleHyphen::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void NodeTypeModifier<TargetType>::ProcessNode(
     KOptions::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void NodeTypeModifier<TargetType>::ProcessNode(
     PosixOption::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void NodeTypeModifier<TargetType>::ProcessNode(
     GroupedOptions::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void NodeTypeModifier<TargetType>::ProcessNode(
     GnuOption::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void NodeTypeModifier<TargetType>::ProcessNode(
     Argument::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void NodeTypeModifier<TargetType>::ProcessNode(
     Command::SharedPtr node) {
-  ChangeType(node);
+  ChangeTerminalType(node);
 }
 
 }  // namespace clidoc

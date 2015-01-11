@@ -22,11 +22,19 @@ void StructureOptimizer::ProcessNode(
 void StructureOptimizer::ProcessNode(
     LogicXor::SharedPtr node) {
   RemoveDuplicatedNodes(node);
+  // transfrom to `LogicAnd` when there's only one child.
+  if (node->GetSizeOfChildren() == 1) {
+    NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
+  }
 }
 
 void StructureOptimizer::ProcessNode(
     LogicOr::SharedPtr node) {
   RemoveDuplicatedNodes(node);
+  // transfrom to `LogicAnd` when there's only one child.
+  if (node->GetSizeOfChildren() == 1) {
+    NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
+  }
 }
 
 void StructureOptimizer::ProcessNode(
@@ -95,7 +103,7 @@ void AmbiguityHandler::ProcessNode(
 void DoubleHyphenHandler::ProcessNode(
     KDoubleHyphen::SharedPtr double_hyphen_node) {
   // change the type of all elements after `--` to `OPERAND`.
-  TerminalTypeModifier<Argument> type_modifier;
+  NodeTypeModifier<Argument> type_modifier;
   auto &conn = double_hyphen_node->node_connection;
   for (auto iter = next(conn.this_iter_);
        iter != conn.children_of_parent_ptr_->end(); ++iter) {
