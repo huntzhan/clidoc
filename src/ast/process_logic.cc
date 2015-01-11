@@ -5,7 +5,6 @@
 
 #include "ast/ast_node_interface.h"
 #include "ast/option_record.h"
-#include "ast/token_proxy.h"
 #include "ast/process_logic.h"
 
 using std::set;
@@ -70,10 +69,10 @@ void AmbiguityHandler::ProcessNode(
   for (auto iter = value.cbegin() + 1;  // ignore prefix `-`.
        iter != value.cend(); ++iter) {
     // build `option` and `remain`.
-    auto option = InitToken(TerminalType::POSIX_OPTION,
-                            "-" + string(iter, iter + 1));
-    auto remain = InitToken(TerminalType::ARGUMENT,
-                            string(iter + 1, value.cend()));
+    auto option = Token(TerminalType::POSIX_OPTION,
+                        "-" + string(iter, iter + 1));
+    auto remain = Token(TerminalType::ARGUMENT,
+                        string(iter + 1, value.cend()));
     // add `option`.
     logic_or->AddChild(PosixOption::Init(option));
 

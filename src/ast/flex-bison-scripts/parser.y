@@ -29,22 +29,57 @@ class FlexGeneratedScanner;
 // code inserted in implementation.
 %code {
 
-#include <iostream>
+#include <stdexcept>
+#include <memory>
 
 #include "ast/parser_proxy.h"
 #include "ast/generated_scanner.h"
+#include "ast/ast_nodes.h"
+#include "ast/option_record.h"
+
 #undef yylex
 #define yylex lexer_ptr->lex
 
-#include "ast/ast_nodes.h"
-#include "ast/option_record.h"
-#include "ast/token_proxy.h"
-
-
 // Error report function.
 void clidoc::BisonGeneratedParser::error(const std::string &msg) {
-  std::cerr << "clidoc::BisonGeneratedParser::error" << std::endl
-            << msg << std::endl;
+  throw std::logic_error("clidoc::BisonGeneratedParser::error");
+}
+
+// functions that faciliate node building.
+template <typename WeakNonTerminalType>
+void NonTerminalAddChild(WeakNonTerminalType parent_node) {
+  /* end of recursion. */
+}
+
+template <typename WeakNonTerminalType,
+          typename WeakNodeType, typename... OtherWeakNodeTypes>
+void NonTerminalAddChild(
+    WeakNonTerminalType parent_node,
+    std::weak_ptr<WeakNodeType> child_node,
+    std::weak_ptr<OtherWeakNodeTypes>... other_nodes) {
+  // child_node is std::weak_ptr<...>.
+  parent_node.lock()->AddChild(child_node.lock());
+  NonTerminalAddChild(parent_node, other_nodes...);
+}
+
+template <typename WeakNonTerminalType,
+          typename NodeType, typename... OtherNodeTypes>
+void NonTerminalAddChild(
+    WeakNonTerminalType parent_node,
+    std::shared_ptr<NodeType> child_node,
+    std::shared_ptr<OtherNodeTypes>... other_nodes) {
+  // child_node is std::shared_ptr<...>.
+  parent_node.lock()->AddChild(child_node);
+  NonTerminalAddChild(parent_node, other_nodes...);
+}
+
+template <typename NonTerminalType, typename... WeakNodeTypes>
+typename NonTerminalType::SharedPtr
+BuildNonTerminal(WeakNodeTypes... child_nodes) {
+  auto parent_node = NonTerminalType::Init();
+  typename NonTerminalType::WeakPtr weak_parent_node = parent_node;
+  NonTerminalAddChild(weak_parent_node, child_nodes...);
+  return parent_node;
 }
 
 }  // %code
@@ -119,8 +154,7 @@ void clidoc::BisonGeneratedParser::error(const std::string &msg) {
 // doc : usage_section options_section
 // ;
 doc : usage_section options_section {
-  auto doc = Doc::Init();
-  doc->AddChild($1.lock());
+  auto doc = BuildNonTerminal<Doc>($1);
   *doc_node_ptr = doc;
   $$ = doc;
 }
@@ -139,13 +173,11 @@ usage_section : K_USAGE_COLON utilities {
 //           | single_utility
 // ;
 utilities : utilities single_utility {
-  $1.lock()->AddChild($2.lock());
+  NonTerminalAddChild($1, $2);
   $$ = $1;
 }
           | single_utility {
-  auto logic_xor = LogicXor::Init();
-  logic_xor->AddChild($1.lock());
-  $$ = logic_xor;
+  $$ = BuildNonTerminal<LogicXor>($1);
 }
 ;
 
@@ -159,16 +191,14 @@ single_utility : K_UTILITY_DELIMITER xor_exprs {
 
 
 // xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs
-//          | seqs
+//           | seqs
 // ;
 xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs {
-  $1.lock()->AddChild($3.lock());
+  NonTerminalAddChild($1, $3);
   $$ = $1;
 }
          | seqs {
-  auto logic_xor = LogicXor::Init();
-  logic_xor->AddChild($1.lock());
-  $$ = logic_xor;
+  $$ = BuildNonTerminal<LogicXor>($1);
 }
 ;
 
@@ -177,13 +207,11 @@ xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs {
 //      | single_seq
 // ;
 seqs : seqs single_seq {
-  $1.lock()->AddChild($2.lock());
+  NonTerminalAddChild($1, $2);
   $$ = $1;
 }
      | single_seq {
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild($1.lock());
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>($1);
 }
 ;
 
@@ -195,9 +223,7 @@ single_seq : atom {
   $$ = $1;
 }
            | atom K_ELLIPSES {
-  auto logic_one_or_more = LogicOneOrMore::Init();
-  logic_one_or_more->AddChild($1.lock());
-  $$ = logic_one_or_more;
+  $$ = BuildNonTerminal<LogicOneOrMore>($1);
 }
 ;
 
@@ -212,14 +238,10 @@ single_seq : atom {
 //      | K_DOUBLE_HYPHEN
 // ;
 atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild($2.lock());
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>($2);
 }
      | K_L_BRACKET xor_exprs K_R_BRACKET {
-  auto logic_optional = LogicOptional::Init();
-  logic_optional->AddChild($2.lock());
-  $$ = logic_optional;
+  $$ = BuildNonTerminal<LogicOptional>($2);
 }
      | posix_option_unit {
   $$ = $1;
@@ -228,32 +250,16 @@ atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
   $$ = $1;
 }
      | ARGUMENT {
-  auto argument =
-      Argument::Init(InitToken(TypeID::ARGUMENT, $1));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(argument);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(Argument::Init($1));
 }
      | COMMAND {
-  auto command =
-      Command::Init(InitToken(TypeID::COMMAND, $1));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(command);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(Command::Init($1));
 }
      | K_OPTIONS {
-  auto k_options =
-      KOptions::Init(InitToken(TypeID::K_OPTIONS, ""));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(k_options);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(KOptions::Init());
 }
      | K_DOUBLE_HYPHEN {
-  auto k_double_hyphen =
-      KDoubleHyphen::Init(InitToken(TypeID::K_DOUBLE_HYPHEN, ""));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(k_double_hyphen);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(KDoubleHyphen::Init());
 }
 ;
 
@@ -262,18 +268,10 @@ atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
 //                   | GROUPED_OPTIONS
 // ;
 posix_option_unit : POSIX_OPTION {
-  auto posix_option =
-      PosixOption::Init(InitToken(TypeID::POSIX_OPTION, $1));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(posix_option);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(PosixOption::Init($1));
 }
                   | GROUPED_OPTIONS {
-  auto grouped_option =
-      GroupedOptions::Init(InitToken(TypeID::GROUPED_OPTIONS, $1));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(grouped_option);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(GroupedOptions::Init($1));
 }
 ;
 
@@ -282,25 +280,17 @@ posix_option_unit : POSIX_OPTION {
 //                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT
 // ;
 gnu_option_unit : GNU_OPTION {
-  auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(gnu_option);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(GnuOption::Init($1));
 }
                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   // recording binding.
   recorder_ptr->RecordBinding(
-      InitToken(TypeID::GNU_OPTION, $1),
-      InitToken(TypeID::ARGUMENT, $3));
+      Token(TerminalType::GNU_OPTION, $1),
+      Token(TerminalType::ARGUMENT, $3));
 
   // normal works.
-  auto gnu_option = GnuOption::Init(InitToken(TypeID::GNU_OPTION, $1));
-  auto argument =
-      Argument::Init(InitToken(TypeID::ARGUMENT, $3));
-  auto logic_and = LogicAnd::Init();
-  logic_and->AddChild(gnu_option);
-  logic_and->AddChild(argument);
-  $$ = logic_and;
+  $$ = BuildNonTerminal<LogicAnd>(GnuOption::Init($1),
+                                  Argument::Init($3));
 }
 ;
 
@@ -324,9 +314,7 @@ single_description : bindings default_value K_DESC_DELIMITER {
 
 
 default_value : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET {  
-  auto default_value =
-      DefaultValue::Init(InitToken(TypeID::DEFAULT_VALUE, $3));
-  $$ = default_value;
+  $$ = DefaultValue::Init($3);
 }
               | %empty {
   $$ = DefaultValue::Init();
@@ -338,14 +326,12 @@ default_value : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET {
 //          | single_binding {  }
 // ;
 bindings : bindings single_binding {
-  $1.lock()->AddChild($2.lock());
+  NonTerminalAddChild($1, $2);
   $$ = $1;
 
 }
          | single_binding {
-  auto bindings = OptionBindingContainer::Init();
-  bindings->AddChild($1.lock());
-  $$ = bindings;
+  $$ = BuildNonTerminal<OptionBindingContainer>($1);
 }
 ;
 
@@ -357,32 +343,22 @@ bindings : bindings single_binding {
 //                | GNU_OPTION K_EQUAL_SIGN ARGUMENT
 // ;
 single_binding : POSIX_OPTION {
-  auto binding =
-      OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, $1));
-  $$ = binding;
+  $$ = OptionBinding::Init(Token(TerminalType::POSIX_OPTION, $1));
 }
                | GNU_OPTION {
-  auto binding =
-      OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1));
-  $$ = binding;
+  $$ = OptionBinding::Init(Token(TerminalType::GNU_OPTION, $1));
 }
                | POSIX_OPTION ARGUMENT {
-  auto binding =
-      OptionBinding::Init(InitToken(TypeID::POSIX_OPTION, $1),
-                          InitToken(TypeID::ARGUMENT, $2));
-  $$ = binding;
+  $$ = OptionBinding::Init(Token(TerminalType::POSIX_OPTION, $1),
+                           Token(TerminalType::ARGUMENT, $2));
 }
                | GNU_OPTION ARGUMENT {
-  auto binding =
-      OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1),
-                          InitToken(TypeID::ARGUMENT, $2));
-  $$ = binding;
+  $$ = OptionBinding::Init(Token(TerminalType::GNU_OPTION, $1),
+                                 Token(TerminalType::ARGUMENT, $2));
 }
                | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
-  auto binding =
-      OptionBinding::Init(InitToken(TypeID::GNU_OPTION, $1),
-                          InitToken(TypeID::ARGUMENT, $3));
-  $$ = binding;
+  $$ = OptionBinding::Init(Token(TerminalType::GNU_OPTION, $1),
+                                 Token(TerminalType::ARGUMENT, $3));
 }
 ;
 

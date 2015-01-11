@@ -16,8 +16,9 @@ template <TerminalType T>
 class Terminal : public NodeInterface,
                  public SmartPtrInterface<Terminal<T>> {
  public:
+  Terminal();                                   // Terminal without value.
+  explicit Terminal(const std::string &value);  // Terminal with value.
   explicit Terminal(const Token &token);
-  explicit Terminal(const std::string &value);
 
   std::string GetID() override;
   std::size_t GetSizeOfChildren() override;
@@ -147,6 +148,9 @@ struct NodeVistorInterface : public ConcreteTerminalVistorInterface,
 
 // definition of nodes.
 namespace clidoc {
+
+template <TerminalType T>
+inline Terminal<T>::Terminal() : token_(T) { /* empty */ }
 
 template <TerminalType T>
 inline Terminal<T>::Terminal(const Token &token)

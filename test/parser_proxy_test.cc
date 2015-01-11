@@ -9,7 +9,6 @@
 #include "ast/ast_nodes.h"
 #include "ast/parser_proxy.h"
 #include "ast/option_record.h"
-#include "ast/token_proxy.h"
 
 using std::string;
 using std::set;
@@ -193,10 +192,10 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
   string input;
   OptionBindingRecorder recorder;
 
-  auto option_h = InitToken(TerminalType::POSIX_OPTION, "-h");
-  auto option_help = InitToken(TerminalType::GNU_OPTION, "--help");
-  auto argument_1 = InitToken(TerminalType::ARGUMENT, "<arg 1>");
-  auto argument_2 = InitToken(TerminalType::ARGUMENT, "ARG-2");
+  auto option_h = Token(TerminalType::POSIX_OPTION, "-h");
+  auto option_help = Token(TerminalType::GNU_OPTION, "--help");
+  auto argument_1 = Token(TerminalType::ARGUMENT, "<arg 1>");
+  auto argument_2 = Token(TerminalType::ARGUMENT, "ARG-2");
   RepresentativeOptionProperty *rop_ptr;
 
   // case 1.

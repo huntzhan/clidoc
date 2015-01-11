@@ -24,8 +24,8 @@ void OptionBindingContainer::AddChild(OptionBinding::SharedPtr node) {
     children_.push_back(node);
 }
 
-DefaultValue::DefaultValue(const Token &default_value)
-    : default_value_(default_value) {
+DefaultValue::DefaultValue(const string &default_value_text)
+    : default_value_(TerminalType::DEFAULT_VALUE, default_value_text) {
   // the default value is surrounded by double-quote marks, extract it.
   string raw_text = default_value_.value();
   string extracted_text(raw_text.begin() + 1, raw_text.end() - 1);

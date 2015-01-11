@@ -17,6 +17,7 @@ bool TokenHasValue(const TerminalType &type);
 
 Token InitToken(const TerminalType &terminal_type, const std::string &value);
 Token InitToken(const Type &type_id, const std::string &value);
+Token InitToken(const Type &type_id);
 
 }  // namespace clidoc
 #endif  // SRC_AST_TOKEN_PROXY_H_

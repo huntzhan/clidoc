@@ -1,6 +1,5 @@
 
 #include "gtest/gtest.h"
-#include "ast/token_proxy.h"
 #include "ast/parser_proxy.h"
 #include "ast/process_logic.h"
 #include "ast/ast_nodes.h"
@@ -26,8 +25,8 @@ TEST(process_logic, AmbiguityHandler) {
   
   OptionBindingRecorder recorder;
   recorder.RecordBinding(
-      InitToken(TerminalType::POSIX_OPTION, "-o"),
-      InitToken(TerminalType::ARGUMENT, "FILE"));
+      Token(TerminalType::POSIX_OPTION, "-o"),
+      Token(TerminalType::ARGUMENT, "FILE"));
   recorder.ProcessCachedBindings();
 
   AmbiguityHandler visitor(&recorder);
@@ -75,11 +74,11 @@ TEST(process_logic, FocusedElementCollector) {
 
   OptionBindingRecorder recorder;
   recorder.RecordBinding(
-      InitToken(TerminalType::POSIX_OPTION, "-c"),
-      InitToken(TerminalType::ARGUMENT, "ARG1"));
+      Token(TerminalType::POSIX_OPTION, "-c"),
+      Token(TerminalType::ARGUMENT, "ARG1"));
   recorder.RecordBinding(
-      InitToken(TerminalType::GNU_OPTION, "--output"),
-      InitToken(TerminalType::ARGUMENT, "FILE"));
+      Token(TerminalType::GNU_OPTION, "--output"),
+      Token(TerminalType::ARGUMENT, "FILE"));
   recorder.ProcessCachedBindings();
 
   FocusedElementCollector visitor(&recorder);
@@ -102,8 +101,8 @@ TEST(process_logic, BoundArgumentCleaner) {
 
   OptionBindingRecorder recorder;
   recorder.RecordBinding(
-      InitToken(TerminalType::POSIX_OPTION, "-c"),
-      InitToken(TerminalType::ARGUMENT, "ARG1"));
+      Token(TerminalType::POSIX_OPTION, "-c"),
+      Token(TerminalType::ARGUMENT, "ARG1"));
   recorder.ProcessCachedBindings();
 
   auto bound_arguments = recorder.GetBoundArguments();

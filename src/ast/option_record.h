@@ -34,7 +34,7 @@ class OptionBindingContainer
 class DefaultValue : public SmartPtrInterface<DefaultValue> {
  public:
   DefaultValue() = default;
-  explicit DefaultValue(const Token &default_value);
+  explicit DefaultValue(const std::string &default_value_text);
 
   Token default_value_;
 };

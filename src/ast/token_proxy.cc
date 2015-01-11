@@ -61,4 +61,9 @@ Token InitToken(const Type &type_id, const string &value) {
   return InitToken(terminal_type, value);
 }
 
+Token InitToken(const Type &type_id) {
+  auto terminal_type = ToTerminalType(type_id);
+  return InitToken(terminal_type, "NoValue");
+}
+
 }  // namespace clidoc
