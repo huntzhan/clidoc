@@ -56,16 +56,16 @@ class OptionBindingRecorder {
  public:
   void RecordBinding(
       OptionBindingContainer::SharedPtr node_container,
-      DefaultValue::SharedPtr default_value_ptr);
+      DefaultValue::SharedPtr default_value_node);
   // `RecordBinding(const Token &option, const Token &option_argument)` do
   // nothing but record the token pairs in cache. `ProcessCachedBindings` must
   // be called for actual processing.
   void RecordBinding(const Token &option, const Token &option_argument);
   void ProcessCachedBindings();
 
-  bool IsRecorded(const Token &option) const;
-  bool HasArgument(const Token &option) const;
   std::set<Token> GetBoundArguments() const;
+  bool IsRecorded(const Token &option) const;
+  bool IsBound(const Token &option) const;
 
   std::map<Token, Token> option_to_representative_option_;
   std::map<Token, RepresentativeOptionProperty>

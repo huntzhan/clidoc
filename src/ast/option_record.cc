@@ -167,7 +167,7 @@ void OptionBindingRecorder::UpdateRepresentativeOptionProperty(
 
 void OptionBindingRecorder::RecordBinding(
     OptionBindingContainer::SharedPtr node_container,
-    DefaultValue::SharedPtr default_value_ptr) {
+    DefaultValue::SharedPtr default_value_node) {
 
   Token representative_option = GetRepresentativeOption(node_container);
   Token bound_option_argument = GetBoundOptionArgument(
@@ -180,13 +180,13 @@ void OptionBindingRecorder::RecordBinding(
     CreateRepresentativeOptionProperty(
         representative_option,
         bound_option_argument,
-        default_value_ptr->default_value_);
+        default_value_node->default_value_);
   } else {
     // property exists.
     UpdateRepresentativeOptionProperty(
         representative_option,
         bound_option_argument,
-        default_value_ptr->default_value_,
+        default_value_node->default_value_,
         &pos_iter->second);
   }
 }
@@ -206,8 +206,7 @@ void OptionBindingRecorder::ProcessCachedBindings() {
     const Token &option = binding.first;
     const Token &option_argument = binding.second;
     // get representative_option.
-    if (option_to_representative_option_.find(option)
-        == option_to_representative_option_.end()) {
+    if (!IsRecorded(option)) {
       // no corresponding representative_option.
       // just bind to itself.
       option_to_representative_option_[option] = option;
@@ -237,7 +236,7 @@ bool OptionBindingRecorder::IsRecorded(const Token &option) const {
          != option_to_representative_option_.end();
 }
 
-bool OptionBindingRecorder::HasArgument(const Token &option) const {
+bool OptionBindingRecorder::IsBound(const Token &option) const {
   if (!IsRecorded(option)) {
     return false;
   }

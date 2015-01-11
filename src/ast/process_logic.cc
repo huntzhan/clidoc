@@ -81,7 +81,7 @@ void AmbiguityHandler::ProcessNode(
       recorder_ptr_->RecordBinding(option, Token());
       continue;
     }
-    if (!recorder_ptr_->HasArgument(option)) {
+    if (!recorder_ptr_->IsBound(option)) {
       // `option` not bound with argument.
       continue;
     }

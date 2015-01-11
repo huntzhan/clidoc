@@ -21,7 +21,7 @@ void CodeGenInfo::Prepare(const std::string &raw_doc) {
   doc_text = doc_preprocessor.PreprocessRawDocForCodeGen(raw_doc);
   // setup focused elements/
   for (const Token &element : focused_elements) {
-    if (recorder.HasArgument(element)) {
+    if (recorder.IsBound(element)) {
       focused_bound_options.insert(element);
     } else if (element.type() == TerminalType::ARGUMENT) {
       focused_arguments.insert(element);
