@@ -18,10 +18,10 @@ add_executable (tokenizer_for_argv_test tokenizer_for_argv_test.cc)
 add_executable (tokenizer_for_doc_test tokenizer_for_doc_test.cc)
 target_link_libraries (
   tokenizer_for_argv_test
-  tokenizer token_proxy generated_scanner_for_argv)
+  tokenizer generated_scanner_for_argv)
 target_link_libraries (
   tokenizer_for_doc_test
-  tokenizer token_proxy generated_scanner_for_doc)
+  tokenizer generated_scanner_for_doc)
 
 add_gtest (parser_proxy_test)
 add_gtest (process_logic_test)

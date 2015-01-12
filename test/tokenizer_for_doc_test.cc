@@ -43,8 +43,9 @@ TEST(tokenizer_for_doc, raw_token_type) {
         TypeID::K_DESC_DELIMITER,
       });
   CheckRawTokenTypes(
-      "-c --long --output-file <arg> ARG OUTPUT-FILE command", {
+      "-c - --long --output-file <arg> ARG OUTPUT-FILE command", {
         TypeID::POSIX_OPTION,
+        TypeID::COMMAND,
         TypeID::GNU_OPTION,
         TypeID::GNU_OPTION,
         TypeID::ARGUMENT,
@@ -70,6 +71,9 @@ TEST(tokenizer_for_doc, token_value) {
   CheckTokenValues(
       "-c FILE OUTPUT-FILE",
       {"-c", "FILE", "OUTPUT-FILE"});
+  CheckTokenValues(
+      "<arg t> <another arg>",
+      {"<arg t>", "<another arg>"});
 }
 
 TEST(tokenizer_for_doc, raw_token_value) {

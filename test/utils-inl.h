@@ -8,7 +8,6 @@
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
 #include "ast/generated_scanner.h"
-#include "ast/token_proxy.h"
 #include "shared/tokenizer.h"
 
 using namespace clidoc;
@@ -18,6 +17,10 @@ using std::string;
 using std::vector;
 using std::istringstream;
 using std::ostringstream;
+
+// facilitate usage.
+using Type = clidoc::BisonGeneratedParser::token_type;
+using TypeID = clidoc::BisonGeneratedParser::token;
 
 vector<TerminalType> ExtractTokenType(const vector<Token> &tokens) {
   vector<TerminalType> types;
@@ -42,8 +45,7 @@ void CheckTokenValues(const string &text,
     // token must has value.
     EXPECT_TRUE(token.has_value());
     // token must has value.
-    EXPECT_EQ(values[index], token.value());
-    ++index;
+    EXPECT_EQ(values[index++], token.value());
   }
 }
 
@@ -60,6 +62,7 @@ void CheckRawTokenTypes(const string &text,
       // finish.
       break;
     }
+    ASSERT_TRUE(index < types.size());
     EXPECT_EQ(types[index++], type_id);
   }
   ASSERT_EQ(types.size(), index);
@@ -74,11 +77,12 @@ void CheckRawTokenValues(const string &text,
   while (true) {
     auto item = lexer.lex();
     auto type_id = item.token();
-    auto value = item.value.as<string>();
+    const string &value = item.value.as<string>();
     if (type_id == TypeID::END) {
       // finish.
       break;
     }
+    ASSERT_TRUE(index < values.size());
     EXPECT_EQ(values[index++], value);
   }
   ASSERT_EQ(values.size(), index);

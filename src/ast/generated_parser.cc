@@ -926,7 +926,7 @@ namespace clidoc {
 #line 355 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< OptionBinding::WeakPtr > () = OptionBinding::Init(Token(TerminalType::GNU_OPTION, yystack_[1].value.as< std::string > ()),
-                                 Token(TerminalType::ARGUMENT, yystack_[0].value.as< std::string > ()));
+                           Token(TerminalType::ARGUMENT, yystack_[0].value.as< std::string > ()));
 }
 #line 932 "generated_parser.cc" // lalr1.cc:847
     break;
@@ -935,7 +935,7 @@ namespace clidoc {
 #line 359 "flex-bison-scripts/parser.y" // lalr1.cc:847
     {
   yylhs.value.as< OptionBinding::WeakPtr > () = OptionBinding::Init(Token(TerminalType::GNU_OPTION, yystack_[2].value.as< std::string > ()),
-                                 Token(TerminalType::ARGUMENT, yystack_[0].value.as< std::string > ()));
+                           Token(TerminalType::ARGUMENT, yystack_[0].value.as< std::string > ()));
 }
 #line 941 "generated_parser.cc" // lalr1.cc:847
     break;
