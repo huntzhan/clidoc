@@ -12,13 +12,13 @@ using std::logic_error;
 
 namespace clidoc {
 
-OptionBinding::OptionBinding(const Token &token_option)
-    : token_option_(token_option) { /* empty */ }
+OptionBinding::OptionBinding(const Token &option)
+    : option_(option) { /* empty */ }
 
-OptionBinding::OptionBinding(const Token &token_option,
-                             const Token &token_optin_argument)
-    : token_option_(token_option),
-      token_option_argument_(token_optin_argument) { /* empty */ }
+OptionBinding::OptionBinding(const Token &option,
+                             const Token &optin_argument)
+    : option_(option),
+      option_argument_(optin_argument) { /* empty */ }
 
 void OptionBindingContainer::AddChild(OptionBinding::SharedPtr node) {
     children_.push_back(node);
@@ -34,46 +34,55 @@ DefaultValue::DefaultValue(const string &default_value_text)
   }
 }
 
+void RepresentativeOptionProperty::Mutate(
+    const Token &option_argument, const Token &default_value) {
+  if (!option_argument.IsEmpty()) {
+    set_option_argument(option_argument);
+  }
+  // deal with default value.
+  if (!default_value.IsEmpty()) {
+    set_default_value(default_value.value());
+  }
+}
+
 bool RepresentativeOptionProperty::IsEmpty() const {
   return option_argument_.IsEmpty();
 }
 
 void RepresentativeOptionProperty::set_option_argument(
     const Token &option_argument) {
-  if (has_option_argument_) {
-    throw logic_error("set_option_argument error");
-  }
-  has_option_argument_ = true;
-  option_argument_ = option_argument;
+  SetDataMember(
+      &RepresentativeOptionProperty::option_argument_,
+      &RepresentativeOptionProperty::has_option_argument_,
+      option_argument);
 }
 
 void RepresentativeOptionProperty::set_default_value(
     const string &default_value) {
-  if (has_default_value_) {
-    throw logic_error("set_default_value");
-  }
-  has_default_value_ = true;
-  default_value_ = default_value;
+  SetDataMember(
+      &RepresentativeOptionProperty::default_value_,
+      &RepresentativeOptionProperty::has_default_value_,
+      default_value);
 }
 
-Token OptionBindingRecorder::GetRepresentativeOption(
+Token OptionBindingRecorder::GetRepresentativeOptionsFromContainer(
     OptionBindingContainer::SharedPtr node_container) {
   if (node_container->children_.empty()) {
-    throw logic_error("GetRepresentativeOption");
+    throw logic_error("GetRepresentativeOptionsFromContainer");
   }
   // Get `representative_option`. If no `representative_option` is found in
   // `option_to_representative_option_`, then the first GNU_OPTION would be
   // selected as `representative_option`.
   const Token *representative_option_ptr = nullptr;
   for (auto binding_ptr : node_container->children_) {
-    const Token &option = binding_ptr->token_option_;
+    const Token &option = binding_ptr->option_;
     // catch first GNU_OPTION.
     if (option.type() == TerminalType::GNU_OPTION
         && representative_option_ptr == nullptr) {
       representative_option_ptr = &option;
     }
     // search in `option_to_representative_option_`.
-    if (IsRecorded(option)) {
+    if (OptionIsRecorded(option)) {
       // binding already exists.
       representative_option_ptr =
           &option_to_representative_option_[option];
@@ -84,36 +93,37 @@ Token OptionBindingRecorder::GetRepresentativeOption(
     // there is no GNU_OPTION, and no recorded bindings.
     representative_option_ptr =
         &node_container->children_.front()  // first OptionBinding.
-                      ->token_option_;     // token.
+                       ->option_;     // token.
   }
-  return Token(*representative_option_ptr);
+  return *representative_option_ptr;
 }
 
-Token OptionBindingRecorder::GetBoundOptionArgument(
+void OptionBindingRecorder::SetRepresentativeOptionFromContainer(
     const Token &representative_option,
+    OptionBindingContainer::SharedPtr node_container) {
+  for (auto binding_ptr : node_container->children_) {
+    const Token &option = binding_ptr->option_;
+    // create binding.
+    option_to_representative_option_[option] = representative_option;
+  }
+}
+
+Token OptionBindingRecorder::GetBoundOptionArgumentFromContainer(
     OptionBindingContainer::SharedPtr node_container) {
   // fill `option_to_representative_option_` and extract `option_argument`.
   const Token *option_argument_ptr = nullptr;
   for (auto binding_ptr : node_container->children_) {
-    const Token &option = binding_ptr->token_option_;
-    const Token &option_argument = binding_ptr->token_option_argument_;
-    // create binding.
-    option_to_representative_option_[option] = representative_option;
-    // get `option_argument`.
+    const Token &option_argument = binding_ptr->option_argument_;
     if (!option_argument.IsEmpty()) {
       // bound argument exists.
       if (option_argument_ptr == nullptr) {
         option_argument_ptr = &option_argument;
       } else if (*option_argument_ptr != option_argument) {
-        throw logic_error("GetBoundOptionArgument");
+        throw logic_error("GetBoundOptionArgumentFromContainer");
       }
     }
   }
-  if (option_argument_ptr == nullptr) {
-    return Token();
-  } else {
-    return Token(*option_argument_ptr);
-  }
+  return option_argument_ptr == nullptr ? Token() : *option_argument_ptr;
 }
 
 void OptionBindingRecorder::CreateRepresentativeOptionProperty(
@@ -122,61 +132,33 @@ void OptionBindingRecorder::CreateRepresentativeOptionProperty(
     const Token &default_value) {
   // `representative_option` not exist, which means property not exists.
   RepresentativeOptionProperty property;
-  if (!bound_option_argument.IsEmpty()) {
-    // has bound option argument.
-    property.set_option_argument(bound_option_argument);
+  property.Mutate(bound_option_argument, default_value);
+  if (!property.IsEmpty()) {
+    // keep mapping.
+    representative_option_to_property_[representative_option] = property;
   }
-  if (!default_value.IsEmpty()) {
-    // has default value.
-    property.set_default_value(default_value.value());
-  }
-  // keep mapping.
-  representative_option_to_property_[representative_option] = property;
 }
 
 void OptionBindingRecorder::UpdateRepresentativeOptionProperty(
-    const Token &representative_option,
     const Token &bound_option_argument,
     const Token &default_value,
     RepresentativeOptionProperty *property_ptr) {
   // deal with option_argument.
-  if (property_ptr->has_option_argument_) {
-    // check equality.
-    if (!bound_option_argument.IsEmpty()
-        && property_ptr->option_argument_ != bound_option_argument) {
-      // option argument not match!
-      throw logic_error("UpdateRepresentativeOptionProperty_1");
-    }
-  } else if (!bound_option_argument.IsEmpty()) {
-    // no option_argument has been set, just set it.
-    property_ptr->set_option_argument(bound_option_argument);
-  }
-
-  // deal with default value.
-  if (property_ptr->has_default_value_) {
-    // check equality.
-    if (!default_value.IsEmpty()
-        && property_ptr->default_value_ != default_value.value()) {
-      throw logic_error("UpdateRepresentativeOptionProperty_2");
-    }
-  } else if (!default_value.IsEmpty()) {
-    // similar with option argument.
-    property_ptr->set_default_value(default_value.value());
-  }
+  property_ptr->Mutate(bound_option_argument, default_value);
 }
 
 void OptionBindingRecorder::RecordBinding(
     OptionBindingContainer::SharedPtr node_container,
     DefaultValue::SharedPtr default_value_node) {
+  // deal with `representative_option`.
+  Token representative_option = GetRepresentativeOptionsFromContainer(
+      node_container);
+  SetRepresentativeOptionFromContainer(representative_option, node_container);
+  // deal with bound option argument.
+  Token bound_option_argument = GetBoundOptionArgumentFromContainer(
+      node_container);
 
-  Token representative_option = GetRepresentativeOption(node_container);
-  Token bound_option_argument = GetBoundOptionArgument(
-      representative_option, node_container);
-
-  // fill `representative_option_to_property_`.
-  auto pos_iter =
-      representative_option_to_property_.find(representative_option);
-  if (pos_iter == representative_option_to_property_.end()) {
+  if (!PropertyIsExist(representative_option)) {
     CreateRepresentativeOptionProperty(
         representative_option,
         bound_option_argument,
@@ -184,10 +166,9 @@ void OptionBindingRecorder::RecordBinding(
   } else {
     // property exists.
     UpdateRepresentativeOptionProperty(
-        representative_option,
         bound_option_argument,
         default_value_node->default_value_,
-        &pos_iter->second);
+        &GetBoundProperty(representative_option));
   }
 }
 
@@ -206,49 +187,84 @@ void OptionBindingRecorder::ProcessCachedBindings() {
     const Token &option = binding.first;
     const Token &option_argument = binding.second;
     // get representative_option.
-    if (!IsRecorded(option)) {
+    if (!OptionIsRecorded(option)) {
       // no corresponding representative_option.
       // just bind to itself.
       option_to_representative_option_[option] = option;
     }
     const auto &representative_option =
         option_to_representative_option_[option];
+    Token empty_token;
     // handle option_argument.
-    auto pos_iter =
-        representative_option_to_property_.find(representative_option);
-    if (pos_iter == representative_option_to_property_.end()) {
+    if (!PropertyIsExist(option)) {
       CreateRepresentativeOptionProperty(
           representative_option,
           option_argument,
-          Token());
+          empty_token);
     } else {
       UpdateRepresentativeOptionProperty(
-          representative_option,
           option_argument,
-          Token(),
-          &pos_iter->second);
+          empty_token,
+          &GetBoundProperty(representative_option));
     }
   }
 }
 
-bool OptionBindingRecorder::IsRecorded(const Token &option) const {
+bool OptionBindingRecorder::OptionIsRecorded(const Token &option) const {
   return option_to_representative_option_.find(option)
          != option_to_representative_option_.end();
 }
 
-bool OptionBindingRecorder::IsBound(const Token &option) const {
-  if (!IsRecorded(option)) {
+bool OptionBindingRecorder::PropertyIsExist(const Token &option) const {
+  if (!OptionIsRecorded(option)) {
+    // option not recorded.
     return false;
   }
   const auto &rep_option = option_to_representative_option_.at(option);
-  return !representative_option_to_property_.at(rep_option).IsEmpty();
+  if (representative_option_to_property_.find(rep_option)
+      == representative_option_to_property_.end()) {
+    // option has no bound property.
+    return false;
+  }
+  return true;
+}
+
+bool OptionBindingRecorder::OptionIsBound(const Token &option) const {
+  if (!PropertyIsExist(option)) {
+    return false;
+  }
+  return !GetBoundProperty(option).option_argument_.IsEmpty();
+}
+
+RepresentativeOptionProperty &OptionBindingRecorder::GetBoundProperty(
+    const Token &option) {
+  const OptionBindingRecorder *const_this = this;
+  const auto &property = const_this->GetBoundProperty(option);
+  return const_cast<RepresentativeOptionProperty &>(property);
+}
+
+const RepresentativeOptionProperty &OptionBindingRecorder::GetBoundProperty(
+    const Token &option) const {
+  if (!OptionIsRecorded(option) || !PropertyIsExist(option)) {
+    throw logic_error("GetBoundProperty");
+  }
+  const auto &rep_option = option_to_representative_option_.at(option);
+  return representative_option_to_property_.at(rep_option);
+}
+
+set<Token> OptionBindingRecorder::GetRepresentativeOptions() const {
+  set<Token> rep_options;
+  for (const auto &map_pair : option_to_representative_option_) {
+    rep_options.insert(map_pair.second);
+  }
+  return rep_options;
 }
 
 set<Token> OptionBindingRecorder::GetBoundArguments() const {
   set<Token> bound_arguments;
   for (const auto &map_pair : representative_option_to_property_) {
     const auto &property = map_pair.second;
-    if (property.has_option_argument_) {
+    if (!property.option_argument_.IsEmpty()) {
       bound_arguments.insert(property.option_argument_);
     }
   }

@@ -226,7 +226,6 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
       recorder.option_to_representative_option_[option_h]);
   rop_ptr = &recorder.representative_option_to_property_[option_help];
   EXPECT_EQ(argument_1, rop_ptr->option_argument_);
-  EXPECT_FALSE(rop_ptr->has_default_value_);
 
   // case 3.
   // bind -h to <arg 1>, with default value "42";
@@ -240,10 +239,8 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
   
   BuildRecord(input, &recorder);
   rop_ptr = &recorder.representative_option_to_property_[option_h];
-  EXPECT_TRUE(rop_ptr->has_default_value_);
   EXPECT_EQ("42", rop_ptr->default_value_);
   rop_ptr = &recorder.representative_option_to_property_[option_help];
-  EXPECT_TRUE(rop_ptr->has_default_value_);
   EXPECT_EQ("43", rop_ptr->default_value_);
 }
 
@@ -273,6 +270,11 @@ Options:
   ParserProxy proxy;
   set<Token> focused_elements;
   proxy.Parse(input, &doc_node, &recorder, &focused_elements);
+
+  // for (auto token : focused_elements) {
+  //   std::cout << token.value() << std::endl;
+  // }
+  // std::cout << doc_node->ToString(0);
 
   // test focused_elements.
   auto iter = focused_elements.begin();

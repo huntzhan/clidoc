@@ -76,12 +76,12 @@ void AmbiguityHandler::ProcessNode(
     // add `option`.
     logic_or->AddChild(PosixOption::Init(option));
 
-    if (!recorder_ptr_->IsRecorded(option)) {
+    if (!recorder_ptr_->OptionIsRecorded(option)) {
       // `option` not recorded.
       recorder_ptr_->RecordBinding(option, Token());
       continue;
     }
-    if (!recorder_ptr_->IsBound(option)) {
+    if (!recorder_ptr_->OptionIsBound(option)) {
       // `option` not bound with argument.
       continue;
     }
@@ -117,18 +117,8 @@ FocusedElementCollector::FocusedElementCollector(
     : recorder_ptr_(recorder_ptr) {/* empty */}
 
 set<Token> FocusedElementCollector::GetFocusedElement() {
-  set<Token> focused_elements;
-  set<Token> bound_arguments;
-  const auto &rep_to_property =
-      recorder_ptr_->representative_option_to_property_;
-  // include all representative options.
-  for (auto iter = rep_to_property.cbegin();
-       iter != rep_to_property.cend(); ++iter) {
-    focused_elements.insert(iter->first);
-    if (!iter->second.IsEmpty()) {
-      bound_arguments.insert(iter->second.option_argument_);
-    }
-  }
+  set<Token> focused_elements = recorder_ptr_->GetRepresentativeOptions();
+  set<Token> bound_arguments = recorder_ptr_->GetBoundArguments();
   // include unbound arguments.
   for (const auto &argument : operand_candidates_) {
     if (bound_arguments.find(argument) == bound_arguments.end()) {
@@ -139,13 +129,13 @@ set<Token> FocusedElementCollector::GetFocusedElement() {
 }
 
 void FocusedElementCollector::ProcessNode(PosixOption::SharedPtr node) {
-  if (!recorder_ptr_->IsRecorded(node->token_)) {
+  if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
     recorder_ptr_->RecordBinding(node->token_, Token());
   }
 }
 
 void FocusedElementCollector::ProcessNode(GnuOption::SharedPtr node) {
-  if (!recorder_ptr_->IsRecorded(node->token_)) {
+  if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
     recorder_ptr_->RecordBinding(node->token_, Token());
   }
 }

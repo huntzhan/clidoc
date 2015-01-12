@@ -1,6 +1,7 @@
 #ifndef SRC_AST_OPTION_RECORD_H_
 #define SRC_AST_OPTION_RECORD_H_
 
+#include <stdexcept>
 #include <map>
 #include <vector>
 #include <set>
@@ -17,10 +18,10 @@ class OptionBinding : public SmartPtrInterface<OptionBinding> {
   // binding without argument, for synonym options, i.e. "-h, --help".
   explicit OptionBinding(const Token &token_option);
   // binding option and option_argument.
-  OptionBinding(const Token &token_option, const Token &token_optin_argument);
+  OptionBinding(const Token &option, const Token &optin_argument);
 
-  const Token token_option_;
-  const Token token_option_argument_ = Token();
+  const Token option_;
+  const Token option_argument_ = Token();
 };
 
 class OptionBindingContainer
@@ -39,16 +40,23 @@ class DefaultValue : public SmartPtrInterface<DefaultValue> {
   Token default_value_;
 };
 
-struct RepresentativeOptionProperty {
+class RepresentativeOptionProperty {
+ public:
+  void Mutate(const Token &option_argument, const Token &default_value);
   bool IsEmpty() const;
+
+  Token option_argument_;
+  std::string default_value_;
+
+ private:
+  // invoked by mutators.
+  template <typename Target, typename Flag, typename ValueType>
+  void SetDataMember(Target target, Flag flag, const ValueType &value);
   // mutators.
   void set_option_argument(const Token &option_argument);
   void set_default_value(const std::string &default_value);
-
   bool has_option_argument_ = false;
   bool has_default_value_ = false;
-  Token option_argument_;
-  std::string default_value_;
 };
 
 // Record different kinds of optino binding during parsing.
@@ -63,26 +71,49 @@ class OptionBindingRecorder {
   void RecordBinding(const Token &option, const Token &option_argument);
   void ProcessCachedBindings();
 
+  // check if option is recorded.
+  bool OptionIsRecorded(const Token &option) const;
+  // check if option is bound with non-empty argument.
+  bool OptionIsBound(const Token &option) const;
+
+  std::set<Token> GetRepresentativeOptions() const;
   std::set<Token> GetBoundArguments() const;
-  bool IsRecorded(const Token &option) const;
-  bool IsBound(const Token &option) const;
+
+  RepresentativeOptionProperty
+      &GetBoundProperty(const Token &option);
+  const RepresentativeOptionProperty
+      &GetBoundProperty(const Token &option) const;
 
   std::map<Token, Token> option_to_representative_option_;
   std::map<Token, RepresentativeOptionProperty>
       representative_option_to_property_;
 
  private:
-  Token GetRepresentativeOption(
+  // check if bound property exist.
+  bool PropertyIsExist(const Token &option) const;
+
+  // select a representative option from `node_container`(if not recorded) and
+  // `option_to_option_argument_cache_`(if recorded).
+  Token GetRepresentativeOptionsFromContainer(
       OptionBindingContainer::SharedPtr node_container);
-  Token GetBoundOptionArgument(
+  // set representative option.
+  void SetRepresentativeOptionFromContainer(
       const Token &representative_option,
       OptionBindingContainer::SharedPtr node_container);
+  // select bound argument from `node_container`. If there's no bound argument,
+  // return an empty token.
+  Token GetBoundOptionArgumentFromContainer(
+      OptionBindingContainer::SharedPtr node_container);
+
+  // created property if:
+  //   1. property not exist(premise).
+  //   2. `bound_option_argument` or `default_value` not empty.
   void CreateRepresentativeOptionProperty(
       const Token &representative_option,
       const Token &bound_option_argument,
       const Token &default_value);
+  // property exist, meaning that bound argument is not empty.
   void UpdateRepresentativeOptionProperty(
-      const Token &representative_option,
       const Token &bound_option_argument,
       const Token &default_value,
       RepresentativeOptionProperty *property_ptr);
@@ -90,6 +121,23 @@ class OptionBindingRecorder {
   // store option -> option_argument binding when parsing usage section.
   std::map<Token, Token> option_to_option_argument_cache_;
 };
+
+}  // namespace clidoc
+
+namespace clidoc {
+
+template <typename Target, typename Flag, typename ValueType>
+void RepresentativeOptionProperty::SetDataMember(
+    Target target, Flag flag, const ValueType &value) {
+  if (this->*flag) {
+    if (this->*target != value) {
+      throw std::logic_error("set_option_argument");
+    }
+    return;
+  }
+  this->*flag = true;
+  this->*target = value;
+}
 
 }  // namespace clidoc
 
