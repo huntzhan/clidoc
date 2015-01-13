@@ -24,7 +24,7 @@ class Terminal : public NodeInterface,
   std::size_t GetSizeOfChildren() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
-  void Accept(NodeVistorInterface *visitor_ptr) override;
+  void Accept(NodeVisitorInterface *visitor_ptr) override;
 
   const Token token_;
 };
@@ -38,7 +38,7 @@ class NonTerminal : public NodeInterface,
   std::size_t GetSizeOfChildren() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
-  void Accept(NodeVistorInterface *visitor_ptr) override;
+  void Accept(NodeVisitorInterface *visitor_ptr) override;
 
   void AddChild(SharedPtrNode node);
   // Container of symbols.
@@ -70,13 +70,13 @@ namespace clidoc {
 
 // classes for visitor.
 template <TerminalType... T>
-struct TerminalVistorInterface;
+struct TerminalVisitorInterface;
 
 template <NonTerminalType... T>
-struct NonTerminalVistorInterface;
+struct NonTerminalVisitorInterface;
 
 template <>
-struct TerminalVistorInterface<> {
+struct TerminalVisitorInterface<> {
   // should not be call anyway.
   virtual void ProcessNode(TerminalType /*empty*/) {
     throw "NotImplementedError.";
@@ -84,17 +84,17 @@ struct TerminalVistorInterface<> {
 };
 
 template <>
-struct NonTerminalVistorInterface<> {
+struct NonTerminalVisitorInterface<> {
   virtual void ProcessNode(NonTerminalType /*empty*/) {
     throw "NotImplementedError.";
   }
 };
 
 template <TerminalType T, TerminalType... RestType>
-struct TerminalVistorInterface<T, RestType...>
-    : public TerminalVistorInterface<RestType...> {
+struct TerminalVisitorInterface<T, RestType...>
+    : public TerminalVisitorInterface<RestType...> {
   // import interfaces.
-  using TerminalVistorInterface<RestType...>::ProcessNode;
+  using TerminalVisitorInterface<RestType...>::ProcessNode;
 
   // interface for Terminal<T>::SharedPtr.
   virtual void ProcessNode(typename Terminal<T>::SharedPtr node) {
@@ -103,22 +103,22 @@ struct TerminalVistorInterface<T, RestType...>
 };
 
 template <NonTerminalType T, NonTerminalType... RestType>
-struct NonTerminalVistorInterface<T, RestType...>
-    : public NonTerminalVistorInterface<RestType...> {
-  // same wth TerminalVistorInterface.
-  using NonTerminalVistorInterface<RestType...>::ProcessNode;
+struct NonTerminalVisitorInterface<T, RestType...>
+    : public NonTerminalVisitorInterface<RestType...> {
+  // same wth TerminalVisitorInterface.
+  using NonTerminalVisitorInterface<RestType...>::ProcessNode;
 
   // interface for NonTerminal<T>::SharedPtr.
   virtual void ProcessNode(typename NonTerminal<T>::SharedPtr node) {
-    // Apply vistor to children.
+    // Apply visitor to children.
     auto cache_children = node->children_;
     for (auto child_ptr : cache_children) {
-      child_ptr->Accept(dynamic_cast<NodeVistorInterface *>(this));
+      child_ptr->Accept(dynamic_cast<NodeVisitorInterface *>(this));
     }
   }
 };
 
-using ConcreteTerminalVistorInterface = TerminalVistorInterface<
+using ConcreteTerminalVisitorInterface = TerminalVisitorInterface<
   TerminalType::K_DOUBLE_HYPHEN,
   TerminalType::K_OPTIONS,
 
@@ -130,7 +130,7 @@ using ConcreteTerminalVistorInterface = TerminalVistorInterface<
   TerminalType::COMMAND>;
 
 
-using ConcreteNonTerminalVistorInterface = NonTerminalVistorInterface<
+using ConcreteNonTerminalVisitorInterface = NonTerminalVisitorInterface<
   NonTerminalType::DOC,
   NonTerminalType::LOGIC_AND,
   NonTerminalType::LOGIC_OR,
@@ -138,10 +138,10 @@ using ConcreteNonTerminalVistorInterface = NonTerminalVistorInterface<
   NonTerminalType::LOGIC_OPTIONAL,
   NonTerminalType::LOGIC_ONEORMORE>;
 
-struct NodeVistorInterface : public ConcreteTerminalVistorInterface,
-                             public ConcreteNonTerminalVistorInterface {
-  using ConcreteTerminalVistorInterface::ProcessNode;
-  using ConcreteNonTerminalVistorInterface::ProcessNode;
+struct NodeVisitorInterface : public ConcreteTerminalVisitorInterface,
+                              public ConcreteNonTerminalVisitorInterface {
+  using ConcreteTerminalVisitorInterface::ProcessNode;
+  using ConcreteNonTerminalVisitorInterface::ProcessNode;
 };
 
 }  // namespace clidoc
@@ -188,7 +188,7 @@ std::string Terminal<T>::ToString(const int &indent) {
 }
 
 template <TerminalType T>
-void Terminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
+void Terminal<T>::Accept(NodeVisitorInterface *visitor_ptr) {
   visitor_ptr->ProcessNode(this->shared_from_this());
 }
 
@@ -231,7 +231,7 @@ std::string NonTerminal<T>::ToString(const int &indent) {
 }
 
 template <NonTerminalType T>
-void NonTerminal<T>::Accept(NodeVistorInterface *visitor_ptr) {
+void NonTerminal<T>::Accept(NodeVisitorInterface *visitor_ptr) {
   visitor_ptr->ProcessNode(this->shared_from_this());
 }
 

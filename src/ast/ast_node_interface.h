@@ -95,7 +95,7 @@ struct NodeConnection {
   SharedPtrNodeContainer *children_of_parent_ptr_ = nullptr;
 };
 
-struct NodeVistorInterface;
+struct NodeVisitorInterface;
 
 // Interface for symbols in parsing tree.
 class NodeInterface {
@@ -112,8 +112,8 @@ class NodeInterface {
   virtual std::string ToString() = 0;
   // indented version of ToString().
   virtual std::string ToString(const int &indent) = 0;
-  // Apply vistor design pattern!
-  virtual void Accept(NodeVistorInterface *vistor_ptr) = 0;
+  // Apply visitor design pattern!
+  virtual void Accept(NodeVisitorInterface *visitor_ptr) = 0;
   // Connection of nodes in AST.
   NodeConnection node_connection;
 };

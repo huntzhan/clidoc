@@ -20,9 +20,9 @@ struct NodeTypeModifier {
   static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
 };
 
-class StructureOptimizer : public NodeVistorInterface {
+class StructureOptimizer : public NodeVisitorInterface {
  public:
-  using NodeVistorInterface::ProcessNode;
+  using NodeVisitorInterface::ProcessNode;
 
   void ProcessNode(LogicAnd::SharedPtr node) override;
   void ProcessNode(LogicXor::SharedPtr node) override;
@@ -46,9 +46,9 @@ class StructureOptimizer : public NodeVistorInterface {
 
 // class for `DoubleHyphenHandler`.
 template <typename TargetType>
-class TerminalTypeModifier : public NodeVistorInterface {
+class TerminalTypeModifier : public NodeVisitorInterface {
  public:
-  using NodeVistorInterface::ProcessNode;
+  using NodeVisitorInterface::ProcessNode;
 
   void ProcessNode(KDoubleHyphen::SharedPtr node) override;
   void ProcessNode(KOptions::SharedPtr node) override;
@@ -59,17 +59,17 @@ class TerminalTypeModifier : public NodeVistorInterface {
   void ProcessNode(Command::SharedPtr node) override;
 };
 
-class DoubleHyphenHandler : public NodeVistorInterface {
+class DoubleHyphenHandler : public NodeVisitorInterface {
  public:
-  using NodeVistorInterface::ProcessNode;
+  using NodeVisitorInterface::ProcessNode;
 
   // Premise: operands after `--` are place at the same level with `--` in AST.
   void ProcessNode(KDoubleHyphen::SharedPtr double_hyphen_node) override;
 };
 
-class AmbiguityHandler : public NodeVistorInterface {
+class AmbiguityHandler : public NodeVisitorInterface {
  public:
-  using NodeVistorInterface::ProcessNode;
+  using NodeVisitorInterface::ProcessNode;
 
   explicit AmbiguityHandler(OptionBindingRecorder *recorder_ptr);
   void ProcessNode(GroupedOptions::SharedPtr grouped_options_node) override;
@@ -78,9 +78,9 @@ class AmbiguityHandler : public NodeVistorInterface {
   OptionBindingRecorder *recorder_ptr_;
 };
 
-class FocusedElementCollector : public NodeVistorInterface {
+class FocusedElementCollector : public NodeVisitorInterface {
  public:
-  using NodeVistorInterface::ProcessNode;
+  using NodeVisitorInterface::ProcessNode;
 
   explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
   std::set<Token> GetFocusedElement();
@@ -96,9 +96,9 @@ class FocusedElementCollector : public NodeVistorInterface {
   std::set<Token> operand_candidates_;
 };
 
-class BoundArgumentCleaner : public NodeVistorInterface {
+class BoundArgumentCleaner : public NodeVisitorInterface {
  public:
-  using NodeVistorInterface::ProcessNode;
+  using NodeVisitorInterface::ProcessNode;
 
   explicit BoundArgumentCleaner(const std::set<Token> &bound_arguments);
   void ProcessNode(Argument::SharedPtr node) override;
