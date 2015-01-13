@@ -3,6 +3,7 @@
 #include "ast/parser_proxy.h"
 #include "ast/process_logic.h"
 #include "ast/ast_nodes.h"
+#include "ast/visitor_helper.h"
 
 using namespace clidoc;
 
@@ -41,7 +42,8 @@ TEST(process_logic, TerminalTypeModifier) {
   and_1->AddChild(Command::Init(">whatever<"));
   and_1->AddChild(GnuOption::Init("--long"));
 
-  TerminalTypeModifier<Argument> type_modifier;
+  TerminalTypeModifier<Argument> callable;
+  auto type_modifier = GenerateVisitor<TerminalVisitor>(&callable);
   and_1->Accept(&type_modifier);
 
   EXPECT_EQ("LogicAnd("
@@ -83,7 +85,7 @@ TEST(process_logic, FocusedElementCollector) {
 
   FocusedElementCollector visitor(&recorder);
   and_1->Accept(&visitor);
-  auto focused_elements = visitor.GetFocusedElement();
+  auto focused_elements = visitor.GetFocusedElements();
 
   EXPECT_EQ(3u, focused_elements.size());
   auto iter = focused_elements.begin();

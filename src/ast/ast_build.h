@@ -18,14 +18,21 @@ class CodeGenInfo {
 
   Doc::SharedPtr doc_node_;
   OptionBindingRecorder recorder_;
+
   std::set<Token> focused_bound_options_;
   std::set<Token> focused_unbound_options_;
   std::set<Token> focused_arguments_;
+  // `oom` stands for OneOrMore.
+  std::set<Token> focused_oom_bound_options_;
+  std::set<Token> focused_oom_arguments_;
   std::set<Token> focused_commands_;
+
   std::string doc_text_;
 
  private:
-  void PostProcessedAST(std::set<Token> *focused_elements_ptr);
+  void PostProcessedAST(
+      std::set<Token> *focused_elements_ptr,
+      std::set<Token> *oom_elements_ptr);
 };
 
 }  // namespace clidoc

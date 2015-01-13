@@ -2,12 +2,17 @@
 #include <string>
 #include <iterator>
 #include <set>
+#include <map>
+#include <utility>
 
 #include "ast/ast_node_interface.h"
 #include "ast/option_record.h"
 #include "ast/process_logic.h"
+#include "ast/visitor_helper.h"
 
 using std::set;
+using std::multimap;
+using std::make_pair;
 using std::next;
 using std::string;
 
@@ -107,7 +112,8 @@ void AmbiguityHandler::ProcessNode(
 void DoubleHyphenHandler::ProcessNode(
     KDoubleHyphen::SharedPtr double_hyphen_node) {
   // change the type of all elements after `--` to `OPERAND`.
-  TerminalTypeModifier<Argument> type_modifier;
+  TerminalTypeModifier<Argument> callable;
+  auto type_modifier = GenerateVisitor<TerminalVisitor>(&callable);
   auto &conn = double_hyphen_node->node_connection;
   for (auto iter = next(conn.this_iter_);
        iter != conn.children_of_parent_ptr_->end(); ++iter) {
@@ -121,7 +127,7 @@ FocusedElementCollector::FocusedElementCollector(
     OptionBindingRecorder *recorder_ptr)
     : recorder_ptr_(recorder_ptr) {/* empty */}
 
-set<Token> FocusedElementCollector::GetFocusedElement() {
+set<Token> FocusedElementCollector::GetFocusedElements() {
   set<Token> focused_elements = recorder_ptr_->GetRepresentativeOptions();
   set<Token> bound_arguments = recorder_ptr_->GetBoundArguments();
   // include unbound arguments.
@@ -131,6 +137,42 @@ set<Token> FocusedElementCollector::GetFocusedElement() {
     }
   }
   return focused_elements;
+}
+
+set<Token> FocusedElementCollector::GetOneOrMoreMarkedElements() {
+  set<Token> bound_arguments = recorder_ptr_->GetBoundArguments();
+  set<Token> oom_elements;
+  // build reverse mapping.
+  multimap<Token, Token> bound_argument_to_rep_option;
+  for (const auto &map_pair
+       : recorder_ptr_->representative_option_to_property_) {
+    bound_argument_to_rep_option.insert(
+        make_pair(map_pair.second.option_argument_, map_pair.first));
+  }
+  // process recorded elements.
+  auto end_iter = bound_argument_to_rep_option.end();
+  for (const Token &element : node_recorder_.recorded_elements_) {
+    auto range = bound_argument_to_rep_option.equal_range(element);
+    if (range.first == end_iter) {
+      // `element` is not a bound argument.
+      if (element.type() == TerminalType::ARGUMENT) {
+        // unbound argument.
+        oom_elements.insert(element);
+      }
+      if (recorder_ptr_->OptionIsBound(element)) {
+        // add bound option.
+        oom_elements.insert(
+            recorder_ptr_->option_to_representative_option_[element]);
+      }
+    } else {
+      // `element` is bound argument.
+      for (auto iter = range.first; iter != range.second; ++iter) {
+        // add bound option.
+        oom_elements.insert(iter->second);
+      }
+    }
+  }
+  return oom_elements;
 }
 
 void FocusedElementCollector::ProcessNode(PosixOption::SharedPtr node) {
@@ -151,6 +193,11 @@ void FocusedElementCollector::ProcessNode(Argument::SharedPtr node) {
 
 void FocusedElementCollector::ProcessNode(Command::SharedPtr node) {
   operand_candidates_.insert(node->token_);
+}
+
+void FocusedElementCollector::ProcessNode(LogicOneOrMore::SharedPtr node) {
+  auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_);
+  node->Accept(&visitor);
 }
 
 BoundArgumentCleaner::BoundArgumentCleaner(

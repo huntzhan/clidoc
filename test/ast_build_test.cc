@@ -75,6 +75,8 @@ Options:
         "shoot",
       },
       info.focused_commands_);
+  CheckToken({"--test"}, info.focused_oom_bound_options_);
+  CheckToken({"<name>"}, info.focused_oom_arguments_);
 }
 
 }  // namespace clidoc

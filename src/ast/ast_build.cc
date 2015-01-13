@@ -13,7 +13,9 @@ using std::string;
 
 namespace clidoc {
 
-void CodeGenInfo::PostProcessedAST(set<Token> *focused_elements_ptr) {
+void CodeGenInfo::PostProcessedAST(
+    set<Token> *focused_elements_ptr,
+    set<Token> *oom_elements_ptr) {
   // 1. remove duplicated nodes.
   StructureOptimizer structure_optimizer;
   doc_node_->Accept(&structure_optimizer);
@@ -26,7 +28,8 @@ void CodeGenInfo::PostProcessedAST(set<Token> *focused_elements_ptr) {
   // 4. collect focused elements.
   FocusedElementCollector focused_element_collector(&recorder_);
   doc_node_->Accept(&focused_element_collector);
-  *focused_elements_ptr = focused_element_collector.GetFocusedElement();
+  *focused_elements_ptr = focused_element_collector.GetFocusedElements();
+  *oom_elements_ptr = focused_element_collector.GetOneOrMoreMarkedElements();
   // 5.TODO(huntzhan): issue #17.
   // 6. Remove bound arguments.
   auto bound_arguments = recorder_.GetBoundArguments();
@@ -38,11 +41,12 @@ void CodeGenInfo::PostProcessedAST(set<Token> *focused_elements_ptr) {
 
 void CodeGenInfo::Prepare(const std::string &raw_doc) {
   set<Token> focused_elements;
+  set<Token> oom_elements;
   DocPreprocessor doc_preprocessor;
   ParserProxy parser_proxy;
   // setup `doc_node_`, `recorder_`.
   parser_proxy.Parse(raw_doc, &doc_node_, &recorder_);
-  PostProcessedAST(&focused_elements);
+  PostProcessedAST(&focused_elements, &oom_elements);
   // setup `doc_text_`.
   doc_text_ = doc_preprocessor.PreprocessRawDocForCodeGen(raw_doc);
   // setup focused elements/
@@ -60,6 +64,16 @@ void CodeGenInfo::Prepare(const std::string &raw_doc) {
         break;
       default:
         focused_unbound_options_.insert(element);
+    }
+  }
+  // setup `focused_oom_*`.
+  for (const Token &element : oom_elements) {
+    switch (element.type()) {
+      case TerminalType::ARGUMENT:
+        focused_oom_arguments_.insert(element);
+        break;
+      default:
+        focused_oom_bound_options_.insert(element);
     }
   }
 }

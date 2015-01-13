@@ -8,17 +8,9 @@
 #include "ast/ast_nodes.h"
 #include "ast/option_record.h"
 #include "ast/parser_proxy.h"
+#include "ast/visitor_helper.h"
 
 namespace clidoc {
-
-template <typename TargetType>
-struct NodeTypeModifier {
-  // Could be invoked other visitors.
-  template <typename TerminalTypeSharedPtr>
-  static void ChangeTerminalType(TerminalTypeSharedPtr node);
-  template <typename NonTerminalTypeSharedPtr>
-  static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
-};
 
 class StructureOptimizer : public NodeVisitorInterface {
  public:
@@ -44,19 +36,11 @@ class StructureOptimizer : public NodeVisitorInterface {
   SharedPtrNodeContainer children_of_child_;
 };
 
-// class for `DoubleHyphenHandler`.
 template <typename TargetType>
-class TerminalTypeModifier : public NodeVisitorInterface {
+class TerminalTypeModifier {
  public:
-  using NodeVisitorInterface::ProcessNode;
-
-  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
-  void ProcessNode(KOptions::SharedPtr node) override;
-  void ProcessNode(PosixOption::SharedPtr node) override;
-  void ProcessNode(GroupedOptions::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
+  template <typename NonTerminalTypeSharedPtr>
+  void ProcessNode(NonTerminalTypeSharedPtr node);
 };
 
 class DoubleHyphenHandler : public NodeVisitorInterface {
@@ -78,22 +62,32 @@ class AmbiguityHandler : public NodeVisitorInterface {
   OptionBindingRecorder *recorder_ptr_;
 };
 
+class NodeRecorder {
+ public:
+  template <typename NonTerminalTypeSharedPtr>
+  void ProcessNode(NonTerminalTypeSharedPtr node);
+  std::set<Token> recorded_elements_;
+};
+
 class FocusedElementCollector : public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
 
   explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
-  std::set<Token> GetFocusedElement();
+  std::set<Token> GetFocusedElements();
+  std::set<Token> GetOneOrMoreMarkedElements();
 
   // See discussion in issue #5.
   void ProcessNode(PosixOption::SharedPtr node) override;
   void ProcessNode(GnuOption::SharedPtr node) override;
   void ProcessNode(Argument::SharedPtr node) override;
   void ProcessNode(Command::SharedPtr node) override;
+  void ProcessNode(LogicOneOrMore::SharedPtr node) override;
 
  private:
   OptionBindingRecorder *recorder_ptr_;
   std::set<Token> operand_candidates_;
+  NodeRecorder node_recorder_;
 };
 
 class BoundArgumentCleaner : public NodeVisitorInterface {
@@ -180,64 +174,16 @@ void StructureOptimizer::ConditionalRemoveParent(
 }
 
 template <typename TargetType>
-template <typename TerminalTypeSharedPtr>
-void NodeTypeModifier<TargetType>::ChangeTerminalType(
-    TerminalTypeSharedPtr node) {
-  auto new_node = TargetType::Init(node->token_.value());
-  node->node_connection.ReplacedWith(new_node);
-}
-
-template <typename TargetType>
 template <typename NonTerminalTypeSharedPtr>
-void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
+void TerminalTypeModifier<TargetType>::ProcessNode(
     NonTerminalTypeSharedPtr node) {
-  auto new_node = TargetType::Init();
-  for (auto child : node->children_) {
-    new_node->AddChild(child);
-  }
-  node->node_connection.ReplacedWith(new_node);
-}
-
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    KDoubleHyphen::SharedPtr node) {
   NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    KOptions::SharedPtr node) {
-  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
-}
-
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    PosixOption::SharedPtr node) {
-  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
-}
-
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    GroupedOptions::SharedPtr node) {
-  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
-}
-
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    GnuOption::SharedPtr node) {
-  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
-}
-
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    Argument::SharedPtr node) {
-  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
-}
-
-template <typename TargetType>
-void TerminalTypeModifier<TargetType>::ProcessNode(
-    Command::SharedPtr node) {
-  NodeTypeModifier<TargetType>::ChangeTerminalType(node);
+template <typename NonTerminalTypeSharedPtr>
+void NodeRecorder::ProcessNode(
+    NonTerminalTypeSharedPtr node) {
+  recorded_elements_.insert(node->token_);
 }
 
 }  // namespace clidoc
