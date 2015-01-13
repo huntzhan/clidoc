@@ -1,10 +1,45 @@
 #ifndef SRC_AST_VISITOR_HELPER_H_
 #define SRC_AST_VISITOR_HELPER_H_
 
+#include <type_traits>
+
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
 
 namespace clidoc {
+
+template <typename NodeSharedPtr, typename NodeType>
+struct node_is {
+  static const bool value = std::is_same<
+      typename NodeSharedPtr::element_type,
+      NodeType>::value;
+};
+
+template <typename... Types>
+struct node_is_not_;
+
+template <typename NodeSharedPtr, typename NodeType>
+struct node_is_not_<NodeSharedPtr, NodeType> {
+  using type = typename std::conditional<
+      node_is<NodeSharedPtr, NodeType>::value,
+      std::false_type,
+      std::true_type>::type;
+};
+
+template <typename NodeSharedPtr, typename NodeType, typename... RemainTypes>
+struct node_is_not_<NodeSharedPtr, NodeType, RemainTypes...> {
+  using type = typename std::conditional<
+      node_is<NodeSharedPtr, NodeType>::value,
+      std::false_type,
+      typename node_is_not_<NodeSharedPtr, RemainTypes...>::type>::type;
+};
+
+template <typename NodeSharedPtr, typename... NodeTypes>
+struct node_is_not {
+  static const bool value = std::is_same<
+      typename node_is_not_<NodeSharedPtr, NodeTypes...>::type,
+      std::true_type>::value;
+};
 
 template <typename Callable>
 struct NodeTypeModifier {
