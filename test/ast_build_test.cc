@@ -15,6 +15,7 @@ TEST(ParserProxyTest, Parse) {
 R"doc(
 Usage:
   naval_fate.py -abc -- --whatever
+  naval_fate.py --test <multiple>...
   naval_fate.py ship new <name>...
   naval_fate.py ship <name> move <x> <y> [--speed=<kn>]
   naval_fate.py ship shoot <x> <y>
@@ -24,6 +25,7 @@ Usage:
 
 Options:
   -a -b -c                     # Test.
+  --test <multiple>
   -h --help                    # Show this screen.
   --version                    # Show version.
   --speed=<kn> [default: "10"] # Speed in knots.
@@ -43,7 +45,7 @@ Options:
     }
     EXPECT_EQ(expected, values);
   };
-  CheckToken({"--speed"}, info.focused_bound_options_);
+  CheckToken({"--speed", "--test"}, info.focused_bound_options_);
   CheckToken(
       {
         "--drifting",

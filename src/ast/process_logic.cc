@@ -15,12 +15,14 @@ namespace clidoc {
 
 void StructureOptimizer::ProcessNode(
     LogicAnd::SharedPtr node) {
-  RemoveDuplicatedNodes(node);
+  ConditionalRemoveChild(node);
+  ConditionalRemoveParent(node);
 }
 
 void StructureOptimizer::ProcessNode(
     LogicXor::SharedPtr node) {
-  RemoveDuplicatedNodes(node);
+  ConditionalRemoveChild(node);
+  ConditionalRemoveParent(node);
   // transfrom to `LogicAnd` when there's only one child.
   if (node->GetSizeOfChildren() == 1) {
     NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
@@ -29,7 +31,8 @@ void StructureOptimizer::ProcessNode(
 
 void StructureOptimizer::ProcessNode(
     LogicOr::SharedPtr node) {
-  RemoveDuplicatedNodes(node);
+  ConditionalRemoveChild(node);
+  ConditionalRemoveParent(node);
   // transfrom to `LogicAnd` when there's only one child.
   if (node->GetSizeOfChildren() == 1) {
     NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
@@ -38,12 +41,14 @@ void StructureOptimizer::ProcessNode(
 
 void StructureOptimizer::ProcessNode(
     LogicOptional::SharedPtr node) {
-  RemoveDuplicatedNodes(node);
+  ConditionalRemoveChild(node);
+  ConditionalRemoveParent(node);
 }
 
 void StructureOptimizer::ProcessNode(
     LogicOneOrMore::SharedPtr node) {
-  RemoveDuplicatedNodes(node);
+  ConditionalRemoveChild(node);
+  ConditionalRemoveParent(node);
 }
 
 AmbiguityHandler::AmbiguityHandler(OptionBindingRecorder *recorder_ptr)

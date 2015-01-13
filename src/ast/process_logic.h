@@ -36,7 +36,11 @@ class StructureOptimizer : public NodeVistorInterface {
                       NodeTypeOfChild child_node);
 
   template <typename NonTerminalTypeSharedPtr>
-  void RemoveDuplicatedNodes(NonTerminalTypeSharedPtr node);
+  void ConditionalRemoveChild(NonTerminalTypeSharedPtr node);
+
+  template <typename NonTerminalTypeSharedPtr>
+  void ConditionalRemoveParent(NonTerminalTypeSharedPtr node);
+
   SharedPtrNodeContainer children_of_child_;
 };
 
@@ -137,12 +141,18 @@ bool StructureOptimizer::CanRemoveChild(
 }
 
 template <typename NonTerminalTypeSharedPtr>
-void StructureOptimizer::RemoveDuplicatedNodes(
+void StructureOptimizer::ConditionalRemoveChild(
     NonTerminalTypeSharedPtr node) {
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
-  for (auto child_node : node->children_) {
+  // `child_node` must be a reference, since the value of `child_node` in
+  // `node->children_` might change.
+  for (auto &child_node : node->children_) {
     child_node->Accept(this);
+    if (!child_node) {
+      // child node has been removed.
+      continue;
+    }
     if (CanRemoveChild(node, child_node)) {
       // same non-terminal nodes.
       optimized_children.insert(
@@ -159,6 +169,14 @@ void StructureOptimizer::RemoveDuplicatedNodes(
     node->AddChild(child_node);
   }
   children_of_child_ = optimized_children;
+}
+
+template <typename NonTerminalTypeSharedPtr>
+void StructureOptimizer::ConditionalRemoveParent(
+    NonTerminalTypeSharedPtr node) {
+  if (node->children_.size() == 0) {
+    *node->node_connection.this_iter_ = nullptr;
+  }
 }
 
 template <typename TargetType>
