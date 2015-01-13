@@ -65,8 +65,7 @@ class ParserProxy {
   void Parse(
       const std::string &doc,
       Doc::SharedPtr *doc_node_ptr,
-      OptionBindingRecorder *recorder_ptr,
-      std::set<Token> *focused_elements_ptr);
+      OptionBindingRecorder *recorder_ptr);
 
  private:
   FRIEND_TEST(ParserProxyTest, PreprocessRawDoc);
@@ -77,10 +76,6 @@ class ParserProxy {
       const std::string &preprocessed_doc,
       Doc::SharedPtr *doc_node_ptr,
       OptionBindingRecorder *recorder_ptr);
-  void PostProcessedAST(
-      Doc::SharedPtr doc_node,
-      OptionBindingRecorder *recorder_ptr,
-      std::set<Token> *focused_elements_ptr);
 };
 
 }  // namespace clidoc

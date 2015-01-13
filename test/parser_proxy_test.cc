@@ -1,8 +1,5 @@
 
-// for printing parsing tree.
-#include <iostream>
 #include <string>
-#include <set>
 #include "gtest/gtest.h"
 
 #include "ast/ast_node_interface.h"
@@ -11,7 +8,6 @@
 #include "ast/option_record.h"
 
 using std::string;
-using std::set;
 
 namespace clidoc {
 
@@ -242,60 +238,6 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
   EXPECT_EQ("42", rop_ptr->default_value_);
   rop_ptr = &recorder.representative_option_to_property_[option_help];
   EXPECT_EQ("43", rop_ptr->default_value_);
-}
-
-TEST(ParserProxyTest, Parse) {
-  string input =
-R"doc(
-Usage:
-  naval_fate.py -abc -- --whatever
-  naval_fate.py ship new <name>...
-  naval_fate.py ship <name> move <x> <y> [--speed=<kn>]
-  naval_fate.py ship shoot <x> <y>
-  naval_fate.py mine (set|remove) <x> <y> [--moored | --drifting]
-  naval_fate.py (-h | --help)
-  naval_fate.py --version
-
-Options:
-  -a -b -c                     # Test.
-  -h --help                    # Show this screen.
-  --version                    # Show version.
-  --speed=<kn> [default: "10"] # Speed in knots.
-  --moored                     # Moored (anchored) mine.
-  --drifting                   # Drifting mine.
-)doc";
-
-  Doc::SharedPtr doc_node;
-  OptionBindingRecorder recorder;
-  ParserProxy proxy;
-  set<Token> focused_elements;
-  proxy.Parse(input, &doc_node, &recorder, &focused_elements);
-
-  // for (auto token : focused_elements) {
-  //   std::cout << token.value() << std::endl;
-  // }
-  // std::cout << doc_node->ToString(0);
-
-  // test focused_elements.
-  auto iter = focused_elements.begin();
-  EXPECT_EQ("--drifting", (iter++)->value());
-  EXPECT_EQ("--help",     (iter++)->value());
-  EXPECT_EQ("--moored",   (iter++)->value());
-  EXPECT_EQ("--speed",    (iter++)->value());
-  EXPECT_EQ("--version",  (iter++)->value());
-  EXPECT_EQ("--whatever", (iter++)->value());
-  EXPECT_EQ("-a",         (iter++)->value());
-  EXPECT_EQ("<name>",     (iter++)->value());
-  EXPECT_EQ("<x>",        (iter++)->value());
-  EXPECT_EQ("<y>",        (iter++)->value());
-  EXPECT_EQ("mine",       (iter++)->value());
-  EXPECT_EQ("move",       (iter++)->value());
-  EXPECT_EQ("new",        (iter++)->value());
-  EXPECT_EQ("remove",     (iter++)->value());
-  EXPECT_EQ("set",        (iter++)->value());
-  EXPECT_EQ("ship",       (iter++)->value());
-  EXPECT_EQ("shoot",      (iter++)->value());
-  EXPECT_EQ(iter, focused_elements.end());
 }
 
 }  // namespace clidoc

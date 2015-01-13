@@ -16,6 +16,6 @@ set_target_properties(
 target_link_libraries (
   generated_parser
   smart_ptr_interface generated_scanner_for_doc)
-target_link_libraries (process_logic parser_proxy)
+target_link_libraries (process_logic option_record)
 target_link_libraries (parser_proxy generated_parser)
-target_link_libraries (ast_build parser_proxy)
+target_link_libraries (ast_build parser_proxy process_logic)

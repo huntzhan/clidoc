@@ -23,9 +23,13 @@ target_link_libraries (
   tokenizer_for_doc_test
   tokenizer generated_scanner_for_doc)
 
+add_executable (ast_build_test ast_build_test.cc)
+target_link_libraries (ast_build_test ast_build)
+
 add_gtest (parser_proxy_test)
 add_gtest (process_logic_test)
 add_gtest (smart_ptr_test)
 add_gtest (ast_nodes_test)
 add_gtest (tokenizer_for_argv_test)
 add_gtest (tokenizer_for_doc_test)
+add_gtest (ast_build_test)

@@ -12,15 +12,20 @@ namespace clidoc {
 
 // 1. Build AST.
 // 2. Collect necessary information for code gen procedure.
-struct CodeGenInfo {
+class CodeGenInfo {
+ public:
   void Prepare(const std::string &raw_doc);
 
-  Doc::SharedPtr doc_node;
-  OptionBindingRecorder recorder;
-  std::set<Token> focused_bound_options;
-  std::set<Token> focused_unbound_options;
-  std::set<Token> focused_arguments;
-  std::string doc_text;
+  Doc::SharedPtr doc_node_;
+  OptionBindingRecorder recorder_;
+  std::set<Token> focused_bound_options_;
+  std::set<Token> focused_unbound_options_;
+  std::set<Token> focused_arguments_;
+  std::set<Token> focused_commands_;
+  std::string doc_text_;
+
+ private:
+  void PostProcessedAST(std::set<Token> *focused_elements_ptr);
 };
 
 }  // namespace clidoc
