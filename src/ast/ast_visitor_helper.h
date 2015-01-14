@@ -61,7 +61,7 @@ struct VisitorProcessLogic {
 };
 
 template <typename Callable>
-class TerminalVisitor : virtual public NodeVisitorInterface {
+class TerminalVisitor : public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
 
@@ -80,7 +80,7 @@ class TerminalVisitor : virtual public NodeVisitorInterface {
 };
 
 template <typename Callable>
-class NonTerminalVisitor : virtual public NodeVisitorInterface {
+class NonTerminalVisitor : public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
 
