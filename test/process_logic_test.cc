@@ -67,7 +67,7 @@ TEST(process_logic, DoubleHyphenHandler) {
             and_1->ToString());
 }
 
-TEST(process_logic, FocusedElementCollector) {
+TEST(process_logic, FocusedElementCollectorLogic) {
   auto and_1 = LogicAnd::Init();
   and_1->AddChild(PosixOption::Init("-c"));
   and_1->AddChild(Argument::Init("ARG1"));
@@ -84,9 +84,10 @@ TEST(process_logic, FocusedElementCollector) {
       Token(TerminalType::ARGUMENT, "FILE"));
   recorder.ProcessCachedBindings();
 
-  FocusedElementCollector visitor(&recorder);
+  FocusedElementCollectorLogic logic(&recorder);
+  auto visitor = GenerateVisitor<TerminalVisitor>(&logic);
   and_1->Accept(&visitor);
-  auto focused_elements = visitor.GetFocusedElements();
+  auto focused_elements = logic.GetFocusedElements();
 
   EXPECT_EQ(3u, focused_elements.size());
   auto iter = focused_elements.begin();

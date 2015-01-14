@@ -64,24 +64,30 @@ class NodeRecorderLogic : public VisitorProcessLogic {
   std::set<Token> recorded_elements_;
 };
 
-class FocusedElementCollector : public NodeVisitorInterface {
+class FocusedElementCollectorLogic : public VisitorProcessLogic {
  public:
-  using NodeVisitorInterface::ProcessNode;
-
-  explicit FocusedElementCollector(OptionBindingRecorder *recorder_ptr);
+  explicit FocusedElementCollectorLogic(OptionBindingRecorder *recorder_ptr);
   std::set<Token> GetFocusedElements();
-  std::set<Token> GetOneOrMoreMarkedElements();
 
-  // See discussion in issue #5.
-  void ProcessNode(PosixOption::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
-  void ProcessNode(LogicOneOrMore::SharedPtr node) override;
+  template <typename TerminalTypeSharedPtr>
+  void ProcessNode(TerminalTypeSharedPtr node);
 
  private:
   OptionBindingRecorder *recorder_ptr_;
   std::set<Token> operand_candidates_;
+};
+
+class OneOrMoreMarkedElementCollectorLogic : public VisitorProcessLogic {
+ public:
+  explicit OneOrMoreMarkedElementCollectorLogic(
+      OptionBindingRecorder *recorder_ptr);
+  std::set<Token> GetOneOrMoreMarkedElements();
+
+  template <typename NonTerminalTypeSharedPtr>
+  void ProcessNode(NonTerminalTypeSharedPtr node);
+
+ private:
+  OptionBindingRecorder *recorder_ptr_;
   NodeRecorderLogic node_recorder_logic_;
 };
 
@@ -191,6 +197,32 @@ template <typename NonTerminalTypeSharedPtr>
 void NodeRecorderLogic::ProcessNode(
     NonTerminalTypeSharedPtr node) {
   recorded_elements_.insert(node->token_);
+}
+
+template <typename TerminalTypeSharedPtr>
+void FocusedElementCollectorLogic::ProcessNode(
+    TerminalTypeSharedPtr node) {
+  if (node_is_one_of<TerminalTypeSharedPtr,
+                     PosixOption, GnuOption>::value) {
+    if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
+      recorder_ptr_->RecordBinding(node->token_, Token());
+    }
+  }
+  if (node_is_one_of<TerminalTypeSharedPtr,
+                     Argument, Command>::value) {
+    operand_candidates_.insert(node->token_);
+  }
+}
+
+template <typename NonTerminalTypeSharedPtr>
+void OneOrMoreMarkedElementCollectorLogic::ProcessNode(
+    NonTerminalTypeSharedPtr node) {
+  if (node_is<NonTerminalTypeSharedPtr, LogicOneOrMore>::value) {
+    auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_logic_);
+    node->Accept(&visitor);
+  } else {
+    ApplyVisitorToChildren(node, visitor_ptr_);
+  }
 }
 
 }  // namespace clidoc

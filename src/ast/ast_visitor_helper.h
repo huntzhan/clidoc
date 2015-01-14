@@ -101,6 +101,16 @@ Visitor<Callable> GenerateVisitor(Callable *callable_ptr) {
   return Visitor<Callable>(callable_ptr);
 }
 
+template <typename NonTerminalTypeSharedPtr>
+void ApplyVisitorToChildren(
+    NonTerminalTypeSharedPtr node,
+    NodeVisitorInterface *visitor_ptr) {
+  auto cache_children = node->children_;
+  for (auto child_node : cache_children) {
+    child_node->Accept(visitor_ptr);
+  }
+}
+
 }  // namespace clidoc
 
 namespace clidoc {

@@ -85,11 +85,24 @@ void DoubleHyphenHandler::ProcessNode(
   conn.children_of_parent_ptr_->erase(conn.this_iter_);
 }
 
-FocusedElementCollector::FocusedElementCollector(
+BoundArgumentCleaner::BoundArgumentCleaner(
+    const set<Token> &bound_arguments)
+    : bound_arguments_(bound_arguments) { /* empty */ }
+
+void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node) {
+  auto &conn = node->node_connection;
+  if (bound_arguments_.find(node->token_) != bound_arguments_.end()) {
+    // is bound argument.
+    conn.children_of_parent_ptr_->erase(conn.this_iter_);
+  }
+}
+
+FocusedElementCollectorLogic::FocusedElementCollectorLogic(
     OptionBindingRecorder *recorder_ptr)
     : recorder_ptr_(recorder_ptr) {/* empty */}
 
-set<Token> FocusedElementCollector::GetFocusedElements() {
+set<Token> FocusedElementCollectorLogic::GetFocusedElements() {
+  recorder_ptr_->ProcessCachedBindings();
   set<Token> focused_elements = recorder_ptr_->GetRepresentativeOptions();
   set<Token> bound_arguments = recorder_ptr_->GetBoundArguments();
   // include unbound arguments.
@@ -101,7 +114,11 @@ set<Token> FocusedElementCollector::GetFocusedElements() {
   return focused_elements;
 }
 
-set<Token> FocusedElementCollector::GetOneOrMoreMarkedElements() {
+OneOrMoreMarkedElementCollectorLogic::OneOrMoreMarkedElementCollectorLogic(
+    OptionBindingRecorder *recorder_ptr)
+    : recorder_ptr_(recorder_ptr) {/* empty */}
+
+set<Token> OneOrMoreMarkedElementCollectorLogic::GetOneOrMoreMarkedElements() {
   set<Token> bound_arguments = recorder_ptr_->GetBoundArguments();
   set<Token> oom_elements;
   // build reverse mapping.
@@ -137,41 +154,5 @@ set<Token> FocusedElementCollector::GetOneOrMoreMarkedElements() {
   return oom_elements;
 }
 
-void FocusedElementCollector::ProcessNode(PosixOption::SharedPtr node) {
-  if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
-    recorder_ptr_->RecordBinding(node->token_, Token());
-  }
-}
-
-void FocusedElementCollector::ProcessNode(GnuOption::SharedPtr node) {
-  if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
-    recorder_ptr_->RecordBinding(node->token_, Token());
-  }
-}
-
-void FocusedElementCollector::ProcessNode(Argument::SharedPtr node) {
-  operand_candidates_.insert(node->token_);
-}
-
-void FocusedElementCollector::ProcessNode(Command::SharedPtr node) {
-  operand_candidates_.insert(node->token_);
-}
-
-void FocusedElementCollector::ProcessNode(LogicOneOrMore::SharedPtr node) {
-  auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_logic_);
-  node->Accept(&visitor);
-}
-
-BoundArgumentCleaner::BoundArgumentCleaner(
-    const set<Token> &bound_arguments)
-    : bound_arguments_(bound_arguments) { /* empty */ }
-
-void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node) {
-  auto &conn = node->node_connection;
-  if (bound_arguments_.find(node->token_) != bound_arguments_.end()) {
-    // is bound argument.
-    conn.children_of_parent_ptr_->erase(conn.this_iter_);
-  }
-}
 
 }  // namespace clidoc

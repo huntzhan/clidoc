@@ -22,23 +22,37 @@ void CodeGenInfo::PostProcessedAST(
   auto structure_optimizer = GenerateVisitor<NonTerminalVisitor>(
       &structure_optimizer_logic);
   doc_node_->Accept(&structure_optimizer);
+
   // 2. process `--`.
   DoubleHyphenHandler double_dash_handler;
   doc_node_->Accept(&double_dash_handler);
+
   // 3. handle ambiguous syntax.
   AmbiguityHandler ambiguity_handler(&recorder_);
   doc_node_->Accept(&ambiguity_handler);
+
   // 4. collect focused elements.
-  FocusedElementCollector focused_element_collector(&recorder_);
+  FocusedElementCollectorLogic focused_element_collector_logic(&recorder_);
+  auto focused_element_collector =
+      GenerateVisitor<TerminalVisitor>(&focused_element_collector_logic);
   doc_node_->Accept(&focused_element_collector);
-  *focused_elements_ptr = focused_element_collector.GetFocusedElements();
-  *oom_elements_ptr = focused_element_collector.GetOneOrMoreMarkedElements();
-  // 5.TODO(huntzhan): issue #17.
-  // 6. Remove bound arguments.
+  *focused_elements_ptr = focused_element_collector_logic.GetFocusedElements();
+
+  // 5. collect OOM information.
+  OneOrMoreMarkedElementCollectorLogic oom_collector_logic(&recorder_);
+  auto oom_collector =
+      GenerateVisitor<NonTerminalVisitor>(&oom_collector_logic);
+  doc_node_->Accept(&oom_collector);
+  *oom_elements_ptr = oom_collector_logic.GetOneOrMoreMarkedElements();
+
+  // 6.TODO(huntzhan): issue #17.
+
+  // 7. Remove bound arguments.
   auto bound_arguments = recorder_.GetBoundArguments();
   BoundArgumentCleaner bound_argument_cleaner(bound_arguments);
   doc_node_->Accept(&bound_argument_cleaner);
-  // 7. remove duplicated nodes again.
+
+  // 8. remove duplicated nodes again.
   doc_node_->Accept(&structure_optimizer);
 }
 
