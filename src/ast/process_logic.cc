@@ -154,5 +154,8 @@ set<Token> OneOrMoreMarkedElementCollectorLogic::GetOneOrMoreMarkedElements() {
   return oom_elements;
 }
 
+OneOrMoreNodeInsertLogic::OneOrMoreNodeInsertLogic(
+    const set<Token> &focused_oom_bound_options)
+    : focused_oom_bound_options_(focused_oom_bound_options) { /* empty */ }
 
 }  // namespace clidoc

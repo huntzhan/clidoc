@@ -14,9 +14,43 @@ using std::string;
 
 namespace clidoc {
 
-void CodeGenInfo::PostProcessedAST(
+void CodeGenInfo::PrepareFocusedElements(
     set<Token> *focused_elements_ptr,
     set<Token> *oom_elements_ptr) {
+  // setup focused elements/
+  for (const Token &element : *focused_elements_ptr) {
+    if (recorder_.OptionIsBound(element)) {
+      focused_bound_options_.insert(element);
+      continue;
+    }
+    switch (element.type()) {
+      case TerminalType::ARGUMENT:
+        focused_arguments_.insert(element);
+        break;
+      case TerminalType::COMMAND:
+        focused_commands_.insert(element);
+        break;
+      default:
+        focused_unbound_options_.insert(element);
+    }
+  }
+  // setup `focused_oom_*`.
+  for (const Token &element : *oom_elements_ptr) {
+    switch (element.type()) {
+      case TerminalType::ARGUMENT:
+        focused_oom_arguments_.insert(element);
+        break;
+      default:
+        focused_oom_bound_options_.insert(element);
+    }
+  }
+}
+
+void CodeGenInfo::PostProcessedAST() {
+  // uncategorized focused elements.
+  set<Token> focused_elements;
+  set<Token> oom_elements;
+
   // 1. remove duplicated nodes.
   StructureOptimizerLogic structure_optimizer_logic;
   auto structure_optimizer = GenerateVisitor<NonTerminalVisitor>(
@@ -36,14 +70,21 @@ void CodeGenInfo::PostProcessedAST(
   auto focused_element_collector =
       GenerateVisitor<TerminalVisitor>(&focused_element_collector_logic);
   doc_node_->Accept(&focused_element_collector);
-  *focused_elements_ptr = focused_element_collector_logic.GetFocusedElements();
+  focused_elements = focused_element_collector_logic.GetFocusedElements();
 
-  // 5. collect OOM information.
+  // 5. collect OOM information and insert missing OOM nodes.
+  // 5.1 collect information.
   OneOrMoreMarkedElementCollectorLogic oom_collector_logic(&recorder_);
   auto oom_collector =
       GenerateVisitor<NonTerminalVisitor>(&oom_collector_logic);
   doc_node_->Accept(&oom_collector);
-  *oom_elements_ptr = oom_collector_logic.GetOneOrMoreMarkedElements();
+  oom_elements = oom_collector_logic.GetOneOrMoreMarkedElements();
+  // setup focused elements here!
+  PrepareFocusedElements(&focused_elements, &oom_elements);
+  // 5.2 insert OOM nodes.
+  OneOrMoreNodeInsertLogic oom_insert_logic(focused_oom_bound_options_);
+  auto oom_inserter = GenerateVisitor<TerminalVisitor>(&oom_insert_logic);
+  doc_node_->Accept(&oom_inserter);
 
   // 6.TODO(huntzhan): issue #17.
 
@@ -57,42 +98,13 @@ void CodeGenInfo::PostProcessedAST(
 }
 
 void CodeGenInfo::Prepare(const std::string &raw_doc) {
-  set<Token> focused_elements;
-  set<Token> oom_elements;
   DocPreprocessor doc_preprocessor;
   ParserProxy parser_proxy;
-  // setup `doc_node_`, `recorder_`.
-  parser_proxy.Parse(raw_doc, &doc_node_, &recorder_);
-  PostProcessedAST(&focused_elements, &oom_elements);
   // setup `doc_text_`.
   doc_text_ = doc_preprocessor.PreprocessRawDocForCodeGen(raw_doc);
-  // setup focused elements/
-  for (const Token &element : focused_elements) {
-    if (recorder_.OptionIsBound(element)) {
-      focused_bound_options_.insert(element);
-      continue;
-    }
-    switch (element.type()) {
-      case TerminalType::ARGUMENT:
-        focused_arguments_.insert(element);
-        break;
-      case TerminalType::COMMAND:
-        focused_commands_.insert(element);
-        break;
-      default:
-        focused_unbound_options_.insert(element);
-    }
-  }
-  // setup `focused_oom_*`.
-  for (const Token &element : oom_elements) {
-    switch (element.type()) {
-      case TerminalType::ARGUMENT:
-        focused_oom_arguments_.insert(element);
-        break;
-      default:
-        focused_oom_bound_options_.insert(element);
-    }
-  }
+  // setup `doc_node_`, `recorder_`.
+  parser_proxy.Parse(raw_doc, &doc_node_, &recorder_);
+  PostProcessedAST();
 }
 
 }  // namespace clidoc

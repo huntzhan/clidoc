@@ -30,9 +30,10 @@ class CodeGenInfo {
   std::string doc_text_;
 
  private:
-  void PostProcessedAST(
+  void PrepareFocusedElements(
       std::set<Token> *focused_elements_ptr,
       std::set<Token> *oom_elements_ptr);
+  void PostProcessedAST();
 };
 
 }  // namespace clidoc

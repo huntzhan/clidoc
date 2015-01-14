@@ -91,6 +91,18 @@ class OneOrMoreMarkedElementCollectorLogic : public VisitorProcessLogic {
   NodeRecorderLogic node_recorder_logic_;
 };
 
+class OneOrMoreNodeInsertLogic : public VisitorProcessLogic {
+ public:
+  OneOrMoreNodeInsertLogic(
+    const std::set<Token> &focused_oom_bound_options);
+
+  template <typename TerminalTypeSharedPtr>
+  void ProcessNode(TerminalTypeSharedPtr node);
+
+ private:
+  const std::set<Token> &focused_oom_bound_options_;
+};
+
 class BoundArgumentCleaner : public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
@@ -222,6 +234,21 @@ void OneOrMoreMarkedElementCollectorLogic::ProcessNode(
     node->Accept(&visitor);
   } else {
     ApplyVisitorToChildren(node, visitor_ptr_);
+  }
+}
+
+template <typename TerminalTypeSharedPtr>
+void OneOrMoreNodeInsertLogic::ProcessNode(
+    TerminalTypeSharedPtr node) {
+  if (node_is_not<TerminalTypeSharedPtr,
+                  PosixOption, GnuOption>::value) {
+    return;
+  }
+  if (focused_oom_bound_options_.find(node->token_)
+      != focused_oom_bound_options_.end()) {
+    auto logic_one_or_more = LogicOneOrMore::Init();
+    node->node_connection.ReplacedWith(logic_one_or_more);
+    logic_one_or_more->AddChild(node);
   }
 }
 
