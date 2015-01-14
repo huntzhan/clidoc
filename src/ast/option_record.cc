@@ -208,6 +208,12 @@ void OptionBindingRecorder::ProcessCachedBindings() {
           &GetBoundProperty(representative_option));
     }
   }
+  option_to_option_argument_cache_.clear();
+}
+
+void OptionBindingRecorder::RecordSingleOption(const Token &option) {
+  RecordBinding(option, Token());
+  ProcessCachedBindings();
 }
 
 bool OptionBindingRecorder::OptionIsRecorded(const Token &option) const {

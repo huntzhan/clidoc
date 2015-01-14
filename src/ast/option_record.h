@@ -70,6 +70,8 @@ class OptionBindingRecorder {
   // be called for actual processing.
   void RecordBinding(const Token &option, const Token &option_argument);
   void ProcessCachedBindings();
+  // `RecordBinding(const Token &option)` record a single unbound option.
+  void RecordSingleOption(const Token &option);
 
   // check if option is recorded.
   bool OptionIsRecorded(const Token &option) const;

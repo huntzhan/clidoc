@@ -205,7 +205,7 @@ void FocusedElementCollectorLogic::ProcessNode(
   if (node_is_one_of<TerminalTypeSharedPtr,
                      PosixOption, GnuOption>::value) {
     if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
-      recorder_ptr_->RecordBinding(node->token_, Token());
+      recorder_ptr_->RecordSingleOption(node->token_);
     }
   }
   if (node_is_one_of<TerminalTypeSharedPtr,

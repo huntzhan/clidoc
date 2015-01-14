@@ -50,7 +50,7 @@ void AmbiguityHandler::ProcessNode(
 
     if (!recorder_ptr_->OptionIsRecorded(option)) {
       // `option` not recorded.
-      recorder_ptr_->RecordBinding(option, Token());
+      recorder_ptr_->RecordSingleOption(option);
       continue;
     }
     if (!recorder_ptr_->OptionIsBound(option)) {
