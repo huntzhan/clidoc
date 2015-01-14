@@ -8,19 +8,14 @@
 #include "ast/ast_nodes.h"
 #include "ast/option_record.h"
 #include "ast/parser_proxy.h"
-#include "ast/visitor_helper.h"
+#include "ast/ast_visitor_helper.h"
 
 namespace clidoc {
 
-class StructureOptimizer : public NodeVisitorInterface {
+class StructureOptimizerLogic : public VisitorProcessLogic {
  public:
-  using NodeVisitorInterface::ProcessNode;
-
-  void ProcessNode(LogicAnd::SharedPtr node) override;
-  void ProcessNode(LogicXor::SharedPtr node) override;
-  void ProcessNode(LogicOr::SharedPtr node) override;
-  void ProcessNode(LogicOptional::SharedPtr node) override;
-  void ProcessNode(LogicOneOrMore::SharedPtr node) override;
+  template <typename NonTerminalTypeSharedPtr>
+  void ProcessNode(NonTerminalTypeSharedPtr node);
 
  private:
   template <typename NodeTypeOfParent, typename NodeTypeOfChild>
@@ -37,7 +32,7 @@ class StructureOptimizer : public NodeVisitorInterface {
 };
 
 template <typename TargetType>
-class TerminalTypeModifier {
+class TerminalTypeModifierLogic : public VisitorProcessLogic {
  public:
   template <typename NonTerminalTypeSharedPtr>
   void ProcessNode(NonTerminalTypeSharedPtr node);
@@ -62,7 +57,7 @@ class AmbiguityHandler : public NodeVisitorInterface {
   OptionBindingRecorder *recorder_ptr_;
 };
 
-class NodeRecorder {
+class NodeRecorderLogic : public VisitorProcessLogic {
  public:
   template <typename NonTerminalTypeSharedPtr>
   void ProcessNode(NonTerminalTypeSharedPtr node);
@@ -87,7 +82,7 @@ class FocusedElementCollector : public NodeVisitorInterface {
  private:
   OptionBindingRecorder *recorder_ptr_;
   std::set<Token> operand_candidates_;
-  NodeRecorder node_recorder_;
+  NodeRecorderLogic node_recorder_logic_;
 };
 
 class BoundArgumentCleaner : public NodeVisitorInterface {
@@ -105,8 +100,20 @@ class BoundArgumentCleaner : public NodeVisitorInterface {
 
 namespace clidoc {
 
+template <typename NonTerminalTypeSharedPtr>
+void StructureOptimizerLogic::ProcessNode(
+    NonTerminalTypeSharedPtr node) {
+  ConditionalRemoveChild(node);
+  ConditionalRemoveParent(node);
+  if (node_is_one_of<NonTerminalTypeSharedPtr, LogicOr, LogicXor>::value) {
+    if (node->GetSizeOfChildren() == 1) {
+      NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
+    }
+  }
+}
+
 template <typename NodeTypeOfParent, typename NodeTypeOfChild>
-bool StructureOptimizer::CanRemoveChild(
+bool StructureOptimizerLogic::CanRemoveChild(
     NodeTypeOfParent parent_node,
     NodeTypeOfChild child_node) {
   const auto &logic_and_name =
@@ -135,14 +142,14 @@ bool StructureOptimizer::CanRemoveChild(
 }
 
 template <typename NonTerminalTypeSharedPtr>
-void StructureOptimizer::ConditionalRemoveChild(
+void StructureOptimizerLogic::ConditionalRemoveChild(
     NonTerminalTypeSharedPtr node) {
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
   // `child_node` must be a reference, since the value of `child_node` in
   // `node->children_` might change.
   for (auto &child_node : node->children_) {
-    child_node->Accept(this);
+    child_node->Accept(visitor_ptr_);
     if (!child_node) {
       // child node has been removed.
       continue;
@@ -166,7 +173,7 @@ void StructureOptimizer::ConditionalRemoveChild(
 }
 
 template <typename NonTerminalTypeSharedPtr>
-void StructureOptimizer::ConditionalRemoveParent(
+void StructureOptimizerLogic::ConditionalRemoveParent(
     NonTerminalTypeSharedPtr node) {
   if (node->children_.size() == 0) {
     *node->node_connection.this_iter_ = nullptr;
@@ -175,13 +182,13 @@ void StructureOptimizer::ConditionalRemoveParent(
 
 template <typename TargetType>
 template <typename NonTerminalTypeSharedPtr>
-void TerminalTypeModifier<TargetType>::ProcessNode(
+void TerminalTypeModifierLogic<TargetType>::ProcessNode(
     NonTerminalTypeSharedPtr node) {
   NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
 template <typename NonTerminalTypeSharedPtr>
-void NodeRecorder::ProcessNode(
+void NodeRecorderLogic::ProcessNode(
     NonTerminalTypeSharedPtr node) {
   recorded_elements_.insert(node->token_);
 }

@@ -8,7 +8,7 @@
 #include "ast/ast_node_interface.h"
 #include "ast/option_record.h"
 #include "ast/process_logic.h"
-#include "ast/visitor_helper.h"
+#include "ast/ast_visitor_helper.h"
 
 using std::set;
 using std::multimap;
@@ -17,44 +17,6 @@ using std::next;
 using std::string;
 
 namespace clidoc {
-
-void StructureOptimizer::ProcessNode(
-    LogicAnd::SharedPtr node) {
-  ConditionalRemoveChild(node);
-  ConditionalRemoveParent(node);
-}
-
-void StructureOptimizer::ProcessNode(
-    LogicXor::SharedPtr node) {
-  ConditionalRemoveChild(node);
-  ConditionalRemoveParent(node);
-  // transfrom to `LogicAnd` when there's only one child.
-  if (node->GetSizeOfChildren() == 1) {
-    NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
-  }
-}
-
-void StructureOptimizer::ProcessNode(
-    LogicOr::SharedPtr node) {
-  ConditionalRemoveChild(node);
-  ConditionalRemoveParent(node);
-  // transfrom to `LogicAnd` when there's only one child.
-  if (node->GetSizeOfChildren() == 1) {
-    NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
-  }
-}
-
-void StructureOptimizer::ProcessNode(
-    LogicOptional::SharedPtr node) {
-  ConditionalRemoveChild(node);
-  ConditionalRemoveParent(node);
-}
-
-void StructureOptimizer::ProcessNode(
-    LogicOneOrMore::SharedPtr node) {
-  ConditionalRemoveChild(node);
-  ConditionalRemoveParent(node);
-}
 
 AmbiguityHandler::AmbiguityHandler(OptionBindingRecorder *recorder_ptr)
       : recorder_ptr_(recorder_ptr) {/* empty */}
@@ -112,7 +74,7 @@ void AmbiguityHandler::ProcessNode(
 void DoubleHyphenHandler::ProcessNode(
     KDoubleHyphen::SharedPtr double_hyphen_node) {
   // change the type of all elements after `--` to `OPERAND`.
-  TerminalTypeModifier<Argument> callable;
+  TerminalTypeModifierLogic<Argument> callable;
   auto type_modifier = GenerateVisitor<TerminalVisitor>(&callable);
   auto &conn = double_hyphen_node->node_connection;
   for (auto iter = next(conn.this_iter_);
@@ -151,7 +113,7 @@ set<Token> FocusedElementCollector::GetOneOrMoreMarkedElements() {
   }
   // process recorded elements.
   auto end_iter = bound_argument_to_rep_option.end();
-  for (const Token &element : node_recorder_.recorded_elements_) {
+  for (const Token &element : node_recorder_logic_.recorded_elements_) {
     auto range = bound_argument_to_rep_option.equal_range(element);
     if (range.first == end_iter) {
       // `element` is not a bound argument.
@@ -196,12 +158,12 @@ void FocusedElementCollector::ProcessNode(Command::SharedPtr node) {
 }
 
 void FocusedElementCollector::ProcessNode(LogicOneOrMore::SharedPtr node) {
-  auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_);
+  auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_logic_);
   node->Accept(&visitor);
 }
 
 BoundArgumentCleaner::BoundArgumentCleaner(
-    const std::set<Token> &bound_arguments)
+    const set<Token> &bound_arguments)
     : bound_arguments_(bound_arguments) { /* empty */ }
 
 void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node) {

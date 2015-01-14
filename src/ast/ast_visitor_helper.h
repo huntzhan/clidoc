@@ -41,6 +41,12 @@ struct node_is_not {
       std::true_type>::value;
 };
 
+template <typename NodeSharedPtr, typename... NodeTypes>
+struct node_is_one_of {
+  static const bool value = !node_is_not<NodeSharedPtr, NodeTypes...>::value;
+};
+
+
 template <typename Callable>
 struct NodeTypeModifier {
   // Could be invoked other visitors.
@@ -50,8 +56,12 @@ struct NodeTypeModifier {
   static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
 };
 
+struct VisitorProcessLogic {
+  NodeVisitorInterface *visitor_ptr_;
+};
+
 template <typename Callable>
-class TerminalVisitor : public NodeVisitorInterface {
+class TerminalVisitor : virtual public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
 
@@ -70,7 +80,7 @@ class TerminalVisitor : public NodeVisitorInterface {
 };
 
 template <typename Callable>
-class NonTerminalVisitor : public NodeVisitorInterface {
+class NonTerminalVisitor : virtual public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
 
@@ -116,7 +126,9 @@ void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
 
 template <typename Callable>
 TerminalVisitor<Callable>::TerminalVisitor(Callable *callable_ptr)
-    : callable_ptr_(callable_ptr) { /* empty */ }
+    : callable_ptr_(callable_ptr) {
+  callable_ptr_->visitor_ptr_ = this;
+}
 
 template <typename Callable>
 void TerminalVisitor<Callable>::ProcessNode(
@@ -162,7 +174,9 @@ void TerminalVisitor<Callable>::ProcessNode(
 
 template <typename Callable>
 NonTerminalVisitor<Callable>::NonTerminalVisitor(Callable *callable_ptr)
-    : callable_ptr_(callable_ptr) { /* empty */ }
+    : callable_ptr_(callable_ptr) {
+  callable_ptr_->visitor_ptr_ = this;
+}
 
 template <typename Callable>
 void NonTerminalVisitor<Callable>::ProcessNode(

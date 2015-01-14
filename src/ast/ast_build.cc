@@ -7,6 +7,7 @@
 #include "ast/ast_node_interface.h"
 #include "ast/process_logic.h"
 #include "ast/option_record.h"
+#include "ast/ast_visitor_helper.h"
 
 using std::set;
 using std::string;
@@ -17,7 +18,9 @@ void CodeGenInfo::PostProcessedAST(
     set<Token> *focused_elements_ptr,
     set<Token> *oom_elements_ptr) {
   // 1. remove duplicated nodes.
-  StructureOptimizer structure_optimizer;
+  StructureOptimizerLogic structure_optimizer_logic;
+  auto structure_optimizer = GenerateVisitor<NonTerminalVisitor>(
+      &structure_optimizer_logic);
   doc_node_->Accept(&structure_optimizer);
   // 2. process `--`.
   DoubleHyphenHandler double_dash_handler;

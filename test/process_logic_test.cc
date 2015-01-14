@@ -3,18 +3,19 @@
 #include "ast/parser_proxy.h"
 #include "ast/process_logic.h"
 #include "ast/ast_nodes.h"
-#include "ast/visitor_helper.h"
+#include "ast/ast_visitor_helper.h"
 
 using namespace clidoc;
 
-TEST(process_logic, StructureOptimizer) {
+TEST(process_logic, StructureOptimizerLogic) {
   auto and_1 = LogicAnd::Init();
   auto and_2 = LogicAnd::Init();
   auto command_ptr = Command::Init("whatever");
   and_1->AddChild(and_2);
   and_2->AddChild(command_ptr);
   
-  StructureOptimizer visitor;
+  StructureOptimizerLogic optimizer;
+  auto visitor = GenerateVisitor<NonTerminalVisitor>(&optimizer);
   and_1->Accept(&visitor);
 
   EXPECT_EQ("LogicAnd(Command[whatever])", and_1->ToString());
@@ -36,13 +37,13 @@ TEST(process_logic, AmbiguityHandler) {
             xor_1->ToString());
 }
 
-TEST(process_logic, TerminalTypeModifier) {
+TEST(process_logic, TerminalTypeModifierLogic) {
   auto and_1 = LogicAnd::Init();
   and_1->AddChild(PosixOption::Init("-c"));
   and_1->AddChild(Command::Init(">whatever<"));
   and_1->AddChild(GnuOption::Init("--long"));
 
-  TerminalTypeModifier<Argument> callable;
+  TerminalTypeModifierLogic<Argument> callable;
   auto type_modifier = GenerateVisitor<TerminalVisitor>(&callable);
   and_1->Accept(&type_modifier);
 
