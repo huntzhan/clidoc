@@ -114,7 +114,7 @@ struct NonTerminalVisitorInterface<T, RestType...>
     auto cache_children = node->children_;
     for (auto child_ptr : cache_children) {
       // it's safe to do so, cause `NodeVisitorInterface` derived from current
-      // type. 
+      // type.
       child_ptr->Accept(static_cast<NodeVisitorInterface *>(this));
     }
   }

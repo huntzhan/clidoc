@@ -154,6 +154,13 @@ set<Token> OneOrMoreMarkedElementCollectorLogic::GetOneOrMoreMarkedElements() {
   return oom_elements;
 }
 
+void OneOrMoreMarkedElementCollectorLogic::ProcessNode(
+    LogicOneOrMore::SharedPtr node) {
+  auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_logic_);
+  node->Accept(&visitor);
+}
+
+
 OneOrMoreNodeInsertLogic::OneOrMoreNodeInsertLogic(
     const set<Token> &focused_oom_bound_options)
     : focused_oom_bound_options_(focused_oom_bound_options) { /* empty */ }

@@ -1,5 +1,5 @@
-#ifndef SRC_AST_VISITOR_HELPER_H_
-#define SRC_AST_VISITOR_HELPER_H_
+#ifndef SRC_AST_AST_VISITOR_HELPER_H_
+#define SRC_AST_AST_VISITOR_HELPER_H_
 
 #include <type_traits>
 
@@ -9,97 +9,80 @@
 namespace clidoc {
 
 template <typename NodeSharedPtr, typename NodeType>
-struct node_is {
+struct NodeIs {
   static const bool value = std::is_same<
       typename NodeSharedPtr::element_type,
       NodeType>::value;
 };
 
 template <typename... Types>
-struct node_is_not_;
+struct NodeIsNot_;
 
 template <typename NodeSharedPtr, typename NodeType>
-struct node_is_not_<NodeSharedPtr, NodeType> {
-  using type = typename std::conditional<
-      node_is<NodeSharedPtr, NodeType>::value,
+struct NodeIsNot_<NodeSharedPtr, NodeType> {
+  using Type = typename std::conditional<
+      NodeIs<NodeSharedPtr, NodeType>::value,
       std::false_type,
       std::true_type>::type;
 };
 
 template <typename NodeSharedPtr, typename NodeType, typename... RemainTypes>
-struct node_is_not_<NodeSharedPtr, NodeType, RemainTypes...> {
-  using type = typename std::conditional<
-      node_is<NodeSharedPtr, NodeType>::value,
+struct NodeIsNot_<NodeSharedPtr, NodeType, RemainTypes...> {
+  using Type = typename std::conditional<
+      NodeIs<NodeSharedPtr, NodeType>::value,
       std::false_type,
-      typename node_is_not_<NodeSharedPtr, RemainTypes...>::type>::type;
+      typename NodeIsNot_<NodeSharedPtr, RemainTypes...>::Type>::type;
 };
 
 template <typename NodeSharedPtr, typename... NodeTypes>
-struct node_is_not {
+struct NodeIsNot {
   static const bool value = std::is_same<
-      typename node_is_not_<NodeSharedPtr, NodeTypes...>::type,
+      typename NodeIsNot_<NodeSharedPtr, NodeTypes...>::Type,
       std::true_type>::value;
 };
 
 template <typename NodeSharedPtr, typename... NodeTypes>
-struct node_is_one_of {
-  static const bool value = !node_is_not<NodeSharedPtr, NodeTypes...>::value;
+struct NodeIsOneOf {
+  static const bool value = !NodeIsNot<NodeSharedPtr, NodeTypes...>::value;
 };
 
+template <typename... T>
+struct ExtractParameter;
 
-template <typename Callable>
-struct NodeTypeModifier {
-  // Could be invoked other visitors.
-  template <typename TerminalTypeSharedPtr>
-  static void ChangeTerminalType(TerminalTypeSharedPtr node);
-  template <typename NonTerminalTypeSharedPtr>
-  static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
+template <typename ProcessLogicType, typename Parameter>
+struct ExtractParameter<void (ProcessLogicType::*)(Parameter)> {
+  using Type = Parameter;
+};
+
+template <typename ProcessLogicType, typename Parameter>
+struct CanInvoke {
+  // for member function.
+  template <typename T>
+  static
+  typename ExtractParameter<decltype(&T::ProcessNode)>::Type
+  Check(decltype(&T::ProcessNode)*);
+  // for template member function.
+  template <typename T>
+  static
+  typename ExtractParameter<
+      decltype(&T::template ProcessNode<Parameter>)>::Type
+  Check(decltype(&T::template ProcessNode<Parameter>)*);
+  // for else cases.
+  template <typename T>
+  static
+  std::false_type
+  Check(...);  // lowest ranking for overload resolution.
+
+  // `value` is true meaning `Parameter` can be passed to
+  // `ProcessLogicType::ProcessNode`.
+  static const bool value = std::is_same<
+      decltype(Check<ProcessLogicType>(nullptr)),
+      Parameter>::value;
 };
 
 struct VisitorProcessLogic {
   NodeVisitorInterface *visitor_ptr_;
 };
-
-template <typename Callable>
-class TerminalVisitor : public NodeVisitorInterface {
- public:
-  using NodeVisitorInterface::ProcessNode;
-
-  explicit TerminalVisitor(Callable *callable_ptr);
-
-  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
-  void ProcessNode(KOptions::SharedPtr node) override;
-  void ProcessNode(PosixOption::SharedPtr node) override;
-  void ProcessNode(GroupedOptions::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
-
- private:
-  Callable *callable_ptr_;
-};
-
-template <typename Callable>
-class NonTerminalVisitor : public NodeVisitorInterface {
- public:
-  using NodeVisitorInterface::ProcessNode;
-
-  explicit NonTerminalVisitor(Callable *callable_ptr);
-
-  void ProcessNode(LogicAnd::SharedPtr node) override;
-  void ProcessNode(LogicXor::SharedPtr node) override;
-  void ProcessNode(LogicOr::SharedPtr node) override;
-  void ProcessNode(LogicOptional::SharedPtr node) override;
-  void ProcessNode(LogicOneOrMore::SharedPtr node) override;
-
- private:
-  Callable *callable_ptr_;
-};
-
-template <template <typename Callable> class Visitor, typename Callable>
-Visitor<Callable> GenerateVisitor(Callable *callable_ptr) {
-  return Visitor<Callable>(callable_ptr);
-}
 
 template <typename NonTerminalTypeSharedPtr>
 void ApplyVisitorToChildren(
@@ -111,9 +94,102 @@ void ApplyVisitorToChildren(
   }
 }
 
+struct VisitorWithProcessLogicInterface {
+ protected:
+  template <typename ProcessLogicType, typename NodeType,
+            typename CustomizedBehavior, typename DefaultBehavior>
+  void ConditionalSelectBehavior(
+      ProcessLogicType *process_logic_ptr,
+      NodeType node) {
+    using Type = typename std::conditional<
+        CanInvoke<ProcessLogicType, NodeType>::value,
+        CustomizedBehavior,
+        DefaultBehavior>::type;
+    Type::template ApplyVisitor(process_logic_ptr, node);
+  }
+};
+
+template <typename ProcessLogicType>
+class TerminalVisitor : public NodeVisitorInterface {
+ public:
+  using NodeVisitorInterface::ProcessNode;
+
+  explicit TerminalVisitor(ProcessLogicType *process_logic_ptr);
+
+  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
+  void ProcessNode(KOptions::SharedPtr node) override;
+  void ProcessNode(PosixOption::SharedPtr node) override;
+  void ProcessNode(GroupedOptions::SharedPtr node) override;
+  void ProcessNode(GnuOption::SharedPtr node) override;
+  void ProcessNode(Argument::SharedPtr node) override;
+  void ProcessNode(Command::SharedPtr node) override;
+
+ private:
+  ProcessLogicType *process_logic_ptr_;
+};
+
+template <typename ProcessLogicType>
+class NonTerminalVisitor : public NodeVisitorInterface,
+                           public VisitorWithProcessLogicInterface {
+ public:
+  using NodeVisitorInterface::ProcessNode;
+  explicit NonTerminalVisitor(ProcessLogicType *process_logic_ptr);
+
+  void ProcessNode(LogicAnd::SharedPtr node) override;
+  void ProcessNode(LogicXor::SharedPtr node) override;
+  void ProcessNode(LogicOr::SharedPtr node) override;
+  void ProcessNode(LogicOptional::SharedPtr node) override;
+  void ProcessNode(LogicOneOrMore::SharedPtr node) override;
+
+ private:
+  struct DefaultBehavior {
+    template <typename NonTerminalTypeSharedPtr>
+    static void ApplyVisitor(
+        ProcessLogicType *process_logic_ptr,
+        NonTerminalTypeSharedPtr node) {
+      // process logic can not handle the type of `node`.
+      ApplyVisitorToChildren(node, process_logic_ptr->visitor_ptr_);
+    }
+  };
+  struct CustomizedBehavior {
+    template <typename NonTerminalTypeSharedPtr>
+    static void ApplyVisitor(
+        ProcessLogicType *process_logic_ptr,
+        NonTerminalTypeSharedPtr node) {
+      // ONLY apply process logic to CURRENT node.
+      process_logic_ptr->ProcessNode(node);
+    }
+  };
+  ProcessLogicType *process_logic_ptr_;
+};
+
+template <template <typename> class Visitor, typename ProcessLogicType>
+Visitor<ProcessLogicType>
+GenerateVisitor(ProcessLogicType *process_logic_ptr) {
+  return Visitor<ProcessLogicType>(process_logic_ptr);
+}
+
+template <typename ProcessLogicType>
+struct NodeTypeModifier {
+  // Could be invoked other visitors.
+  template <typename TerminalTypeSharedPtr>
+  static void ChangeTerminalType(TerminalTypeSharedPtr node);
+  template <typename NonTerminalTypeSharedPtr>
+  static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
+};
+
 }  // namespace clidoc
 
 namespace clidoc {
+
+#define CONDITIONAL_SELECT_BEHAVIOR()         \
+ConditionalSelectBehavior                     \
+    <                                         \
+    ProcessLogicType,                         \
+    decltype(node),                           \
+    CustomizedBehavior,                       \
+    DefaultBehavior                           \
+    >(process_logic_ptr_, node)               \
 
 template <typename TargetType>
 template <typename TerminalTypeSharedPtr>
@@ -134,90 +210,92 @@ void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
   node->node_connection.ReplacedWith(new_node);
 }
 
-template <typename Callable>
-TerminalVisitor<Callable>::TerminalVisitor(Callable *callable_ptr)
-    : callable_ptr_(callable_ptr) {
-  callable_ptr_->visitor_ptr_ = this;
+template <typename ProcessLogicType>
+TerminalVisitor<ProcessLogicType>::TerminalVisitor(
+    ProcessLogicType *process_logic_ptr)
+    : process_logic_ptr_(process_logic_ptr) {
+  process_logic_ptr_->visitor_ptr_ = this;
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     KDoubleHyphen::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     KOptions::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     PosixOption::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     GroupedOptions::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     GnuOption::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     Argument::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-void TerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void TerminalVisitor<ProcessLogicType>::ProcessNode(
     Command::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  process_logic_ptr_->ProcessNode(node);
 }
 
-template <typename Callable>
-NonTerminalVisitor<Callable>::NonTerminalVisitor(Callable *callable_ptr)
-    : callable_ptr_(callable_ptr) {
-  callable_ptr_->visitor_ptr_ = this;
+template <typename ProcessLogicType>
+NonTerminalVisitor<ProcessLogicType>::NonTerminalVisitor(
+    ProcessLogicType *process_logic_ptr)
+    : process_logic_ptr_(process_logic_ptr) {
+  process_logic_ptr_->visitor_ptr_ = this;
 }
 
-template <typename Callable>
-void NonTerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
     LogicAnd::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  CONDITIONAL_SELECT_BEHAVIOR();
 }
 
-template <typename Callable>
-void NonTerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
     LogicXor::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  CONDITIONAL_SELECT_BEHAVIOR();
 }
 
-template <typename Callable>
-void NonTerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
     LogicOr::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  CONDITIONAL_SELECT_BEHAVIOR();
 }
 
-template <typename Callable>
-void NonTerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
     LogicOptional::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  CONDITIONAL_SELECT_BEHAVIOR();
 }
 
-template <typename Callable>
-void NonTerminalVisitor<Callable>::ProcessNode(
+template <typename ProcessLogicType>
+void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
     LogicOneOrMore::SharedPtr node) {
-  callable_ptr_->ProcessNode(node);
+  CONDITIONAL_SELECT_BEHAVIOR();
 }
 
 }  // namespace clidoc
 
-#endif  // SRC_AST_VISITOR_HELPER_H_
+#endif  // SRC_AST_AST_VISITOR_HELPER_H_

@@ -83,8 +83,7 @@ class OneOrMoreMarkedElementCollectorLogic : public VisitorProcessLogic {
       OptionBindingRecorder *recorder_ptr);
   std::set<Token> GetOneOrMoreMarkedElements();
 
-  template <typename NonTerminalTypeSharedPtr>
-  void ProcessNode(NonTerminalTypeSharedPtr node);
+  void ProcessNode(LogicOneOrMore::SharedPtr node);
 
  private:
   OptionBindingRecorder *recorder_ptr_;
@@ -123,7 +122,7 @@ void StructureOptimizerLogic::ProcessNode(
     NonTerminalTypeSharedPtr node) {
   ConditionalRemoveChild(node);
   ConditionalRemoveParent(node);
-  if (node_is_one_of<NonTerminalTypeSharedPtr, LogicOr, LogicXor>::value) {
+  if (NodeIsOneOf<NonTerminalTypeSharedPtr, LogicOr, LogicXor>::value) {
     if (node->GetSizeOfChildren() == 1) {
       NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
     }
@@ -214,34 +213,23 @@ void NodeRecorderLogic::ProcessNode(
 template <typename TerminalTypeSharedPtr>
 void FocusedElementCollectorLogic::ProcessNode(
     TerminalTypeSharedPtr node) {
-  if (node_is_one_of<TerminalTypeSharedPtr,
-                     PosixOption, GnuOption>::value) {
+  if (NodeIsOneOf<TerminalTypeSharedPtr,
+                  PosixOption, GnuOption>::value) {
     if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
       recorder_ptr_->RecordSingleOption(node->token_);
     }
   }
-  if (node_is_one_of<TerminalTypeSharedPtr,
-                     Argument, Command>::value) {
+  if (NodeIsOneOf<TerminalTypeSharedPtr,
+                  Argument, Command>::value) {
     operand_candidates_.insert(node->token_);
-  }
-}
-
-template <typename NonTerminalTypeSharedPtr>
-void OneOrMoreMarkedElementCollectorLogic::ProcessNode(
-    NonTerminalTypeSharedPtr node) {
-  if (node_is<NonTerminalTypeSharedPtr, LogicOneOrMore>::value) {
-    auto visitor = GenerateVisitor<TerminalVisitor>(&node_recorder_logic_);
-    node->Accept(&visitor);
-  } else {
-    ApplyVisitorToChildren(node, visitor_ptr_);
   }
 }
 
 template <typename TerminalTypeSharedPtr>
 void OneOrMoreNodeInsertLogic::ProcessNode(
     TerminalTypeSharedPtr node) {
-  if (node_is_not<TerminalTypeSharedPtr,
-                  PosixOption, GnuOption>::value) {
+  if (NodeIsNot<TerminalTypeSharedPtr,
+                PosixOption, GnuOption>::value) {
     return;
   }
   if (focused_oom_bound_options_.find(node->token_)
