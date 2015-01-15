@@ -58,11 +58,15 @@ void CodeGenInfo::PostProcessedAST() {
   doc_node_->Accept(&structure_optimizer);
 
   // 2. process `--`.
-  DoubleHyphenHandler double_dash_handler;
+  DoubleHyphenHandlerLogic double_dash_handler_logic;
+  auto double_dash_handler = GenerateVisitor<TerminalVisitor>(
+      &double_dash_handler_logic);
   doc_node_->Accept(&double_dash_handler);
 
   // 3. handle ambiguous syntax.
-  AmbiguityHandler ambiguity_handler(&recorder_);
+  AmbiguityHandlerLogic ambiguity_handler_logic(&recorder_);
+  auto ambiguity_handler = GenerateVisitor<TerminalVisitor>(
+      &ambiguity_handler_logic);
   doc_node_->Accept(&ambiguity_handler);
 
   // 4. collect focused elements.
@@ -90,7 +94,9 @@ void CodeGenInfo::PostProcessedAST() {
 
   // 7. Remove bound arguments.
   auto bound_arguments = recorder_.GetBoundArguments();
-  BoundArgumentCleaner bound_argument_cleaner(bound_arguments);
+  BoundArgumentCleanerLogic bound_argument_cleaner_logic(bound_arguments);
+  auto bound_argument_cleaner = GenerateVisitor<TerminalVisitor>(
+      &bound_argument_cleaner_logic);
   doc_node_->Accept(&bound_argument_cleaner);
 
   // 8. remove duplicated nodes again.

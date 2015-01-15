@@ -21,7 +21,7 @@ TEST(process_logic, StructureOptimizerLogic) {
   EXPECT_EQ("LogicAnd(Command[whatever])", and_1->ToString());
 }
 
-TEST(process_logic, AmbiguityHandler) {
+TEST(process_logic, AmbiguityHandlerLogic) {
   auto xor_1 = LogicXor::Init();
   xor_1->AddChild(GroupedOptions::Init("-oFILE"));
   
@@ -31,7 +31,9 @@ TEST(process_logic, AmbiguityHandler) {
       Token(TerminalType::ARGUMENT, "FILE"));
   recorder.ProcessCachedBindings();
 
-  AmbiguityHandler visitor(&recorder);
+  AmbiguityHandlerLogic ambiguity_handler_logic(&recorder);
+  auto visitor = GenerateVisitor<TerminalVisitor>(
+      &ambiguity_handler_logic);
   xor_1->Accept(&visitor);
   EXPECT_EQ("LogicXor(LogicOr(PosixOption[-o], Argument[FILE]))",
             xor_1->ToString());
@@ -52,7 +54,7 @@ TEST(process_logic, TerminalTypeModifierLogic) {
             and_1->ToString());
 }
 
-TEST(process_logic, DoubleHyphenHandler) {
+TEST(process_logic, DoubleHyphenHandlerLogic) {
   auto and_1 = LogicAnd::Init();
   and_1->AddChild(PosixOption::Init("-c"));
   and_1->AddChild(KDoubleHyphen::Init("--"));
@@ -60,7 +62,9 @@ TEST(process_logic, DoubleHyphenHandler) {
   and_1->AddChild(Command::Init(">whatever<"));
   and_1->AddChild(GnuOption::Init("--long"));
 
-  DoubleHyphenHandler visitor;
+  DoubleHyphenHandlerLogic double_dash_handler_logic;
+  auto visitor = GenerateVisitor<TerminalVisitor>(
+      &double_dash_handler_logic);
   and_1->Accept(&visitor);
   EXPECT_EQ("LogicAnd(PosixOption[-c], "
             "Argument[-c], Argument[>whatever<], Argument[--long])",
@@ -97,7 +101,7 @@ TEST(process_logic, FocusedElementCollectorLogic) {
   EXPECT_EQ(focused_elements.end(), iter); 
 }
 
-TEST(process_logic, BoundArgumentCleaner) {
+TEST(process_logic, BoundArgumentCleanerLogic) {
   auto and_1 = LogicAnd::Init();
   and_1->AddChild(PosixOption::Init("-c"));
   and_1->AddChild(Argument::Init("ARG1"));
@@ -110,7 +114,9 @@ TEST(process_logic, BoundArgumentCleaner) {
   recorder.ProcessCachedBindings();
 
   auto bound_arguments = recorder.GetBoundArguments();
-  BoundArgumentCleaner visitor(bound_arguments);
+  BoundArgumentCleanerLogic bound_argument_cleaner_logic(bound_arguments);
+  auto visitor = GenerateVisitor<TerminalVisitor>(
+      &bound_argument_cleaner_logic);
   and_1->Accept(&visitor);
   EXPECT_EQ("LogicAnd(PosixOption[-c], Argument[ARG2])",
             and_1->ToString());

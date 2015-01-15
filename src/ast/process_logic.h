@@ -34,24 +34,20 @@ class StructureOptimizerLogic : public VisitorProcessLogic {
 template <typename TargetType>
 class TerminalTypeModifierLogic : public VisitorProcessLogic {
  public:
-  template <typename NonTerminalTypeSharedPtr>
-  void ProcessNode(NonTerminalTypeSharedPtr node);
+  template <typename TerminalTypeSharedPtr>
+  void ProcessNode(TerminalTypeSharedPtr node);
 };
 
-class DoubleHyphenHandler : public NodeVisitorInterface {
+class DoubleHyphenHandlerLogic : public VisitorProcessLogic {
  public:
-  using NodeVisitorInterface::ProcessNode;
-
   // Premise: operands after `--` are place at the same level with `--` in AST.
-  void ProcessNode(KDoubleHyphen::SharedPtr double_hyphen_node) override;
+  void ProcessNode(KDoubleHyphen::SharedPtr double_hyphen_node);
 };
 
-class AmbiguityHandler : public NodeVisitorInterface {
+class AmbiguityHandlerLogic : public VisitorProcessLogic {
  public:
-  using NodeVisitorInterface::ProcessNode;
-
-  explicit AmbiguityHandler(OptionBindingRecorder *recorder_ptr);
-  void ProcessNode(GroupedOptions::SharedPtr grouped_options_node) override;
+  explicit AmbiguityHandlerLogic(OptionBindingRecorder *recorder_ptr);
+  void ProcessNode(GroupedOptions::SharedPtr grouped_options_node);
 
  private:
   OptionBindingRecorder *recorder_ptr_;
@@ -102,12 +98,10 @@ class OneOrMoreNodeInsertLogic : public VisitorProcessLogic {
   const std::set<Token> &focused_oom_bound_options_;
 };
 
-class BoundArgumentCleaner : public NodeVisitorInterface {
+class BoundArgumentCleanerLogic : public VisitorProcessLogic {
  public:
-  using NodeVisitorInterface::ProcessNode;
-
-  explicit BoundArgumentCleaner(const std::set<Token> &bound_arguments);
-  void ProcessNode(Argument::SharedPtr node) override;
+  explicit BoundArgumentCleanerLogic(const std::set<Token> &bound_arguments);
+  void ProcessNode(Argument::SharedPtr node);
 
  private:
   const std::set<Token> &bound_arguments_;
@@ -198,9 +192,9 @@ void StructureOptimizerLogic::ConditionalRemoveParent(
 }
 
 template <typename TargetType>
-template <typename NonTerminalTypeSharedPtr>
+template <typename TerminalTypeSharedPtr>
 void TerminalTypeModifierLogic<TargetType>::ProcessNode(
-    NonTerminalTypeSharedPtr node) {
+    TerminalTypeSharedPtr node) {
   NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 

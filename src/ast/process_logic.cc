@@ -18,10 +18,11 @@ using std::string;
 
 namespace clidoc {
 
-AmbiguityHandler::AmbiguityHandler(OptionBindingRecorder *recorder_ptr)
-      : recorder_ptr_(recorder_ptr) {/* empty */}
+AmbiguityHandlerLogic::AmbiguityHandlerLogic(
+    OptionBindingRecorder *recorder_ptr)
+    : recorder_ptr_(recorder_ptr) {/* empty */}
 
-void AmbiguityHandler::ProcessNode(
+void AmbiguityHandlerLogic::ProcessNode(
     GroupedOptions::SharedPtr grouped_options_node) {
   // loop over every character of `GROUPED_OPTIONS` and treat each character as
   // `POSIX_OPTION`, say `option`. If `option` is not recorded yet(not appeared
@@ -71,7 +72,7 @@ void AmbiguityHandler::ProcessNode(
   recorder_ptr_->ProcessCachedBindings();
 }
 
-void DoubleHyphenHandler::ProcessNode(
+void DoubleHyphenHandlerLogic::ProcessNode(
     KDoubleHyphen::SharedPtr double_hyphen_node) {
   // change the type of all elements after `--` to `OPERAND`.
   TerminalTypeModifierLogic<Argument> callable;
@@ -85,11 +86,11 @@ void DoubleHyphenHandler::ProcessNode(
   conn.children_of_parent_ptr_->erase(conn.this_iter_);
 }
 
-BoundArgumentCleaner::BoundArgumentCleaner(
+BoundArgumentCleanerLogic::BoundArgumentCleanerLogic(
     const set<Token> &bound_arguments)
     : bound_arguments_(bound_arguments) { /* empty */ }
 
-void BoundArgumentCleaner::ProcessNode(Argument::SharedPtr node) {
+void BoundArgumentCleanerLogic::ProcessNode(Argument::SharedPtr node) {
   auto &conn = node->node_connection;
   if (bound_arguments_.find(node->token_) != bound_arguments_.end()) {
     // is bound argument.
