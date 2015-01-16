@@ -179,7 +179,7 @@ void NodeConnection::ReplacedWith(NodeTypeSharedPtr node_ptr) {
 // This member function must be marked inline, otherwise a linkage error would
 // be raised.
 inline std::string NodeInterface::GetIndent(const int &indent) const {
-  std::string indent_element = "  ";
+  std::string indent_element = "| ";
   std::ostringstream strm;
   for (int repeat_times = 0; repeat_times < indent; ++repeat_times) {
     strm << indent_element;

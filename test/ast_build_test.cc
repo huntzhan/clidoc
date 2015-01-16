@@ -36,7 +36,7 @@ Options:
   CodeGenInfo info;
   info.Prepare(input);
 
-  // std::cout << info.doc_node_->ToString(0);
+  std::cout << info.doc_node_->ToString(0);
 
   auto CheckToken = [](set<string> expected, set<Token> actual) {
     set<string> values;
