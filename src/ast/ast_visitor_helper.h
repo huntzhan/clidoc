@@ -60,13 +60,13 @@ struct CanInvoke {
   template <typename T>
   static
   typename ExtractParameter<decltype(&T::ProcessNode)>::Type
-  Check(decltype(&T::ProcessNode)*);
+  Check(void *);
   // for template member function.
   template <typename T>
   static
   typename ExtractParameter<
       decltype(&T::template ProcessNode<Parameter>)>::Type
-  Check(decltype(&T::template ProcessNode<Parameter>)*);
+  Check(void *);
   // for else cases.
   template <typename T>
   static
