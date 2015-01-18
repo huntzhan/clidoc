@@ -12,6 +12,33 @@
 
 namespace clidoc {
 
+struct StringUtils {
+  static bool ExtractSection(
+      const std::string &section_name,
+      const std::string &text,
+      std::string *output);
+  static void ReplaceAll(
+      const std::string &old_substring,
+      const std::string &new_substring,
+      std::string *text_ptr);
+  static void InsertSpace(
+      const std::vector<std::string> &regex_strings,
+      const std::vector<std::string> &keywords,
+      std::string *text_ptr);
+
+ private:
+  static void ReplaceElementWithMark(
+      const std::regex &pattern,
+      std::string *text_ptr,
+      std::vector<std::string> *elements_ptr);
+  static std::vector<std::string> ReplaceSpeicalElement(
+      const std::vector<std::string> &regex_strings,
+      std::string *text_ptr);
+  static void RestoreSpeicalElement(
+      const std::vector<std::string> &elements,
+      std::string *text_ptr);
+};
+
 class DocPreprocessor {
  public:
   std::string PreprocessRawDocForParsing(const std::string &raw_doc);
@@ -21,19 +48,8 @@ class DocPreprocessor {
   // gtest related.
   FRIEND_TEST(DocPreprocessorTest, RemoveComment);
   FRIEND_TEST(DocPreprocessorTest, RemoveEmptyLine);
-  FRIEND_TEST(DocPreprocessorTest, ExtractSection);
   FRIEND_TEST(DocPreprocessorTest, ReplaceUtilityName);
   FRIEND_TEST(DocPreprocessorTest, ExtractAndProcessOptionsSection);
-
-  // Exrtact a section targeted by `section_name` and formalize section name.
-  static bool ExtractSection(
-      const std::string &section_name,
-      const std::string &text,
-      std::string *output);
-  static void ReplaceAll(
-      std::string *text_ptr,
-      const std::string &old_substring,
-      const std::string &new_substring);
 
   void ExtractAndProcessUsageSection();
   void ExtractAndProcessOptionsSection();
@@ -47,12 +63,6 @@ class DocPreprocessor {
   // 3. Insert K_DESC_DELIMITER brefore each NEWLINE in option section.
   void InsertDesDelimiter();
   // 4. Insert space to both sides of every keyword.
-  void ReplaceElementWithRegularExpression(
-      std::string *text_ptr,
-      const std::regex &pattern,
-      std::vector<std::string> *elements_ptr);
-  std::vector<std::string> ReplaceSpeicalElement();
-  void RestoreSpeicalElement(const std::vector<std::string> &elements);
   void DisambiguateByInsertSpace();
 
   std::string text_;

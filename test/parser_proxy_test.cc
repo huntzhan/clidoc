@@ -11,41 +11,7 @@ using std::string;
 
 namespace clidoc {
 
-TEST(DocPreprocessorTest, RemoveComment) {
-  DocPreprocessor preprocessor;
-  preprocessor.text_ =
-      "  line one #  whatever.\n"
-      "line two on comment.\n"
-      "# to be remove\n"
-      "line three#test.\n\n";
-  string expect =
-      "  line one \n"
-      "line two on comment.\n"
-      "\n"
-      "line three\n\n";
-  preprocessor.RemoveComment();
-  EXPECT_EQ(expect, preprocessor.text_);
-}
-
-TEST(DocPreprocessorTest, RemoveEmptyLine) {
-  DocPreprocessor preprocessor;
-  preprocessor.text_ =
-      "line one\n"
-      "\t line two\n"
-      "  \t   \n"
-      "\n\n\n\n\n\n"
-      "\t\n\n\n\n\n"
-      "     line three\n"
-      "\n";
-  string expect =
-      "line one\n"
-      "line two\n"
-      "line three\n";
-  preprocessor.RemoveEmptyLine();
-  EXPECT_EQ(expect, preprocessor.text_);
-}
-
-TEST(DocPreprocessorTest, ExtractSection) {
+TEST(StringUtilsTest, ExtractSection) {
   string input1 =
       "Usage:\n"
       "   this is line one.\n"
@@ -87,16 +53,50 @@ TEST(DocPreprocessorTest, ExtractSection) {
       "   this is line three.\n";
 
   string output1;
-  EXPECT_TRUE(DocPreprocessor::ExtractSection("Usage", input1, &output1));
+  EXPECT_TRUE(StringUtils::ExtractSection("Usage", input1, &output1));
   EXPECT_EQ(expect1, output1);
 
   string output2;
-  EXPECT_TRUE(DocPreprocessor::ExtractSection("usage", input1, &output2));
+  EXPECT_TRUE(StringUtils::ExtractSection("usage", input1, &output2));
   EXPECT_EQ(expect2, output2);
 
   string output3;
-  EXPECT_TRUE(DocPreprocessor::ExtractSection("options", input3, &output3));
+  EXPECT_TRUE(StringUtils::ExtractSection("options", input3, &output3));
   EXPECT_EQ(expect3, output3);
+}
+
+TEST(DocPreprocessorTest, RemoveComment) {
+  DocPreprocessor preprocessor;
+  preprocessor.text_ =
+      "  line one #  whatever.\n"
+      "line two on comment.\n"
+      "# to be remove\n"
+      "line three#test.\n\n";
+  string expect =
+      "  line one \n"
+      "line two on comment.\n"
+      "\n"
+      "line three\n\n";
+  preprocessor.RemoveComment();
+  EXPECT_EQ(expect, preprocessor.text_);
+}
+
+TEST(DocPreprocessorTest, RemoveEmptyLine) {
+  DocPreprocessor preprocessor;
+  preprocessor.text_ =
+      "line one\n"
+      "\t line two\n"
+      "  \t   \n"
+      "\n\n\n\n\n\n"
+      "\t\n\n\n\n\n"
+      "     line three\n"
+      "\n";
+  string expect =
+      "line one\n"
+      "line two\n"
+      "line three\n";
+  preprocessor.RemoveEmptyLine();
+  EXPECT_EQ(expect, preprocessor.text_);
 }
 
 TEST(DocPreprocessorTest, ReplaceUtilityName) {

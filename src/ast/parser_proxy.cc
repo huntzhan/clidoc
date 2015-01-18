@@ -32,7 +32,7 @@ using std::set;
 
 namespace clidoc {
 
-bool DocPreprocessor::ExtractSection(
+bool StringUtils::ExtractSection(
     const string &section_name,
     const string &text,
     string *output) {
@@ -86,16 +86,70 @@ bool DocPreprocessor::ExtractSection(
   return true;
 }
 
-void DocPreprocessor::ReplaceAll(
-    string *text_ptr,
+void StringUtils::ReplaceAll(
     const string &old_substring,
-    const string &new_substring) {
+    const string &new_substring,
+    string *text_ptr) {
   if (old_substring.empty()) { return; }
   size_t pos = 0;
   while ((pos = text_ptr->find(old_substring, pos)) != string::npos) {
     // find a substring to be replaced.
     text_ptr->replace(pos, old_substring.size(), new_substring);
     pos += new_substring.size();
+  }
+}
+
+void StringUtils::ReplaceElementWithMark(
+    const regex &pattern,
+    std::string *text_ptr,
+    std::vector<std::string> *elements_ptr) {
+  smatch match_result;
+  while (regex_search(*text_ptr, match_result, pattern)) {
+    auto element = match_result.str(1);
+    // ` __id__ `. Notice that `__id__` is surrounded by spaces.
+    string content = " __" + to_string(elements_ptr->size()) + "__ ";
+    StringUtils::ReplaceAll(element, content, text_ptr);
+    elements_ptr->push_back(element);
+  }
+}
+
+void StringUtils::InsertSpace(
+    const std::vector<std::string> &regex_strings,
+    const std::vector<std::string> &keywords,
+    std::string *text_ptr) {
+  auto elements = ReplaceSpeicalElement(regex_strings, text_ptr);
+  for (const auto &keyword : keywords) {
+    StringUtils::ReplaceAll(keyword, " " + keyword + " ", text_ptr);
+  }
+  // collapse whitespaces.
+  *text_ptr = regex_replace(*text_ptr, regex("\\s+"), " ");
+  if (text_ptr->back() == ' ') {
+    text_ptr->pop_back();
+  }
+  RestoreSpeicalElement(elements, text_ptr);
+}
+
+vector<string> StringUtils::ReplaceSpeicalElement(
+    const std::vector<string> &regex_strings,
+    std::string *text_ptr) {
+  vector<string> elements;
+  for (const string &regex_string : regex_strings) {
+    StringUtils::ReplaceElementWithMark(
+        regex(regex_string),
+        text_ptr,
+        &elements);
+  }
+  return elements;
+}
+
+void StringUtils::RestoreSpeicalElement(
+    const std::vector<std::string> &elements,
+    std::string *text_ptr) {
+  int index = 0;
+  for (const string &element : elements) {
+    string content = "__" + to_string(index) + "__";
+    StringUtils::ReplaceAll(content, element, text_ptr);
+    ++index;
   }
 }
 
@@ -122,7 +176,8 @@ void DocPreprocessor::ReplaceUtilityName() {
     throw logic_error("ReplaceUtilityName");
   }
   string utility_name = match_result.str(1);
-  ReplaceAll(&usage_section_, utility_name, "*UTILITY_DELIMITER*");
+  StringUtils::ReplaceAll(
+      utility_name, "*UTILITY_DELIMITER*", &usage_section_);
 }
 
 void DocPreprocessor::InsertDesDelimiter() {
@@ -150,72 +205,9 @@ void DocPreprocessor::InsertDesDelimiter() {
       "\n*DESC_DELIMITER*");
   options_section_ = processed_options_section;
 }
-void DocPreprocessor::ReplaceElementWithRegularExpression(
-    std::string *text_ptr,
-    const regex &pattern,
-    std::vector<std::string> *elements_ptr) {
-  smatch match_result;
-  while (regex_search(*text_ptr, match_result, pattern)) {
-    auto element = match_result.str(1);
-    // ` __id__ `. Notice that `__id__` is surrounded by spaces.
-    string content = " __" + to_string(elements_ptr->size()) + "__ ";
-    ReplaceAll(text_ptr, element, content);
-    elements_ptr->push_back(element);
-  }
-}
-
-// modify `text_`.
-vector<string> DocPreprocessor::ReplaceSpeicalElement() {
-  vector<string> elements;
-  // process operands after `--`.
-  regex operands_pattern("(-- (.|\n)*?)(\\s*)(\\*UTILITY_DELIMITER\\*)");
-  // append delimiter in order to catch special operands of the last line.
-  usage_section_ += "*UTILITY_DELIMITER*";
-  ReplaceElementWithRegularExpression(
-      &usage_section_,
-      operands_pattern,
-      &elements);
-  // remove previous added dilimiter.
-  usage_section_ = regex_replace(
-      usage_section_,
-      regex("\\*UTILITY_DELIMITER\\*$"),
-      "");
-  // process <argument>.
-  regex argument_pattern("(<.*?>)");
-  ReplaceElementWithRegularExpression(
-      &usage_section_,
-      argument_pattern,
-      &elements);
-  ReplaceElementWithRegularExpression(
-      &options_section_,
-      argument_pattern,
-      &elements);
-  // process default value.
-  regex default_value_pattern("(\".*?\")");
-  ReplaceElementWithRegularExpression(
-      &options_section_,
-      default_value_pattern,
-      &elements);
-  // update `text_`.
-  text_ = usage_section_ + options_section_;
-  return elements;
-}
-
-// restore `text_`.
-void DocPreprocessor::RestoreSpeicalElement(
-    const std::vector<std::string> &elements) {
-  int index = 0;
-  for (const string &element : elements) {
-    string content = "__" + to_string(index) + "__";
-    ReplaceAll(&text_, content, element);
-    ++index;
-  }
-}
 
 void DocPreprocessor::DisambiguateByInsertSpace() {
-  // preprocess.
-  auto elements = ReplaceSpeicalElement();
-  vector<string> keywords = {
+  const vector<string> keywords = {
     "(",
     ")",
     "[",
@@ -227,24 +219,31 @@ void DocPreprocessor::DisambiguateByInsertSpace() {
     "*UTILITY_DELIMITER*",
     "*DESC_DELIMITER*" ,
   };
-  // first, insert spaces.
-  for (const string &keyword : keywords) {
-    ReplaceAll(&text_, keyword, " " + keyword + " ");
-  }
-  // collapse spaces.
-  text_ = regex_replace(
-      text_,
-      regex("\\s+"),
-      " ");
-  if (text_.back() == ' ') {
-    text_.pop_back();
-  }
-  // postprocess.
-  RestoreSpeicalElement(elements);
+
+  // deal with `usage_section_`.
+  usage_section_ += "*UTILITY_DELIMITER*";
+  StringUtils::InsertSpace(
+      {"(-- (.|\n)*?)(\\s*)(\\*UTILITY_DELIMITER\\*)", "(<.*?>)"},
+      keywords,
+      &usage_section_);
+  // remove previous added dilimiter.
+  usage_section_ = regex_replace(
+      usage_section_,
+      regex("\\*UTILITY_DELIMITER\\*$"),
+      "");
+
+  // deal with `options_section_`.
+  StringUtils::InsertSpace(
+      {"(<.*?>)", "(\".*?\")"},
+      keywords,
+      &options_section_);
+
+  // update `text_`.
+  text_ = usage_section_ + options_section_;
 }
 
 void DocPreprocessor::ExtractAndProcessUsageSection() {
-  if (ExtractSection("Usage", text_, &usage_section_)) {
+  if (StringUtils::ExtractSection("Usage", text_, &usage_section_)) {
     ReplaceUtilityName();
   } else {
     // can't find usage section, which must exist.
@@ -253,7 +252,7 @@ void DocPreprocessor::ExtractAndProcessUsageSection() {
 }
 
 void DocPreprocessor::ExtractAndProcessOptionsSection() {
-  if (ExtractSection("Options", text_, &options_section_)) {
+  if (StringUtils::ExtractSection("Options", text_, &options_section_)) {
     InsertDesDelimiter();
   } else {
     // Since options section is optional, if the program cannot find such
