@@ -64,6 +64,19 @@ const std::map<NonTerminalType, std::string> kNonTermianlClassName = {
   {NonTerminalType::LOGIC_ONEORMORE, "LogicOneOrMore"},
 };
 
+const std::map<TerminalType, std::string> kTermianlValueName = {
+  {TerminalType::K_OPTIONS,       "TerminalType::K_OPTIONS"},
+  {TerminalType::K_DOUBLE_HYPHEN, "TerminalType::K_DOUBLE_HYPHEN"},
+
+  {TerminalType::POSIX_OPTION,    "TerminalType::POSIX_OPTION"},
+  {TerminalType::GROUPED_OPTIONS, "TerminalType::GROUPED_OPTIONS"},
+  {TerminalType::GNU_OPTION,      "TerminalType::GNU_OPTION"},
+  {TerminalType::ARGUMENT,        "TerminalType::ARGUMENT"},
+  {TerminalType::COMMAND,         "TerminalType::COMMAND"},
+
+  {TerminalType::GENERAL_ELEMENT, "TerminalType::GENERAL_ELEMENT"},
+};
+
 // forward declaration for `SharedPtrNode`...
 class NodeInterface;
 // forward declaration for `NodeConnection::ConnectParent`.
@@ -134,6 +147,7 @@ class Token {
   bool operator!=(const Token &other) const;
 
   bool IsEmpty() const;
+  std::string ToString() const;
 
   // accessors.
   bool has_value() const;
@@ -213,6 +227,11 @@ inline bool Token::IsEmpty() const {
   // is TerminalType::OTHER or has empty value.
   return type_ == TerminalType::OTHER
          || (has_value_ && value_.empty());
+}
+
+inline std::string Token::ToString() const {
+  return "Token(" + kTermianlValueName.at(type_)
+         + ", \"" + value_ + "\")";
 }
 
 // accessors.

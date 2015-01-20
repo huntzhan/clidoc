@@ -2,6 +2,7 @@
 #include <string>
 #include "gtest/gtest.h"
 #include "ast/ast_nodes.h"
+#include "ast/ast_node_interface.h"
 
 using namespace clidoc;
 using std::string;
@@ -35,4 +36,9 @@ TEST(symbol, non_terminal_to_string) {
          "LogicXor(GnuOption[--long])"
        ")"),
       logic_and_ptr->ToString());
+}
+
+TEST(TokenTest, ToString) {
+  auto t = Token(TerminalType::POSIX_OPTION, "-c");
+  EXPECT_EQ("Token(TerminalType::POSIX_OPTION, \"-c\")", t.ToString());
 }
