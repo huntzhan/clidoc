@@ -1,7 +1,7 @@
 
 #include <memory>
 #include <vector>
-#include "shared/smart_ptr_interface.h"
+#include "ast/smart_ptr_interface.h"
 
 using std::vector;
 using std::shared_ptr;

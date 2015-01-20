@@ -7,7 +7,7 @@
 #include <string>
 
 #include "ast/ast_node_interface.h"
-#include "shared/smart_ptr_interface.h"
+#include "ast/smart_ptr_interface.h"
 
 namespace clidoc {
 

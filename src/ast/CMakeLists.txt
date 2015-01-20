@@ -6,6 +6,8 @@ add_library (parser_proxy               parser_proxy.cc)
 add_library (process_logic              process_logic.cc)
 add_library (option_record              option_record.cc)
 add_library (ast_build                  ast_build.cc)
+add_library (smart_ptr_interface        smart_ptr_interface.cc)
+add_library (tokenizer                  tokenizer.cc)
 
 # ignore all warning, might exists a better way to do this.
 set_target_properties(

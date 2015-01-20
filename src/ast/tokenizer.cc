@@ -5,7 +5,7 @@
 
 #include "ast/ast_node_interface.h"
 #include "ast/generated_scanner.h"
-#include "shared/tokenizer.h"
+#include "ast/tokenizer.h"
 
 using std::string;
 using std::vector;
