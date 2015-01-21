@@ -168,8 +168,7 @@ inline Terminal<T>::Terminal(const std::string &value)
 
 template <TerminalType T>
 std::string Terminal<T>::GetID() {
-  std::string token_value = token_.has_value() ? token_.value() : "NoValue";
-  return kTermianlClassName.at(T) + "[" + token_value + "]";
+  return kTermianlClassName.at(T);
 }
 
 template <TerminalType T>
@@ -179,13 +178,14 @@ std::size_t Terminal<T>::GetSizeOfChildren() {
 
 template <TerminalType T>
 std::string Terminal<T>::ToString() {
-  return GetID();
+  std::string token_value = token_.has_value() ? token_.value() : "NoValue";
+  return GetID() + "[" + token_value + "]";
 }
 
 template <TerminalType T>
 std::string Terminal<T>::ToString(const int &indent) {
   std::ostringstream strm;
-  strm << GetIndent(indent) << GetID() << std::endl;
+  strm << GetIndent(indent) << ToString() << std::endl;
   return strm.str();
 }
 
