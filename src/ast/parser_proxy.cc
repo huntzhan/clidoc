@@ -277,7 +277,7 @@ string DocPreprocessor::PreprocessRawDocForParsing(const string &raw_doc) {
 
 string DocPreprocessor::PreprocessRawDocForCodeGen(const string &raw_doc) {
   regex pattern("#[ \t]*");  // Replace # and following space or tab.
-  return regex_replace(text_, pattern, "");
+  return regex_replace(raw_doc, pattern, "");
 }
 
 string ParserProxy::PreprocessRawDoc(const string &raw_doc) {

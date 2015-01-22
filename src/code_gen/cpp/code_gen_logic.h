@@ -8,13 +8,10 @@
 #include <set>
 
 #include "ast/ast_node_interface.h"
+#include "ast/ast_build.h"
 #include "ast/ast_visitor_helper.h"
 
 namespace clidoc {
-
-std::string GenerateSetOfToken(
-    const std::string &variable,
-    const std::set<Token> &elements);
 
 class ASTTextGenerator : public VisitorProcessLogic {
  public:
@@ -24,11 +21,18 @@ class ASTTextGenerator : public VisitorProcessLogic {
   void ProcessNode(std::shared_ptr<NonTerminal<T>> node);
 
   std::string GetExpressions() const;
+  std::string GetRootVariableName() const;
 
  private:
   std::string child_variable_name_;
   std::vector<std::string> expressions_;
 };
+
+std::string GenerateSetOfToken(
+    const std::string &variable,
+    const std::set<Token> &elements);
+
+std::string GenerateSource(const CodeGenInfo &code_gen_info);
 
 }  // namespace clidoc
 
@@ -64,13 +68,16 @@ void ASTTextGenerator::ProcessNode(std::shared_ptr<NonTerminal<T>> node) {
   child_variable_name_ = parent_variable_name;
 }
 
-
-std::string ASTTextGenerator::GetExpressions() const {
+inline std::string ASTTextGenerator::GetExpressions() const {
   std::ostringstream ostrm;
   for (const auto &expression : expressions_) {
     ostrm << expression << std::endl;
   }
   return ostrm.str();
+}
+
+inline std::string ASTTextGenerator::GetRootVariableName() const {
+  return child_variable_name_;
 }
 
 }  // namespace clidoc

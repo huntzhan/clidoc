@@ -33,3 +33,32 @@ TEST(cpp_code_gen, ast) {
     "nt2->AddChild(t1);\n";
   EXPECT_EQ(expected, code_generator.GetExpressions());
 }
+
+TEST(cpp_code_gen, source) {
+  string input =
+R"doc(
+Usage:
+  naval_fate.py -abc -- --whatever
+  naval_fate.py --test <multiple>...
+  naval_fate.py ship new <name>...
+  naval_fate.py ship <name> move <x> <y> [--speed=<kn>]
+  naval_fate.py ship shoot <x> <y>
+  naval_fate.py mine (set|remove) <x> <y> [--moored | --drifting]
+  naval_fate.py (-h | --help)
+  naval_fate.py --version
+
+Options:
+  -a -b -c                     # Test.
+  --test <multiple>
+  -h --help                    # Show this screen.
+  --version                    # Show version.
+  --speed=<kn> [default: "10"] # Speed in knots.
+  --moored                     # Moored (anchored) mine.
+  --drifting                   # Drifting mine.
+)doc";
+
+  CodeGenInfo info;
+  info.Prepare(input);
+
+  std::cout << GenerateSource(info) << std::endl;
+}

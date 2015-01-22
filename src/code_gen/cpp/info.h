@@ -20,5 +20,7 @@ struct CppCodeGenInfo {
   std::string doc_text_;
 };
 
+extern CppCodeGenInfo cpp_code_gen_info;
+
 }  // namespace clidoc
 #endif  // SRC_CODE_GEN_CPP_INFO_H_
