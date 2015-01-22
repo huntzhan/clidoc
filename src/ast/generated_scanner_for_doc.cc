@@ -17,7 +17,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 37
+#define YY_FLEX_SUBMINOR_VERSION 39
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -223,6 +223,7 @@ extern yy_size_t yyleng;
 #define EOB_ACT_LAST_MATCH 2
 
     #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -384,6 +385,8 @@ typedef unsigned char YY_CHAR;
 #include <FlexLexer.h>
 
 int yyFlexLexer::yywrap() { return 1; }
+
+/* %% [1.5] DFA */
 
 /* %if-c-only Standard (non-C++) definition */
 /* %endif */
@@ -645,7 +648,7 @@ static yyconst flex_int16_t yy_rule_linenum[21] =
   clidoc::BisonGeneratedParser::symbol_type \
   clidoc::FlexGeneratedScanner::lex()
 #define YY_NO_INPUT 1
-#line 649 "generated_scanner_for_doc.cc"
+#line 652 "generated_scanner_for_doc.cc"
 
 #define INITIAL 0
 
@@ -801,11 +804,6 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-/* %% [7.0] user's declarations go here */
-#line 52 "flex-bison-scripts/scanner_for_doc.lex"
-
-#line 808 "generated_scanner_for_doc.cc"
-
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -840,6 +838,12 @@ YY_DECL
 		yy_load_buffer_state(  );
 		}
 
+	{
+/* %% [7.0] user's declarations go here */
+#line 52 "flex-bison-scripts/scanner_for_doc.lex"
+
+#line 846 "generated_scanner_for_doc.cc"
+
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
 /* %% [8.0] yymore()-related code goes here */
@@ -858,7 +862,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
 			if ( yy_accept[yy_current_state] )
 				{
 				(yy_last_accepting_state) = yy_current_state;
@@ -1022,7 +1026,7 @@ YY_RULE_SETUP
 #line 78 "flex-bison-scripts/scanner_for_doc.lex"
 ECHO;
 	YY_BREAK
-#line 1026 "generated_scanner_for_doc.cc"
+#line 1030 "generated_scanner_for_doc.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1153,6 +1157,7 @@ ECHO;
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
+	} /* end of user's declarations */
 } /* end of yylex */
 /* %ok-for-header */
 
