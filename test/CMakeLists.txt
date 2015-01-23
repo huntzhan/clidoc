@@ -27,7 +27,12 @@ add_executable (ast_build_test ast_build_test.cc)
 target_link_libraries (ast_build_test ast_build)
 
 add_executable (cpp_code_gen_test cpp_code_gen_test.cc)
-target_link_libraries (cpp_code_gen_test cpp_code_gen_logic ast_build)
+target_link_libraries (
+  cpp_code_gen_test
+  cpp_code_gen_logic ast_build)
+
+add_executable (argv_processor_test argv_processor_test.cc)
+target_link_libraries (argv_processor_test argv_processor)
 
 add_gtest (parser_proxy_test)
 add_gtest (process_logic_test)
@@ -37,3 +42,4 @@ add_gtest (tokenizer_for_argv_test)
 add_gtest (tokenizer_for_doc_test)
 add_gtest (ast_build_test)
 add_gtest (cpp_code_gen_test)
+add_gtest (argv_processor_test)

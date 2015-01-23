@@ -23,6 +23,7 @@ ALNUM                {LOWERCASE}|{UPPERCASE}|{DIGIT}
 
 K_DOUBLE_HYPHEN      "--"
 K_EQUAL_SIGN         "="
+K_COMMA              ","
 
 POSIX_OPTION         {HYPHEN}{ALNUM}
 GROUPED_OPTIONS      {HYPHEN}{ALNUM}{2,}
@@ -33,7 +34,8 @@ GENERAL_ELEMENT      {NON_SPACE}+
 %%
 
 {K_DOUBLE_HYPHEN} return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
-{K_EQUAL_SIGN}    return clidoc::BisonGeneratedParser::make_K_EQUAL_SIGN();
+{K_EQUAL_SIGN}    { /* empty */ }
+{K_COMMA}         { /* empty */ }
 
 {POSIX_OPTION}    return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
 {GROUPED_OPTIONS} return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());

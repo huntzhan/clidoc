@@ -8,6 +8,7 @@ add_library (option_record              option_record.cc)
 add_library (ast_build                  ast_build.cc)
 add_library (smart_ptr_interface        smart_ptr_interface.cc)
 add_library (tokenizer                  tokenizer.cc)
+add_library (string_utils               string_utils.cc)
 
 # ignore all warning, might exists a better way to do this.
 set_target_properties(
@@ -19,5 +20,5 @@ target_link_libraries (
   generated_parser
   smart_ptr_interface generated_scanner_for_doc)
 target_link_libraries (process_logic option_record)
-target_link_libraries (parser_proxy generated_parser)
+target_link_libraries (parser_proxy generated_parser string_utils)
 target_link_libraries (ast_build parser_proxy process_logic)

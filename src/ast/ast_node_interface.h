@@ -154,6 +154,7 @@ class Token {
   TerminalType type() const;
   std::string value() const;
   // mutator.
+  void set_type(const TerminalType &type);
   void set_value(const std::string &value);
 
  private:
@@ -248,6 +249,10 @@ inline std::string Token::value() const {
 }
 
 // mutator.
+inline void Token::set_type(const TerminalType &type) {
+  type_ = type;
+}
+
 inline void Token::set_value(const std::string &value) {
   value_ = value;
 }

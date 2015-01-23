@@ -3,8 +3,8 @@
 #include <string>
 
 #include "gtest/gtest.h"
-#include "code_gen/cpp/code_gen_logic.h"
 #include "ast/ast_visitor_helper.h"
+#include "code_gen/cpp/code_gen_logic.h"
 
 using namespace clidoc;
 using std::string;

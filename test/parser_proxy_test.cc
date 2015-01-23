@@ -6,6 +6,7 @@
 #include "ast/ast_nodes.h"
 #include "ast/parser_proxy.h"
 #include "ast/option_record.h"
+#include "ast/string_utils.h"
 
 using std::string;
 

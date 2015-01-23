@@ -31,7 +31,6 @@ TEST(tokenizer_for_argv, raw_token_type) {
   CheckRawTokenTypes(
       "--long = SOME-VALUE", {
         TypeID::GNU_OPTION,
-        TypeID::K_EQUAL_SIGN,
         TypeID::GENERAL_ELEMENT,
       });
 }
