@@ -1,5 +1,5 @@
-#ifndef SRC_CODE_GEN_CPP_ARGV_PREPROCESSOR_H_
-#define SRC_CODE_GEN_CPP_ARGV_PREPROCESSOR_H_
+#ifndef SRC_CODE_GEN_CPP_ARGV_PROCESSOR_H_
+#define SRC_CODE_GEN_CPP_ARGV_PROCESSOR_H_
 
 #include <string>
 #include <vector>
@@ -40,4 +40,4 @@ class ArgvProcessor {
 };
 
 }  // namespace clidoc
-#endif  // SRC_CODE_GEN_CPP_ARGV_PREPROCESSOR_H_
+#endif  // SRC_CODE_GEN_CPP_ARGV_PROCESSOR_H_

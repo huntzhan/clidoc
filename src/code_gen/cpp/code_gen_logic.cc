@@ -12,10 +12,10 @@ using std::set;
 using std::ostringstream;
 using std::endl;
 
-#define OSTRM_PROPERTY(data_member)               \
-  ostrm << GenerateSetOfToken(                    \
-      "cpp_code_gen_info.data_member",            \
-      code_gen_info.data_member)                  \
+#define OSTRM_PROPERTY(data_member)      \
+  ostrm << GenerateSetOfToken(           \
+      "cpp_code_gen_info."#data_member,  \
+      code_gen_info.data_member)         \
 
 namespace clidoc {
 
