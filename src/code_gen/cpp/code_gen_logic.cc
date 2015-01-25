@@ -55,7 +55,7 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
 
   ostrm << "cpp_code_gen_info.doc_text_ = R\"doc("
         << code_gen_info.doc_text_
-        << ")doc\""
+        << ")doc\";"
         << endl;
 
   ostrm << "}  // namespace clidoc";
