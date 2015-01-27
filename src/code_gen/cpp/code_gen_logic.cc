@@ -34,7 +34,7 @@ string GenerateSetOfToken(
   return ostrm.str();
 }
 
-std::string GenerateDefaultValues(
+std::string GenerateInitializerList(
     const std::string &variable,
     const std::map<Token, std::string> default_values) {
   ostringstream ostrm;
@@ -44,6 +44,22 @@ std::string GenerateDefaultValues(
           << map_pair.first.ToString()
           << ", "
           << "\"" << map_pair.second << "\""
+          << "}," << endl;
+  }
+  ostrm << "};" << endl;
+  return ostrm.str();
+}
+
+std::string GenerateInitializerList(
+    const std::string &variable,
+    const std::map<Token, Token> default_values) {
+  ostringstream ostrm;
+  ostrm << variable << " = {" << endl;
+  for (const auto &map_pair : default_values) {
+    ostrm << "  {"
+          << map_pair.first.ToString()
+          << ", "
+          << map_pair.second.ToString()
           << "}," << endl;
   }
   ostrm << "};" << endl;
@@ -63,9 +79,13 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
   OSTRM_PROPERTY(oom_arguments_);
   OSTRM_PROPERTY(commands_);
 
-  ostrm << GenerateDefaultValues(
+  ostrm << GenerateInitializerList(
       "cpp_code_gen_info.default_values_",
       code_gen_info.default_values_);
+
+  ostrm << GenerateInitializerList(
+      "cpp_code_gen_info.option_to_representative_option_",
+      code_gen_info.recorder_.option_to_representative_option_);
 
   ASTTextGenerator ast_text_generator;
   auto visitor = GenerateVisitor<AllNodeVisitor>(&ast_text_generator);

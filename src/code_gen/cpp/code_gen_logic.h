@@ -33,9 +33,12 @@ std::string GenerateSetOfToken(
     const std::string &variable,
     const std::set<Token> &elements);
 
-std::string GenerateDefaultValues(
+std::string GenerateInitializerList(
     const std::string &variable,
     const std::map<Token, std::string> default_values);
+std::string GenerateInitializerList(
+    const std::string &variable,
+    const std::map<Token, Token> default_values);
 
 std::string GenerateSource(const CodeGenInfo &code_gen_info);
 
