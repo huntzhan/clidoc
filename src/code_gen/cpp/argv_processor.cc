@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 
 #include "ast/ast_node_interface.h"
 #include "ast/string_utils.h"
@@ -18,6 +19,7 @@ using std::find;
 using std::next;
 using std::copy;
 using std::back_inserter;
+using std::map;
 
 namespace clidoc {
 
@@ -92,6 +94,19 @@ void ArgvProcessLogic::HandleGroupedOptions(
   }
 }
 
+void ArgvProcessLogic::ReplaceOptionWithRepresentativeOption(
+    const map<Token, Token> &option_to_rep_option) {
+  auto iter = tokens_.begin();
+  while (iter != tokens_.end()) {
+    if (option_to_rep_option.find(*iter) != option_to_rep_option.end()) {
+      tokens_.insert(iter, option_to_rep_option.at(*iter));
+      iter = tokens_.erase(iter);
+      continue;
+    }
+    ++iter;
+  }
+}
+
 void ArgvProcessor::LoadArgv(const int &argc, const char **argv) {
   for (int index = 1; index != argc; ++index) {
     argv_.append(argv[index]);
@@ -100,12 +115,14 @@ void ArgvProcessor::LoadArgv(const int &argc, const char **argv) {
 }
 
 vector<Token> ArgvProcessor::GetPreprocessedArguments(
+    const std::map<Token, Token> &option_to_rep_option,
     const set<Token> &focused_bound_options) const {
   ArgvProcessLogic process_logic(argv_);
   process_logic.InsertSpace();
   process_logic.TokenizeArgv();
   process_logic.HandleDoubleHyphen();
   process_logic.HandleGroupedOptions(focused_bound_options);
+  process_logic.ReplaceOptionWithRepresentativeOption(option_to_rep_option);
   return vector<Token>(
       process_logic.tokens_.begin(),
       process_logic.tokens_.end());

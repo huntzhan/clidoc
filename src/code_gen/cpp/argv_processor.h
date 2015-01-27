@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <map>
 
 #include "ast/ast_node_interface.h"
 
@@ -24,6 +25,9 @@ struct ArgvProcessLogic {
   // 6. separate and disambiguate GROUPED_OPTIONS.(recuse #9 and #6)
   //    [Guideline 5, exceptions]
   void HandleGroupedOptions(const std::set<Token> &focused_bound_options);
+  // 7. replace each option with its representative option.
+  void ReplaceOptionWithRepresentativeOption(
+      const std::map<Token, Token> &option_to_rep_option);
 
   std::string argv_;
   std::list<Token> tokens_;
@@ -33,6 +37,7 @@ class ArgvProcessor {
  public:
   void LoadArgv(const int &argc, const char **argv);
   std::vector<Token> GetPreprocessedArguments(
+      const std::map<Token, Token> &option_to_rep_option,
       const std::set<Token> &focused_bound_options) const;
 
  private:
