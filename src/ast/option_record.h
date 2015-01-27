@@ -44,6 +44,7 @@ class RepresentativeOptionProperty {
  public:
   void Mutate(const Token &option_argument, const Token &default_value);
   bool IsEmpty() const;
+  bool HasDefaultValue() const;
 
   Token option_argument_;
   std::string default_value_;

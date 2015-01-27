@@ -49,6 +49,10 @@ bool RepresentativeOptionProperty::IsEmpty() const {
   return option_argument_.IsEmpty();
 }
 
+bool RepresentativeOptionProperty::HasDefaultValue() const {
+  return has_default_value_;
+}
+
 void RepresentativeOptionProperty::set_option_argument(
     const Token &option_argument) {
   SetDataMember(

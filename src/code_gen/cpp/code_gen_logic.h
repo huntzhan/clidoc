@@ -6,6 +6,7 @@
 #include <sstream>
 #include <memory>
 #include <set>
+#include <map>
 
 #include "ast/ast_node_interface.h"
 #include "ast/ast_build.h"
@@ -31,6 +32,10 @@ class ASTTextGenerator : public VisitorProcessLogic {
 std::string GenerateSetOfToken(
     const std::string &variable,
     const std::set<Token> &elements);
+
+std::string GenerateDefaultValues(
+    const std::string &variable,
+    const std::map<Token, std::string> default_values);
 
 std::string GenerateSource(const CodeGenInfo &code_gen_info);
 
