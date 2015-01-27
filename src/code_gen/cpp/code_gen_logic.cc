@@ -56,12 +56,12 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
         << "namespace clidoc {" << endl
         << "CppCodeGenInfo cpp_code_gen_info;" << endl;
 
-  OSTRM_PROPERTY(focused_bound_options_);
-  OSTRM_PROPERTY(focused_unbound_options_);
-  OSTRM_PROPERTY(focused_arguments_);
-  OSTRM_PROPERTY(focused_oom_bound_options_);
-  OSTRM_PROPERTY(focused_oom_arguments_);
-  OSTRM_PROPERTY(focused_commands_);
+  OSTRM_PROPERTY(bound_options_);
+  OSTRM_PROPERTY(unbound_options_);
+  OSTRM_PROPERTY(arguments_);
+  OSTRM_PROPERTY(oom_bound_options_);
+  OSTRM_PROPERTY(oom_arguments_);
+  OSTRM_PROPERTY(commands_);
 
   ostrm << GenerateDefaultValues(
       "cpp_code_gen_info.default_values_",

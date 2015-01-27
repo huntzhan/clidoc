@@ -11,12 +11,12 @@ namespace clidoc {
 
 struct CppCodeGenInfo {
   Doc::SharedPtr doc_node_;
-  std::set<Token> focused_bound_options_;
-  std::set<Token> focused_unbound_options_;
-  std::set<Token> focused_arguments_;
-  std::set<Token> focused_oom_bound_options_;
-  std::set<Token> focused_oom_arguments_;
-  std::set<Token> focused_commands_;
+  std::set<Token> bound_options_;
+  std::set<Token> unbound_options_;
+  std::set<Token> arguments_;
+  std::set<Token> oom_bound_options_;
+  std::set<Token> oom_arguments_;
+  std::set<Token> commands_;
   std::map<Token, std::string> default_values_;
   std::string doc_text_;
 };
