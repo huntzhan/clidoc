@@ -27,6 +27,7 @@ ompiled Object files
 *.out
 *.app
 
+tags
 build/
 *.swp
 *.pyc
