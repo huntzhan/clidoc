@@ -1,5 +1,6 @@
 #include <string>
 #include <set>
+#include <map>
 #include <sstream>
 
 #include "ast/ast_build.h"
@@ -9,6 +10,7 @@
 
 using std::string;
 using std::set;
+using std::map;
 using std::ostringstream;
 using std::endl;
 
@@ -32,6 +34,22 @@ string GenerateSetOfToken(
   return ostrm.str();
 }
 
+std::string GenerateDefaultValues(
+    const std::string &variable,
+    const std::map<Token, std::string> default_values) {
+  ostringstream ostrm;
+  ostrm << variable << " = {" << endl;
+  for (const auto &map_pair : default_values) {
+    ostrm << "  {"
+          << map_pair.first.ToString()
+          << ", "
+          << "\"" << map_pair.second << "\""
+          << "}," << endl;
+  }
+  ostrm << "};" << endl;
+  return ostrm.str();
+}
+
 string GenerateSource(const CodeGenInfo &code_gen_info) {
   ostringstream ostrm;
   ostrm << "#include \"code_gen/cpp/info.h\"" << endl
@@ -44,6 +62,10 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
   OSTRM_PROPERTY(focused_oom_bound_options_);
   OSTRM_PROPERTY(focused_oom_arguments_);
   OSTRM_PROPERTY(focused_commands_);
+
+  ostrm << GenerateDefaultValues(
+      "cpp_code_gen_info.default_values_",
+      code_gen_info.default_values_);
 
   ASTTextGenerator ast_text_generator;
   auto visitor = GenerateVisitor<AllNodeVisitor>(&ast_text_generator);

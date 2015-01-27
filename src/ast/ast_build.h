@@ -3,6 +3,7 @@
 
 #include <string>
 #include <set>
+#include <map>
 
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
@@ -26,6 +27,8 @@ class CodeGenInfo {
   std::set<Token> focused_oom_bound_options_;
   std::set<Token> focused_oom_arguments_;
   std::set<Token> focused_commands_;
+  // default value of bound options.
+  std::map<Token, std::string> default_values_;
 
   std::string doc_text_;
 

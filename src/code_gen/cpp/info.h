@@ -17,6 +17,7 @@ struct CppCodeGenInfo {
   std::set<Token> focused_oom_bound_options_;
   std::set<Token> focused_oom_arguments_;
   std::set<Token> focused_commands_;
+  std::map<Token, std::string> default_values_;
   std::string doc_text_;
 };
 

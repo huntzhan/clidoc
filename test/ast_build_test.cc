@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <map>
 
 #include "gtest/gtest.h"
 #include "ast/ast_build.h"
 
 using std::set;
+using std::map;
 using std::string;
 
 namespace clidoc {
@@ -45,6 +47,13 @@ Options:
     }
     EXPECT_EQ(expected, values);
   };
+  auto CheckMap = [](map<string, string> expected, map<Token, string> actual) {
+    map<string, string> values;
+    for (const auto &element : actual) {
+      values[element.first.value()] = element.second;
+    }
+    EXPECT_EQ(expected, values);
+  };
   CheckToken({"--speed", "--test"}, info.focused_bound_options_);
   CheckToken(
       {
@@ -77,6 +86,7 @@ Options:
       info.focused_commands_);
   CheckToken({"--test"}, info.focused_oom_bound_options_);
   CheckToken({"<name>"}, info.focused_oom_arguments_);
+  CheckMap({{"--speed", "10"}}, info.default_values_);
 }
 
 }  // namespace clidoc

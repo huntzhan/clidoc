@@ -44,6 +44,16 @@ void CodeGenInfo::PrepareFocusedElements(
         focused_oom_bound_options_.insert(element);
     }
   }
+  // setup `default_values_`.
+  for (auto iter = recorder_.representative_option_to_property_.begin();
+       iter != recorder_.representative_option_to_property_.end();
+       ++iter) {
+    const auto &rep_option = iter->first;
+    const auto &property = iter->second;
+    if (property.HasDefaultValue()) {
+      default_values_[rep_option] = property.default_value_;
+    }
+  }
 }
 
 void CodeGenInfo::PostProcessedAST() {
