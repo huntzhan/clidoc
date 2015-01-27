@@ -54,7 +54,7 @@ Options:
     }
     EXPECT_EQ(expected, values);
   };
-  CheckToken({"--speed", "--test"}, info.bound_options_);
+  CheckToken({"--speed"}, info.bound_options_);
   CheckToken(
       {
         "--drifting",
@@ -68,7 +68,6 @@ Options:
   CheckToken(
       {
         "--whatever",
-        "<name>",
         "<x>",
         "<y>",
       },

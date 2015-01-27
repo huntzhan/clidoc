@@ -1,6 +1,8 @@
 
 #include <set>
 #include <string>
+#include <algorithm>
+#include <iterator>
 
 #include "ast/ast_build.h"
 #include "ast/parser_proxy.h"
@@ -11,12 +13,21 @@
 
 using std::set;
 using std::string;
+using std::set_difference;
+using std::inserter;
 
 namespace clidoc {
 
 void CodeGenInfo::PrepareFocusedElements(
     set<Token> *elements_ptr,
     set<Token> *oom_elements_ptr) {
+  // remove the intersection of OOM element from focused element.
+  set<Token> temp_elements = *elements_ptr;
+  elements_ptr->clear();
+  set_difference(
+      temp_elements.begin(), temp_elements.end(),
+      oom_elements_ptr->begin(), oom_elements_ptr->end(),
+      inserter(*elements_ptr, elements_ptr->end()));
   // setup focused elements/
   for (const Token &element : *elements_ptr) {
     if (recorder_.OptionIsBound(element)) {
