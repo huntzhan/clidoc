@@ -14,7 +14,7 @@ namespace clidoc {
 
 struct MatchState {
   // input arguments.
-  std::vector<Token, bool> token_match_state_;
+  std::map<Token, bool> token_match_state_;
   // argv match outcome.
   std::map<Token, bool> boolean_outcome_;
   std::map<Token, std::string> string_outcome_;
@@ -25,7 +25,7 @@ class MatchStateManager;
 
 struct MementoInterface {
   virtual void BackupMatchStateManager(
-      MatchStateManager *match_state_manager_ptr) = 0;
+      const MatchStateManager *match_state_manager_ptr) = 0;
   virtual void RestoreMatchStateManager(
       MatchStateManager *match_state_manager_ptr) = 0;
 };
@@ -33,7 +33,7 @@ struct MementoInterface {
 class SimpleMemento : public MementoInterface {
  public:
   void BackupMatchStateManager(
-      MatchStateManager *match_state_manager_ptr) override;
+      const MatchStateManager *match_state_manager_ptr) override;
   void RestoreMatchStateManager(
       MatchStateManager *match_state_manager_ptr) override;
 
@@ -57,7 +57,7 @@ class MatchStateManager {
 
   const std::vector<Token> &tokens_;
   std::map<Token, std::vector<Token>::const_iterator> skip_iters_;
-  std::shared_ptr<MatchState> match_state_;
+  MatchState match_state_;
   std::stack<std::shared_ptr<MementoInterface>> memento_stack_;
 };
 

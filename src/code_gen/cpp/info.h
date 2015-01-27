@@ -3,6 +3,7 @@
 
 #include <string>
 #include <set>
+#include <map>
 
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
