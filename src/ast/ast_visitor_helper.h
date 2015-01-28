@@ -158,13 +158,13 @@ class TerminalVisitor : public NodeVisitorInterface,
 
   explicit TerminalVisitor(ProcessLogicType *process_logic_ptr);
 
-  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
-  void ProcessNode(KOptions::SharedPtr node) override;
-  void ProcessNode(PosixOption::SharedPtr node) override;
+  void ProcessNode(KDoubleHyphen::SharedPtr  node) override;
+  void ProcessNode(KOptions::SharedPtr       node) override;
+  void ProcessNode(PosixOption::SharedPtr    node) override;
   void ProcessNode(GroupedOptions::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
+  void ProcessNode(GnuOption::SharedPtr      node) override;
+  void ProcessNode(Argument::SharedPtr       node) override;
+  void ProcessNode(Command::SharedPtr        node) override;
 
  private:
   friend DefaultBehaviorOfTerminal;
@@ -178,10 +178,11 @@ class NonTerminalVisitor : public NodeVisitorInterface,
   using NodeVisitorInterface::ProcessNode;
   explicit NonTerminalVisitor(ProcessLogicType *process_logic_ptr);
 
-  void ProcessNode(LogicAnd::SharedPtr node) override;
-  void ProcessNode(LogicXor::SharedPtr node) override;
-  void ProcessNode(LogicOr::SharedPtr node) override;
-  void ProcessNode(LogicOptional::SharedPtr node) override;
+  void ProcessNode(Doc::SharedPtr            node) override;
+  void ProcessNode(LogicAnd::SharedPtr       node) override;
+  void ProcessNode(LogicXor::SharedPtr       node) override;
+  void ProcessNode(LogicOr::SharedPtr        node) override;
+  void ProcessNode(LogicOptional::SharedPtr  node) override;
   void ProcessNode(LogicOneOrMore::SharedPtr node) override;
 
  private:
@@ -196,18 +197,19 @@ class AllNodeVisitor : public NodeVisitorInterface,
   using NodeVisitorInterface::ProcessNode;
   explicit AllNodeVisitor(ProcessLogicType *process_logic_ptr);
 
-  void ProcessNode(KDoubleHyphen::SharedPtr node) override;
-  void ProcessNode(KOptions::SharedPtr node) override;
-  void ProcessNode(PosixOption::SharedPtr node) override;
+  void ProcessNode(KDoubleHyphen::SharedPtr  node) override;
+  void ProcessNode(KOptions::SharedPtr       node) override;
+  void ProcessNode(PosixOption::SharedPtr    node) override;
   void ProcessNode(GroupedOptions::SharedPtr node) override;
-  void ProcessNode(GnuOption::SharedPtr node) override;
-  void ProcessNode(Argument::SharedPtr node) override;
-  void ProcessNode(Command::SharedPtr node) override;
+  void ProcessNode(GnuOption::SharedPtr      node) override;
+  void ProcessNode(Argument::SharedPtr       node) override;
+  void ProcessNode(Command::SharedPtr        node) override;
 
-  void ProcessNode(LogicAnd::SharedPtr node) override;
-  void ProcessNode(LogicXor::SharedPtr node) override;
-  void ProcessNode(LogicOr::SharedPtr node) override;
-  void ProcessNode(LogicOptional::SharedPtr node) override;
+  void ProcessNode(Doc::SharedPtr            node) override;
+  void ProcessNode(LogicAnd::SharedPtr       node) override;
+  void ProcessNode(LogicXor::SharedPtr       node) override;
+  void ProcessNode(LogicOr::SharedPtr        node) override;
+  void ProcessNode(LogicOptional::SharedPtr  node) override;
   void ProcessNode(LogicOneOrMore::SharedPtr node) override;
 
  private:
@@ -328,6 +330,12 @@ void TerminalVisitor<ProcessLogicType>::ProcessNode(
 // NonTerminalVisitor.
 template <typename ProcessLogicType>
 void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
+    Doc::SharedPtr node) {
+  CONDITIONAL_SELECT_BEHAVIOR(DefaultBehaviorOfNonTerminal);
+}
+
+template <typename ProcessLogicType>
+void NonTerminalVisitor<ProcessLogicType>::ProcessNode(
     LogicAnd::SharedPtr node) {
   CONDITIONAL_SELECT_BEHAVIOR(DefaultBehaviorOfNonTerminal);
 }
@@ -397,6 +405,12 @@ template <typename ProcessLogicType>
 void AllNodeVisitor<ProcessLogicType>::ProcessNode(
     Command::SharedPtr node) {
   CONDITIONAL_SELECT_BEHAVIOR(DefaultBehaviorOfTerminal);
+}
+
+template <typename ProcessLogicType>
+void AllNodeVisitor<ProcessLogicType>::ProcessNode(
+    Doc::SharedPtr node) {
+  CONDITIONAL_SELECT_BEHAVIOR(DefaultBehaviorOfNonTerminal);
 }
 
 template <typename ProcessLogicType>

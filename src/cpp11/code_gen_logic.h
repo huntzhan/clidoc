@@ -49,7 +49,7 @@ namespace clidoc {
 template <TerminalType T>
 void ASTTextGenerator::ProcessNode(std::shared_ptr<Terminal<T>> node) {
   std::string variable_name = "t" + std::to_string(expressions_.size());
-  std::string expression = variable_name + " = "
+  std::string expression = "auto " + variable_name + " = "
                            + node->GetID() + "::Init("
                            + node->token_.ToString() + ");";
   expressions_.push_back(expression);
@@ -66,7 +66,7 @@ void ASTTextGenerator::ProcessNode(std::shared_ptr<NonTerminal<T>> node) {
   std::string parent_variable_name =
       "nt" + std::to_string(expressions_.size());
   std::string expression =
-      parent_variable_name + " = "
+      "auto " + parent_variable_name + " = "
       + node->GetID() + "::Init();";
   expressions_.push_back(expression);
   for (const auto &child_variable_name : child_variable_names) {

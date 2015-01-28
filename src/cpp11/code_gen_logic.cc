@@ -14,10 +14,10 @@ using std::map;
 using std::ostringstream;
 using std::endl;
 
-#define OSTRM_PROPERTY(data_member)      \
-  ostrm << GenerateSetOfToken(           \
-      "cpp_code_gen_info."#data_member,  \
-      code_gen_info.data_member)         \
+#define OSTRM_PROPERTY(data_member)     \
+  ostrm << GenerateSetOfToken(          \
+      "cpp_code_gen_info."#data_member, \
+      code_gen_info.data_member)        \
 
 namespace clidoc {
 
@@ -70,6 +70,7 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
   ostringstream ostrm;
   ostrm << "#include \"cpp11/info.h\"" << endl
         << "namespace clidoc {" << endl
+        << "CppCodeGenInfo InitCppCodeGenInfo() {" << endl
         << "CppCodeGenInfo cpp_code_gen_info;" << endl;
 
   OSTRM_PROPERTY(bound_options_);
@@ -100,7 +101,10 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
         << ")doc\";"
         << endl;
 
-  ostrm << "}  // namespace clidoc";
+  ostrm << "return cpp_code_gen_info;" << endl
+        << "}" << endl
+        << "CppCodeGenInfo cpp_code_gen_info = InitCppCodeGenInfo();" << endl
+        << "}  // namespace clidoc";
   return ostrm.str();
 }
 

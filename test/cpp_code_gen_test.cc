@@ -49,9 +49,9 @@ TEST(cpp_code_gen, ast) {
   auto visitor = GenerateVisitor<AllNodeVisitor>(&code_generator);
   logic_and->Accept(&visitor);
   string expected =
-    "t0 = PosixOption::Init(Token(TerminalType::POSIX_OPTION, \"-c\"));\n"
-    "t1 = GnuOption::Init(Token(TerminalType::GNU_OPTION, \"--long\"));\n"
-    "nt2 = LogicAnd::Init();\n"
+    "auto t0 = PosixOption::Init(Token(TerminalType::POSIX_OPTION, \"-c\"));\n"
+    "auto t1 = GnuOption::Init(Token(TerminalType::GNU_OPTION, \"--long\"));\n"
+    "auto nt2 = LogicAnd::Init();\n"
     "nt2->AddChild(t0);\n"
     "nt2->AddChild(t1);\n";
   EXPECT_EQ(expected, code_generator.GetExpressions());
