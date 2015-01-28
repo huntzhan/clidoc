@@ -23,28 +23,60 @@ using std::map;
 
 namespace clidoc {
 
-void ArgvProcessLogic::InsertSpace() {
-  StringUtils::InsertSpace(
-      {"(-- (.|\n)*$)"},  // excluded string after `--`.
-      {"=", ","},         // insert space arround `=` and `,`.
-      &argv_);
-}
+ArgvProcessLogic::ArgvProcessLogic(const vector<string> &argv)
+    : argv_(argv) { /* empty */ }
 
 void ArgvProcessLogic::TokenizeArgv() {
-  auto tokens = FromString(argv_);
-  copy(tokens.begin(), tokens.end(), back_inserter(tokens_));
-}
-
-void ArgvProcessLogic::HandleDoubleHyphen() {
-  auto pos_iter = find(tokens_.begin(), tokens_.end(),
-                       Token(TerminalType::K_DOUBLE_HYPHEN));
-  if (pos_iter != tokens_.end()) {
-    // `--` would be removed in `HandleGroupedOptions`.
-    for (auto iter = next(pos_iter);
-         iter != tokens_.end(); ++iter) {
-      iter->set_type(TerminalType::GENERAL_ELEMENT);
+  auto ArgIsNotSeperable = [](const string &arg) -> bool {
+    if (arg.find(' ') != string::npos) {
+      return true;
     }
+    if (arg.find('\t') != string::npos) {
+      return true;
+    }
+    return false;
+  };
+  auto ProcessText = [&](string *text_ptr) {
+    if (!text_ptr->empty()) {
+      StringUtils::InsertSpace(
+          {},          // no exclude pattern yet.
+          {"=", ","},  // insert space arround `=` and `,`.
+          text_ptr);
+      auto tokens = FromString(*text_ptr);
+      copy(tokens.begin(), tokens.end(), back_inserter(tokens_));
+      text_ptr->clear();
+    }
+  };
+
+  string text;
+  for (auto iter = argv_.cbegin(); iter != argv_.cend(); ++iter) {
+    const string &arg = *iter;
+    // handle --.(reuse #12)[Guideline 10]
+    if (arg == "--") {
+      // process string before `--`.
+      ProcessText(&text);
+      // add elements after `--`, including `--`.
+      tokens_.push_back(Token(TerminalType::K_DOUBLE_HYPHEN));
+      for (auto inner_iter = next(iter);
+           inner_iter != argv_.cend(); ++inner_iter) {
+        tokens_.push_back(
+            Token(TerminalType::GENERAL_ELEMENT, *inner_iter));
+      }
+      break;
+    }
+    // not a quoted unit, append to `text`.
+    if (!ArgIsNotSeperable(arg)) {
+      text.append(arg);
+      text.push_back(' ');
+      continue;
+    }
+    // arg contains space.
+    // 1. process `text`.
+    ProcessText(&text);
+    // 2. add `arg` as `GENERAL_ELEMENT`.
+    tokens_.push_back(Token(TerminalType::GENERAL_ELEMENT, arg));
   }
+  ProcessText(&text);
 }
 
 void ArgvProcessLogic::HandleGroupedOptions(
@@ -109,8 +141,7 @@ void ArgvProcessLogic::ReplaceOptionWithRepresentativeOption(
 
 void ArgvProcessor::LoadArgv(const int &argc, const char **argv) {
   for (int index = 1; index != argc; ++index) {
-    argv_.append(argv[index]);
-    argv_.push_back(' ');
+    argv_.push_back(argv[index]);
   }
 }
 
@@ -118,9 +149,7 @@ vector<Token> ArgvProcessor::GetPreprocessedArguments(
     const std::map<Token, Token> &option_to_rep_option,
     const set<Token> &focused_bound_options) const {
   ArgvProcessLogic process_logic(argv_);
-  process_logic.InsertSpace();
   process_logic.TokenizeArgv();
-  process_logic.HandleDoubleHyphen();
   process_logic.HandleGroupedOptions(focused_bound_options);
   process_logic.ReplaceOptionWithRepresentativeOption(option_to_rep_option);
   return vector<Token>(

@@ -4,7 +4,7 @@ project(clidoc CXX)
 
 
 # settings related to C++ compilter#.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -O0 -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -O2 -std=c++11")
 
 
 # setup googletest
