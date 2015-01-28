@@ -210,7 +210,8 @@ inline Token::Token(TerminalType type, const std::string &value)
 
 // support std::map.
 inline bool Token::operator<(const Token &other) const {
-  return value_ < other.value_;
+  return value_ < other.value_
+         || ((value_ == other.value_) && (type_ < other.type_));
 }
 
 // support equality test.
@@ -226,8 +227,7 @@ inline bool Token::operator!=(const Token &other) const {
 
 inline bool Token::IsEmpty() const {
   // is TerminalType::OTHER or has empty value.
-  return type_ == TerminalType::OTHER
-         || (has_value_ && value_.empty());
+  return type_ == TerminalType::OTHER;
 }
 
 inline std::string Token::ToString() const {

@@ -29,7 +29,7 @@ target_link_libraries (ast_build_test ast_build)
 add_executable (cpp_code_gen_test cpp_code_gen_test.cc)
 target_link_libraries (
   cpp_code_gen_test
-  cpp_code_gen_logic ast_build)
+  cpp_code_gen_logic ast_build match_logic)
 
 add_executable (argv_processor_test argv_processor_test.cc)
 target_link_libraries (argv_processor_test argv_processor)

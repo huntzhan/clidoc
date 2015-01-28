@@ -19,6 +19,7 @@ struct CppCodeGenInfo {
   std::set<Token> oom_arguments_;
   std::set<Token> commands_;
   std::map<Token, std::string> default_values_;
+  std::map<Token, Token> option_to_representative_option_;
   std::string doc_text_;
 };
 

@@ -134,7 +134,7 @@ void RepresentativeOptionProperty::SetDataMember(
     Target target, Flag flag, const ValueType &value) {
   if (this->*flag) {
     if (this->*target != value) {
-      throw std::logic_error("set_option_argument");
+      throw std::logic_error("SetDataMember");
     }
     return;
   }

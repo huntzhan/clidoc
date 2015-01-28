@@ -128,7 +128,6 @@ using ConcreteTerminalVisitorInterface = TerminalVisitorInterface<
   TerminalType::GROUPED_OPTIONS,
   TerminalType::GNU_OPTION,
   TerminalType::ARGUMENT,
-  TerminalType::DEFAULT_VALUE,
   TerminalType::COMMAND>;
 
 
