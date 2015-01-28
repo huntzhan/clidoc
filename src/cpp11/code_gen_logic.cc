@@ -6,7 +6,7 @@
 #include "ast/ast_build.h"
 #include "ast/ast_node_interface.h"
 #include "ast/ast_visitor_helper.h"
-#include "code_gen/cpp/code_gen_logic.h"
+#include "cpp11/code_gen_logic.h"
 
 using std::string;
 using std::set;
@@ -68,7 +68,7 @@ std::string GenerateInitializerList(
 
 string GenerateSource(const CodeGenInfo &code_gen_info) {
   ostringstream ostrm;
-  ostrm << "#include \"code_gen/cpp/info.h\"" << endl
+  ostrm << "#include \"cpp11/info.h\"" << endl
         << "namespace clidoc {" << endl
         << "CppCodeGenInfo cpp_code_gen_info;" << endl;
 

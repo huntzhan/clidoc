@@ -5,7 +5,7 @@
 
 #include "gtest/gtest.h"
 #include "ast/ast_node_interface.h"
-#include "code_gen/cpp/argv_processor.h"
+#include "cpp11/argv_processor.h"
 
 using std::string;
 using std::vector;

@@ -11,7 +11,7 @@ add_library (tokenizer                  tokenizer.cc)
 add_library (string_utils               string_utils.cc)
 
 # ignore all warning, might exists a better way to do this.
-set_target_properties(
+set_target_properties (
   generated_scanner_for_doc generated_scanner_for_argv generated_parser
   PROPERTIES
   COMPILE_FLAGS "-w")

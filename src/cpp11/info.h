@@ -1,5 +1,5 @@
-#ifndef SRC_CODE_GEN_CPP_INFO_H_
-#define SRC_CODE_GEN_CPP_INFO_H_
+#ifndef SRC_CPP11_INFO_H_
+#define SRC_CPP11_INFO_H_
 
 #include <string>
 #include <set>
@@ -26,4 +26,4 @@ struct CppCodeGenInfo {
 extern CppCodeGenInfo cpp_code_gen_info;
 
 }  // namespace clidoc
-#endif  // SRC_CODE_GEN_CPP_INFO_H_
+#endif  // SRC_CPP11_INFO_H_

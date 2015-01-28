@@ -1,5 +1,5 @@
-#ifndef SRC_CODE_GEN_CPP_MATCH_LOGIC_H_
-#define SRC_CODE_GEN_CPP_MATCH_LOGIC_H_
+#ifndef SRC_CPP11_MATCH_LOGIC_H_
+#define SRC_CPP11_MATCH_LOGIC_H_
 
 #include <stack>
 #include <memory>
@@ -9,7 +9,7 @@
 
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
-#include "code_gen/cpp/info.h"
+#include "cpp11/info.h"
 
 namespace clidoc {
 
@@ -113,4 +113,4 @@ class MatchStrategy : public NodeVisitorInterface {
 };
 
 }  // namespace clidoc
-#endif  // SRC_CODE_GEN_CPP_MATCH_LOGIC_H_
+#endif  // SRC_CPP11_MATCH_LOGIC_H_
