@@ -44,4 +44,6 @@ add_gtest (ast_build_test)
 add_gtest (cpp_code_gen_test)
 add_gtest (argv_processor_test)
 
-clidoc_cpp11_code_gen (${PROJECT_SOURCE_DIR}/test/test_doc)
+clidoc_cpp11_code_gen (${PROJECT_SOURCE_DIR}/test/cpp11/test_doc)
+add_executable (example cpp11/program.cc)
+target_link_libraries (example clidoc_cpp11)

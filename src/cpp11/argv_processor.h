@@ -15,7 +15,7 @@ struct ArgvProcessLogic {
   explicit ArgvProcessLogic(const std::vector<std::string> &argv);
 
   void TokenizeArgv();
-  void HandleGroupedOptions(const std::set<Token> &focused_bound_options);
+  void HandleGroupedOptions(const std::set<Token> &bound_options);
   void ReplaceOptionWithRepresentativeOption(
       const std::map<Token, Token> &option_to_rep_option);
 
@@ -25,10 +25,10 @@ struct ArgvProcessLogic {
 
 class ArgvProcessor {
  public:
-  void LoadArgv(const int &argc, const char **argv);
+  void LoadArgv(const int &argc, const char *const *argv);
   std::vector<Token> GetPreprocessedArguments(
       const std::map<Token, Token> &option_to_rep_option,
-      const std::set<Token> &focused_bound_options) const;
+      const std::set<Token> &bound_options) const;
 
  private:
   std::vector<std::string> argv_;

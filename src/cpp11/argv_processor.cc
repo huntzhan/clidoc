@@ -80,7 +80,7 @@ void ArgvProcessLogic::TokenizeArgv() {
 }
 
 void ArgvProcessLogic::HandleGroupedOptions(
-    const set<Token> &focused_bound_options) {
+    const set<Token> &bound_options) {
   auto end_iter = find(tokens_.begin(), tokens_.end(),
                        Token(TerminalType::K_DOUBLE_HYPHEN));
   if (end_iter != tokens_.end()) {
@@ -106,7 +106,7 @@ void ArgvProcessLogic::HandleGroupedOptions(
       auto option = Token(TerminalType::POSIX_OPTION,
                           string("-") + *char_iter);
       tokens_.insert(token_iter, option);
-      if (focused_bound_options.find(option) == focused_bound_options.end()) {
+      if (bound_options.find(option) == bound_options.end()) {
         // option not bound.
         continue;
       } else {
@@ -139,18 +139,18 @@ void ArgvProcessLogic::ReplaceOptionWithRepresentativeOption(
   }
 }
 
-void ArgvProcessor::LoadArgv(const int &argc, const char **argv) {
-  for (int index = 1; index != argc; ++index) {
+void ArgvProcessor::LoadArgv(const int &argc, const char *const *argv) {
+  for (int index = 1; index < argc; ++index) {
     argv_.push_back(argv[index]);
   }
 }
 
 vector<Token> ArgvProcessor::GetPreprocessedArguments(
     const std::map<Token, Token> &option_to_rep_option,
-    const set<Token> &focused_bound_options) const {
+    const set<Token> &bound_options) const {
   ArgvProcessLogic process_logic(argv_);
   process_logic.TokenizeArgv();
-  process_logic.HandleGroupedOptions(focused_bound_options);
+  process_logic.HandleGroupedOptions(bound_options);
   process_logic.ReplaceOptionWithRepresentativeOption(option_to_rep_option);
   return vector<Token>(
       process_logic.tokens_.begin(),

@@ -18,15 +18,16 @@ struct MatchState {
   bool IsBooleanKey(const Token &key) const;
   bool IsStringKey(const Token &key) const;
   bool IsStringListKey(const Token &key) const;
-  void AddBooleanOutcome(
-      const Token &key_of_ast, const Token &key_of_argv);
-  void AddStringOutcome(
-      const Token &key, const Token &value, const bool key_in_tokens);
-  void AddStringListOutcome(
-      const Token &key, const Token &value, const bool key_in_tokens);
+
+  void AddBooleanOutcome(const Token &key);
+  void AddStringOutcome(const Token &key, const Token &value);
+  void AddStringListOutcome(const Token &key, const Token &value);
+
+  void MarkArgumentConsumed(const int &index);
+  bool ArgumentIsConcumed(const int &index) const;
 
   // input arguments.
-  std::map<Token, bool> token_match_state_;
+  std::vector<bool> token_match_state_;
   // argv match outcome.
   std::map<Token, bool> boolean_outcome_;
   std::map<Token, std::string> string_outcome_;
@@ -70,18 +71,23 @@ class MatchStateManager {
   friend class SimpleMemento;
   std::shared_ptr<MementoInterface> CreateMemento() const;
   void RestoreFromMemento(std::shared_ptr<MementoInterface> memento);
+
   // modify argv match outcome.
-  Token GetFirstUnmatchToken() const;
+  std::vector<Token>::const_iterator GetFirstUnmatchArgument() const;
+  std::vector<Token>::const_iterator GetFirstUnmatchArgument(
+      std::vector<Token>::const_iterator begin_iter) const;
+  std::vector<Token>::const_iterator GetIteratorOfKey(const Token &key) const;
+
   bool MatchKeyValuePair(
       const Token &key,
       bool (MatchState::*checker)(const Token &) const,
-      void (MatchState::*mutator)(const Token &, const Token &, const bool));
+      void (MatchState::*mutator)(const Token &, const Token &));
   bool MatchBooleanKey(const Token &key);
   bool MatchStringKey(const Token &key);
   bool MatchStringListKey(const Token &key);
 
   const std::vector<Token> tokens_;
-  std::map<Token, std::vector<Token>::const_iterator> skip_iters_;
+  std::multimap<Token, std::vector<Token>::const_iterator> skip_iters_;
   std::shared_ptr<MatchState> match_state_ptr_;
   std::stack<std::shared_ptr<MementoInterface>> memento_stack_;
 };

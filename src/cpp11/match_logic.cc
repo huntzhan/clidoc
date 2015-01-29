@@ -1,9 +1,12 @@
 
+#include <algorithm>
+#include <iterator>
 #include <vector>
 #include <stdexcept>
 #include <set>
 #include <map>
 #include <memory>
+#include <utility>
 
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
@@ -15,8 +18,10 @@ using std::string;
 using std::map;
 using std::shared_ptr;
 using std::make_shared;
-using std::make_shared;
+using std::make_pair;
 using std::logic_error;
+using std::distance;
+using std::all_of;
 
 namespace clidoc {
 
@@ -32,24 +37,24 @@ bool MatchState::IsStringListKey(const Token &key) const {
   return string_list_outcome_.find(key) != string_list_outcome_.cend();
 }
 
-void MatchState::AddBooleanOutcome(
-    const Token &key_of_ast, const Token &key_of_argv) {
-  boolean_outcome_.at(key_of_ast) = true;
-  token_match_state_.at(key_of_argv) = true;
+void MatchState::AddBooleanOutcome(const Token &key) {
+  boolean_outcome_.at(key) = true;
 }
 
-void MatchState::AddStringOutcome(
-    const Token &key, const Token &value, const bool key_in_tokens) {
+void MatchState::AddStringOutcome(const Token &key, const Token &value) {
   string_outcome_.at(key) = value.value();
-  if (key_in_tokens) { token_match_state_.at(key) = true; }
-  token_match_state_.at(value) = true;
 }
 
-void MatchState::AddStringListOutcome(
-    const Token &key, const Token &value, const bool key_in_tokens) {
+void MatchState::AddStringListOutcome(const Token &key, const Token &value) {
   string_list_outcome_.at(key).push_back(value.value());
-  if (key_in_tokens) { token_match_state_.at(key) = true; }
-  token_match_state_.at(value) = true;
+}
+
+void MatchState::MarkArgumentConsumed(const int &index) {
+  token_match_state_.at(index) = true;
+}
+
+bool MatchState::ArgumentIsConcumed(const int &index) const {
+  return token_match_state_.at(index);
 }
 
 void SimpleMemento::BackupMatchStateManager(
@@ -66,14 +71,7 @@ void SimpleMemento::RestoreMatchStateManager(
 MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
                                      const vector<Token> &tokens)
     : tokens_(tokens), match_state_ptr_(new MatchState) {
-  // init `skip_iters_` and `match_state_.token_match_state_`.
-  for (auto iter = tokens_.cbegin(); iter != tokens_.cend(); ++iter) {
-    const auto &token = *iter;
-    skip_iters_[token] = iter;
-    match_state_ptr_->token_match_state_[token] = false;
-  }
-
-  // init argv match outcome of `match_state_`.
+  // lambdas.
   auto InitBooleanOutcome = [](
       const set<Token> tokens, map<Token, bool> *outcome) {
     for (const auto &token : tokens) {
@@ -97,6 +95,13 @@ MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
       (*outcome)[token] = {};
     }
   };
+
+  // init `skip_iters_` and `match_state_.token_match_state_`.
+  match_state_ptr_->token_match_state_ = vector<bool>(tokens_.size(), false);
+  for (auto iter = tokens_.cbegin(); iter != tokens_.cend(); ++iter) {
+    skip_iters_.insert(make_pair(*iter, iter));
+  }
+  // init argv match outcome of `match_state_`.
   InitBooleanOutcome(
       info.unbound_options_,
       &match_state_ptr_->boolean_outcome_);
@@ -141,36 +146,80 @@ void MatchStateManager::Rollback() {
   PopRollbackPoint();
 }
 
-Token MatchStateManager::GetFirstUnmatchToken() const {
-  for (const auto &token : tokens_) {
-    if (match_state_ptr_->token_match_state_.at(token) == false) {
-      return token;
+vector<Token>::const_iterator MatchStateManager::GetFirstUnmatchArgument() const {
+  static decltype(tokens_)::const_iterator iter = tokens_.cbegin();
+  for (; iter != tokens_.cend(); ++iter) {
+    auto consumed = match_state_ptr_->ArgumentIsConcumed(
+        distance(tokens_.cbegin(), iter));
+    if (!consumed) {
+      return iter;
     }
   }
-  return Token();
+  return tokens_.cend();
+}
+
+vector<Token>::const_iterator MatchStateManager::GetFirstUnmatchArgument(
+    vector<Token>::const_iterator begin_iter) const {
+  for (auto iter = begin_iter; iter != tokens_.cend(); ++iter) {
+    auto consumed = match_state_ptr_->ArgumentIsConcumed(
+        distance(tokens_.cbegin(), iter));
+    if (!consumed) {
+      return iter;
+    }
+  }
+  return tokens_.cend();
+}
+
+vector<Token>::const_iterator MatchStateManager::GetIteratorOfKey(
+    const Token &key) const {
+  auto range = skip_iters_.equal_range(key);
+  if (range.first == range.second) {
+    return tokens_.cend();
+  }
+  for (auto iter = range.first; iter != range.second; ++iter) {
+    auto consumed = match_state_ptr_->ArgumentIsConcumed(
+        distance(tokens_.cbegin(), iter->second));
+    if (!consumed) {
+      return iter->second;
+    }
+  }
+  return range.second->second - 1;
 }
 
 bool MatchStateManager::MatchKeyValuePair(
     const Token &key,
     bool (MatchState::*checker)(const Token &) const,
-    void (MatchState::*mutator)(const Token &, const Token &, const bool)) {
+    void (MatchState::*mutator)(const Token &, const Token &)) {
   if (!(match_state_ptr_.get()->*checker)(key)) {
     return false;
   }
+
   if (key.type() == TerminalType::ARGUMENT) {
     // argument.
-    auto token = GetFirstUnmatchToken();
-    if (!token.IsEmpty()) {
-      (match_state_ptr_.get()->*mutator)(key, token, false);
+    auto value_iter = GetFirstUnmatchArgument();
+    if (value_iter != tokens_.cend()) {
+      (match_state_ptr_.get()->*mutator)(key, *value_iter);
+      match_state_ptr_->MarkArgumentConsumed(
+          distance(tokens_.cbegin(), value_iter));
       return true;
     }
-  } else if (skip_iters_.find(key) != skip_iters_.end()) {
+  } else {
     // bound option.
-    auto iter = skip_iters_[key];
-    ++iter;
-    if (iter != tokens_.cend()
-        && iter->type() == TerminalType::GENERAL_ELEMENT) {
-      (match_state_ptr_.get()->*mutator)(key, *iter, true);
+    // case 1: option bound with one argument.
+    // case 2: option bound with more than one argument.
+    auto key_iter = GetIteratorOfKey(key);
+    if (key_iter == tokens_.cend()) {
+      return false;
+    }
+    auto value_iter = GetFirstUnmatchArgument(key_iter + 1);
+    if (value_iter != tokens_.cend()
+        && value_iter->type() == TerminalType::GENERAL_ELEMENT) {
+      (match_state_ptr_.get()->*mutator)(key, *value_iter);
+      // mark key-value pair consumed.
+      match_state_ptr_->MarkArgumentConsumed(
+          distance(tokens_.cbegin(), key_iter));
+      match_state_ptr_->MarkArgumentConsumed(
+          distance(tokens_.cbegin(), value_iter));
       return true;
     }
   }
@@ -184,13 +233,21 @@ bool MatchStateManager::MatchBooleanKey(const Token &key) {
   if (key.type() == TerminalType::COMMAND) {
     auto transformed_key = key;
     transformed_key.set_type(TerminalType::GENERAL_ELEMENT);
-    if (skip_iters_.find(transformed_key) != skip_iters_.end()) {
-      match_state_ptr_->AddBooleanOutcome(key, transformed_key);
+    auto key_iter = GetIteratorOfKey(transformed_key);
+    if (key_iter != tokens_.cend()) {
+      match_state_ptr_->AddBooleanOutcome(key);
+      match_state_ptr_->MarkArgumentConsumed(
+          distance(tokens_.cbegin(), key_iter));
       return true;
     }
-  } else if (skip_iters_.find(key) != skip_iters_.end()) {
-    match_state_ptr_->AddBooleanOutcome(key, key);
-    return true;
+  } else {
+    auto key_iter = GetIteratorOfKey(key);
+    if (key_iter != tokens_.cend()) {
+      match_state_ptr_->AddBooleanOutcome(key);
+      match_state_ptr_->MarkArgumentConsumed(
+          distance(tokens_.cbegin(), key_iter));
+      return true;
+    }
   }
   return false;
 }
@@ -220,11 +277,9 @@ MatchStrategy::MatchStrategy(const CppCodeGenInfo &info,
     : state_manager_(info, tokens) { /* empty */ }
 
 bool MatchStrategy::AllMatch() const {
-  for (const auto &map_pair
-       : state_manager_.match_state_ptr()->token_match_state_) {
-    if (!map_pair.second) {
-      return false;
-    }
+  const auto &flags = state_manager_.match_state_ptr()->token_match_state_;
+  if (!all_of(flags.cbegin(), flags.cend(), [](bool c){ return c; })) {
+    return false;
   }
   return child_match_condition_;
 }

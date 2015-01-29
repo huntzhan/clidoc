@@ -7,7 +7,7 @@ single_file_cpplint() {
   done
 }
 
-find ../src -type f                                                        \
+find ../src ../include -type f                                             \
     \( -not -name "generated_*.cc" -and -not -name "generated_parser.h" \) \
     -and \( -name "*.h" -or -name "*.cc" \)                                \
 		| single_file_cpplint 
