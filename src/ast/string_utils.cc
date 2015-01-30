@@ -1,20 +1,21 @@
 
 #include <cstddef>
-#include <regex>
 #include <vector>
 #include <string>
 
 #include "ast/string_utils.h"
+#include "boost/xpressive/xpressive_dynamic.hpp"
 
 using std::string;
 using std::to_string;
 using std::vector;
-using std::regex;
-using std::smatch;
-using std::regex_replace;
-using std::regex_search;
-using std::regex_match;
 using std::size_t;
+
+using boost::xpressive::sregex;
+using boost::xpressive::smatch;
+using boost::xpressive::regex_replace;
+using boost::xpressive::regex_search;
+using boost::xpressive::regex_match;
 
 namespace clidoc {
 
@@ -22,13 +23,13 @@ bool StringUtils::ExtractSection(
     const string &section_name,
     const string &text,
     string *output) {
-  regex target_section_pattern(
+  sregex target_section_pattern = sregex::compile(
       "(" + section_name + ")[ \t]*:",
       // case-insensitive.
-      std::regex_constants::icase);
-  regex next_section_pattern(
+      boost::xpressive::regex_constants::icase);
+  sregex next_section_pattern = sregex::compile(
       "(\\w+?)[ \t]*:",
-      std::regex_constants::icase);
+      boost::xpressive::regex_constants::icase);
   smatch match_result;
   auto pos_iter = text.cbegin();
   auto text_end_iter = text.cend();
@@ -57,7 +58,7 @@ bool StringUtils::ExtractSection(
     // ignroe `[default: "xxx"]`.
     bool found = regex_match(
         match_result.str(1),
-        regex("default", std::regex_constants::icase));
+        sregex::compile("default", boost::xpressive::regex_constants::icase));
     if (!found) {
       section_end_iter = match_result[0].first;
     }
@@ -86,11 +87,12 @@ void StringUtils::ReplaceAll(
 }
 
 void StringUtils::ReplaceElementWithMark(
-    const regex &pattern,
+    const string &regex_string,
     std::string *text_ptr,
     std::vector<std::string> *elements_ptr) {
   smatch match_result;
-  while (regex_search(*text_ptr, match_result, pattern)) {
+  while (regex_search(*text_ptr, match_result,
+                      sregex::compile(regex_string))) {
     auto element = match_result.str(1);
     // ` __id__ `. Notice that `__id__` is surrounded by spaces.
     string content = " __" + to_string(elements_ptr->size()) + "__ ";
@@ -108,7 +110,7 @@ void StringUtils::InsertSpace(
     StringUtils::ReplaceAll(keyword, " " + keyword + " ", text_ptr);
   }
   // collapse whitespaces.
-  *text_ptr = regex_replace(*text_ptr, regex("\\s+"), " ");
+  *text_ptr = regex_replace(*text_ptr, sregex::compile("\\s+"), " ");
   if (text_ptr->back() == ' ') {
     text_ptr->pop_back();
   }
@@ -121,7 +123,7 @@ vector<string> StringUtils::ReplaceSpeicalElement(
   vector<string> elements;
   for (const string &regex_string : regex_strings) {
     StringUtils::ReplaceElementWithMark(
-        regex(regex_string),
+        regex_string,
         text_ptr,
         &elements);
   }

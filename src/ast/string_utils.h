@@ -1,7 +1,6 @@
 #ifndef SRC_AST_STRING_UTILS_H_
 #define SRC_AST_STRING_UTILS_H_
 
-#include <regex>
 #include <vector>
 #include <string>
 
@@ -23,7 +22,7 @@ struct StringUtils {
 
  private:
   static void ReplaceElementWithMark(
-      const std::regex &pattern,
+      const std::string &regex_string,
       std::string *text_ptr,
       std::vector<std::string> *elements_ptr);
   static std::vector<std::string> ReplaceSpeicalElement(
