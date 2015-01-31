@@ -5,8 +5,7 @@ Generally, `clidoc` is a source-to-source compiler, which is inspired by [`docop
 
 The phases of `clidoc` is as follow:
 
-```                          
-                                
+```                                                          
 # front end.
 doc --> | doc analyser | --> AST
                                 
@@ -28,7 +27,35 @@ The project is developed in C++11 with CMake. Known supported compilers:
 
 # Quick start
 
-coming soon.
+A demo showing the usage of `clidoc` would be presented as follow. First of all, a CMake project is created, and the directory of `clidoc` is placed in the project:
+
+```
+➜  demo tree -L 1
+.
+├── CMakeLists.txt
+└── clidoc
+
+2 directories, 1 file
+```
+
+and apply `add_subdirectory (clidoc)` in `CMakeLists.txt` to include `clidoc`.
+
+Thereafte, an example of `doc` is created:
+
+```
+# file `example_doc`.
+Usage:
+  example --hello-world
+  example -n <names>...
+
+Options:
+  -n <names>  # bind -n with <names>
+```
+
+`example_doc` says that there is a program, named `example`, can be invoked by user with two kinds of input arguments. One with the form of `path/to/example --hello-world`, and the other with the form of `path/to/example -n one or more arguments`.
+
+
+
 
 # Syntax of `doc`
 

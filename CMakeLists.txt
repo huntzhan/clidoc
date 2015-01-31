@@ -30,9 +30,13 @@ include_directories (${clidoc_SOURCE_DIR}/lib/flex/include)
 include_directories (${clidoc_SOURCE_DIR}/lib/boost_1_57_0/include)
 include_directories (include)
 include_directories (src)
-include_directories (test)
 
 
 # here we go.
 add_subdirectory (src)
-add_subdirectory (test)
+
+option (enable_clidoc_test "turn it off when release." ON)
+if (${enable_clidoc_test})
+  include_directories (test)
+  add_subdirectory (test)
+endif()

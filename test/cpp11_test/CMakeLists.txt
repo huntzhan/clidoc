@@ -1,14 +1,14 @@
-add_executable (cpp_code_gen_test cpp_code_gen_test.cc)
+add_executable (clidoc_cpp_code_gen_test cpp_code_gen_test.cc)
 target_link_libraries (
-  cpp_code_gen_test
-  cpp_code_gen_logic ast_build match_logic)
+  clidoc_cpp_code_gen_test
+  clidoc_code_gen_logic clidoc_ast_build clidoc_match_logic
+)
 
-add_executable (argv_processor_test argv_processor_test.cc)
-target_link_libraries (argv_processor_test argv_processor)
+add_executable (clidoc_argv_processor_test argv_processor_test.cc)
+target_link_libraries (clidoc_argv_processor_test clidoc_argv_processor)
 
-add_gtest (cpp_code_gen_test)
-add_gtest (argv_processor_test)
+add_gtest (clidoc_cpp_code_gen_test)
+add_gtest (clidoc_argv_processor_test)
 
-clidoc_cpp11_code_gen (${PROJECT_SOURCE_DIR}/test/cpp11_test/test_doc)
-add_executable (example program.cc)
-clidoc_cpp11_linker (example)
+add_executable (clidoc_example program.cc)
+clidoc_cpp11_handler (clidoc_example ${PROJECT_SOURCE_DIR}/test/cpp11_test/test_doc)

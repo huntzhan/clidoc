@@ -14,15 +14,21 @@ using std::cerr;
 using std::endl;
 using std::istreambuf_iterator;
 
+const int kArgvSize = 4;
+enum ArgvIndex {
+  LANGUAGE = 1,
+  INPUT_FILE_PATH,
+  OUTPUT_FILE_NAME,
+};
+
 int main(int argc, char **argv) {
-  if (argc != 3) {
+  if (argc != kArgvSize) {
     cerr << "Error arguments." << endl;
     return -1;
   }
-  // 1st arg should be abs path to doc file.
-  ifstream fin(argv[1]);
-  // 2nd arg should indicate the code gen language.
-  string language(argv[2]);
+  string language(argv[LANGUAGE]);
+  ifstream fin(argv[INPUT_FILE_PATH]);
+  ofstream fout(argv[OUTPUT_FILE_NAME]);
 
   // load user defined doc.
   const string doc(
@@ -34,7 +40,6 @@ int main(int argc, char **argv) {
 
   // language specific operations.
   if (language == "cpp11") {
-    ofstream fout("clidoc_cpp11_code_gen.cc");
     fout << clidoc::GenerateSource(info);
     fout.close();
   }
