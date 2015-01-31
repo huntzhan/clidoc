@@ -1,6 +1,6 @@
 # What is `clidoc`
 
-Generally, `clidoc` is a source-to-source compiler, which is inspired by `docopt`[^1].
+Generally, `clidoc` is a source-to-source compiler, which is inspired by [docopt][].
 `clidoc` analyses the syntax of command-line program(i.e. the synopsis of `ls`: `usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]` ), then genereates code of specific programming language that contains logic to process the input arguments of shell.
 
 The phases of `clidoc` is as follow:
@@ -31,7 +31,7 @@ The project is developed in C++11 with CMake. Known supported compilers:
 
 A demo showing the usage of `clidoc` would be presented as follow. First of all, a CMake project is created, and the directory of `clidoc` is placed in the project:
 
-```shell
+```
 ➜  demo tree -L 1
 .
 ├── CMakeLists.txt
@@ -42,7 +42,7 @@ A demo showing the usage of `clidoc` would be presented as follow. First of all,
 
 Thereafter, an example of `doc` is created:
 
-```shell
+```
 # file `example_doc`.
 Usage:
   example --hello-world
@@ -105,7 +105,7 @@ clidoc_cpp11_handler (example ${demo_SOURCE_DIR}/example_doc)
 
 And then, use following command to compile the demo:
 
-```shell
+```
 ➜  demo tree -L 1
 .
 ├── CMakeLists.txt
@@ -140,7 +140,7 @@ CMakeFiles           clidoc               example              libexample_doc.a
 
 Finally, run the `example`:
 
-```shell
+```
 ➜  build ./example 
 Usage:
   example --hello-world
@@ -178,7 +178,7 @@ Options:
 
 In this section, the rules of writing `doc` would be presented in bottom-up method. We will tall about the preprocessing strategy of `doc`, then the rules to define lexems in `doc`, and finally the context-free grammer to build a parser tree of `doc`. Currently the parsing tree of `doc` is built up with Flex/Bison generated code.
 
-Similiar to `docopt`, syntax of `doc` is designed to be `POSIX.1-2008` [^2] compatiable. 
+Similiar to `docopt`, syntax of `doc` is designed to be [POSIX.1-2008][] compatiable. 
 
 ## Preprocessing Strategy
 
@@ -205,7 +205,7 @@ A `doc` file is composed of two sections:
 
 `Usage Section` starts with the string `Usage:`(case-insensitive), followed by one of more utility descriptions. `Options Section` starts with the string `Options:`(case-insensitive), followed by one or more option bindings. Here's a simple example mentioned in `Quick Start`:
 
-```shell
+```
 # begin of `Usage Section`.
 Usage:
   example --hello-world
@@ -243,7 +243,7 @@ Syntax of option binding will be covered later. For now, the preprocessor only n
 
 For the reason we will discuss in `Lexical Rules` section, `clidoc` must insert spaces to both sides of some keywords for disambiguation. Related keywords are as followed:
 
-```shell
+```
 K_L_PARENTHESIS      "("
 K_R_PARENTHESIS      ")"
 K_L_BRACKET          "["
@@ -312,5 +312,5 @@ comming soon.
 
 
 
-[^1]: [docopt] (https://github.com/docopt/docopt) creates beautiful command-line interfaces.
-[^2]: [IEEE Std 1003.1, 2013 Edition: 12. Utility Conventions](http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html)
+[docopt]: https://github.com/docopt/docopt "docopt creates beautiful command-line interfaces."
+[POSIX.1-2008]: http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html "IEEE Std 1003.1, 2013 Edition: 12. Utility Conventions"
