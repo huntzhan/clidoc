@@ -1,11 +1,11 @@
 # What is `clidoc`
 
-Generally, `clidoc` is a source-to-source compiler, which is inspired by [`docopt`](https://github.com/docopt/docopt).
+Generally, `clidoc` is a source-to-source compiler, which is inspired by `docopt`[^1].
 `clidoc` analyses the syntax of command-line program(i.e. the synopsis of `ls`: `usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]` ), then genereates code of specific programming language that contains logic to process the input arguments of shell.
 
 The phases of `clidoc` is as follow:
 
-```                                                          
+```shell                                                          
 # front end.
 doc --> | doc analyser | --> AST
                                 
@@ -18,6 +18,8 @@ AST --> | python code gen logic | --> argument processing code
 
 where the front end of `clidoc` would build up an AST for user defined `doc`(syntax of command-line program), and the back ends could generate argument processing code with respect to the AST. As you can see, `clidoc` plans to support code gen logic for multiple programming languages. But currently in `v0.1`, `clidoc` only support code gen of C++11.
 
+
+
 # Requirements
 
 The project is developed in C++11 with CMake. Known supported compilers:
@@ -29,7 +31,7 @@ The project is developed in C++11 with CMake. Known supported compilers:
 
 A demo showing the usage of `clidoc` would be presented as follow. First of all, a CMake project is created, and the directory of `clidoc` is placed in the project:
 
-```
+```shell
 ➜  demo tree -L 1
 .
 ├── CMakeLists.txt
@@ -40,7 +42,7 @@ A demo showing the usage of `clidoc` would be presented as follow. First of all,
 
 Thereafter, an example of `doc` is created:
 
-```
+```shell
 # file `example_doc`.
 Usage:
   example --hello-world
@@ -88,7 +90,7 @@ where `#include "clidoc/cpp11.h"` includes predefined C++11 interface of `clidoc
 
 Furthermore, we need to make connection between `example_doc` and `main.cc`. It's pretty easy to do that in CMake, by a  function `clidoc_cpp11_handler`:
 
-```
+```cmake
 cmake_minimum_required (VERSION 2.8)
 project (demo CXX)
 
@@ -103,7 +105,7 @@ clidoc_cpp11_handler (example ${demo_SOURCE_DIR}/example_doc)
 
 And then, use following command to compile the demo:
 
-```
+```shell
 ➜  demo tree -L 1
 .
 ├── CMakeLists.txt
@@ -138,7 +140,7 @@ CMakeFiles           clidoc               example              libexample_doc.a
 
 Finally, run the `example`:
 
-```
+```shell
 ➜  build ./example 
 Usage:
   example --hello-world
@@ -172,11 +174,132 @@ Options:
 
 ```
 
-
-
 # Syntax of `doc`
 
-coming soon.
+In this section, the rules of writing `doc` would be presented in bottom-up method. We will tall about the preprocessing strategy of `doc`, then the rules to define lexems in `doc`, and finally the context-free grammer to build a parser tree of `doc`. Currently the parsing tree of `doc` is built up with Flex/Bison generated code.
+
+Similiar to `docopt`, syntax of `doc` is designed to be `POSIX.1-2008` [^2] compatiable. 
+
+## Preprocessing Strategy
+
+Before scanning and parsing, the `doc` needs to be preprocessed for two main reasons:
+
+* remove irrelevant textual elements, such as comments.
+* disambiguate some textual elements for lexical analysis.
+
+Generally, there are five steps in `doc` preprocessing:
+
+1. Remove comment, empty line and tailing whitespace.
+1. Detect utility name in usage section, then replace it with `K_UTILITY_DELIMITER`.
+1. Insert `K_DESC_DELIMITER` after each newline character in option section.
+1. Disambiguate textual elements by inserting spaces to both sides of every keyword.
+
+Related details will be covered in following sub-sections.
+
+### Structure of `doc`
+
+A `doc` file is composed of two sections:
+
+1. The `Usage Section`, which is **required to exist**.
+2. The `Options Section`, which is **optional**.
+
+`Usage Section` starts with the string `Usage:`(case-insensitive), followed by one of more utility descriptions. `Options Section` starts with the string `Options:`(case-insensitive), followed by one or more option bindings. Here's a simple example mentioned in `Quick Start`:
+
+```shell
+# begin of `Usage Section`.
+Usage:
+  example --hello-world
+  example --output-file=<filename>
+  example -n <names>...
+# end of `Usage Section`.
+
+# begin of `Options Section`.
+Options:
+  -n <names>  # bind -n with <names>
+# end of `Options Section`.
+```
+
+### Comment
+
+Comments would be removed at the first step of preprocessing. A comment starts with `#` and ends with newline character, just like Pyhton.
+
+### Utility Name
+
+`clidoc` would search for the first non-spaces textual element after `Usage:`(i.e. the `example` in previous example). Such element is treated as the utility name of the program. Hence, you can name the utility name of your program whatever you can think of, as long as it does not contain any space.
+
+For disambigutation, `clidoc` will replace all appearances of utility name in `Usage Section` with `K_UTILITY_DELIMITER`.
+
+### Option Bindings
+
+Each non-empty line of `Option Section` is regarded as an option binding, which defines:
+
+* the relation of option and option argument.
+* the synonym form of option.
+* the default value of option.
+
+Syntax of option binding will be covered later. For now, the preprocessor only needs split up lines of `Option Section`, by inserting `K_DESC_DELIMITER` after each newline character.
+
+### Insert Spaces
+
+For the reason we will discuss in `Lexical Rules` section, `clidoc` must insert spaces to both sides of some keywords for disambiguation. Related keywords are as followed:
+
+```shell
+K_L_PARENTHESIS      "("
+K_R_PARENTHESIS      ")"
+K_L_BRACKET          "["
+K_R_BRACKET          "]"
+K_EXCLUSIVE_OR       "|"
+K_ELLIPSES           "..."
+K_EQUAL_SIGN         "="
+K_OPTIONS            "options"
+K_UTILITY_DELIMITER  "*UTILITY_DELIMITER*"
+K_DESC_DELIMITER     "*DESC_DELIMITER*"
+```
+
+Notice that textual elements follows `--`, or elements quoted by angle brackets(`<`, `>`), or elements quoted by double quotes(`"`, `"`), will not be inserted spaces. Meaning of these elements will be explained later.
+
+## Lexical Rules
+
+comming soon.
+
+```
+DIGIT                [0-9]
+LOWERCASE            [a-z]
+UPPERCASE            [A-Z]
+NON_SPACE            [^ \t\r\n\v\f]
+HYPHEN               "-"
+LOWERCASE_DIGIT      {LOWERCASE}|{DIGIT}
+UPPERCASE_DIGIT      {UPPERCASE}|{DIGIT}
+ALNUM                {LOWERCASE}|{UPPERCASE}|{DIGIT}
+
+K_L_PARENTHESIS      "("
+K_R_PARENTHESIS      ")"
+K_L_BRACKET          "["
+K_R_BRACKET          "]"
+K_EXCLUSIVE_OR       "|"
+K_ELLIPSES           "..."
+K_USAGE_COLON        (?i:usage:)
+K_OPTIONS_COLON      (?i:options:)
+K_DEFAULT_COLON      (?i:default:)
+K_OPTIONS            "options"
+K_UTILITY_DELIMITER  "*UTILITY_DELIMITER*"
+K_DESC_DELIMITER     "*DESC_DELIMITER*"
+
+K_DOUBLE_HYPHEN      "--"
+K_EQUAL_SIGN         "="
+
+POSIX_OPTION         {HYPHEN}{ALNUM}
+GROUPED_OPTIONS      {HYPHEN}{ALNUM}{2,}
+GNU_OPTION           {HYPHEN}{2}{ALNUM}({ALNUM}|{HYPHEN})+
+
+ARGUMENT_FORM_ONE    <[^>\n]+>
+ARGUMENT_FORM_TWO    {UPPERCASE_DIGIT}({UPPERCASE_DIGIT}|{HYPHEN})*
+ARGUMENT             {ARGUMENT_FORM_ONE}|{ARGUMENT_FORM_TWO}
+
+DEFAULT_VALUE        \"[^\n\"]*\"
+
+COMMAND              {NON_SPACE}+
+```
 
 # Interface of C++11
 
@@ -185,3 +308,9 @@ comming soon.
 # Versions
 
 comming soon.
+
+
+
+
+[^1]: [docopt] (https://github.com/docopt/docopt) creates beautiful command-line interfaces.
+[^2]: [IEEE Std 1003.1, 2013 Edition: 12. Utility Conventions](http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html)

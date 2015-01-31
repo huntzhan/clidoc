@@ -24,15 +24,16 @@ class DocPreprocessor {
   void ExtractAndProcessUsageSection();
   void ExtractAndProcessOptionsSection();
 
-  // 1. Remove comment and empty line and tailing whitespace.
+  // 1. Remove comment, empty line and tailing whitespace.
   void RemoveComment();
   void RemoveEmptyLine();
   // 2. Detect utility name in usage section, then replace it with
   // K_UTILITY_DELIMITER.
   void ReplaceUtilityName();
-  // 3. Insert K_DESC_DELIMITER brefore each NEWLINE in option section.
+  // 3. Insert K_DESC_DELIMITER after each newline character in option section.
   void InsertDesDelimiter();
-  // 4. Insert space to both sides of every keyword.
+  // 4. Disambiguate textual elements by inserting spaces to both sides of
+  // every keyword
   void DisambiguateByInsertSpace();
 
   std::string text_;
