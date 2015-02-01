@@ -380,7 +380,232 @@ Command do not have specific regular expression definition. A textual unit would
 
 ## Context-free Grammer of `doc`
 
-comming soon.
+CFG of `doc` is defined as followed:
+
+```
+doc                : usage_section options_section
+;
+usage_section      : K_USAGE_COLON utilities
+;
+utilities          : utilities single_utility
+                   | single_utility
+;
+single_utility     : K_UTILITY_DELIMITER xor_exprs
+;
+xor_exprs          : xor_exprs K_EXCLUSIVE_OR seqs
+                   | seqs
+;
+seqs               : seqs single_seq
+                   | single_seq
+;
+single_seq         : atom
+                   | atom K_ELLIPSES
+;
+atom               : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS
+                   | K_L_BRACKET xor_exprs K_R_BRACKET
+                   | posix_option_unit
+                   | gnu_option_unit
+                   | ARGUMENT
+                   | COMMAND
+                   | K_OPTIONS
+                   | K_DOUBLE_HYPHEN
+;
+posix_option_unit  : POSIX_OPTION
+                   | GROUPED_OPTIONS
+;
+gnu_option_unit    : GNU_OPTION
+                   | GNU_OPTION K_EQUAL_SIGN ARGUMENT
+;
+options_section    : K_OPTIONS_COLON descriptions
+                   | %empty
+;
+single_description : bindings default_value K_DESC_DELIMITER
+;
+default_value      : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET
+;
+bindings           : bindings single_binding
+                   | single_binding
+;
+single_binding     : POSIX_OPTION
+                   | GNU_OPTION
+                   | POSIX_OPTION ARGUMENT
+                   | GNU_OPTION ARGUMENT
+                   | GNU_OPTION K_EQUAL_SIGN ARGUMENT
+;
+```
+
+Previous CFGs is extracted from `parser.y`, which guides parser generator `Bison`to generate the parser for `clidoc`.
+
+In this section, we will talk about the syntax of `doc` by walking through the CFGs.
+
+### Root of `doc`
+
+As mentioned in `Preprocessing Strategy`:
+> A doc file is composed of two sections:
+> 
+> * The Usage Section, which is required to exist.
+> * The Options Section, which is optional.
+
+And here's the corresponding CFGs:
+
+```
+doc                : usage_section options_section
+;
+...
+options_section    : K_OPTIONS_COLON descriptions
+                   | %empty
+;
+```
+
+### Utilities
+
+Following CFGs express that the `Usage Section` starts with `K_USAGE_COLON`, followed by one or more utility descriptions:
+
+```
+usage_section      : K_USAGE_COLON utilities
+;
+utilities          : utilities single_utility
+                   | single_utility
+;
+```
+
+And each utility description starts with `K_UTILITY_DELIMITER`, which is transform from the utility name of your program:
+
+```
+single_utility     : K_UTILITY_DELIMITER xor_exprs
+;
+```
+
+Utility descriptions are mutually-exclusive, as descripted in [POSIX.1-2008][]:
+> Arguments separated by the '|' ( <vertical-line>) bar notation are mutually-exclusive. Conforming applications shall not include the '|' symbol in data submitted to the utility. Alternatively, mutually-exclusive options and operands may be listed with multiple synopsis lines.
+> For example:
+>
+> `utility_name -d[-a][-c option_argument][operand...]utility_name[-a][-b][operand...]`
+>
+> When multiple synopsis lines are given for a utility, it is an indication that the utility has mutually-exclusive arguments. 
+
+### Atom Sequence
+
+Production of `xor_exprs` states that `|`(`K_EXCLUSIVE_OR`) can be used to represent the exclusive-or(XOR) relations between sequences of atoms:
+
+```
+xor_exprs          : xor_exprs K_EXCLUSIVE_OR seqs
+                   | seqs
+;
+```
+
+And the production of `single_seq` states that an `atom` can be marked by `...`(`K_ELLIPSES`). It means the form of `atom` can be match multiple times:
+
+```
+seqs               : seqs single_seq
+                   | single_seq
+;
+single_seq         : atom
+                   | atom K_ELLIPSES
+;
+```
+
+For instance:
+
+```
+usage: example <file>...
+```
+
+express that user can pass one or more `<file>` to the `example` program.
+
+Similar description in [POSIX.1-2008][]:
+
+> Ellipses ( "..." ) are used to denote that one or more occurrences of an operand are allowed. When an option or an operand followed by ellipses is enclosed in brackets, zero or more options or operands can be specified. The form:
+>
+> `utility_name [-g option_argument]...[operand...]`
+>
+> indicates that multiple occurrences of the option and its option-argument preceding the ellipses are valid, with semantics as indicated in the OPTIONS section of the utility. (See also Guideline 11 in Utility Syntax Guidelines .)
+>
+> The form:
+>
+> `utility_name -f option_argument [-f option_argument]... [operand...]`
+> 
+> indicates that the -f option is required to appear at least once and may appear multiple times.
+
+### Atom Relation And Category
+
+Following production states that `xor_exprs` can be quoted by parentheses(`(`, `)`), meaning the quoted `xor_exprs` is required to matched. If `xor_exprs` is quoted by curly brackets(`[`, `]`), it means the quoted `xor_exprs` is optional and could be omited:
+
+```
+atom               : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS
+                   | K_L_BRACKET xor_exprs K_R_BRACKET
+                   ...
+```
+
+For instances, `example [-f]` do not require option `-f` to be matched, while `example (-f)` required option `-f` to be matched. By default, if a lexeme is not     quoted by parentheses or curly brackets(i.e. `-f` in `example -f`), such lexeme is required to be matched. In other word, `example -f` is equivalent to `example (-f)`.
+
+Production of `atom` indicates there are several kinds of atoms:
+
+```
+atom               ...
+                   | posix_option_unit
+                   | gnu_option_unit
+                   | ARGUMENT
+                   | COMMAND
+                   | K_OPTIONS
+                   | K_DOUBLE_HYPHEN
+;
+```
+
+`posix_option_unit` and `gnu_option_unit` will be discussed in upcomming sections. Besides that, an `atom` can derives an `ARGUMENT`, a `COMMAND`, a `K_OPTIONS` or a `K_DOUBLE_HYPHEN`.
+
+**Warning**: Although `K_OPTIONS` is included by CFGs of `v0.1`, but the logic of processing `K_OPTIONS` is not implemented yet. For now, usage of `options` is not supported.
+
+### Posix Option Unit
+
+```
+posix_option_unit  : POSIX_OPTION
+                   | GROUPED_OPTIONS
+;
+```
+
+### Gnu Option Unit
+
+```
+gnu_option_unit    : GNU_OPTION
+                   | GNU_OPTION K_EQUAL_SIGN ARGUMENT
+;
+```
+
+### Options Descriptions
+
+```
+options_section    : K_OPTIONS_COLON descriptions
+                   | %empty
+;
+```
+
+### Description Structure
+
+```
+single_description : bindings default_value K_DESC_DELIMITER
+;
+```
+
+### Bindings
+
+```
+bindings           : bindings single_binding
+                   | single_binding
+;
+single_binding     : POSIX_OPTION
+                   | GNU_OPTION
+                   | POSIX_OPTION ARGUMENT
+                   | GNU_OPTION ARGUMENT
+                   | GNU_OPTION K_EQUAL_SIGN ARGUMENT
+```
+
+### Default Value
+
+```
+default_value      : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET
+;
+```
 
 ## Adjustment of AST
 
