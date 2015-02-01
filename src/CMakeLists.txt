@@ -16,6 +16,7 @@ function (clidoc_cpp11_handler user_defined_program doc_file_path)
   add_custom_command (
     OUTPUT ${clidoc_cpp11_file_name}
     COMMAND clidoc_main ARGS "cpp11" ${doc_file_path} ${clidoc_cpp11_file_name}
+    DEPENDS ${doc_file_path}
   )
   # create library.
   add_library (${clidoc_cpp11_lib_name} ${clidoc_cpp11_file_name})

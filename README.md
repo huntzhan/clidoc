@@ -5,7 +5,7 @@ Generally, `clidoc` is a source-to-source compiler, which is inspired by [docopt
 
 The phases of `clidoc` is as follow:
 
-```shell                                                          
+```                                                         
 # front end.
 doc --> | doc analyser | --> AST
                                 
@@ -27,7 +27,7 @@ The project is developed in C++11 with CMake. Known supported compilers:
 * g++ 4.8.2 and higher.
 * clang 3.3 and higher.
 
-# Quick start
+# Quick Start
 
 A demo showing the usage of `clidoc` would be presented as follow. First of all, a CMake project is created, and the directory of `clidoc` is placed in the project:
 
@@ -301,6 +301,14 @@ DEFAULT_VALUE        \"[^\n\"]*\"
 COMMAND              {NON_SPACE}+
 ```
 
+## Context-free Grammer of `doc
+
+comming soon.
+
+## Adjustment of AST
+
+comming soon.
+
 # Interface of C++11
 
 comming soon.
@@ -308,7 +316,6 @@ comming soon.
 # Versions
 
 comming soon.
-
 
 
 
