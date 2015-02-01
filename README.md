@@ -178,7 +178,9 @@ Options:
 
 In this section, the rules of writing `doc` would be presented in bottom-up method. We will tall about the preprocessing strategy of `doc`, then the rules to define lexems in `doc`, and finally the context-free grammer to build a parser tree of `doc`. Currently the parsing tree of `doc` is built up with Flex/Bison generated code.
 
-Similiar to `docopt`, syntax of `doc` is designed to be [POSIX.1-2008][] compatiable. 
+Syntax of `doc` is designed to be [POSIX.1-2008][] compatiable, besides, it supports some popular features of the "de facto standard"(i.e. gnu long option).
+
+It's recommended to read the documentation of [docopt][] first, because the syntax of `clidoc` is pretty similar to `docopt`, and it is easy to understand.
 
 ## Preprocessing Strategy
 
@@ -656,6 +658,7 @@ single_binding     : POSIX_OPTION
                    | GNU_OPTION K_EQUAL_SIGN ARGUMENT
 ;
 ```
+
 where a single binding in the option binding list can derives:
 
 * unbound `POSIX_OPTION` or `GNU_OPTION`, which means the option is not bound to any arguments.
@@ -665,7 +668,7 @@ Following rules is applied for finding the representative option of an option bi
 
 * if none of the options is recorded, select the first appearance of `GNU_OPTION` as the representative option.
 * if one or more than one options is recorded, find the representative option of the first recorded option, let's say `rep_option`, and treats `rep_option` as the representative option of current option binding list.
-* otherwise, the first `POSIX_OPTION` would be selected.
+* otherwise, the first `POSIX_OPTION` will be selected.
 
 For exmaple:
 
@@ -676,9 +679,60 @@ Options:
   -e -f -g         # representative option: -e
 ```
 
-## Adjustment of AST
+## Post Processing of AST
 
-comming soon.
+After scanning and parsing phrases, an [AST][] is built for `doc`. Normal user of `clidoc` should not worried about the structure of AST. But here, for better understanding of the syntax and semantic of `doc`, we will talk abount some procedures of AST post processing logic.
+
+### Split `GROUPED_OPTIONS`
+
+As mentioned before, `GROUPED_OPTIONS` would be interpreted as a group of `POSIX_OPTION`. But according to [POSIX.1-2008][], there is a special case of `GROUPED_OPTIONS` should be considered carefully. [POSIX.1-2008][] describes such case as followed:
+
+> The Utility Syntax Guidelines in Utility Syntax Guidelines require that the option be a separate argument from its option-argument and that option-arguments not be optional, but there are some exceptions in POSIX.1-2008 to ensure continued operation of historical applications:
+> 
+> * a. If the SYNOPSIS of a standard utility shows an option with a mandatory option-argument (as with [ -c option_argument] in the example), a conforming application shall use separate arguments for that option and its option-argument. **However, a conforming implementation shall also permit applications to specify the option and option-argument in the same argument string without intervening <blank> characters**.
+
+An exmple is introduced to explain the case:
+
+```
+Usage:
+  example -oFILE
+    
+Options:
+  -o FILE
+```
+
+After parsing the `doc` of example, `-oFILE` would be regonized as a `GROUPED_OPTIONS`. Since the compiler finds option binding `-o FILE` in `Options Section`, it knows that `-oFILE` should be split into `-o` and `FILE` instead of `-o`, `-F`, `-I`, `-L`, `-E`.
+
+The strategy of splitting `GROUPED_OPTIONS` is as followed:
+
+* Try to find the first character represents a argument bound `POSIX_OPTION` in `GROUPED_OPTIONS`, with the property that the character is not the last character of `GROUPED_OPTIONS`. If character is found, say `c`, check the rest of `GROUPED_OPTIONS` with bound argument, make sure they have the same argument name. After that, characters before `c`(including `c`) would be transformed to a list of `POSIX_OPTION`, followed by the bound argument.
+* If such character is not found, `GROUPED_OPTIONS` would be transformed to a list of `POSIX_OPTION`, with each character of `GROUPED_OPTIONS` as a `POSIX_OPTION`.
+
+For instance:
+
+```
+Usage:
+  example -abcoFILE
+    
+Options:
+  -o FILE
+```
+
+where `-abcoFILE` would be transformed to `-a`, `-b`, `-c`, `-d` and `FILE`.
+
+Relation of elements in generated `POSIX_OPTION` is `LogicOr`, meaning that one or more elements should be matched. Use `doc` of `ls` program for illustration:
+
+```
+usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]
+```
+
+User can pass zero or more options(because of the curly brackets) to `ls` program, such as `ls`, `ls -l`, `ls -A -l`.
+
+### Handle Double Hyphens
+
+### Collect Focused Elements
+
+### Collect OOM Elements
 
 # Interface of C++11
 
@@ -692,3 +746,4 @@ comming soon.
 
 [docopt]: https://github.com/docopt/docopt "docopt creates beautiful command-line interfaces."
 [POSIX.1-2008]: http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html "IEEE Std 1003.1, 2013 Edition: 12. Utility Conventions"
+[AST]: http://en.wikipedia.org/wiki/Abstract_syntax_tree "Abstract syntax tree - Wikipedia, the free encyclopedia"
