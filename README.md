@@ -231,11 +231,11 @@ For disambigutation, `clidoc` will replace all appearances of utility name in `U
 
 ### Option Bindings
 
-Each non-empty line of `Option Section` is regarded as an option binding, which defines:
+Each non-empty line of `Option Section` is regarded as an option binding description, which defines:
 
-* the relation of option and option argument.
-* the synonym form of option.
-* the default value of option.
+* relation of option and option argument.
+* synonym form of option.
+* default value of option.
 
 Syntax of option binding will be covered later. For now, the preprocessor only needs split up lines of `Option Section`, by inserting `K_DESC_DELIMITER` after each newline character.
 
@@ -434,7 +434,7 @@ single_binding     : POSIX_OPTION
 ;
 ```
 
-Previous CFGs is extracted from `parser.y`, which guides parser generator `Bison`to generate the parser for `clidoc`.
+Previous CFGs is extracted from `parser.y`, which guides parser generator `Bison` to generate the parser for `clidoc`.
 
 In this section, we will talk about the syntax of `doc` by walking through the CFGs.
 
@@ -459,7 +459,7 @@ options_section    : K_OPTIONS_COLON descriptions
 
 ### Utilities
 
-Following CFGs express that the `Usage Section` starts with `K_USAGE_COLON`, followed by one or more utility descriptions:
+Following CFGs express that the `Usage Section` starts with `K_USAGE_COLON`(`Usage:`), followed by one or more utility descriptions:
 
 ```
 usage_section      : K_USAGE_COLON utilities
@@ -550,29 +550,27 @@ atom               ...
                    | K_OPTIONS
                    | K_DOUBLE_HYPHEN
 ;
-```
-
-`posix_option_unit` and `gnu_option_unit` will be discussed in upcomming sections. Besides that, an `atom` can derives an `ARGUMENT`, a `COMMAND`, a `K_OPTIONS` or a `K_DOUBLE_HYPHEN`.
-
-**Warning**: Although `K_OPTIONS` is included by CFGs of `v0.1`, but the logic of processing `K_OPTIONS` is not implemented yet. For now, usage of `options` is not supported.
-
-### Posix Option Unit
-
-```
 posix_option_unit  : POSIX_OPTION
                    | GROUPED_OPTIONS
 ;
-```
-
-### Gnu Option Unit
-
-```
 gnu_option_unit    : GNU_OPTION
                    | GNU_OPTION K_EQUAL_SIGN ARGUMENT
 ;
 ```
 
+where an `atom` can derives:
+
+* `POSIX_OPTION`, `GROUPED_OPTIONS` or `GROUPED_OPTIONS`.
+* `GNU_OPTION K_EQUAL_SIGN ARGUMENT`(i.e. `--output=FILE`).
+*  `ARGUMENT`, `COMMAND`, `K_OPTIONS` or `K_DOUBLE_HYPHEN`.
+
+`GNU_OPTION K_EQUAL_SIGN ARGUMENT` is a special atom derivation, in which a binding is crated between `ARGUMENT` and `GNU_OPTION`.
+
+**Warning**: Although `K_OPTIONS` is included by CFGs of `v0.1`, but the logic of processing `K_OPTIONS` is not implemented yet. For now, usage of `options` is not supported.
+
 ### Options Descriptions
+
+`Options Section` starts with `K_OPTIONS_COLON`(`Options:`), followed by one or more option binding descriptions.
 
 ```
 options_section    : K_OPTIONS_COLON descriptions
@@ -580,14 +578,72 @@ options_section    : K_OPTIONS_COLON descriptions
 ;
 ```
 
+"option binding description" means:
+
+> Each non-empty line of `Option Section` is regarded as an option binding description, which defines:
+>
+> * relation of option and option argument.
+> * synonym form of option.
+> * default value of option.
+
+as mentioned in `Preprocessing Strategy`.
+
 ### Description Structure
+
+Following production shows the structure of an option binding description:
 
 ```
 single_description : bindings default_value K_DESC_DELIMITER
 ;
 ```
 
+The idea of option binding is:
+
+* to define a representative option, and the synonyms of the representative option.
+* to bind an argument to a representative option.
+* to define a default value for an bound argument.
+
+For example, suppose we have a `doc` like this:
+
+```
+Usage:  example -h | --help
+```
+where the program accept `-h` or `--help` as input argument. In practice, many command-line program accept both `-h` and `--help`, and with the same effect: the program prints a simplyfied user manual. 
+
+Processing options with identical meanings can be simplified by `clidoc`:
+
+```
+Usage:
+  example -h | --help
+  
+Options:
+  -h --help
+```
+
+Here we defines a option binding description, `-h --help`, which defines `--help` to be the representative option, and defines `-h` to be a synonym of `--help`. After that, all appearance of `-h` would be treated as `--help`(`./example -h` is  equivalent to `./example --help`).
+
+Rules of selecting representative option would be discussed in upcoming section. But first, let's talk abount the default value:
+
+```
+Usage:
+  example -n NUMBER
+  
+Options:
+  -n NUMBER [default: "10"]
+```
+where `-n NUMBER [default: "10]` binds argument `NUMBER` to option `-n`, and defines the default value of `NUMBER` to be `"10"`.
+
+The formal grammer of default value is as followed:
+
+```
+default_value      : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET
+;
+```
+
+
 ### Bindings
+
+The form of option binding is as followed:
 
 ```
 bindings           : bindings single_binding
@@ -598,13 +654,26 @@ single_binding     : POSIX_OPTION
                    | POSIX_OPTION ARGUMENT
                    | GNU_OPTION ARGUMENT
                    | GNU_OPTION K_EQUAL_SIGN ARGUMENT
-```
-
-### Default Value
-
-```
-default_value      : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET
 ;
+```
+where a single binding in the option binding list can derives:
+
+* unbound `POSIX_OPTION` or `GNU_OPTION`, which means the option is not bound to any arguments.
+* a pair of (option, argument), meaning the argument is bound to the option.
+
+Following rules is applied for finding the representative option of an option binding list:
+
+* if none of the options is recorded, select the first appearance of `GNU_OPTION` as the representative option.
+* if one or more than one options is recorded, find the representative option of the first recorded option, let's say `rep_option`, and treats `rep_option` as the representative option of current option binding list.
+* otherwise, the first `POSIX_OPTION` would be selected.
+
+For exmaple:
+
+```
+Options:
+  -a -b --charlie  # representative option: --charlie
+  -a -c -d         # -a is recorded, representative option: --charlie
+  -e -f -g         # representative option: -e
 ```
 
 ## Adjustment of AST
