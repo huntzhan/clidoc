@@ -726,15 +726,47 @@ Relation of elements in generated `POSIX_OPTION` is `LogicOr`, meaning that one 
 usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]
 ```
 
-User can pass zero or more options(because of the curly brackets) to `ls` program, such as `ls`, `ls -l`, `ls -A -l`.
+User can pass zero or more options(because of the curly brackets) to `ls` program, such as `ls`(zero option), `ls -l`, `ls -A -l`.
 
 ### Handle Double Hyphens
 
+Double hyphens(`--`) has special meaning in `doc`, as described in [POSIX.1-2008][]:
+
+> Guideline 10:
+> 
+>    The first -- argument that is not an option-argument **should be accepted as a delimiter indicating the end of options**. Any following arguments should be treated as operands, even if they begin with the '-' character.
+
+For example:
+
+```
+Usage: example -a -- -b --charlie
+```
+where `-a` is a `POSIX_OPTION`, while the type of `-b` and `--charlie` is `ARGUMENT`.
+
+Formally, for every utility description, each space separated textual unit after `K_DOUBLE_HYPHEN` until the end of utility description, will be treated as `ARGUMENT`.
+
 ### Collect Focused Elements
 
-### Collect OOM Elements
+Fucused elements of `doc` are the elements that the user of `clidoc` should focuse on. There are six kinds of focused elements:
 
-# Interface of C++11
+* **bound option**: `POSIX_OPTION` or `GNU_OPTION` that is bound with an argument.
+* **unbound option**: `POSIX_OPTION` or `GNU_OPTION` that is not bound with argument.
+* **argument**: `ARGUMENT` that is not bound with any options.
+* **command**: element with the type of `COMMAND`.
+* **oom bound option**: `POSIX_OPTION` or `GNU_OPTION` that is bound with OOM marked `ARGUMENT`.
+* **oom argument**: OOM marked `ARGUMENT` that is not bound with any options.
+
+Meaning of binding is explained in `Bingdings` section. Element is OOM(abbreviatio of "one or more") if the element is followed by `K_ELLIPSES`(`...`), i.e. `-f <arg>...`, `[-f <arg>]...`.
+
+Focused elements will be used to guide the procedure of handling input arguments of shell.
+
+# Input Argument Processing
+
+## Language Independent Principle
+
+comming soon.
+
+## Interface of C++11
 
 comming soon.
 
