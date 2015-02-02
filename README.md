@@ -764,16 +764,76 @@ Focused elements will be used to guide the procedure of handling input arguments
 
 ## Language Independent Principle
 
-comming soon.
+[POSIX.1-2008][] provides some guildlines for input argument processing.
+
+Related to the order of argument:
+> Guideline 11:
+    The order of different options relative to one another should not matter, unless the options are documented as mutually-exclusive and such an option is documented to override any incompatible options preceding it. If an option that has option-arguments is repeated, the option and option-argument combinations should be interpreted in the order specified on the command line.
+>
+> Guideline 12:
+    The order of operands may matter and position-related interpretations should be determined on a utility-specific basis.
+
+Miscellaneous requirement:
+
+>  there are some exceptions in POSIX.1-2008 to ensure continued operation of historical applications:
+> 
+>  * a. If the SYNOPSIS of a standard utility shows an option with a mandatory option-argument (as with [ -c option_argument] in the example), a conforming application shall use separate arguments for that option and its option-argument. However, a conforming implementation shall also permit applications to specify the option and option-argument in the same argument string without intervening <blank> characters.
+>  * b. If the SYNOPSIS shows an optional option-argument (as with [ -f[ option_argument]] in the example), a conforming application shall place any option-argument for that option directly adjacent to the option in the same argument string, without intervening <blank> characters. If the utility receives an argument containing only the option, it shall behave as specified in its description for an omitted option-argument; it shall not treat the next argument (if any) as the option-argument for that option.
+>
+> ...
+> 
+> Guideline 5:
+> One or more options without option-arguments, followed by at most one option that takes an option-argument, should be accepted when grouped behind one '-' delimiter.
+> 
+> ...
+> 
+> Guideline 8:
+    When multiple option-arguments are specified to follow a single option, they should be presented as a single argument, using <comma> characters within that argument or <blank> characters within that argument to separate them.
+>
+> ...
+> 
+> Guideline 10:
+    The first -- argument that is not an option-argument should be accepted as a delimiter indicating the end of options. Any following arguments should be treated as operands, even if they begin with the '-' character.
+>
+> ...
+> 
+> Guideline 13:
+    For utilities that use operands to represent files to be opened for either reading or writing, the '-' operand should be used to mean only standard input (or standard output when it is clear from context that an output file is being specified) or a file named -.
+
+Input argument processing logic should follow these guildlines.
+
+The result of argument processing shoule be stored in three mapping variable:
+
+* **boolean outcome**: store match result of **unbound option** and **command**, with key as element name and value as **boolean**. If element of **unbound option** and **command** is matched, store corresponding value as `True`, otherwise `False`.
+* **string outcome**: store match result of **bound option** and **argument**, with key as element name and value as **string**. If element of **bound option** and **argument** is matched, store corresponding value as **the value of bound argument**. If there's no corresponding argument in shell input arguments, and the bound argument is **marked as optional**, and **default value is set** in `Option Section`, then the **default value** is stored as the corresponding value. Otherwise, an **empty string** is set as corresponding value.
+* **string list outcome**: store match result of **oom bound option** and **oom argument**, with key as element name and value as **a list of string**. If element of **oom bound option** and **oom argument** is match, store corresponding value as **a list of bound arguments**. Otherwise, an **empty list** is set as corresponding value.
+
+User of `clidoc` could access these three variable to get the result of argument processing.
 
 ## Interface of C++11
 
-comming soon.
+Interface of C++11 is pretty simple:
 
-# Versions
+```c++
+namespace clidoc {
 
-comming soon.
+extern std::map<std::string, bool> boolean_outcome;
+extern std::map<std::string, std::string> string_outcome;
+extern std::map<std::string, std::vector<std::string>> string_list_outcome;
 
+void ParseArguments(const int &argc, const char *const *argv);
+
+}  // namespace clidoc
+```
+
+As illustrated in `Quick Start`, user should invoke `ParseArguments` for input argument processing, by passing the variable `argc` and `argv` of `int main(int argc, char *argv[])` to the function.
+
+After invoking `ParseArguments `, user could access `clidoc:: boolean_outcome`, `clidoc:: string_outcome` and `clidoc:: string_list_outcome` to obtain the result of argument processing, as described in `Language Independent Principle`.
+
+# Change log
+
+* `v0.1`: demo of `clidoc`.
+* `v0.1.1`: bug fix version.
 
 
 [docopt]: https://github.com/docopt/docopt "docopt creates beautiful command-line interfaces."
