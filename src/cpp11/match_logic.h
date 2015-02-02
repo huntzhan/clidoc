@@ -82,8 +82,11 @@ class MatchStateManager {
   bool MatchStringKey(const Token &key);
   bool MatchStringListKey(const Token &key);
 
+  // infomation of AST and input arguments.
+  const CppCodeGenInfo &info_;
   const std::vector<Token> tokens_;
   std::multimap<Token, std::vector<Token>::const_iterator> skip_iters_;
+  // state of match.
   std::shared_ptr<MatchState> match_state_ptr_;
   std::stack<std::shared_ptr<MementoInterface>> memento_stack_;
 };

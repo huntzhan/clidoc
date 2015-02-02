@@ -70,7 +70,7 @@ void SimpleMemento::RestoreMatchStateManager(
 
 MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
                                      const vector<Token> &tokens)
-    : tokens_(tokens), match_state_ptr_(new MatchState) {
+    : info_(info), tokens_(tokens), match_state_ptr_(new MatchState) {
   // lambdas.
   auto InitBooleanOutcome = [](
       const set<Token> tokens, map<Token, bool> *outcome) {
@@ -81,9 +81,9 @@ MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
   auto InitStringOutcome = [&](
       const set<Token> tokens, map<Token, string> *outcome) {
     for (const auto &token : tokens) {
-      if (info.default_values_.find(token) != info.default_values_.end()) {
+      if (info_.default_values_.find(token) != info_.default_values_.end()) {
         // set default value.
-        (*outcome)[token] = info.default_values_.at(token);
+        (*outcome)[token] = info_.default_values_.at(token);
       } else {
         (*outcome)[token] = "";
       }
@@ -103,22 +103,22 @@ MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
   }
   // init argv match outcome of `match_state_`.
   InitBooleanOutcome(
-      info.unbound_options_,
+      info_.unbound_options_,
       &match_state_ptr_->boolean_outcome_);
   InitBooleanOutcome(
-      info.commands_,
+      info_.commands_,
       &match_state_ptr_->boolean_outcome_);
   InitStringOutcome(
-      info.bound_options_,
+      info_.bound_options_,
       &match_state_ptr_->string_outcome_);
   InitStringOutcome(
-      info.arguments_,
+      info_.arguments_,
       &match_state_ptr_->string_outcome_);
   InitStringListOutcome(
-      info.oom_bound_options_,
+      info_.oom_bound_options_,
       &match_state_ptr_->string_list_outcome_);
   InitStringListOutcome(
-      info.oom_arguments_,
+      info_.oom_arguments_,
       &match_state_ptr_->string_list_outcome_);
 }
 
@@ -229,21 +229,32 @@ bool MatchStateManager::MatchStringKey(const Token &key) {
     }
   } else {
     // bound option.
+
     auto key_iter = GetIteratorOfKey(key);
     if (key_iter == tokens_.cend()) {
       return false;
     }
     auto value_iter = key_iter + 1;
-    if (value_iter != tokens_.cend()
-        && value_iter->type() == TerminalType::GENERAL_ELEMENT) {
-      match_state_ptr_->AddStringOutcome(key, *value_iter);
-      // mark key-value pair consumed.
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), key_iter));
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), value_iter));
-      return true;
+    // value_iter invalid.
+    if (value_iter == tokens_.cend()
+        || value_iter->type() != TerminalType::GENERAL_ELEMENT) {
+      if (info_.default_values_.find(*key_iter)
+          != info_.default_values_.cend()) {
+        match_state_ptr_->MarkArgumentConsumed(
+            distance(tokens_.cbegin(), key_iter));
+        return true;
+      } else {
+        return false;
+      }
     }
+    // record key-value pair.
+    match_state_ptr_->AddStringOutcome(key, *value_iter);
+    // mark key-value pair consumed.
+    match_state_ptr_->MarkArgumentConsumed(
+        distance(tokens_.cbegin(), key_iter));
+    match_state_ptr_->MarkArgumentConsumed(
+        distance(tokens_.cbegin(), value_iter));
+    return true;
   }
   return false;
 }
