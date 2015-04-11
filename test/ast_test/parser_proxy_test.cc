@@ -156,23 +156,6 @@ TEST(ParserProxyTest, PreprocessRawDoc) {
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }
 
-// TEST(ParserProxyTest, DISABLED_simple) {
-//   string input =
-//       "Usage:\n"
-//       "   some_program.py -c <some arg>\n"
-//       "   some_program.py --long=SOMEARG\n";
-// 
-//   ParserProxy proxy;
-//   auto preprocess_doc = proxy.PreprocessRawDoc(input);
-//   Doc::SharedPtr doc_ptr;
-//   OptionBindingRecorder recorder;
-//   proxy.ParseByBison(preprocess_doc, &doc_ptr, &recorder);
-//   
-//   StructureOptimizer visitor;
-//   doc_ptr->Accept(&visitor);
-//   std::cout << doc_ptr->ToString(0) << std::endl;
-// }
-
 // black box.
 TEST(OptionBindingRecorderTest, RecordBinding) {
   auto BuildRecord = [](const string &input,

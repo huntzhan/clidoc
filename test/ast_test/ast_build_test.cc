@@ -88,4 +88,15 @@ Options:
   CheckMap({{"--speed", "10"}}, info.default_values_);
 }
 
+TEST(ParserProxyTest, DemoOfPrintAST) {
+  string input =
+      "Usage:\n"
+      "  example --hello-world\n"
+      "  example --output-file=<filename>\n"
+      "  example -n <names>...\n";
+  CodeGenInfo info;
+  info.Prepare(input);
+  std::cout << info.doc_node_->ToString(0);
+}
+
 }  // namespace clidoc
