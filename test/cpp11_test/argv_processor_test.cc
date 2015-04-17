@@ -25,7 +25,7 @@ TEST(ArgvProcessorTest, GetPreprocessedArguments) {
     "--long",           // `GENERAL_ELEMENT`.
   };
   ArgvProcessor argv_processor;
-  argv_processor.LoadArgv(sizeof(argv)/sizeof(argv[0]), argv);
+  argv_processor.LoadArgv(sizeof(argv) / sizeof(argv[0]), argv);
 
   map<Token, Token> option_to_rep_option = {
     {Token(TerminalType::POSIX_OPTION, "-c"),

@@ -89,6 +89,7 @@ using SharedPtrNodeContainer = std::list<SharedPtrNode>;
 
 // Record the binding of parent and child.
 struct NodeConnection {
+
   // `ConnectParent` make connection with parent node.
   // by manually set.
   void ConnectParent(
