@@ -57,9 +57,6 @@ TEST(cpp_code_gen, ast) {
   EXPECT_EQ(expected, code_generator.GetExpressions());
 }
 
-TEST(MatchStateTest, Checker) {
-}
-
 TEST(cpp_code_gen, argv_match) {
   // load up `CppCodeGenInfo`.
   CodeGenInfo info;

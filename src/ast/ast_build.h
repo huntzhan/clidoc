@@ -28,7 +28,7 @@ class CodeGenInfo {
   std::set<Token> oom_bound_options_;
   std::set<Token> oom_arguments_;
   std::set<Token> commands_;
-  // default value of bound options.
+  // default value of bound options and unbound arguments.
   std::map<Token, std::string> default_values_;
 
   std::string doc_text_;

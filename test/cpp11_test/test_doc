@@ -16,3 +16,5 @@ Options:
   --speed=<kn> [default: "10"] # Speed in knots.
   --moored                     # Moored (anchored) mine.
   --drifting                   # Drifting mine.
+  <x> [default: "41"]
+  <y> [default: "42"]

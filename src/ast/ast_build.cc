@@ -28,7 +28,7 @@ void CodeGenInfo::PrepareFocusedElements(
       temp_elements.begin(), temp_elements.end(),
       oom_elements_ptr->begin(), oom_elements_ptr->end(),
       inserter(*elements_ptr, elements_ptr->end()));
-  // setup focused elements/
+  // setup focused elements.
   for (const Token &element : *elements_ptr) {
     if (option_recorder_.OptionIsBound(element)) {
       bound_options_.insert(element);
@@ -55,14 +55,22 @@ void CodeGenInfo::PrepareFocusedElements(
         oom_bound_options_.insert(element);
     }
   }
-  // setup `default_values_`.
-  for (auto iter = option_recorder_.representative_option_to_property_.begin();
-       iter != option_recorder_.representative_option_to_property_.end();
-       ++iter) {
-    const auto &rep_option = iter->first;
-    const auto &property = iter->second;
+  // setup `default_values_` for bound options.
+  for (const auto &pair
+       : option_recorder_.representative_option_to_property_) {
+    const auto &rep_option = pair.first;
+    const auto &property = pair.second;
     if (property.HasDefaultValue()) {
       default_values_[rep_option] = property.default_value_;
+    }
+  }
+  // setup `default_values_` for unbound arguments.
+  for (const auto &pair
+       : unbound_argument_recorder_.unbound_argument_to_default_value_) {
+    const auto &unbound_argument = pair.first;
+    const auto &default_value = pair.second;
+    if (default_values_.find(unbound_argument) == default_values_.end()) {
+      default_values_[unbound_argument] = default_value;
     }
   }
 }
