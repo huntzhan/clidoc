@@ -564,7 +564,7 @@ namespace clidoc {
 
 
     /// Build a parser object.
-    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_node_ptr_yyarg, clidoc::OptionBindingRecorder *recorder_ptr_yyarg);
+    BisonGeneratedParser (clidoc::FlexGeneratedScanner *lexer_ptr_yyarg, clidoc::Doc::SharedPtr *doc_node_ptr_yyarg, clidoc::OptionBindingRecorder *option_recorder_ptr_yyarg, clidoc::UnboundArgumentDefaultValueRecorder *unbound_argument_recorder_ptr_yyarg);
     virtual ~BisonGeneratedParser ();
 
     /// Parse.
@@ -763,7 +763,7 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 44,     ///< Last index in yytable_.
+      yylast_ = 53,     ///< Last index in yytable_.
       yynnts_ = 17,  ///< Number of nonterminal symbols.
       yyfinal_ = 7, ///< Termination state number.
       yyterror_ = 1,
@@ -775,7 +775,8 @@ namespace clidoc {
     // User arguments.
     clidoc::FlexGeneratedScanner *lexer_ptr;
     clidoc::Doc::SharedPtr *doc_node_ptr;
-    clidoc::OptionBindingRecorder *recorder_ptr;
+    clidoc::OptionBindingRecorder *option_recorder_ptr;
+    clidoc::UnboundArgumentDefaultValueRecorder *unbound_argument_recorder_ptr;
   };
 
   // Symbol number corresponding to token number t.
@@ -1358,7 +1359,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1362 "generated_parser.h" // lalr1.cc:392
+#line 1363 "generated_parser.h" // lalr1.cc:392
 
 
 

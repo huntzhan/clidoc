@@ -158,24 +158,31 @@ TEST(ParserProxyTest, PreprocessRawDoc) {
 
 // black box.
 TEST(OptionBindingRecorderTest, RecordBinding) {
-  auto BuildRecord = [](const string &input,
-                        OptionBindingRecorder *recorder_ptr) {
+  auto BuildRecord = [](
+      const string &input,
+      OptionBindingRecorder *recorder_ptr,
+      UnboundArgumentDefaultValueRecorder *unbound_argument_recorder) {
     // clean up recorder.
     recorder_ptr->option_to_representative_option_.clear();
     recorder_ptr->representative_option_to_property_.clear();
+    unbound_argument_recorder->unbound_argument_to_default_value_.clear();
     // build.
     ParserProxy proxy;
     auto preprocess_doc = proxy.PreprocessRawDoc(input);
     Doc::SharedPtr doc_ptr;
-    proxy.ParseByBison(preprocess_doc, &doc_ptr, recorder_ptr);
+    proxy.ParseByBison(
+        preprocess_doc, &doc_ptr,
+        recorder_ptr, unbound_argument_recorder);
   };
   string input;
   OptionBindingRecorder recorder;
+  UnboundArgumentDefaultValueRecorder unbound_argument_recorder;
 
   auto option_h = Token(TerminalType::POSIX_OPTION, "-h");
   auto option_help = Token(TerminalType::GNU_OPTION, "--help");
   auto argument_1 = Token(TerminalType::ARGUMENT, "<arg 1>");
   auto argument_2 = Token(TerminalType::ARGUMENT, "ARG-2");
+  auto argument_3 = Token(TerminalType::ARGUMENT, "<some arg>");
   RepresentativeOptionProperty *rop_ptr;
 
   // case 1.
@@ -184,7 +191,7 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
       " utility_name -c <some arg>\n"
       " Options:\n"
       " -h --help\n";
-  BuildRecord(input, &recorder);
+  BuildRecord(input, &recorder, &unbound_argument_recorder);
 
   EXPECT_EQ(
       option_help,
@@ -200,7 +207,7 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
       " utility_name -c <some arg>\n"
       " Options:\n"
       " -h <arg 1> --help=<arg 1>\n";
-  BuildRecord(input, &recorder);
+  BuildRecord(input, &recorder, &unbound_argument_recorder);
   EXPECT_EQ(
       option_help,
       recorder.option_to_representative_option_[option_h]);
@@ -217,11 +224,24 @@ TEST(OptionBindingRecorderTest, RecordBinding) {
       " -h <arg 1> [default: \"42\"]\n"
       " --help=ARG-2 [DeFaUlt:\"43\"]\n";
   
-  BuildRecord(input, &recorder);
+  BuildRecord(input, &recorder, &unbound_argument_recorder);
   rop_ptr = &recorder.representative_option_to_property_[option_h];
   EXPECT_EQ("42", rop_ptr->default_value_);
   rop_ptr = &recorder.representative_option_to_property_[option_help];
   EXPECT_EQ("43", rop_ptr->default_value_);
+
+  // case 4.
+  // bind default value to unbound argument.
+  input =
+      "Usage:\n"
+      " utility_name -c <some arg>\n"
+      " Options:\n"
+      " <some arg> [DeFaUlt:\"43\"]\n";
+
+  BuildRecord(input, &recorder, &unbound_argument_recorder);
+  auto default_value =
+      unbound_argument_recorder.unbound_argument_to_default_value_[argument_3];
+  EXPECT_EQ("43", default_value);
 }
 
 }  // namespace clidoc

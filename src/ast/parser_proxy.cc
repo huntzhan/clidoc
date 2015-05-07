@@ -168,18 +168,20 @@ string ParserProxy::PreprocessRawDoc(const string &raw_doc) {
 void ParserProxy::ParseByBison(
     const string &preprocessed_doc,
     Doc::SharedPtr *doc_node_ptr,
-    OptionBindingRecorder *recorder_ptr) {
+    OptionBindingRecorder *option_recorder_ptr,
+    UnboundArgumentDefaultValueRecorder *unbound_argument_recorder) {
   // setup scanner.
   ostringstream null_ostream;
   istringstream input_stream(preprocessed_doc);
   FlexGeneratedScanner lexer(&input_stream, &null_ostream);
   // init parser.
   BisonGeneratedParser bison_parser(
-      &lexer, doc_node_ptr, recorder_ptr);
+      &lexer, doc_node_ptr,
+      option_recorder_ptr, unbound_argument_recorder);
   bison_parser.parse();
 
   // postprocess.
-  recorder_ptr->ProcessCachedBindings();
+  option_recorder_ptr->ProcessCachedBindings();
   // free smart pointer cached.
   SPIStaticDataMember::FreeCache();
 }
@@ -187,9 +189,12 @@ void ParserProxy::ParseByBison(
 void ParserProxy::Parse(
     const std::string &doc,
     Doc::SharedPtr *doc_node_ptr,
-    OptionBindingRecorder *recorder_ptr) {
+    OptionBindingRecorder *option_recorder_ptr,
+    UnboundArgumentDefaultValueRecorder *unbound_argument_recorder) {
   auto preprocessed_doc = PreprocessRawDoc(doc);
-  ParseByBison(preprocessed_doc, doc_node_ptr, recorder_ptr);
+  ParseByBison(
+      preprocessed_doc, doc_node_ptr,
+      option_recorder_ptr, unbound_argument_recorder);
 }
 
 }  // namespace clidoc

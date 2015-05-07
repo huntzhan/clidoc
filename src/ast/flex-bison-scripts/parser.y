@@ -86,7 +86,8 @@ BuildNonTerminal(WeakNodeTypes... child_nodes) {
 
 %parse-param { clidoc::FlexGeneratedScanner *lexer_ptr }
 %parse-param { clidoc::Doc::SharedPtr *doc_node_ptr }
-%parse-param { clidoc::OptionBindingRecorder *recorder_ptr }
+%parse-param { clidoc::OptionBindingRecorder *option_recorder_ptr }
+%parse-param { clidoc::UnboundArgumentDefaultValueRecorder *unbound_argument_recorder_ptr }
 
 // Terminal with value.
 %token <std::string>
@@ -284,7 +285,7 @@ gnu_option_unit : GNU_OPTION {
 }
                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   // recording binding.
-  recorder_ptr->RecordBinding(
+  option_recorder_ptr->RecordBinding(
       Token(TerminalType::GNU_OPTION, $1),
       Token(TerminalType::ARGUMENT, $3));
 
@@ -305,10 +306,16 @@ descriptions : descriptions single_description {  }
 ;
 
 
-// single_description : bindings default_value K_DESC_DELIMITER {  }
+// single_description : bindings default_value K_DESC_DELIMITER
+//                    | ARGUMENT default_value K_DESC_DELIMITER
 // ;
 single_description : bindings default_value K_DESC_DELIMITER {
-  recorder_ptr->RecordBinding($1.lock(), $2.lock());
+  option_recorder_ptr->RecordBinding($1.lock(), $2.lock());
+}
+                   | ARGUMENT default_value K_DESC_DELIMITER {
+  unbound_argument_recorder_ptr->RecordUnboundArgumentDefaultValue(
+      Token(TerminalType::ARGUMENT, $1),
+      $2.lock()->default_value_);
 }
 ;
 

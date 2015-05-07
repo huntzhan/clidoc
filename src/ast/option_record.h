@@ -125,6 +125,15 @@ class OptionBindingRecorder {
   std::map<Token, Token> option_to_option_argument_cache_;
 };
 
+// TODO(huntzhan): refactor classes related to parsing.
+class UnboundArgumentDefaultValueRecorder {
+ public:
+  void RecordUnboundArgumentDefaultValue(
+      const Token &unbound_argument,
+      const Token &default_value);
+  std::map<Token, std::string> unbound_argument_to_default_value_;
+};
+
 }  // namespace clidoc
 
 namespace clidoc {

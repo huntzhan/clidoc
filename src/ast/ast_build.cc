@@ -30,7 +30,7 @@ void CodeGenInfo::PrepareFocusedElements(
       inserter(*elements_ptr, elements_ptr->end()));
   // setup focused elements/
   for (const Token &element : *elements_ptr) {
-    if (recorder_.OptionIsBound(element)) {
+    if (option_recorder_.OptionIsBound(element)) {
       bound_options_.insert(element);
       continue;
     }
@@ -56,8 +56,8 @@ void CodeGenInfo::PrepareFocusedElements(
     }
   }
   // setup `default_values_`.
-  for (auto iter = recorder_.representative_option_to_property_.begin();
-       iter != recorder_.representative_option_to_property_.end();
+  for (auto iter = option_recorder_.representative_option_to_property_.begin();
+       iter != option_recorder_.representative_option_to_property_.end();
        ++iter) {
     const auto &rep_option = iter->first;
     const auto &property = iter->second;
@@ -85,13 +85,13 @@ void CodeGenInfo::PostProcessedAST() {
   doc_node_->Accept(&double_dash_handler);
 
   // 3. handle ambiguous syntax.
-  AmbiguityHandlerLogic ambiguity_handler_logic(&recorder_);
+  AmbiguityHandlerLogic ambiguity_handler_logic(&option_recorder_);
   auto ambiguity_handler = GenerateVisitor<TerminalVisitor>(
       &ambiguity_handler_logic);
   doc_node_->Accept(&ambiguity_handler);
 
   // 4. collect focused elements.
-  FocusedElementCollectorLogic element_collector_logic(&recorder_);
+  FocusedElementCollectorLogic element_collector_logic(&option_recorder_);
   auto element_collector =
       GenerateVisitor<TerminalVisitor>(&element_collector_logic);
   doc_node_->Accept(&element_collector);
@@ -99,7 +99,7 @@ void CodeGenInfo::PostProcessedAST() {
 
   // 5. collect OOM information and insert missing OOM nodes.
   // 5.1 collect information.
-  OneOrMoreMarkedElementCollectorLogic oom_collector_logic(&recorder_);
+  OneOrMoreMarkedElementCollectorLogic oom_collector_logic(&option_recorder_);
   auto oom_collector =
       GenerateVisitor<NonTerminalVisitor>(&oom_collector_logic);
   doc_node_->Accept(&oom_collector);
@@ -114,7 +114,7 @@ void CodeGenInfo::PostProcessedAST() {
   // 6.TODO(huntzhan): issue #17.
 
   // 7. Remove bound arguments.
-  auto bound_arguments = recorder_.GetBoundArguments();
+  auto bound_arguments = option_recorder_.GetBoundArguments();
   BoundArgumentCleanerLogic bound_argument_cleaner_logic(bound_arguments);
   auto bound_argument_cleaner = GenerateVisitor<TerminalVisitor>(
       &bound_argument_cleaner_logic);
@@ -129,8 +129,10 @@ void CodeGenInfo::Prepare(const std::string &raw_doc) {
   ParserProxy parser_proxy;
   // setup `doc_text_`.
   doc_text_ = doc_preprocessor.PreprocessRawDocForCodeGen(raw_doc);
-  // setup `doc_node_`, `recorder_`.
-  parser_proxy.Parse(raw_doc, &doc_node_, &recorder_);
+  // setup `doc_node_`, `option_recorder_`.
+  parser_proxy.Parse(
+      raw_doc, &doc_node_,
+      &option_recorder_, &unbound_argument_recorder_);
   PostProcessedAST();
 }
 

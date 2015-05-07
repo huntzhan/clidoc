@@ -46,7 +46,8 @@ class ParserProxy {
   void Parse(
       const std::string &doc,
       Doc::SharedPtr *doc_node_ptr,
-      OptionBindingRecorder *recorder_ptr);
+      OptionBindingRecorder *option_recorder_ptr,
+      UnboundArgumentDefaultValueRecorder *unbound_argument_recorder);
 
  private:
   FRIEND_TEST(ParserProxyTest, PreprocessRawDoc);
@@ -56,7 +57,8 @@ class ParserProxy {
   void ParseByBison(
       const std::string &preprocessed_doc,
       Doc::SharedPtr *doc_node_ptr,
-      OptionBindingRecorder *recorder_ptr);
+      OptionBindingRecorder *option_recorder_ptr,
+      UnboundArgumentDefaultValueRecorder *unbound_argument_recorder);
 };
 
 }  // namespace clidoc

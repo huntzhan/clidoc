@@ -281,4 +281,10 @@ set<Token> OptionBindingRecorder::GetBoundArguments() const {
   return bound_arguments;
 }
 
+void UnboundArgumentDefaultValueRecorder::RecordUnboundArgumentDefaultValue(
+    const Token &unbound_argument,
+    const Token &default_value) {
+  unbound_argument_to_default_value_[unbound_argument] = default_value.value();
+}
+
 }  // namespace clidoc

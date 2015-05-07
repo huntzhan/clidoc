@@ -86,7 +86,7 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
 
   ostrm << GenerateInitializerList(
       "cpp_code_gen_info.option_to_representative_option_",
-      code_gen_info.recorder_.option_to_representative_option_);
+      code_gen_info.option_recorder_.option_to_representative_option_);
 
   ASTTextGenerator ast_text_generator;
   auto visitor = GenerateVisitor<AllNodeVisitor>(&ast_text_generator);

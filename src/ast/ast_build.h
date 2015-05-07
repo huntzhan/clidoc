@@ -18,7 +18,8 @@ class CodeGenInfo {
   void Prepare(const std::string &raw_doc);
 
   Doc::SharedPtr doc_node_;
-  OptionBindingRecorder recorder_;
+  OptionBindingRecorder option_recorder_;
+  UnboundArgumentDefaultValueRecorder unbound_argument_recorder_;
 
   std::set<Token> bound_options_;
   std::set<Token> unbound_options_;
