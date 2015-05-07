@@ -7,7 +7,6 @@
 #include <map>
 
 #include "ast/ast_node_interface.h"
-#include "ast/string_utils.h"
 #include "ast/tokenizer.h"
 #include "cpp11/argv_processor.h"
 
@@ -38,10 +37,26 @@ void ArgvProcessLogic::TokenizeArgv() {
   };
   auto ProcessText = [&](string *text_ptr) {
     if (!text_ptr->empty()) {
-      StringUtils::InsertSpace(
-          {},          // no exclude pattern yet.
-          {"=", ","},  // insert space arround `=` and `,`.
-          text_ptr);
+      for (string delimiter : {"=", ","}) {
+        int index = 0;
+        while ((index = text_ptr->find(delimiter, index)) != string::npos) {
+          // state 1 before insert..
+          // ... aaaa=bbbb ...
+          //         ^ [index]
+          text_ptr->insert(index, " ");
+          // state 2 before insert..
+          // ... aaaa =bbbb ...
+          //         ^ [index]
+          text_ptr->insert(index + 2, " ");
+          // state 3 before self-increment..
+          // ... aaaa = bbbb ...
+          //         ^ [index]
+          index += 3;
+          // state 3 after self-increment..
+          // ... aaaa = bbbb ...
+          //            ^ [index]
+        }
+      }
       auto tokens = FromString(*text_ptr);
       copy(tokens.begin(), tokens.end(), back_inserter(tokens_));
       text_ptr->clear();

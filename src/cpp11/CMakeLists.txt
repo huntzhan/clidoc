@@ -6,7 +6,7 @@ add_library (clidoc_cpp11          cpp11.cc)
 
 target_link_libraries (
   clidoc_argv_processor
-  clidoc_string_utils clidoc_tokenizer clidoc_generated_scanner_for_argv
+  clidoc_tokenizer clidoc_generated_scanner_for_argv
 )
 
 target_link_libraries (
