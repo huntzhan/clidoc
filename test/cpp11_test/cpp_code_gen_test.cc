@@ -4,9 +4,10 @@
 
 #include "gtest/gtest.h"
 #include "ast/ast_visitor_helper.h"
+
 #include "cpp11/code_gen_logic.h"
-#include "cpp11/info.h"
-#include "cpp11/match_logic.h"
+#include "cpp11/cmake_cpp11_code_gen_project/src/info.h"
+#include "cpp11/cmake_cpp11_code_gen_project/src/match_logic.h"
 
 using namespace clidoc;
 using std::string;

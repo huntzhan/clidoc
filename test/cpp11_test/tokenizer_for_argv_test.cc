@@ -1,5 +1,5 @@
 
-#include "ast_test/utils-inl.h"
+#include "shared/utils-inl.h"
 
 TEST(tokenizer_for_argv, token_type) {
   CheckTokenTypes(

@@ -3,9 +3,10 @@
 #include <vector>
 #include <sstream>
 
+// TODO(huntzhan): remove dependencies of ast.
 #include "ast/ast_node_interface.h"
 #include "ast/generated_scanner.h"
-#include "ast/tokenizer.h"
+#include "tokenizer.h"
 
 using std::string;
 using std::vector;

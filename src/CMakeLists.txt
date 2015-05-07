@@ -20,11 +20,13 @@ function (clidoc_cpp11_handler user_defined_program doc_file_path)
   )
   # create library.
   add_library (${clidoc_cpp11_lib_name} ${clidoc_cpp11_file_name})
+
+  # TODO(hutnzhan): change include.
   set_target_properties (
     ${clidoc_cpp11_lib_name}
     PROPERTIES
     LINKER_LANGUAGE CXX
-    COMPILE_FLAGS "-I ${clidoc_SOURCE_DIR}/src"
+    COMPILE_FLAGS "-I ${clidoc_SOURCE_DIR}/src/cpp11/cmake_cpp11_code_gen_project/src/"
   )
   target_link_libraries (
     ${clidoc_cpp11_lib_name}

@@ -5,11 +5,13 @@
 #include <iostream>
 #include <cstdlib>
 
+// TODO(huntzhan): remove dependencies of ast.
 #include "ast/ast_node_interface.h"
+
 #include "clidoc/cpp11.h"
-#include "cpp11/info.h"
-#include "cpp11/argv_processor.h"
-#include "cpp11/match_logic.h"
+#include "info.h"
+#include "argv_processor.h"
+#include "match_logic.h"
 
 using std::string;
 using std::map;

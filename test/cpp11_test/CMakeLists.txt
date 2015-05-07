@@ -1,3 +1,17 @@
+
+# import invariant part of `cmake_cpp11_code_gen_project`.
+include_directories (
+  ${clidoc_SOURCE_DIR}/src/cpp11/cmake_cpp11_code_gen_project/include
+)
+# TODO(huntzhan): remove comment.
+# add_subdirectory (${clidoc_SOURCE_DIR}/src/cpp11/cmake_cpp11_code_gen_project/src)
+
+
+add_executable (clidoc_tokenizer_for_argv_test tokenizer_for_argv_test.cc)
+target_link_libraries (
+  clidoc_tokenizer_for_argv_test
+  clidoc_tokenizer clidoc_generated_scanner_for_argv)
+
 add_executable (clidoc_cpp_code_gen_test cpp_code_gen_test.cc)
 target_link_libraries (
   clidoc_cpp_code_gen_test
@@ -9,6 +23,7 @@ target_link_libraries (clidoc_argv_processor_test clidoc_argv_processor)
 
 add_gtest (clidoc_cpp_code_gen_test)
 add_gtest (clidoc_argv_processor_test)
+add_gtest (clidoc_tokenizer_for_argv_test)
 
 add_executable (clidoc_example program.cc)
 clidoc_cpp11_handler (clidoc_example ${PROJECT_SOURCE_DIR}/test/cpp11_test/test_doc)

@@ -28,7 +28,6 @@ include_directories (${GTEST_INCLUDE_DIRS})
 # make sure the compiler find the right version of FlexLexer.h
 include_directories (${clidoc_SOURCE_DIR}/lib/flex/include)
 include_directories (${clidoc_SOURCE_DIR}/lib/boost_1_57_0/include)
-include_directories (include)
 include_directories (src)
 
 

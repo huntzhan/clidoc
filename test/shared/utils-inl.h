@@ -8,7 +8,7 @@
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
 #include "ast/generated_scanner.h"
-#include "ast/tokenizer.h"
+#include "cpp11/cmake_cpp11_code_gen_project/src/tokenizer.h"
 
 using namespace clidoc;
 

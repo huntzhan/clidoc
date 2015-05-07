@@ -68,7 +68,7 @@ std::string GenerateInitializerList(
 
 string GenerateSource(const CodeGenInfo &code_gen_info) {
   ostringstream ostrm;
-  ostrm << "#include \"cpp11/info.h\"" << endl
+  ostrm << "#include \"info.h\"" << endl
         << "namespace clidoc {" << endl
         << "CppCodeGenInfo InitCppCodeGenInfo() {" << endl
         << "CppCodeGenInfo cpp_code_gen_info;" << endl;

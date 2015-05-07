@@ -5,6 +5,7 @@
 #include <set>
 #include <map>
 
+// TODO(huntzhan): remove dependencies of ast.
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
 

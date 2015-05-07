@@ -1,19 +1,15 @@
-
 add_library (clidoc_generated_scanner_for_doc  generated_scanner_for_doc.cc)
-add_library (clidoc_generated_scanner_for_argv generated_scanner_for_argv.cc)
 add_library (clidoc_generated_parser           generated_parser.cc)
 add_library (clidoc_parser_proxy               parser_proxy.cc)
 add_library (clidoc_process_logic              process_logic.cc)
 add_library (clidoc_option_record              option_record.cc)
 add_library (clidoc_ast_build                  ast_build.cc)
 add_library (clidoc_smart_ptr_interface        smart_ptr_interface.cc)
-add_library (clidoc_tokenizer                  tokenizer.cc)
 add_library (clidoc_string_utils               string_utils.cc)
 
 # ignore all warning, might exists a better way to do this.
 set_target_properties (
   clidoc_generated_scanner_for_doc
-  clidoc_generated_scanner_for_argv
   clidoc_generated_parser
   PROPERTIES
   COMPILE_FLAGS "-w"

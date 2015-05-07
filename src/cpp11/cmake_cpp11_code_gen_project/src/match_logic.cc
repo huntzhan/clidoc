@@ -8,9 +8,11 @@
 #include <memory>
 #include <utility>
 
+// TODO(huntzhan): remove dependencies of ast.
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
-#include "cpp11/match_logic.h"
+
+#include "match_logic.h"
 
 using std::vector;
 using std::set;

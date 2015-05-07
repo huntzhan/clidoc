@@ -6,9 +6,11 @@
 #include <list>
 #include <map>
 
+// TODO(huntzhan): remove dependencies of ast.
 #include "ast/ast_node_interface.h"
-#include "ast/tokenizer.h"
-#include "cpp11/argv_processor.h"
+
+#include "tokenizer.h"
+#include "argv_processor.h"
 
 using std::string;
 using std::vector;

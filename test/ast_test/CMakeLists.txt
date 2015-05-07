@@ -19,11 +19,6 @@ target_link_libraries (
 add_executable (clidoc_smart_ptr_test smart_ptr_test.cc)
 target_link_libraries (clidoc_smart_ptr_test clidoc_smart_ptr_interface)
 
-add_executable (clidoc_tokenizer_for_argv_test tokenizer_for_argv_test.cc)
-target_link_libraries (
-  clidoc_tokenizer_for_argv_test
-  clidoc_tokenizer clidoc_generated_scanner_for_argv)
-
 add_executable (clidoc_tokenizer_for_doc_test tokenizer_for_doc_test.cc)
 target_link_libraries (
   clidoc_tokenizer_for_doc_test
@@ -34,5 +29,4 @@ add_gtest (clidoc_ast_nodes_test)
 add_gtest (clidoc_parser_proxy_test)
 add_gtest (clidoc_process_logic_test)
 add_gtest (clidoc_smart_ptr_test)
-add_gtest (clidoc_tokenizer_for_argv_test)
 add_gtest (clidoc_tokenizer_for_doc_test)

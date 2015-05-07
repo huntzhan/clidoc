@@ -7,9 +7,11 @@
 #include <string>
 #include <vector>
 
+// TODO(huntzhan): remove dependencies of ast.
 #include "ast/ast_node_interface.h"
 #include "ast/ast_nodes.h"
-#include "cpp11/info.h"
+
+#include "info.h"
 
 namespace clidoc {
 
