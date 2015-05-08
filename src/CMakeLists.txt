@@ -2,7 +2,17 @@
 add_subdirectory (ast)
 add_subdirectory (cpp11)
 
-add_executable (clidoc_main main.cc)
+# for cmake project generation.
+file (COPY ast DESTINATION data)
+file (COPY cpp11/cmake_cpp11_code_gen_project DESTINATION data)
+
+add_executable (
+  clidoc_main main.cc
+)
+set_target_properties (
+  clidoc_main
+  PROPERTIES COMPILE_FLAGS "-DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}"
+)
 target_link_libraries (
   clidoc_main
   clidoc_ast_build clidoc_code_gen_logic
@@ -15,7 +25,7 @@ function (clidoc_cpp11_handler user_defined_program doc_file_path)
   # cpp11 code gen.
   add_custom_command (
     OUTPUT ${clidoc_cpp11_file_name}
-    COMMAND clidoc_main ARGS "cpp11" ${doc_file_path} ${clidoc_cpp11_file_name}
+    COMMAND clidoc_main ARGS "cpp11_non_project" ${doc_file_path} ${clidoc_cpp11_file_name}
     DEPENDS ${doc_file_path}
   )
   # create library.
