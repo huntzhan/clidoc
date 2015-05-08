@@ -57,10 +57,10 @@
 #include <stdexcept>
 #include <memory>
 
-#include "ast/parser_proxy.h"
-#include "ast/generated_scanner.h"
-#include "ast/ast_nodes.h"
-#include "ast/option_record.h"
+#include "clidoc/ast/parser_proxy.h"
+#include "clidoc/ast/generated_scanner.h"
+#include "clidoc/ast/ast_nodes.h"
+#include "clidoc/ast/option_record.h"
 
 #undef yylex
 #define yylex lexer_ptr->lex

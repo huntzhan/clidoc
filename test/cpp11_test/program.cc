@@ -1,41 +1,45 @@
 
 #include <iostream>
-#include "cpp11/cmake_cpp11_code_gen_project/include/clidoc/cpp11.h"
+#include <functional>
+#include <string>
+#include <vector>
+#include "clidoc/cpp11.h"
 
 using std::cout;
 using std::endl;
+using std::function;
+using std::string;
+using std::vector;
+
+template <typename OutcomeType, typename Lambda>
+void PrintOutcome(const OutcomeType &outcome, const Lambda &lambda) {
+  for (const auto &map_pair : outcome) {
+    cout << map_pair.first << ": ";
+    lambda(map_pair.second);
+    cout << endl;
+  }
+}
 
 int main(int argc, char *argv[]) {
   clidoc::ParseArguments(argc, argv);
-  for (const auto &map_pair : clidoc::boolean_outcome) {
-    cout << map_pair.first << ": ";
-    if (map_pair.second) {
-      cout << "True";
-    } else {
-      cout << "False";
+
+  auto PrintBoolean = [](const bool &flag){
+    cout << (flag? "True" : "False");
+  };
+
+  auto PrintString = [](const string &text){
+    cout << (text.empty()? "*EMPTY*" : text);
+  };
+
+  auto PrintStringList = [](const vector<string> &texts){
+    cout << "[ ";
+    for (const auto &text : texts) {
+      cout << "\"" << text << "\" ";
     }
-    cout << endl;
-  }
-  for (const auto &map_pair : clidoc::string_outcome) {
-    cout << map_pair.first << ": ";
-    if (!map_pair.second.empty()) {
-      cout << map_pair.second;
-    } else {
-      cout << "*EMPTY*";
-    }
-    cout << endl;
-  }
-  for (const auto &map_pair : clidoc::string_list_outcome) {
-    cout << map_pair.first << ": ";
-    if (!map_pair.second.empty()) {
-      cout << "{ ";
-      for (const auto &item : map_pair.second) {
-        cout << item << ", ";
-      }
-      cout << " }";
-    } else {
-      cout << "*EMPTY*";
-    }
-    cout << endl;
-  }
+    cout << "]";
+  };
+
+  PrintOutcome(clidoc::boolean_outcome, PrintBoolean);
+  PrintOutcome(clidoc::string_outcome, PrintString);
+  PrintOutcome(clidoc::string_list_outcome, PrintStringList);
 }

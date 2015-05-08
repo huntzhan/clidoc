@@ -4,7 +4,7 @@
 #include <map>
 
 #include "gtest/gtest.h"
-#include "ast/ast_build.h"
+#include "clidoc/ast/ast_build.h"
 
 using std::set;
 using std::map;

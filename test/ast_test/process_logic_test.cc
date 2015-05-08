@@ -1,9 +1,9 @@
 
 #include "gtest/gtest.h"
-#include "ast/parser_proxy.h"
-#include "ast/process_logic.h"
-#include "ast/ast_nodes.h"
-#include "ast/ast_visitor_helper.h"
+#include "clidoc/ast/parser_proxy.h"
+#include "clidoc/ast/process_logic.h"
+#include "clidoc/ast/ast_nodes.h"
+#include "clidoc/ast/ast_visitor_helper.h"
 
 using namespace clidoc;
 

@@ -1,8 +1,8 @@
 
 #include <string>
 #include "gtest/gtest.h"
-#include "ast/ast_nodes.h"
-#include "ast/ast_node_interface.h"
+#include "clidoc/ast/ast_nodes.h"
+#include "clidoc/ast/ast_node_interface.h"
 
 using namespace clidoc;
 using std::string;

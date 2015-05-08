@@ -4,8 +4,8 @@
 #include <map>
 
 #include "gtest/gtest.h"
-#include "ast/ast_node_interface.h"
-#include "cpp11/cmake_cpp11_code_gen_project/src/argv_processor.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/argv_processor.h"
 
 using std::string;
 using std::vector;

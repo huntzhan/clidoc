@@ -3,10 +3,10 @@
 #include <map>
 #include <sstream>
 
-#include "ast/ast_build.h"
-#include "ast/ast_node_interface.h"
-#include "ast/ast_visitor_helper.h"
-#include "cpp11/code_gen_logic.h"
+#include "clidoc/ast/ast_build.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/ast_visitor_helper.h"
+#include "clidoc/cpp11/code_gen_logic.h"
 
 using std::string;
 using std::set;
@@ -68,7 +68,7 @@ std::string GenerateInitializerList(
 
 string GenerateSource(const CodeGenInfo &code_gen_info) {
   ostringstream ostrm;
-  ostrm << "#include \"info.h\"" << endl
+  ostrm << "#include \"clidoc/info.h\"" << endl
         << "namespace clidoc {" << endl
         << "CppCodeGenInfo InitCppCodeGenInfo() {" << endl
         << "CppCodeGenInfo cpp_code_gen_info;" << endl;

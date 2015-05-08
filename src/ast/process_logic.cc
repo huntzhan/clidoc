@@ -5,10 +5,10 @@
 #include <map>
 #include <utility>
 
-#include "ast/ast_node_interface.h"
-#include "ast/option_record.h"
-#include "ast/process_logic.h"
-#include "ast/ast_visitor_helper.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/option_record.h"
+#include "clidoc/ast/process_logic.h"
+#include "clidoc/ast/ast_visitor_helper.h"
 
 using std::set;
 using std::multimap;

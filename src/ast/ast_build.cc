@@ -4,12 +4,12 @@
 #include <algorithm>
 #include <iterator>
 
-#include "ast/ast_build.h"
-#include "ast/parser_proxy.h"
-#include "ast/ast_node_interface.h"
-#include "ast/process_logic.h"
-#include "ast/option_record.h"
-#include "ast/ast_visitor_helper.h"
+#include "clidoc/ast/ast_build.h"
+#include "clidoc/ast/parser_proxy.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/process_logic.h"
+#include "clidoc/ast/option_record.h"
+#include "clidoc/ast/ast_visitor_helper.h"
 
 using std::set;
 using std::string;

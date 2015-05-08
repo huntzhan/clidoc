@@ -3,8 +3,8 @@
 #include <string>
 #include <set>
 
-#include "ast/ast_node_interface.h"
-#include "ast/option_record.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/option_record.h"
 
 using std::string;
 using std::set;

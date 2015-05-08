@@ -6,14 +6,14 @@
 #include <vector>
 #include <set>
 
-#include "ast/generated_scanner.h"
-#include "ast/generated_parser.h"
-#include "ast/parser_proxy.h"
-#include "ast/ast_nodes.h"
-#include "ast/ast_node_interface.h"
-#include "ast/option_record.h"
-#include "ast/string_utils.h"
 #include "boost/xpressive/xpressive_dynamic.hpp"
+#include "clidoc/ast/generated_scanner.h"
+#include "clidoc/ast/generated_parser.h"
+#include "clidoc/ast/parser_proxy.h"
+#include "clidoc/ast/ast_nodes.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/option_record.h"
+#include "clidoc/ast/string_utils.h"
 
 using std::string;
 using std::back_inserter;

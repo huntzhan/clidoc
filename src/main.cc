@@ -1,3 +1,4 @@
+
 #define STRINGIFY(x) TO_STRING(x)
 #define TO_STRING(x) #x
 
@@ -9,8 +10,8 @@
 #include <streambuf>
 #include <string>
 
-#include "ast/ast_build.h"
-#include "cpp11/code_gen_logic.h"
+#include "clidoc/ast/ast_build.h"
+#include "clidoc/cpp11/code_gen_logic.h"
 
 using std::cerr;
 using std::endl;
@@ -45,7 +46,7 @@ void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
 }
 
 void GenerateCpp11SourceCode(
-    const string &doc_path, 
+    const string &doc_path,
     const string &output_file_name) {
   clidoc::CodeGenInfo info;
   PrepareForCpp11(doc_path, &info);
@@ -56,16 +57,20 @@ void GenerateCpp11SourceCode(
 }
 
 void GenerateCpp11CMakeProject(
-    const string &doc_path, 
-    const string &output_dir_name) {
-  // 1. run command.
-  // 2. reset `ostrm`.
+    const string &doc_path,
+    const string &output_hint) {
   auto ExecuteSystemCommand = [](ostringstream *ostrm_ptr) {
+    // 1. run command.
     string command = ostrm_ptr->str();
     system(command.c_str());
+    // 2. reset `ostrm`.
     ostrm_ptr->str("");
     ostrm_ptr->clear();
   };
+
+  // append "/" to the end if necessary.
+  const string output_dir_name =
+      output_hint.back() == '/'? output_hint : output_hint + "/";
 
   clidoc::CodeGenInfo info;
   PrepareForCpp11(doc_path, &info);
@@ -73,18 +78,23 @@ void GenerateCpp11CMakeProject(
   ostringstream ostrm;
   // 1. copy cmake project template.
   ostrm << "cp -r "
-        << kBinaryDirPath << "src/data/cmake_cpp11_code_gen_project "
+        << kBinaryDirPath << "src/files/src/cpp11/project_template "
         << output_dir_name;
   ExecuteSystemCommand(&ostrm);
 
   // 2. copy serveral source files of `ast`.
   ostrm << "cp -r "
-        << kBinaryDirPath << "src/data/ast "
-        << output_dir_name << "/src/";
+        << kBinaryDirPath << "src/files/include/clidoc/ast "
+        << output_dir_name << "include/clidoc";
+  ExecuteSystemCommand(&ostrm);
+
+  ostrm << "cp "
+        << kBinaryDirPath << "src/files/src/ast/smart_ptr_interface.cc "
+        << output_dir_name << "src/";
   ExecuteSystemCommand(&ostrm);
 
   // 3. generate cpp11 source file with respect to doc.
-  string filename = output_dir_name + "/src/codegen.cc";
+  string filename = output_dir_name + "src/codegen.cc";
   ofstream fout(filename.c_str());
   fout << clidoc::GenerateSource(info);
   fout.close();

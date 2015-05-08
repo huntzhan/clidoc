@@ -1,10 +1,10 @@
-
 add_subdirectory (ast)
 add_subdirectory (cpp11)
 
 # for cmake project generation.
-file (COPY ast DESTINATION data)
-file (COPY cpp11/cmake_cpp11_code_gen_project DESTINATION data)
+file (COPY ${clidoc_SOURCE_DIR}/include DESTINATION files)
+file (COPY ${clidoc_SOURCE_DIR}/src DESTINATION files)
+
 
 add_executable (
   clidoc_main main.cc
@@ -17,6 +17,7 @@ target_link_libraries (
   clidoc_main
   clidoc_ast_build clidoc_code_gen_logic
 )
+
 
 function (clidoc_cpp11_handler user_defined_program doc_file_path)
   # set filename and libname.
@@ -36,7 +37,7 @@ function (clidoc_cpp11_handler user_defined_program doc_file_path)
     ${clidoc_cpp11_lib_name}
     PROPERTIES
     LINKER_LANGUAGE CXX
-    COMPILE_FLAGS "-I ${clidoc_SOURCE_DIR}/src/cpp11/cmake_cpp11_code_gen_project/src/"
+    COMPILE_FLAGS "-I ${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/"
   )
   target_link_libraries (
     ${clidoc_cpp11_lib_name}

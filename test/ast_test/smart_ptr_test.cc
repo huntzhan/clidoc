@@ -2,8 +2,8 @@
 
 #include "gtest/gtest.h"
 
-#include "ast/ast_nodes.h"
-#include "ast/smart_ptr_interface.h"
+#include "clidoc/ast/ast_nodes.h"
+#include "clidoc/ast/smart_ptr_interface.h"
 
 using namespace clidoc;
 using std::size_t;

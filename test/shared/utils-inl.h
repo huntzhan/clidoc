@@ -5,10 +5,10 @@
 
 #include "gtest/gtest.h"
 
-#include "ast/ast_node_interface.h"
-#include "ast/ast_nodes.h"
-#include "ast/generated_scanner.h"
-#include "cpp11/cmake_cpp11_code_gen_project/src/tokenizer.h"
+#include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/ast_nodes.h"
+#include "clidoc/ast/generated_scanner.h"
+#include "clidoc/tokenizer.h"
 
 using namespace clidoc;
 

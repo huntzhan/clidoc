@@ -15,6 +15,12 @@ set_target_properties (
   COMPILE_FLAGS "-w"
 )
 
+set_target_properties (
+  clidoc_generated_parser
+  PROPERTIES
+  COMPILE_FLAGS "-I ${clidoc_SOURCE_DIR}/include/clidoc/ast"
+)
+
 target_link_libraries (
   clidoc_generated_parser
   clidoc_smart_ptr_interface clidoc_generated_scanner_for_doc
