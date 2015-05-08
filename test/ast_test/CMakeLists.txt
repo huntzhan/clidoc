@@ -22,7 +22,7 @@ target_link_libraries (clidoc_smart_ptr_test clidoc_smart_ptr_interface)
 add_executable (clidoc_tokenizer_for_doc_test tokenizer_for_doc_test.cc)
 target_link_libraries (
   clidoc_tokenizer_for_doc_test
-  clidoc_tokenizer clidoc_generated_scanner_for_doc)
+  ${CLIDOC_CPP11_PREFIX}tokenizer clidoc_generated_scanner_for_doc)
 
 add_gtest (clidoc_ast_build_test)
 add_gtest (clidoc_ast_nodes_test)
