@@ -335,7 +335,6 @@ default_value : K_L_BRACKET K_DEFAULT_COLON DEFAULT_VALUE K_R_BRACKET {
 bindings : bindings single_binding {
   NonTerminalAddChild($1, $2);
   $$ = $1;
-
 }
          | single_binding {
   $$ = BuildNonTerminal<OptionBindingContainer>($1);

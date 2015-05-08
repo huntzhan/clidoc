@@ -141,6 +141,7 @@ TEST(ParserProxyTest, PreprocessRawDoc) {
       "   this is line two. [default: \"a   b\"] \n"
       " -h <arg 1> [default: \"42\"]\n"
       " --help=ARG-2 [default:\"43\"]\n"
+      " --mode=<mode>,-m <mode> # brbrbr"
       "\n\n\n";
 
   string expect =
@@ -151,7 +152,8 @@ TEST(ParserProxyTest, PreprocessRawDoc) {
     " this is line one. [ default: \"a   b\" ] *DESC_DELIMITER*"
     " this is line two. [ default: \"a   b\" ] *DESC_DELIMITER*"
     " -h <arg 1> [ default: \"42\" ] *DESC_DELIMITER*"
-    " --help = ARG-2 [ default: \"43\" ] *DESC_DELIMITER*";
+    " --help = ARG-2 [ default: \"43\" ] *DESC_DELIMITER*"
+    " --mode = <mode> , -m <mode> *DESC_DELIMITER*";
   ParserProxy proxy;
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }

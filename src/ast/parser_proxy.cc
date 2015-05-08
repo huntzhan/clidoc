@@ -94,6 +94,7 @@ void DocPreprocessor::DisambiguateByInsertSpace() {
     "|",
     "...",
     "=",
+    ",",
     "options",
     "*UTILITY_DELIMITER*",
     "*DESC_DELIMITER*" ,
