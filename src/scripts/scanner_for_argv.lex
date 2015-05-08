@@ -1,16 +1,17 @@
 %{
 // Use parser defined tokens.
-#include "clidoc/ast/generated_scanner.h"
+#include "clidoc/generated_scanner_for_argv.h"
 #include "clidoc/ast/generated_parser.h"
 
 #define YY_DECL                             \
   clidoc::BisonGeneratedParser::symbol_type \
-  clidoc::FlexGeneratedScanner::lex()
+  clidoc::FlexGeneratedScannerForArgv::lex()
 %}
 
 %option c++
 %option noyywrap nounput batch debug noinput
 %option outfile="generated_scanner_for_argv.cc"
+%option prefix="argv"
 
 DIGIT                [0-9]
 LOWERCASE            [a-z]

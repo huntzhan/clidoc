@@ -1,3 +1,10 @@
+# build libraries for testing.
+set (CLIDOC_CPP11_PREFIX "for_test_")
+add_subdirectory (
+  ${clidoc_SOURCE_DIR}/src/cpp11/project_template/src
+  project_template
+)
+
 add_executable (clidoc_tokenizer_for_argv_test tokenizer_for_argv_test.cc)
 target_link_libraries (
   clidoc_tokenizer_for_argv_test

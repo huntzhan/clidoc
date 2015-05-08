@@ -29,7 +29,7 @@
      * We will address this in a future release of flex, or omit the C++ scanner
      * altogether.
      */
-    #define yyFlexLexer yyFlexLexer
+    #define yyFlexLexer docFlexLexer
 /* %endif */
 
 /* %if-c-only */
@@ -344,9 +344,9 @@ struct yy_buffer_state
 /* %endif */
 /* %endif */
 
-void *yyalloc (yy_size_t  );
-void *yyrealloc (void *,yy_size_t  );
-void yyfree (void *  );
+void *docalloc (yy_size_t  );
+void *docrealloc (void *,yy_size_t  );
+void docfree (void *  );
 
 #define yy_new_buffer yy_create_buffer
 
@@ -630,9 +630,9 @@ static yyconst flex_int16_t yy_chk[509] =
 
 static yyconst flex_int16_t yy_rule_linenum[22] =
     {   0,
-       54,   55,   56,   57,   58,   59,   60,   61,   62,   63,
-       64,   65,   67,   68,   69,   71,   72,   73,   74,   75,
-       76
+       55,   56,   57,   58,   59,   60,   61,   62,   63,   64,
+       65,   66,   68,   69,   70,   72,   73,   74,   75,   76,
+       77
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -844,7 +844,7 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 53 "scanner_for_doc.lex"
+#line 54 "scanner_for_doc.lex"
 
 #line 850 "generated_scanner_for_doc.cc"
 
@@ -923,116 +923,116 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 54 "scanner_for_doc.lex"
+#line 55 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_L_PARENTHESIS();
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 55 "scanner_for_doc.lex"
+#line 56 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_R_PARENTHESIS();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 56 "scanner_for_doc.lex"
+#line 57 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_L_BRACKET();
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 57 "scanner_for_doc.lex"
+#line 58 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_R_BRACKET();
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 58 "scanner_for_doc.lex"
+#line 59 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_EXCLUSIVE_OR();
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 59 "scanner_for_doc.lex"
+#line 60 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_ELLIPSES();
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 60 "scanner_for_doc.lex"
+#line 61 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_USAGE_COLON();
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 61 "scanner_for_doc.lex"
+#line 62 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_OPTIONS_COLON();
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 62 "scanner_for_doc.lex"
+#line 63 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_DEFAULT_COLON();
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 63 "scanner_for_doc.lex"
+#line 64 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_OPTIONS();
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 64 "scanner_for_doc.lex"
+#line 65 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_UTILITY_DELIMITER();
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 65 "scanner_for_doc.lex"
+#line 66 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_DESC_DELIMITER();
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 67 "scanner_for_doc.lex"
+#line 68 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_DOUBLE_HYPHEN();
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 68 "scanner_for_doc.lex"
+#line 69 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_K_EQUAL_SIGN();
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 69 "scanner_for_doc.lex"
+#line 70 "scanner_for_doc.lex"
 { /* empty */ }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 71 "scanner_for_doc.lex"
+#line 72 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_POSIX_OPTION(YYText());
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 72 "scanner_for_doc.lex"
+#line 73 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_GROUPED_OPTIONS(YYText());
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 73 "scanner_for_doc.lex"
+#line 74 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_GNU_OPTION(YYText());
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 74 "scanner_for_doc.lex"
+#line 75 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_ARGUMENT(YYText());
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 75 "scanner_for_doc.lex"
+#line 76 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_DEFAULT_VALUE(YYText());
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 76 "scanner_for_doc.lex"
+#line 77 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_COMMAND(YYText());
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 78 "scanner_for_doc.lex"
+#line 79 "scanner_for_doc.lex"
 return clidoc::BisonGeneratedParser::make_END();
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 80 "scanner_for_doc.lex"
+#line 81 "scanner_for_doc.lex"
 ECHO;
 	YY_BREAK
 #line 1039 "generated_scanner_for_doc.cc"
@@ -1208,9 +1208,9 @@ yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout )
 yyFlexLexer::~yyFlexLexer()
 {
 	delete [] yy_state_buf;
-	yyfree(yy_start_stack  );
+	docfree(yy_start_stack  );
 	yy_delete_buffer( YY_CURRENT_BUFFER );
-	yyfree(yy_buffer_stack  );
+	docfree(yy_buffer_stack  );
 }
 
 /* The contents of this function are C++ specific, so the () macro is not used.
@@ -1345,7 +1345,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					yyrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
+					docrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
 				}
 			else
 				/* Can't grow it, we don't own it. */
@@ -1394,7 +1394,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	if ((yy_size_t) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
 		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) docrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 	}
@@ -1685,7 +1685,7 @@ int yyFlexLexer::yy_get_next_buffer()
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) yyalloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) docalloc(sizeof( struct yy_buffer_state )  );
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
@@ -1694,7 +1694,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) yyalloc(b->yy_buf_size + 2  );
+	b->yy_ch_buf = (char *) docalloc(b->yy_buf_size + 2  );
 	if ( ! b->yy_ch_buf )
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
@@ -1723,9 +1723,9 @@ int yyFlexLexer::yy_get_next_buffer()
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		yyfree((void *) b->yy_ch_buf  );
+		docfree((void *) b->yy_ch_buf  );
 
-	yyfree((void *) b  );
+	docfree((void *) b  );
 }
 
 /* Initializes or reinitializes a buffer.
@@ -1877,7 +1877,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		 * immediate realloc on the next call.
          */
 		num_to_alloc = 1;
-		(yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)docalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
@@ -1896,7 +1896,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		int grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = (yy_buffer_stack_max) + grow_size;
-		(yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)docrealloc
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
@@ -1933,10 +1933,10 @@ void yyFlexLexer::yyensure_buffer_stack(void)
 		new_size = (yy_start_stack_depth) * sizeof( int );
 
 		if ( ! (yy_start_stack) )
-			(yy_start_stack) = (int *) yyalloc(new_size  );
+			(yy_start_stack) = (int *) docalloc(new_size  );
 
 		else
-			(yy_start_stack) = (int *) yyrealloc((void *) (yy_start_stack),new_size  );
+			(yy_start_stack) = (int *) docrealloc((void *) (yy_start_stack),new_size  );
 
 		if ( ! (yy_start_stack) )
 			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
@@ -2045,12 +2045,12 @@ static int yy_flex_strlen (yyconst char * s )
 }
 #endif
 
-void *yyalloc (yy_size_t  size )
+void *docalloc (yy_size_t  size )
 {
 	return (void *) malloc( size );
 }
 
-void *yyrealloc  (void * ptr, yy_size_t  size )
+void *docrealloc  (void * ptr, yy_size_t  size )
 {
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
@@ -2062,9 +2062,9 @@ void *yyrealloc  (void * ptr, yy_size_t  size )
 	return (void *) realloc( (char *) ptr, size );
 }
 
-void yyfree (void * ptr )
+void docfree (void * ptr )
 {
-	free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
+	free( (char *) ptr );	/* see docrealloc() for (char *) cast */
 }
 
 /* %if-tables-serialization definitions */
@@ -2074,7 +2074,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 80 "scanner_for_doc.lex"
+#line 81 "scanner_for_doc.lex"
 
 
 // Bug fix.

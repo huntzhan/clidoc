@@ -1,4 +1,7 @@
 
+#include "clidoc/ast/generated_scanner.h"
+
+#define FlexGeneratedScannerClass FlexGeneratedScanner
 #include "shared/utils-inl.h"
 
 TEST(tokenizer_for_doc, token_type) {

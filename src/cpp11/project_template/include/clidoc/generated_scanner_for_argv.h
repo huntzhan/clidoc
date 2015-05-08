@@ -10,7 +10,7 @@
 // the variable `yyFlexLexer`. Following macro could this behavior.
 #ifndef __FLEX_LEXER_H
 #undef yyFlexLexer
-#define yyFlexLexer docFlexLexer
+#define yyFlexLexer argvFlexLexer
 #include "FlexLexer.h"
 #endif
 
@@ -18,13 +18,13 @@
 
 namespace clidoc {
 
-class FlexGeneratedScanner : public yyFlexLexer {
+class FlexGeneratedScannerForArgv : public yyFlexLexer {
  public:
-  FlexGeneratedScanner(std::istream *arg_yyin, std::ostream *arg_yyout);
+  FlexGeneratedScannerForArgv(std::istream *arg_yyin, std::ostream *arg_yyout);
   BisonGeneratedParser::symbol_type lex();
 };
 
-inline FlexGeneratedScanner::FlexGeneratedScanner(
+inline FlexGeneratedScannerForArgv::FlexGeneratedScannerForArgv(
     std::istream *arg_yyin, std::ostream *arg_yyout)
     : yyFlexLexer(arg_yyin, arg_yyout) { /* empty */ }
 

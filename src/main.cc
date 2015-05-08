@@ -1,4 +1,3 @@
-
 #define STRINGIFY(x) TO_STRING(x)
 #define TO_STRING(x) #x
 
@@ -10,9 +9,11 @@
 #include <streambuf>
 #include <string>
 
+#include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/cpp11/code_gen_logic.h"
 
+using std::cout;
 using std::cerr;
 using std::endl;
 using std::ifstream;
@@ -27,13 +28,6 @@ using std::ostringstream;
 const string kBinaryDirPath =
     string(STRINGIFY(CMAKE_BINARY_DIR)).back() == '/'?
     STRINGIFY(CMAKE_BINARY_DIR) : STRINGIFY(CMAKE_BINARY_DIR) "/";
-// for argument processing.
-const int kArgvSize = 4;
-enum ArgvIndex {
-  MODE = 1,
-  DOC_PATH,
-  OUTPUT_HINT,
-};
 
 void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
   // load user defined doc.
@@ -106,12 +100,24 @@ MODE_FUNCTION_MAPPING = {
   {"cpp11_cmake_project", GenerateCpp11CMakeProject},
 };
 
-int main(int argc, char **argv) {
-  if (argc != kArgvSize) {
-    cerr << "Error arguments." << endl;
-    return -1;
+void ListMode() {
+  for (const auto &map_pair : MODE_FUNCTION_MAPPING) {
+    cout << map_pair.first << endl;
   }
-  string mode(argv[MODE]);
+}
+
+int main(int argc, char **argv) {
+  clidoc::ParseArguments(argc, argv);
+
+  if (clidoc::boolean_outcome["--list-mode"]) {
+    ListMode();
+    return 0;
+  }
+
+  auto mode        = clidoc::string_outcome["--mode"];
+  auto doc_name    = clidoc::string_outcome["<doc_name>"];
+  auto output_hint = clidoc::string_outcome["<output_hint>"];
+
   auto function = MODE_FUNCTION_MAPPING.at(mode);
-  function(argv[DOC_PATH], argv[OUTPUT_HINT]);
+  function(doc_name, output_hint);
 }

@@ -1,0 +1,9 @@
+Usage:
+  clidoc_main (--mode|-m) <mode> <doc_name> <output_hint>
+  clidoc_main --list-mode
+
+Options:
+  --mode=<mode>, -m <mode>  # Set mode of code gen.
+  # <doc_name>                The filename of user defined doc.
+  # <output_hint>             A string to guide code gen.
+  --list-mode               # List avaliable modes.

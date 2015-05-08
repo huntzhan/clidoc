@@ -5,17 +5,22 @@ add_subdirectory (cpp11)
 file (COPY ${clidoc_SOURCE_DIR}/include DESTINATION files)
 file (COPY ${clidoc_SOURCE_DIR}/src DESTINATION files)
 
+set (CLIDOC_CPP11_PREFIX "main_doc_")
+add_subdirectory (${clidoc_SOURCE_DIR}/lib/main_doc main_doc)
+unset (CLIDOC_CPP11_PREFIX)
 
 add_executable (
   clidoc_main main.cc
 )
 set_target_properties (
   clidoc_main
-  PROPERTIES COMPILE_FLAGS "-DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}"
+  PROPERTIES COMPILE_FLAGS "-DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR} \
+                            -I ${clidoc_SOURCE_DIR}/lib/main_doc/include"
 )
 target_link_libraries (
   clidoc_main
   clidoc_ast_build clidoc_code_gen_logic
+  main_doc_cpp11_codegen
 )
 
 
@@ -27,7 +32,7 @@ function (clidoc_cpp11_handler user_defined_program doc_file_path)
   # cpp11 code gen.
   add_custom_command (
     OUTPUT ${clidoc_cpp11_file_name}
-    COMMAND clidoc_main ARGS "cpp11_non_project" ${doc_file_path} ${clidoc_cpp11_file_name}
+    COMMAND clidoc_main ARGS "-m" "cpp11_non_project" ${doc_file_path} ${clidoc_cpp11_file_name}
     DEPENDS ${doc_file_path}
   )
 

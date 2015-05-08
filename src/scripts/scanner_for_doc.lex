@@ -11,6 +11,7 @@
 %option c++
 %option noyywrap nounput batch debug noinput
 %option outfile="generated_scanner_for_doc.cc"
+%option prefix="doc"
 
 DIGIT                [0-9]
 LOWERCASE            [a-z]

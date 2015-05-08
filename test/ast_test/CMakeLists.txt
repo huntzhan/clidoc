@@ -20,9 +20,9 @@ add_executable (clidoc_smart_ptr_test smart_ptr_test.cc)
 target_link_libraries (clidoc_smart_ptr_test clidoc_smart_ptr_interface)
 
 add_executable (clidoc_tokenizer_for_doc_test tokenizer_for_doc_test.cc)
-target_link_libraries (
-  clidoc_tokenizer_for_doc_test
-  ${CLIDOC_CPP11_PREFIX}tokenizer clidoc_generated_scanner_for_doc)
+add_library (tokenizer_for_doc tokenizer_for_doc.cc)
+target_link_libraries (tokenizer_for_doc clidoc_generated_scanner_for_doc)
+target_link_libraries (clidoc_tokenizer_for_doc_test tokenizer_for_doc)
 
 add_gtest (clidoc_ast_build_test)
 add_gtest (clidoc_ast_nodes_test)

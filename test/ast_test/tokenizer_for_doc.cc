@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "clidoc/ast/ast_node_interface.h"
-#include "clidoc/generated_scanner_for_argv.h"
+#include "clidoc/ast/generated_scanner.h"
 #include "clidoc/tokenizer.h"
 
 using std::string;
@@ -62,10 +62,10 @@ vector<Token> FromString(const string &text) {
   // TODO(huntzhan): handle invalid input.
   istringstream input_stream(text);
   ostringstream null_ostream;
-  // Since `FlexGeneratedScannerForArgv` accepts istream as argument,
+  // Since `FlexGeneratedScanner` accepts istream as argument,
   // lexer->lex() would always return a token with TypeID::END when finished
   // processing `text`.
-  FlexGeneratedScannerForArgv lexer(&input_stream, &null_ostream);
+  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
 
   vector<Token> tokens;
   while (true) {

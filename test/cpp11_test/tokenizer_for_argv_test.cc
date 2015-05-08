@@ -1,4 +1,7 @@
 
+#include "clidoc/generated_scanner_for_argv.h"
+
+#define FlexGeneratedScannerClass FlexGeneratedScannerForArgv
 #include "shared/utils-inl.h"
 
 TEST(tokenizer_for_argv, token_type) {

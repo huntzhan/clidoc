@@ -7,7 +7,6 @@
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_nodes.h"
-#include "clidoc/ast/generated_scanner.h"
 #include "clidoc/tokenizer.h"
 
 using namespace clidoc;
@@ -53,7 +52,7 @@ void CheckRawTokenTypes(const string &text,
                         const vector<Type> types) {
   ostringstream null_ostream;
   istringstream input_stream(text);
-  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
+  FlexGeneratedScannerClass lexer(&input_stream, &null_ostream);
   size_t index = 0;
   while (true) {
     auto item = lexer.lex();
@@ -72,7 +71,7 @@ void CheckRawTokenValues(const string &text,
                          const vector<string> values) {
   ostringstream null_ostream;
   istringstream input_stream(text);
-  FlexGeneratedScanner lexer(&input_stream, &null_ostream);
+  FlexGeneratedScannerClass lexer(&input_stream, &null_ostream);
   size_t index = 0;
   while (true) {
     auto item = lexer.lex();
