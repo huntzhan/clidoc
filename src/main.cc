@@ -77,9 +77,22 @@ void GenerateCpp11CMakeProject(
   ExecuteSystemCommand(&ostrm);
 
   // 2. copy serveral source files of `ast`.
-  ostrm << "cp -r "
-        << kBinaryDirPath << "src/files/include/clidoc/ast "
-        << output_dir_name << "include/clidoc";
+  ostrm << "mkdir "
+        << output_dir_name << "include/clidoc/ast";
+  ExecuteSystemCommand(&ostrm);
+
+  ostrm << "cp "
+        // ast_node_interface.h
+        << kBinaryDirPath
+        << "src/files/include/clidoc/ast/ast_node_interface.h "
+        // ast_nodes.h
+        << kBinaryDirPath
+        << "src/files/include/clidoc/ast/ast_nodes.h "
+        // smart_ptr_interface.h
+        << kBinaryDirPath
+        << "src/files/include/clidoc/ast/smart_ptr_interface.h "
+        // dst.
+        << output_dir_name << "include/clidoc/ast";
   ExecuteSystemCommand(&ostrm);
 
   ostrm << "cp "

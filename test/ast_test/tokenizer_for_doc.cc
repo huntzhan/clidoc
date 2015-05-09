@@ -5,7 +5,7 @@
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/generated_scanner.h"
-#include "clidoc/tokenizer.h"
+#include "shared/tokenizer.h"
 
 using std::string;
 using std::vector;

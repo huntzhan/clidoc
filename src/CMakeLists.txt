@@ -6,7 +6,7 @@ file (COPY ${clidoc_SOURCE_DIR}/include DESTINATION files)
 file (COPY ${clidoc_SOURCE_DIR}/src DESTINATION files)
 
 set (CLIDOC_CPP11_PREFIX "main_doc_")
-add_subdirectory (${clidoc_SOURCE_DIR}/lib/main_doc main_doc)
+add_subdirectory (${clidoc_SOURCE_DIR}/lib/main_doc clidoc_main_doc)
 unset (CLIDOC_CPP11_PREFIX)
 
 add_executable (
