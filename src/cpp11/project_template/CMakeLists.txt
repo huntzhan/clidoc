@@ -1,17 +1,14 @@
 cmake_minimum_required (VERSION 2.8)
 project (clidoc-cpp11 CXX)
 
+# settings related to C++ compilter#.
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -std=c++11")
+
 # define prefix of target names, default to "clidoc_".
 if (NOT DEFINED CLIDOC_CPP11_PREFIX)
   set (CLIDOC_CPP11_PREFIX "clidoc_")
 endif()
 
-
-# settings related to C++ compilter#.
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -std=c++11")
-
-# make sure the compiler find the right version of FlexLexer.h
-include_directories (${clidoc-cpp11_SOURCE_DIR}/lib/flex/include)
 # include headers with pattern "clidoc/*.h"
 include_directories (include)
 # include implementations with pattern "src/*.cc"
