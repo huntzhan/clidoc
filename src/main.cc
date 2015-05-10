@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 #include <sstream>
 #include <streambuf>
 #include <string>
@@ -16,10 +17,12 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::exit;
 using std::ifstream;
 using std::istreambuf_iterator;
 using std::map;
 using std::ofstream;
+using std::set;
 using std::string;
 using std::system;
 using std::ostringstream;
@@ -32,6 +35,10 @@ const string kBinaryDirPath =
 void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
   // load user defined doc.
   ifstream fin(doc_path);
+  if (!fin.is_open()) {
+    cout << "Invalid Doc Path." << endl;
+    exit(0);
+  }
   const string doc(
       (istreambuf_iterator<char>(fin)),
       istreambuf_iterator<char>());
@@ -119,17 +126,66 @@ void ListMode() {
   }
 }
 
+void Debug(const string &doc_path) {
+  auto PrintSetOfToken = [](
+      const string &section_name,
+      const set<clidoc::Token> &token_set) {
+    cout << "[" << section_name << "]" << endl;
+    if (token_set.empty()) {
+      cout << "None" << endl;
+    }
+    for (const auto &token : token_set) {
+      cout << token.ToString() << endl;
+    }
+    cout << endl;
+  };
+
+  clidoc::CodeGenInfo info;
+  PrepareForCpp11(doc_path, &info);
+
+  cout << "[AST]" << endl;
+  cout << info.doc_node_->ToString(0) << endl;
+
+  PrintSetOfToken("Bound Options", info.bound_options_);
+  PrintSetOfToken("Unbound Options", info.unbound_options_);
+  PrintSetOfToken("Unbound Arguments", info.arguments_);
+  PrintSetOfToken("OOM Bound Options", info.oom_bound_options_);
+  PrintSetOfToken("OOM Unbound Arguments", info.oom_arguments_);
+  PrintSetOfToken("Commands", info.commands_);
+
+  cout << "[Default Value]" << endl;
+  if (info.default_values_.empty()) {
+    cout << "None" << endl;
+  }
+  for (const auto &map_pair : info.default_values_) {
+    cout << map_pair.first.ToString()
+         << ": \"" << map_pair.second << "\"" << endl;
+  }
+  cout << endl;
+
+  cout << "[Option To Representative Option Mapping]" << endl;
+  for (const auto &map_pair
+       : info.option_recorder_.option_to_representative_option_) {
+    cout << map_pair.first.ToString()
+         << " --> " << map_pair.second.ToString() << endl;
+  }
+}
+
 int main(int argc, char **argv) {
   clidoc::ParseArguments(argc, argv);
+
+  auto mode        = clidoc::string_outcome["--mode"];
+  auto doc_name    = clidoc::string_outcome["<doc_name>"];
+  auto output_hint = clidoc::string_outcome["<output_hint>"];
 
   if (clidoc::boolean_outcome["--list-mode"]) {
     ListMode();
     return 0;
   }
-
-  auto mode        = clidoc::string_outcome["--mode"];
-  auto doc_name    = clidoc::string_outcome["<doc_name>"];
-  auto output_hint = clidoc::string_outcome["<output_hint>"];
+  if (clidoc::boolean_outcome["--debug"]) {
+    Debug(doc_name);
+    return 0;
+  }
 
   auto function = MODE_FUNCTION_MAPPING.at(mode);
   function(doc_name, output_hint);
