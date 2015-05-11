@@ -64,7 +64,7 @@ void GenerateCpp11CMakeProject(
     // 1. run command.
     string command = ostrm_ptr->str();
     // ignore return value of `system` explicitly.
-    (void)system(command.c_str());
+    if (system(command.c_str())) { /* empty */ }
     // 2. reset `ostrm`.
     ostrm_ptr->str("");
     ostrm_ptr->clear();
