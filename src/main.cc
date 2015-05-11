@@ -63,7 +63,8 @@ void GenerateCpp11CMakeProject(
   auto ExecuteSystemCommand = [](ostringstream *ostrm_ptr) {
     // 1. run command.
     string command = ostrm_ptr->str();
-    system(command.c_str());
+    // ignore return value of `system` explicitly.
+    (void)system(command.c_str());
     // 2. reset `ostrm`.
     ostrm_ptr->str("");
     ostrm_ptr->clear();
