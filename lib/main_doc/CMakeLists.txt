@@ -14,23 +14,33 @@ include_directories (include)
 # include implementations with pattern "src/*.cc"
 include_directories (${clidoc-cpp11_SOURCE_DIR})
 
-# prepare libraries.
+# compile invariant part of the project.
+add_library (${CLIDOC_CPP11_PREFIX}argv_processor src/argv_processor.cc)
+add_library (${CLIDOC_CPP11_PREFIX}match_logic    src/match_logic.cc)
+add_library (${CLIDOC_CPP11_PREFIX}cpp11          src/cpp11.cc)
+
+target_link_libraries (
+  ${CLIDOC_CPP11_PREFIX}cpp11
+  ${CLIDOC_CPP11_PREFIX}argv_processor ${CLIDOC_CPP11_PREFIX}match_logic
+)
+
+# compile codegen related file.
 set (
   SMART_PTR_INTERFACE_CC_PATH
   "${clidoc-cpp11_SOURCE_DIR}/src/smart_ptr_interface.cc"
 )
-if (EXISTS ${SMART_PTR_INTERFACE_CC_PATH})
+set (
+  CODEGEN_CC_PATH
+  "${clidoc-cpp11_SOURCE_DIR}/src/codegen.cc"
+)
+
+if (EXISTS ${CODEGEN_CC_PATH} AND EXISTS ${SMART_PTR_INTERFACE_CC_PATH})
   add_library (${CLIDOC_CPP11_PREFIX}smart_ptr_interface ${SMART_PTR_INTERFACE_CC_PATH})
-endif()
-
-# compile libraries.
-add_subdirectory (src)
-
-# compile codegen source file.
-if (EXISTS "${clidoc-cpp11_SOURCE_DIR}/src/codegen.cc")
-  add_library (${CLIDOC_CPP11_PREFIX}cpp11_codegen src/codegen.cc)
+  add_library (${CLIDOC_CPP11_PREFIX}codegen             ${CODEGEN_CC_PATH})
   target_link_libraries (
-    ${CLIDOC_CPP11_PREFIX}cpp11_codegen
-    ${CLIDOC_CPP11_PREFIX}cpp11 ${CLIDOC_CPP11_PREFIX}smart_ptr_interface
+    ${CLIDOC_CPP11_PREFIX}cpp11
+    ${CLIDOC_CPP11_PREFIX}codegen ${CLIDOC_CPP11_PREFIX}smart_ptr_interface
   )
+else()
+  message("File not found!")
 endif()

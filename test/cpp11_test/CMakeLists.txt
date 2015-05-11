@@ -1,9 +1,5 @@
 # build libraries for testing.
-set (CLIDOC_CPP11_PREFIX "for_test_")
-add_subdirectory (
-  ${clidoc_SOURCE_DIR}/src/cpp11/project_template/src
-  project_template
-)
+set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
 
 add_executable (clidoc_cpp_code_gen_test cpp_code_gen_test.cc)
 target_link_libraries (
