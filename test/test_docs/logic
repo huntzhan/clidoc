@@ -1,0 +1,7 @@
+Usage:
+  utility_name -a -b -c
+  utility_name -efg
+  utility_name [-h]
+  utility_name -i|-j
+  utility_name (-k (-l -m) -n)
+  utility_name [-o [-p -q] -r]

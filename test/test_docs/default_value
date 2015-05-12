@@ -1,0 +1,7 @@
+Usage:
+  utility_name -aARG1
+  utility_name <arg2>
+
+Options:
+  -a ARG1 [default: "42"]
+  <arg2> [default: "43"]

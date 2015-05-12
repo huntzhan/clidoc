@@ -9,8 +9,11 @@ Usage:
   utility_name --long-2 <g2>
   utility_name --long-3 <g3>...
 
+  utility_name -f|--long-4
+
 Options:
   -a <p1>
 	-b P2
   -e P5
   --long-2=<g2>
+	-f,--long-4
