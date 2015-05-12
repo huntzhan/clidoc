@@ -6,12 +6,15 @@ project (clidoc CXX)
 # settings related to C++ compilter#.
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -O2 -std=c++11")
 
-set (
-  CLIDOC_CPP11_INCLUDE_PATHS
-  "${clidoc_SOURCE_DIR}/include"
-  "${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/"
-  PARENT_SCOPE
-)
+get_directory_property (has_parent PARENT_DIRECTORY)
+if (has_parent)
+  set (
+    CLIDOC_CPP11_INCLUDE_PATHS
+    "${clidoc_SOURCE_DIR}/include"
+    "${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/"
+    PARENT_SCOPE
+  )
+endif()
 
 
 # setup googletest
