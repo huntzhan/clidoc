@@ -12,7 +12,9 @@ add_library (${CLIDOC_CPP11_PREFIX}cpp11          ${PATH_PREFIX}cpp11.cc)
 
 target_link_libraries (
   ${CLIDOC_CPP11_PREFIX}cpp11
-  ${CLIDOC_CPP11_PREFIX}argv_processor ${CLIDOC_CPP11_PREFIX}match_logic
+  ${CLIDOC_CPP11_PREFIX}argv_processor
+  ${CLIDOC_CPP11_PREFIX}match_logic
+  clidoc_smart_ptr_interface
 )
 
 unset (PATH_PREFIX)

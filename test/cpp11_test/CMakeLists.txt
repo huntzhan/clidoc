@@ -1,4 +1,3 @@
-# build libraries for testing.
 set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
 
 add_executable (clidoc_cpp_code_gen_test cpp_code_gen_test.cc)
@@ -15,3 +14,15 @@ add_gtest (clidoc_argv_processor_test)
 
 add_executable (clidoc_example program.cc)
 clidoc_cpp11_handler (clidoc_example ${PROJECT_SOURCE_DIR}/test/cpp11_test/test_doc)
+
+
+# test docs.
+include_directories (${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/)
+add_library (simple_option_codegen simple_option_codegen.cc)
+
+add_executable (clidoc_simple_option_test test_simple_option.cc)
+target_link_libraries (
+  clidoc_simple_option_test
+  clidoc_project_used_cpp11 simple_option_codegen
+)
+add_gtest (clidoc_simple_option_test)
