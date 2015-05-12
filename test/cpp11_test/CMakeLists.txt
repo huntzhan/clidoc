@@ -18,11 +18,10 @@ clidoc_cpp11_handler (clidoc_example ${PROJECT_SOURCE_DIR}/test/cpp11_test/test_
 
 # test docs.
 include_directories (${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/)
-add_library (simple_option_codegen simple_option_codegen.cc)
 
 add_executable (clidoc_simple_option_test test_simple_option.cc)
-target_link_libraries (
+clidoc_cpp11_handler (
   clidoc_simple_option_test
-  clidoc_project_used_cpp11 simple_option_codegen
+  ${clidoc_SOURCE_DIR}/test/test_docs/simple_option
 )
 add_gtest (clidoc_simple_option_test)
