@@ -36,3 +36,4 @@ endfunction(compile_codegen_test)
 
 compile_codegen_test (simple_option)
 compile_codegen_test (option_binding)
+compile_codegen_test (command)

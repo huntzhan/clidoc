@@ -48,7 +48,8 @@ TEST(option_binding, option_c_p3) {
   EXPECT_TRUE(
       clidoc::ParseArguments(3, argv_1, kTestMode));
   KeyChecker();
-  EXPECT_TRUE(clidoc::boolean_outcome["-c"]);
+  EXPECT_TRUE(
+      clidoc::boolean_outcome["-c"]);
   EXPECT_EQ("value", clidoc::string_outcome["<p3>"]);
 }
 
