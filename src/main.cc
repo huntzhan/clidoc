@@ -13,6 +13,7 @@
 #include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/cpp11/code_gen_logic.h"
+#include "clidoc/python/codegen_logic.h"
 
 using std::cout;
 using std::cerr;
@@ -115,10 +116,23 @@ void GenerateCpp11CMakeProject(
   fout.close();
 }
 
+
+void GeneratePythonCode(
+    const string &doc_path,
+    const string &output_file_name) {
+  clidoc::CodeGenInfo info;
+  PrepareForCpp11(doc_path, &info);
+  // code gen.
+  ofstream fout(output_file_name);
+  fout << clidoc::python::GenerateSource(info);
+  fout.close();
+}
+
 const map<string, void (*)(const string&, const string&)>
 MODE_FUNCTION_MAPPING = {
   {"cpp11_non_project", GenerateCpp11SourceCode},
   {"cpp11_cmake_project", GenerateCpp11CMakeProject},
+  {"python", GeneratePythonCode},
 };
 
 void ListMode() {

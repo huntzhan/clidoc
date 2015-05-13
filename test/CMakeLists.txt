@@ -6,3 +6,4 @@ include_directories (${clidoc_SOURCE_DIR}/src/cpp11/project_template)
 
 add_subdirectory (ast_test)
 add_subdirectory (cpp11_test)
+add_subdirectory (python_test)
