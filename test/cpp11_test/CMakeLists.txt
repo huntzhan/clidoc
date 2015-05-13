@@ -1,9 +1,9 @@
 set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
 
-add_executable (clidoc_cpp_code_gen_test cpp_code_gen_test.cc)
+add_executable (clidoc_cpp11_codegen_test codegen_test.cc)
 target_link_libraries (
-  clidoc_cpp_code_gen_test
-  clidoc_code_gen_logic clidoc_ast_build ${CLIDOC_CPP11_PREFIX}match_logic
+  clidoc_cpp11_codegen_test
+  clidoc_codegen_logic clidoc_ast_build ${CLIDOC_CPP11_PREFIX}match_logic
 )
 
 add_executable (clidoc_argv_processor_test argv_processor_test.cc)
@@ -12,7 +12,7 @@ target_link_libraries (
   ${CLIDOC_CPP11_PREFIX}argv_processor
 )
 
-add_gtest (clidoc_cpp_code_gen_test)
+add_gtest (clidoc_cpp11_codegen_test)
 add_gtest (clidoc_argv_processor_test)
 
 add_executable (clidoc_example program.cc)

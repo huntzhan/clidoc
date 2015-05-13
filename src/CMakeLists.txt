@@ -23,6 +23,6 @@ set_target_properties (
 )
 target_link_libraries (
   clidoc_main
-  clidoc_ast_build clidoc_code_gen_logic clidoc_python_codegen_logic
+  clidoc_ast_build clidoc_codegen_logic clidoc_python_codegen_logic
   main_doc_cpp11
 )

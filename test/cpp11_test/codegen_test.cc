@@ -5,11 +5,12 @@
 #include "gtest/gtest.h"
 #include "clidoc/ast/ast_visitor_helper.h"
 
-#include "clidoc/cpp11/code_gen_logic.h"
+#include "clidoc/cpp11/codegen_logic.h"
 #include "clidoc/info.h"
 #include "clidoc/match_logic.h"
 
 using namespace clidoc;
+using namespace clidoc::cpp11;
 using std::string;
 
 string example_doc =

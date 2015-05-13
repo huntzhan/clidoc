@@ -12,7 +12,7 @@
 
 #include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
-#include "clidoc/cpp11/code_gen_logic.h"
+#include "clidoc/cpp11/codegen_logic.h"
 #include "clidoc/python/codegen_logic.h"
 
 using std::cout;
@@ -54,7 +54,7 @@ void GenerateCpp11SourceCode(
   PrepareForCpp11(doc_path, &info);
   // code gen.
   ofstream fout(output_file_name);
-  fout << clidoc::GenerateSource(info);
+  fout << clidoc::cpp11::GenerateSource(info);
   fout.close();
 }
 
@@ -112,7 +112,7 @@ void GenerateCpp11CMakeProject(
   // 3. generate cpp11 source file with respect to doc.
   string filename = output_dir_name + "src/codegen.cc";
   ofstream fout(filename.c_str());
-  fout << clidoc::GenerateSource(info);
+  fout << clidoc::cpp11::GenerateSource(info);
   fout.close();
 }
 

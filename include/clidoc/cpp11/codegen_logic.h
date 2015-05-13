@@ -1,5 +1,5 @@
-#ifndef INCLUDE_CLIDOC_CPP11_CODE_GEN_LOGIC_H_
-#define INCLUDE_CLIDOC_CPP11_CODE_GEN_LOGIC_H_
+#ifndef INCLUDE_CLIDOC_CPP11_CODEGEN_LOGIC_H_
+#define INCLUDE_CLIDOC_CPP11_CODEGEN_LOGIC_H_
 
 #include <string>
 #include <vector>
@@ -13,6 +13,8 @@
 #include "clidoc/ast/ast_visitor_helper.h"
 
 namespace clidoc {
+
+namespace cpp11 {
 
 class ASTTextGenerator : public VisitorProcessLogic {
  public:
@@ -42,9 +44,13 @@ std::string GenerateInitializerList(
 
 std::string GenerateSource(const CodeGenInfo &code_gen_info);
 
+}  // namespace cpp11
+
 }  // namespace clidoc
 
 namespace clidoc {
+
+namespace cpp11 {
 
 template <TerminalType T>
 void ASTTextGenerator::ProcessNode(std::shared_ptr<Terminal<T>> node) {
@@ -88,6 +94,8 @@ inline std::string ASTTextGenerator::GetRootVariableName() const {
   return child_variable_name_;
 }
 
+}  // namespace cpp11
+
 }  // namespace clidoc
 
-#endif  // INCLUDE_CLIDOC_CPP11_CODE_GEN_LOGIC_H_
+#endif  // INCLUDE_CLIDOC_CPP11_CODEGEN_LOGIC_H_

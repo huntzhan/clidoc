@@ -6,7 +6,7 @@
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_visitor_helper.h"
-#include "clidoc/cpp11/code_gen_logic.h"
+#include "clidoc/cpp11/codegen_logic.h"
 
 using std::string;
 using std::set;
@@ -20,6 +20,8 @@ using std::endl;
       code_gen_info.data_member)        \
 
 namespace clidoc {
+
+namespace cpp11 {
 
 string GenerateSetOfToken(
     const std::string &variable,
@@ -107,5 +109,7 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
         << "}  // namespace clidoc";
   return ostrm.str();
 }
+
+}  // namespace cpp11
 
 }  // namespace clidoc

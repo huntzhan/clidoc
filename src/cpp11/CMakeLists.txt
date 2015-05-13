@@ -1,4 +1,4 @@
-add_library (clidoc_code_gen_logic code_gen_logic.cc)
+add_library (clidoc_codegen_logic codegen_logic.cc)
 
 # comile library for in-project cpp11 codegen.
 set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
