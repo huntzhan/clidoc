@@ -53,6 +53,11 @@ bool ParseArguments(const int &argc, const char *const *argv,
     return false;
   };
 
+  // clear outcomes.
+  boolean_outcome.clear();
+  string_outcome.clear();
+  string_list_outcome.clear();
+
   // tokenize input arguments.
   ArgvProcessor argv_processor;
   argv_processor.LoadArgv(argc, argv);
