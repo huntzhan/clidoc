@@ -19,3 +19,10 @@ TEST(simple_option, run) {
   std::set<std::string> expected = {"-a", "--long-1"};
   EXPECT_EQ(expected, ExtractKeys(clidoc::boolean_outcome));
 }
+
+TEST(simple_option, fail) {
+  const char *argv[] = {"utility_name", "fail"};
+  EXPECT_FALSE(
+      clidoc::ParseArguments(
+          2, argv, clidoc::SYSTEM_EXIT_OFF | clidoc::PRINT_DOC_OFF));
+}

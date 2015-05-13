@@ -1,9 +1,10 @@
 
-#include <map>
-#include <vector>
-#include <string>
-#include <iostream>
+#include <bitset>
 #include <cstdlib>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/cpp11.h"
@@ -11,6 +12,7 @@
 #include "clidoc/argv_processor.h"
 #include "clidoc/match_logic.h"
 
+using std::bitset;
 using std::string;
 using std::map;
 using std::vector;
@@ -33,7 +35,24 @@ void AssignOutcome(
   }
 }
 
-void ParseArguments(const int &argc, const char *const *argv) {
+bool ParseArguments(const int &argc, const char *const *argv,
+                    const FlagType &flags) {
+  const bitset<32> bit_flags = bitset<32>(~0ULL) & bitset<32>(~flags);
+  const bool system_exit_on =
+      bit_flags.test(static_cast<size_t>(Flag::SYSTEM_EXIT_OFF));
+  const bool print_doc_on =
+      bit_flags.test(static_cast<size_t>(Flag::PRINT_DOC_OFF));
+
+  auto RespondToError = [&]() -> bool {
+    if (print_doc_on) {
+      cout << cpp_code_gen_info.doc_text_ << endl;
+    }
+    if (system_exit_on) {
+      exit(0);
+    }
+    return false;
+  };
+
   // tokenize input arguments.
   ArgvProcessor argv_processor;
   argv_processor.LoadArgv(argc, argv);
@@ -41,8 +60,7 @@ void ParseArguments(const int &argc, const char *const *argv) {
       cpp_code_gen_info.option_to_representative_option_,
       cpp_code_gen_info.bound_options_);
   if (tokens.empty()) {
-    cout << cpp_code_gen_info.doc_text_ << endl;
-    exit(0);
+    return RespondToError();
   }
 
   // analyse input arguments.
@@ -55,9 +73,13 @@ void ParseArguments(const int &argc, const char *const *argv) {
     AssignOutcome(match_state_ptr->string_outcome_, &string_outcome);
     AssignOutcome(match_state_ptr->string_list_outcome_, &string_list_outcome);
   } else {
-    cout << cpp_code_gen_info.doc_text_ << endl;
-    exit(0);
+    return RespondToError();
   }
+  return true;
+}
+
+void ParseArguments(const int &argc, const char *const *argv) {
+  ParseArguments(argc, argv, 0ULL);
 }
 
 }  // namespace clidoc

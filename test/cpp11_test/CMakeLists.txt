@@ -19,9 +19,14 @@ clidoc_cpp11_handler (clidoc_example ${PROJECT_SOURCE_DIR}/test/cpp11_test/test_
 # test docs.
 include_directories (${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/)
 
-add_executable (clidoc_simple_option_test test_simple_option.cc)
-clidoc_cpp11_handler (
-  clidoc_simple_option_test
-  ${clidoc_SOURCE_DIR}/test/test_docs/simple_option
-)
-add_gtest (clidoc_simple_option_test)
+function (compile_codegen_test doc_name)
+  add_executable (clidoc_${doc_name}_test test_${doc_name}.cc)
+  clidoc_cpp11_handler (
+    clidoc_${doc_name}_test
+    ${clidoc_SOURCE_DIR}/test/test_docs/${doc_name}
+  )
+  add_gtest (clidoc_${doc_name}_test)
+endfunction(compile_codegen_test)
+
+compile_codegen_test (simple_option)
+
