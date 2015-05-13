@@ -1,6 +1,6 @@
 Usage:
-  utility_name -aARG1
-  utility_name <arg2>
+  utility_name flag_a [-aARG1]
+  utility_name flag_arg2 [<arg2>]
 
 Options:
   -a ARG1 [default: "42"]
