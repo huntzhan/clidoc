@@ -1,24 +1,21 @@
-#include <set>
-#include <string>
-
-#include "clidoc/cpp11.h"
 #include "gtest/gtest.h"
+#include "clidoc/cpp11.h"
+#include "cpp11_test/util-inl.h"
 
-const auto kTestMode = clidoc::SYSTEM_EXIT_OFF | clidoc::PRINT_DOC_OFF;
-
-template <typename Map>
-std::set<std::string> ExtractKeys(const Map &outcome) {
-  std::set<std::string> keys;
-  for (const auto &map_pair : outcome) {
-    keys.insert(map_pair.first);
-  }
-  return keys;
-}
+const set<string> kBooleanKeys = {
+  "-a",
+  "--long-1",
+};
+const set<string> kStringKeys = {};
+const set<string> kStringListKeys = {};
+auto KeyChecker = GenerateKeysOfOutcomeChecker(
+    kBooleanKeys, kStringKeys, kStringListKeys);
 
 TEST(simple_option, option_a) {
   const char *argv[] = {"utility_name", "-a"};
   EXPECT_TRUE(
       clidoc::ParseArguments(2, argv, kTestMode));
+  KeyChecker();
   EXPECT_TRUE(
       clidoc::boolean_outcome["-a"]);
 }
@@ -27,6 +24,7 @@ TEST(simple_option, option_long_1) {
   const char *argv[] = {"utility_name", "--long-1"};
   EXPECT_TRUE(
       clidoc::ParseArguments(2, argv, kTestMode));
+  KeyChecker();
   EXPECT_TRUE(
       clidoc::boolean_outcome["--long-1"]);
 }
