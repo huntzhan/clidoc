@@ -1,5 +1,4 @@
 
-#include <bitset>
 #include <cstdlib>
 #include <iostream>
 #include <map>
@@ -12,7 +11,6 @@
 #include "clidoc/argv_processor.h"
 #include "clidoc/match_logic.h"
 
-using std::bitset;
 using std::string;
 using std::map;
 using std::vector;
@@ -37,17 +35,14 @@ void AssignOutcome(
 
 bool ParseArguments(const int &argc, const char *const *argv,
                     const FlagType &flags) {
-  const bitset<32> bit_flags = bitset<32>(~0ULL) & bitset<32>(~flags);
-  const bool system_exit_on =
-      bit_flags.test(static_cast<size_t>(Flag::SYSTEM_EXIT_OFF));
-  const bool print_doc_on =
-      bit_flags.test(static_cast<size_t>(Flag::PRINT_DOC_OFF));
+  const bool system_exit_off = SYSTEM_EXIT_OFF & flags;
+  const bool print_doc_off   = PRINT_DOC_OFF & flags;
 
   auto RespondToError = [&]() -> bool {
-    if (print_doc_on) {
+    if (!print_doc_off) {
       cout << cpp_code_gen_info.doc_text_ << endl;
     }
-    if (system_exit_on) {
+    if (!system_exit_off) {
       exit(0);
     }
     return false;

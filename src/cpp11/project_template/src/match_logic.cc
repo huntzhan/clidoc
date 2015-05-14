@@ -368,7 +368,7 @@ void MatchStrategy::ProcessNode(LogicOneOrMore::SharedPtr node) {
     child_node->Accept(this);
     ++counter;
   } while (child_match_condition_);
-  child_match_condition_ = counter > 0 ? true : false;
+  child_match_condition_ = counter > 0;
 }
 
 void MatchStrategy::ProcessNode(PosixOption::SharedPtr node) {
