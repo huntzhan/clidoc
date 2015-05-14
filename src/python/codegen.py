@@ -5,6 +5,14 @@ from __future__ import (division, absolute_import, print_function,
 from collections import defaultdict
 from copy import deepcopy
 import re
+import sys
+
+
+__all__ = [
+    'SYSTEM_EXIT_OFF',
+    'PRINT_DOC_OFF',
+    'clidoc',
+]
 
 
 # represent outcome of input argument preprocessing.
@@ -81,7 +89,9 @@ class Info(object):
 
     @classmethod
     def get_token(cls, index):
-        return cls._tokens.get(index, None)
+        if index < len(cls._tokens):
+            return cls._tokens[index]
+        return None
 
     @classmethod
     def search_match_token_indices(cls, key):
@@ -130,7 +140,6 @@ class MatchState(object):
 
     def __init__(self, InfoCls):
         self._consumed_flags = [False] * len(InfoCls.get_tokens())
-        self._lower_bound = 0
 
         self._boolean_outcome = {}
         self._add_boolean_outcome(InfoCls.unbound_options)
@@ -159,13 +168,21 @@ class MatchState(object):
     def get_consumed_flag(self, index):
         return self._consumed_flags[index]
 
-    def get_first_unconsumed_index(self):
-        for index, flag in enumerate(self._consumed_flags[self._lower_bound:]):
+    def get_first_unconsumed_index(self, start=0):
+        for offset, flag in enumerate(self._consumed_flags[start:]):
             if not flag:
-                if index > self._lower_bound:
-                    self._lower_bound = index
-                return index
+                return start + offset
         return None
+
+    def all_match(self):
+        return all(self._consumed_flags)
+
+    def get_outcome(self):
+        outcome = {}
+        outcome.update(self._boolean_outcome)
+        outcome.update(self._string_outcome)
+        outcome.update(self._string_list_outcome)
+        return outcome
 
 
 class MatchStateManager(object):
@@ -174,6 +191,17 @@ class MatchStateManager(object):
     def init(cls, match_state):
         cls._match_state = match_state
         cls._state_stack = []
+
+    @classmethod
+    def all_match(cls):
+        return cls._match_state.all_match()
+
+    @classmethod
+    def get_outcome(cls):
+        outcome = {}
+        for token_key, value in cls._match_state.get_outcome().items():
+            outcome[token_key.value] = value
+        return outcome
 
     @classmethod
     def push_rollback_point(cls):
@@ -207,6 +235,9 @@ class MatchStateManager(object):
 
     @classmethod
     def try_to_generate_boolean_outcome(cls, key):
+        if not Info.is_boolean_key(key):
+            return False
+
         index = cls._prepare_unconsumed_index(key)
         if index is None:
             return False
@@ -218,40 +249,51 @@ class MatchStateManager(object):
     @classmethod
     def _try_to_generate_outcome_with_value(cls, key, store_key_value_pair):
 
-        def check_token(index):
-            if index is None:
-                return False, None
-            next_token = Info.get_token(index)
-            if next_token is None:
+        def access_token(index):
+            token = Info.get_token(index)
+            if token is None:
                 return False, None
             # 1. GENERAL_ELEMENT.
             # 2. not consumed.
-            flag = (next_token.type_id == Token.GENERAL_ELEMENT
-                    and not cls._match_state.get_consumed_flag[index])
-            value = next_token.value
+            flag = (token.type_id == Token.GENERAL_ELEMENT
+                    and not cls._match_state.get_consumed_flag(index))
+            value = token.value
             return flag, value
 
         if key.type_id == Token.ARGUMENT:
             # deal with `ARGUMENT`.
-            index = cls._match_state.get_first_unconsumed_index()
-            flag, value = check_token(index)
+            key_index = cls._match_state.get_first_unconsumed_index()
+            if key_index is None:
+                return False
+            flag, value = access_token(key_index)
             if flag:
-                cls._match_state.set_consumed_flag(index)
+                cls._match_state.set_consumed_flag(key_index)
                 store_key_value_pair(key, value)
                 return True
         else:
             # deal with other nodes.
-            index = cls._prepare_unconsumed_index(key)
-            flag, value = check_token(index + 1)
+            key_index = cls._prepare_unconsumed_index(key)
+            if key_index is None:
+                return False
+            # search the first unconsumed token begins with `key_index` + 1.
+            value_index = cls._match_state.get_first_unconsumed_index(
+                key_index + 1,
+            )
+            if value_index is None:
+                return False
+            flag, value = access_token(value_index)
             if flag:
-                cls._match_state.set_consumed_flag(index)
-                cls._match_state.set_consumed_flag(index + 1)
+                cls._match_state.set_consumed_flag(key_index)
+                cls._match_state.set_consumed_flag(value_index)
                 store_key_value_pair(key, value)
                 return True
         return False
 
     @classmethod
     def try_to_generate_string_outcome(cls, key):
+        if not Info.is_string_key(key):
+            return False
+
         return cls._try_to_generate_outcome_with_value(
             key,
             cls._match_state.add_string_outcome,
@@ -259,6 +301,9 @@ class MatchStateManager(object):
 
     @classmethod
     def try_to_generate_string_list_outcome(cls, key):
+        if not Info.is_string_list_key(key):
+            return False
+
         return cls._try_to_generate_outcome_with_value(
             key,
             cls._match_state.add_string_list_outcome,
@@ -368,7 +413,7 @@ class NonTerminal(object):
 class Doc(NonTerminal):
 
     def match(self):
-        self.get_forward_child().match()
+        return self.get_forward_child().match()
 
 
 class LogicAnd(NonTerminal):
@@ -592,3 +637,40 @@ class ArgvPreprocessor(object):
                 for value_after_double_dash in self._argv[index + 1:]:
                     self._add_general_element(value_after_double_dash)
                 break
+
+
+SYSTEM_EXIT_OFF = 1 << 0
+PRINT_DOC_OFF = 1 << 1
+
+
+def clidoc(argv, flags=0):
+    # flags.
+    system_exit_off = SYSTEM_EXIT_OFF & flags
+    print_doc_off = PRINT_DOC_OFF & flags
+
+    def respond_to_error():
+        if not print_doc_off:
+            print(Info.doc_text)
+        if not system_exit_off:
+            sys.exit(0)
+        return False
+
+    # preprocess input argument.
+    argv_prepprocessor = ArgvPreprocessor(
+        argv,
+        Info.option_to_representative_option,
+        Info.bound_options,
+    )
+    argv_prepprocessor.tokenize_argv()
+    if not argv_prepprocessor.tokens:
+        return respond_to_error()
+
+    # init match state.
+    Info.load_tokens(argv_prepprocessor.tokens)
+    MatchStateManager.init(MatchState(Info))
+    # token match.
+    all_match = Info.doc_node.match() and MatchStateManager.all_match()
+    if all_match:
+        return MatchStateManager.get_outcome()
+    else:
+        return respond_to_error()

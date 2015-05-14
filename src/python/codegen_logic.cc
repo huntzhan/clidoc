@@ -22,7 +22,6 @@ using std::ifstream;
 using std::map;
 using std::ostringstream;
 using std::string;
-using std::stringstream;
 using std::set;
 
 const string kPythonCodegenDirPath =
@@ -117,9 +116,10 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
   if (!codegen_py.is_open()) {
     throw "GenerateSource";
   }
-  stringstream buffer;
-  buffer << codegen_py.rdbuf();
-  ostrm << buffer.str() << endl;
+  ostrm << codegen_py.rdbuf() << endl << endl
+        << "#####################" << endl
+        << "#####  codegen  #####" << endl
+        << "#####################" << endl;
 
   OSTRM_PROPERTY(bound_options_);
   OSTRM_PROPERTY(unbound_options_);
