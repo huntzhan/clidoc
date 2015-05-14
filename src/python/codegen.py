@@ -11,8 +11,63 @@ import sys
 __all__ = [
     'SYSTEM_EXIT_OFF',
     'PRINT_DOC_OFF',
+    'GUIDELINE_8_OFF',
     'clidoc',
 ]
+
+
+SYSTEM_EXIT_OFF = 1 << 0
+PRINT_DOC_OFF = 1 << 1
+GUIDELINE_8_OFF = 1 << 2
+
+
+def clidoc(argv, flags=0):
+    # flags.
+    system_exit_off = SYSTEM_EXIT_OFF & flags
+    print_doc_off = PRINT_DOC_OFF & flags
+    guideline_8_off = GUIDELINE_8_OFF & flags
+
+    def respond_to_error():
+        if not print_doc_off:
+            print(Info.doc_text)
+        if not system_exit_off:
+            sys.exit(0)
+        return False
+
+    # preprocess input argument.
+    argv_prepprocessor = ArgvPreprocessor(
+        argv,
+        Info.option_to_representative_option,
+        Info.bound_options,
+    )
+    argv_prepprocessor.tokenize_argv()
+    if not argv_prepprocessor.tokens:
+        return respond_to_error()
+
+    # init match state.
+    Info.load_tokens(argv_prepprocessor.tokens)
+    MatchStateManager.init(MatchState(Info))
+    # token match.
+    all_match = Info.doc_node.match() and MatchStateManager.all_match()
+    if all_match:
+        outcome = MatchStateManager.get_outcome()
+        if not guideline_8_off:
+            split_comma_separated_oom_outcome(outcome)
+        return outcome
+    else:
+        return respond_to_error()
+
+
+def split_comma_separated_oom_outcome(outcome):
+    for key, value in outcome.items():
+        if not isinstance(value, list) or not value:
+            continue
+        # is non-empty string list outcome.
+        # try to split the last element.
+        text = value.pop()
+        value.extend(
+            filter(bool, text.split(',')),
+        )
 
 
 # represent outcome of input argument preprocessing.
@@ -637,40 +692,3 @@ class ArgvPreprocessor(object):
                 for value_after_double_dash in self._argv[index + 1:]:
                     self._add_general_element(value_after_double_dash)
                 break
-
-
-SYSTEM_EXIT_OFF = 1 << 0
-PRINT_DOC_OFF = 1 << 1
-
-
-def clidoc(argv, flags=0):
-    # flags.
-    system_exit_off = SYSTEM_EXIT_OFF & flags
-    print_doc_off = PRINT_DOC_OFF & flags
-
-    def respond_to_error():
-        if not print_doc_off:
-            print(Info.doc_text)
-        if not system_exit_off:
-            sys.exit(0)
-        return False
-
-    # preprocess input argument.
-    argv_prepprocessor = ArgvPreprocessor(
-        argv,
-        Info.option_to_representative_option,
-        Info.bound_options,
-    )
-    argv_prepprocessor.tokenize_argv()
-    if not argv_prepprocessor.tokens:
-        return respond_to_error()
-
-    # init match state.
-    Info.load_tokens(argv_prepprocessor.tokens)
-    MatchStateManager.init(MatchState(Info))
-    # token match.
-    all_match = Info.doc_node.match() and MatchStateManager.all_match()
-    if all_match:
-        return MatchStateManager.get_outcome()
-    else:
-        return respond_to_error()
