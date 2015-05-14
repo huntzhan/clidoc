@@ -1,4 +1,3 @@
-
 cmake_minimum_required (VERSION 2.8)
 project (clidoc CXX)
 
@@ -17,6 +16,11 @@ if (has_parent)
 endif()
 
 
+# setup boost.
+find_package(
+  Boost REQUIRED
+)
+
 # setup googletest
 add_subdirectory (lib/gtest-1.7.0)
 set (GTEST_LIBRARY gtest)
@@ -34,11 +38,10 @@ endfunction (add_gtest)
 
 
 # set include paths.
+include_directories (${Boost_INCLUDE_DIRS})
 include_directories (${GTEST_INCLUDE_DIRS})
 # make sure the compiler find the right version of FlexLexer.h
 include_directories (${clidoc_SOURCE_DIR}/lib/flex/include)
-include_directories (${clidoc_SOURCE_DIR}/lib/boost_1_57_0/include)
-
 # include headers with pattern "clidoc/*.h"
 include_directories (include)
 # include implementations with pattern "src/*.cc"
