@@ -1,14 +1,14 @@
 #ifndef SRC_CPP11_PROJECT_TEMPLATE_INCLUDE_CLIDOC_CPP11_H_
 #define SRC_CPP11_PROJECT_TEMPLATE_INCLUDE_CLIDOC_CPP11_H_
 
-#include <cstddef>
+#include <cstdint>
 #include <map>
 #include <vector>
 #include <string>
 
 namespace clidoc {
 
-using FlagType = unsigned long long;
+using FlagType = std::uint32_t;
 
 const FlagType SYSTEM_EXIT_OFF = 1 << 0;
 const FlagType PRINT_DOC_OFF   = 1 << 1;
