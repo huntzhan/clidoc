@@ -12,6 +12,7 @@ using FlagType = std::uint32_t;
 
 const FlagType SYSTEM_EXIT_OFF = 1 << 0;
 const FlagType PRINT_DOC_OFF   = 1 << 1;
+const FlagType GUIDELINE_8_OFF = 1 << 2;
 
 // store outcomes.
 extern std::map<std::string, bool> boolean_outcome;
