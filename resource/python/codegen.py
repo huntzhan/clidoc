@@ -536,7 +536,11 @@ class ArgvPreprocessor(object):
     # `bound_options`: a set of bound options.
     def __init__(self, argv, option_to_rep_option, bound_options):
         # ignore `argv[0]`.
-        self._argv = argv[1:]
+        self._argv = []
+        for arg in argv[1:]:
+            arg = arg.decode('utf-8') if hasattr(arg, 'decode') else arg
+            self._argv.append(arg)
+
         self._option_to_rep_option = option_to_rep_option
         self._bound_options = bound_options
         # preprocessed input arguments.
