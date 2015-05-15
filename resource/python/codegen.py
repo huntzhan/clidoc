@@ -635,15 +635,8 @@ class ArgvPreprocessor(object):
 
     def _process_double_dash_case(self, value):
         split_flag = False
-        equal_sign_index = 0
-        while True:
-            equal_sign_index = value.find('=', equal_sign_index)
-            if equal_sign_index in [-1, len(value) - 1]:
-                # 1. cannot found '='.
-                # 2. '=' is the last character.
-                break
-
-            # state: "=" is not the last character.
+        equal_sign_index = value.find('=')
+        if equal_sign_index not in [-1, len(value) - 1]:
             option = self._get_rep_option(
                 Token.GNU_OPTION,
                 value[:equal_sign_index],
@@ -653,9 +646,6 @@ class ArgvPreprocessor(object):
                 self.tokens.append(option)
                 self._add_general_element(value[equal_sign_index + 1:])
                 split_flag = True
-                break
-            # not a valid split, re-search "=" again.
-            equal_sign_index = equal_sign_index + 1
         if not split_flag:
             self._add_general_element(value)
         return False

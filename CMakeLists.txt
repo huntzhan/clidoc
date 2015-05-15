@@ -10,7 +10,7 @@ if (has_parent)
   set (
     CLIDOC_CPP11_INCLUDE_PATHS
     "${clidoc_SOURCE_DIR}/include"
-    "${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/"
+    "${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/"
     PARENT_SCOPE
   )
 endif()
