@@ -91,7 +91,7 @@ Options:
 TEST(ParserProxyTest, DemoOfPrintAST) {
   string input =
       "Usage:\n"
-      "  example --hello-world\n"
+      "  #example --hello-world\n"
       "  example --output-file=<filename>\n"
       "  example -n <names>...\n";
   CodeGenInfo info;

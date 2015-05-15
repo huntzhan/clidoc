@@ -9,10 +9,12 @@
 #include <sstream>
 #include <streambuf>
 #include <string>
+#include <unistd.h>
 
 #include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/cpp11/code_gen_logic.h"
+#include "completion/completion.h"
 
 using std::cout;
 using std::cerr;
@@ -115,6 +117,22 @@ void GenerateCpp11CMakeProject(
   fout.close();
 }
 
+
+void GenerateCompletionScript(
+    const string &doc_path,
+    const string &output_file_name,
+		bool is_manual) {
+  if(!is_manual) {
+    uid_t uid = getuid();
+    if(uid!=0) {
+      cerr<<"cannot install script: Permission denied"<<endl;
+      return ;
+    }
+  }
+ 
+  clidoc::ParseScriptArguments(doc_path,output_file_name,is_manual);
+}
+
 const map<string, void (*)(const string&, const string&)>
 MODE_FUNCTION_MAPPING = {
   {"cpp11_non_project", GenerateCpp11SourceCode},
@@ -178,6 +196,7 @@ int main(int argc, char **argv) {
   auto mode        = clidoc::string_outcome["--mode"];
   auto doc_name    = clidoc::string_outcome["<doc_name>"];
   auto output_hint = clidoc::string_outcome["<output_hint>"];
+  auto output_name = clidoc::string_outcome["-o"];
 
   if (clidoc::boolean_outcome["--list-mode"]) {
     ListMode();
@@ -185,6 +204,11 @@ int main(int argc, char **argv) {
   }
   if (clidoc::boolean_outcome["--debug"]) {
     Debug(doc_name);
+    return 0;
+  }
+  if(clidoc::boolean_outcome["-g"]){
+    bool is_manual = clidoc::boolean_outcome["--manual"];
+    GenerateCompletionScript(doc_name,output_name,is_manual);
     return 0;
   }
 

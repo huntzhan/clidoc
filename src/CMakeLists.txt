@@ -7,6 +7,7 @@ file (COPY ${clidoc_SOURCE_DIR}/src DESTINATION files)
 
 set (CLIDOC_CPP11_PREFIX "main_doc_")
 add_subdirectory (${clidoc_SOURCE_DIR}/lib/main_doc clidoc_main_doc)
+add_subdirectory (completion)
 unset (CLIDOC_CPP11_PREFIX)
 
 add_executable (
@@ -24,4 +25,5 @@ target_link_libraries (
   clidoc_main
   clidoc_ast_build clidoc_code_gen_logic
   main_doc_cpp11
+  clidoc_completion
 )
