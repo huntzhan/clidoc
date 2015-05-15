@@ -1,10 +1,11 @@
-add_library (clidoc_codegen_logic codegen_logic.cc)
+add_library (clidoc_cpp11_codegen cpp11_codegen.cc)
 
-# comile library for in-project cpp11 codegen.
+
+# compile library for in-project cpp11 codegen.
 set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
-set (PATH_PREFIX "project_template/src/")
+set (PATH_PREFIX "${clidoc_SOURCE_DIR}/resource/cpp11/project_template/src/")
 
-include_directories (${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/)
+include_directories (${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/)
 
 add_library (${CLIDOC_CPP11_PREFIX}argv_processor ${PATH_PREFIX}argv_processor.cc)
 add_library (${CLIDOC_CPP11_PREFIX}match_logic    ${PATH_PREFIX}match_logic.cc)
@@ -19,6 +20,15 @@ target_link_libraries (
 
 unset (PATH_PREFIX)
 unset (CLIDOC_CPP11_PREFIX)
+
+
+# compile library for python codegen.
+add_library (clidoc_python_codegen python_codegen.cc)
+set_target_properties (
+  clidoc_python_codegen
+  PROPERTIES COMPILE_FLAGS
+  "-DPYTHON_CODEGEN_DIR=${CMAKE_BINARY_DIR}/resource/python"
+)
 
 
 function (clidoc_cpp11_handler user_defined_program doc_file_path)
@@ -56,4 +66,3 @@ function (clidoc_cpp11_handler user_defined_program doc_file_path)
   unset (clidoc_cpp11_lib_name)
   unset (clidoc_cpp11_file_name)
 endfunction(clidoc_cpp11_handler)
-

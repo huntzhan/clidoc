@@ -5,7 +5,7 @@
 #include "clidoc/ast/ast_nodes.h"
 #include "clidoc/ast/ast_visitor_helper.h"
 
-#include "clidoc/python/codegen_logic.h"
+#include "clidoc/codegen/python_codegen.h"
 
 using std::set;
 using std::string;

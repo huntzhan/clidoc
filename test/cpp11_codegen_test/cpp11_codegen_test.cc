@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 #include "clidoc/ast/ast_visitor_helper.h"
 
-#include "clidoc/cpp11/codegen_logic.h"
+#include "clidoc/codegen/cpp11_codegen.h"
 #include "clidoc/info.h"
 #include "clidoc/match_logic.h"
 

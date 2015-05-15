@@ -48,6 +48,13 @@ include_directories (include)
 include_directories (${clidoc_SOURCE_DIR})
 
 
+# prepare resource for binary..
+file (COPY ${clidoc_SOURCE_DIR}/include         DESTINATION resource)
+file (COPY ${clidoc_SOURCE_DIR}/src             DESTINATION resource)
+file (COPY ${clidoc_SOURCE_DIR}/resource/cpp11  DESTINATION resource)
+file (COPY ${clidoc_SOURCE_DIR}/resource/python DESTINATION resource)
+
+
 # here we go.
 add_subdirectory (src)
 

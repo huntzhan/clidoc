@@ -1,10 +1,5 @@
 add_subdirectory (ast)
-add_subdirectory (cpp11)
-add_subdirectory (python)
-
-# for cmake project generation.
-file (COPY ${clidoc_SOURCE_DIR}/include DESTINATION files)
-file (COPY ${clidoc_SOURCE_DIR}/src DESTINATION files)
+add_subdirectory (codegen)
 
 set (CLIDOC_CPP11_PREFIX "main_doc_")
 add_subdirectory (${clidoc_SOURCE_DIR}/lib/main_doc clidoc_main_doc)
@@ -23,6 +18,6 @@ set_target_properties (
 )
 target_link_libraries (
   clidoc_main
-  clidoc_ast_build clidoc_codegen_logic clidoc_python_codegen_logic
+  clidoc_ast_build clidoc_cpp11_codegen clidoc_python_codegen
   main_doc_cpp11
 )

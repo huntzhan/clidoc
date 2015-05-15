@@ -15,7 +15,7 @@
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_visitor_helper.h"
-#include "clidoc/python/codegen_logic.h"
+#include "clidoc/codegen/python_codegen.h"
 
 using std::endl;
 using std::ifstream;

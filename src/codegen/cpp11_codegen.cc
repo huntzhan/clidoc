@@ -6,7 +6,7 @@
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_visitor_helper.h"
-#include "clidoc/cpp11/codegen_logic.h"
+#include "clidoc/codegen/cpp11_codegen.h"
 
 using std::string;
 using std::set;

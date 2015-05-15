@@ -1,9 +1,9 @@
 set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
 
-add_executable (clidoc_cpp11_codegen_test codegen_test.cc)
+add_executable (clidoc_cpp11_codegen_test cpp11_codegen_test.cc)
 target_link_libraries (
   clidoc_cpp11_codegen_test
-  clidoc_codegen_logic clidoc_ast_build ${CLIDOC_CPP11_PREFIX}match_logic
+  clidoc_cpp11_codegen clidoc_ast_build ${CLIDOC_CPP11_PREFIX}match_logic
 )
 
 add_executable (clidoc_argv_processor_test argv_processor_test.cc)
@@ -18,12 +18,12 @@ add_gtest (clidoc_argv_processor_test)
 add_executable (clidoc_example program.cc)
 clidoc_cpp11_handler (
   clidoc_example
-  ${PROJECT_SOURCE_DIR}/test/cpp11_test/test_doc
+  ${PROJECT_SOURCE_DIR}/test/cpp11_codegen_test/test_doc
 )
 
 
 # test docs.
-include_directories (${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/)
+include_directories (${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/)
 
 function (compile_codegen_test doc_name)
   add_executable (clidoc_${doc_name}_test ${doc_name}_test.cc)

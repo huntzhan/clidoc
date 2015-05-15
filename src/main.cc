@@ -12,8 +12,8 @@
 
 #include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
-#include "clidoc/cpp11/codegen_logic.h"
-#include "clidoc/python/codegen_logic.h"
+#include "clidoc/codegen/cpp11_codegen.h"
+#include "clidoc/codegen/python_codegen.h"
 
 using std::cout;
 using std::cerr;
@@ -81,7 +81,7 @@ void GenerateCpp11CMakeProject(
   ostringstream ostrm;
   // 1. copy cmake project template.
   ostrm << "cp -r "
-        << kBinaryDirPath << "src/files/src/cpp11/project_template "
+        << kBinaryDirPath << "resource/cpp11/project_template "
         << output_dir_name;
   ExecuteSystemCommand(&ostrm);
 
@@ -93,19 +93,19 @@ void GenerateCpp11CMakeProject(
   ostrm << "cp "
         // ast_node_interface.h
         << kBinaryDirPath
-        << "src/files/include/clidoc/ast/ast_node_interface.h "
+        << "resource/include/clidoc/ast/ast_node_interface.h "
         // ast_nodes.h
         << kBinaryDirPath
-        << "src/files/include/clidoc/ast/ast_nodes.h "
+        << "resource/include/clidoc/ast/ast_nodes.h "
         // smart_ptr_interface.h
         << kBinaryDirPath
-        << "src/files/include/clidoc/ast/smart_ptr_interface.h "
+        << "resource/include/clidoc/ast/smart_ptr_interface.h "
         // dst.
         << output_dir_name << "include/clidoc/ast";
   ExecuteSystemCommand(&ostrm);
 
   ostrm << "cp "
-        << kBinaryDirPath << "src/files/src/ast/smart_ptr_interface.cc "
+        << kBinaryDirPath << "resource/src/ast/smart_ptr_interface.cc "
         << output_dir_name << "src/";
   ExecuteSystemCommand(&ostrm);
 

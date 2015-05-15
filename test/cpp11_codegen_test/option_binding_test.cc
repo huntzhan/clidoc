@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "clidoc/cpp11.h"
-#include "cpp11_test/util-inl.h"
+#include "cpp11_codegen_test/util-inl.h"
 
 const set<string> kBooleanKeys = {
   "-c",
