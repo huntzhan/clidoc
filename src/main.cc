@@ -1,37 +1,26 @@
-#define STRINGIFY(x) TO_STRING(x)
-#define TO_STRING(x) #x
-
-#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <set>
 #include <sstream>
-#include <streambuf>
 #include <string>
 
 #include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/codegen/cpp11_codegen.h"
 #include "clidoc/codegen/python_codegen.h"
+#include "clidoc/codegen/filesystem.h"
 
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::exit;
 using std::ifstream;
-using std::istreambuf_iterator;
 using std::map;
 using std::ofstream;
 using std::set;
 using std::string;
-using std::system;
 using std::ostringstream;
-
-// for locating resource files.
-const string kBinaryDirPath =
-    string(STRINGIFY(CMAKE_BINARY_DIR)).back() == '/'?
-    STRINGIFY(CMAKE_BINARY_DIR) : STRINGIFY(CMAKE_BINARY_DIR) "/";
 
 void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
   // load user defined doc.
@@ -40,11 +29,10 @@ void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
     cout << "Invalid Doc Path." << endl;
     exit(0);
   }
-  const string doc(
-      (istreambuf_iterator<char>(fin)),
-      istreambuf_iterator<char>());
+  ostringstream ostrm;
+  ostrm << fin.rdbuf();
   // build the AST.
-  info_ptr->Prepare(doc);
+  info_ptr->Prepare(ostrm.str());
 }
 
 void GenerateCpp11SourceCode(
@@ -60,57 +48,25 @@ void GenerateCpp11SourceCode(
 
 void GenerateCpp11CMakeProject(
     const string &doc_path,
-    const string &output_hint) {
-  auto ExecuteSystemCommand = [](ostringstream *ostrm_ptr) {
-    // 1. run command.
-    string command = ostrm_ptr->str();
-    // ignore return value of `system` explicitly.
-    if (system(command.c_str())) { /* empty */ }
-    // 2. reset `ostrm`.
-    ostrm_ptr->str("");
-    ostrm_ptr->clear();
-  };
-
-  // append "/" to the end if necessary.
-  const string output_dir_name =
-      output_hint.back() == '/'? output_hint : output_hint + "/";
+    const string &output_dir) {
 
   clidoc::CodeGenInfo info;
   PrepareForCpp11(doc_path, &info);
 
-  ostringstream ostrm;
-  // 1. copy cmake project template.
-  ostrm << "cp -r "
-        << kBinaryDirPath << "resource/cpp11/project_template "
-        << output_dir_name;
-  ExecuteSystemCommand(&ostrm);
+  clidoc::CopyDirectory(
+      "cpp11/project_template",
+      output_dir,
+      clidoc::RELATIVE_TO_RESOURCE_DIR);
+  clidoc::CopyDirectory(
+      "include/clidoc/ast",
+      clidoc::AppendPath(output_dir, "include/clidoc/ast"),
+      clidoc::RELATIVE_TO_RESOURCE_DIR);
+  clidoc::CopyFile(
+      "src/ast/smart_ptr_interface.cc",
+      clidoc::AppendPath(output_dir, "src/smart_ptr_interface.cc"),
+      clidoc::RELATIVE_TO_RESOURCE_DIR);
 
-  // 2. copy serveral source files of `ast`.
-  ostrm << "mkdir "
-        << output_dir_name << "include/clidoc/ast";
-  ExecuteSystemCommand(&ostrm);
-
-  ostrm << "cp "
-        // ast_node_interface.h
-        << kBinaryDirPath
-        << "resource/include/clidoc/ast/ast_node_interface.h "
-        // ast_nodes.h
-        << kBinaryDirPath
-        << "resource/include/clidoc/ast/ast_nodes.h "
-        // smart_ptr_interface.h
-        << kBinaryDirPath
-        << "resource/include/clidoc/ast/smart_ptr_interface.h "
-        // dst.
-        << output_dir_name << "include/clidoc/ast";
-  ExecuteSystemCommand(&ostrm);
-
-  ostrm << "cp "
-        << kBinaryDirPath << "resource/src/ast/smart_ptr_interface.cc "
-        << output_dir_name << "src/";
-  ExecuteSystemCommand(&ostrm);
-
-  // 3. generate cpp11 source file with respect to doc.
-  string filename = output_dir_name + "src/codegen.cc";
+  string filename = clidoc::AppendPath(output_dir, "src/codegen.cc");
   ofstream fout(filename.c_str());
   fout << clidoc::cpp11::GenerateSource(info);
   fout.close();

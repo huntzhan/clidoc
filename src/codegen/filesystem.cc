@@ -47,6 +47,10 @@ void CopyDirectory(const fs::path &src, const fs::path &dst) {
   }
 }
 
+string AppendPath(const string &first, const string &second) {
+  return (fs::path(first) / fs::path(second)).generic_string();
+}
+
 void CopyFile(
     const string &src, const string &dst, const FlagType flags) {
   auto src_path = PrepareSrc(src, flags);

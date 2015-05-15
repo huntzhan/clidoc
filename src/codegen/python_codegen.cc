@@ -1,10 +1,9 @@
-#define STRINGIFY(x) TO_STRING(x)
-#define TO_STRING(x) #x
-
 #define OSTRM_PROPERTY(data_member)                \
   ostrm << GenerateSetOfToken(                     \
       RemoveUnderscoreSuffix("Info."#data_member), \
       code_gen_info.data_member)                   \
+
+#include "clidoc/codegen/python_codegen.h"
 
 #include <string>
 #include <set>
@@ -14,8 +13,7 @@
 
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
-#include "clidoc/ast/ast_visitor_helper.h"
-#include "clidoc/codegen/python_codegen.h"
+#include "clidoc/codegen/filesystem.h"
 
 using std::endl;
 using std::ifstream;
@@ -23,10 +21,6 @@ using std::map;
 using std::ostringstream;
 using std::string;
 using std::set;
-
-const string kPythonCodegenDirPath =
-    string(STRINGIFY(PYTHON_CODEGEN_DIR)).back() == '/'?
-    STRINGIFY(PYTHON_CODEGEN_DIR) : STRINGIFY(PYTHON_CODEGEN_DIR) "/";
 
 const string kIndent = "    ";
 
@@ -112,11 +106,7 @@ string GenerateSource(const CodeGenInfo &code_gen_info) {
   ostringstream ostrm;
 
   // load codegen.py.
-  ifstream codegen_py(kPythonCodegenDirPath + "codegen.py");
-  if (!codegen_py.is_open()) {
-    throw "GenerateSource";
-  }
-  ostrm << codegen_py.rdbuf() << endl << endl
+  ostrm << LoadFileFromResource("python/codegen.py") << endl << endl
         << "#####################" << endl
         << "#####  codegen  #####" << endl
         << "#####################" << endl;

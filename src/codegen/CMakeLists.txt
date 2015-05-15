@@ -1,11 +1,17 @@
-add_library (clidoc_cpp11_codegen cpp11_codegen.cc)
-
 add_library (clidoc_filesystem filesystem.cc)
 target_link_libraries(clidoc_filesystem ${Boost_LIBRARIES})
 set_target_properties (
   clidoc_filesystem
   PROPERTIES COMPILE_FLAGS "-DCLIDOC_RESOURCE_DIR=${CMAKE_BINARY_DIR}/resource"
 )
+
+
+# compile library for python codegen.
+add_library (clidoc_python_codegen python_codegen.cc)
+target_link_libraries (clidoc_python_codegen clidoc_filesystem)
+
+
+add_library (clidoc_cpp11_codegen cpp11_codegen.cc)
 
 
 # compile library for in-project cpp11 codegen.
@@ -27,15 +33,6 @@ target_link_libraries (
 
 unset (PATH_PREFIX)
 unset (CLIDOC_CPP11_PREFIX)
-
-
-# compile library for python codegen.
-add_library (clidoc_python_codegen python_codegen.cc)
-set_target_properties (
-  clidoc_python_codegen
-  PROPERTIES COMPILE_FLAGS
-  "-DPYTHON_CODEGEN_DIR=${CMAKE_BINARY_DIR}/resource/python"
-)
 
 
 function (clidoc_cpp11_handler user_defined_program doc_file_path)
