@@ -1,5 +1,12 @@
 add_library (clidoc_cpp11_codegen cpp11_codegen.cc)
 
+add_library (clidoc_filesystem filesystem.cc)
+target_link_libraries(clidoc_filesystem ${Boost_LIBRARIES})
+set_target_properties (
+  clidoc_filesystem
+  PROPERTIES COMPILE_FLAGS "-DCLIDOC_RESOURCE_DIR=${CMAKE_BINARY_DIR}/resource"
+)
+
 
 # compile library for in-project cpp11 codegen.
 set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
