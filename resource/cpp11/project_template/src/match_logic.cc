@@ -57,17 +57,6 @@ bool MatchState::ArgumentIsConcumed(const int &index) const {
   return token_match_state_.at(index);
 }
 
-void SimpleMemento::BackupMatchStateManager(
-    const MatchStateManager *match_state_manager_ptr) {
-  match_state_ptr_ = make_shared<MatchState>(
-      *match_state_manager_ptr->match_state_ptr_);
-}
-
-void SimpleMemento::RestoreMatchStateManager(
-    MatchStateManager *match_state_manager_ptr) {
-  match_state_manager_ptr->match_state_ptr_ = match_state_ptr_;
-}
-
 MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
                                      const vector<Token> &tokens)
     : info_(info), tokens_(tokens), match_state_ptr_(new MatchState) {
@@ -122,28 +111,19 @@ MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
       &match_state_ptr_->string_list_outcome_);
 }
 
-shared_ptr<MementoInterface> MatchStateManager::CreateMemento() const {
-  auto memento = make_shared<SimpleMemento>();
-  memento->BackupMatchStateManager(this);
-  return memento;
-}
-
-void MatchStateManager::RestoreFromMemento(
-    shared_ptr<MementoInterface> memento) {
-  memento->RestoreMatchStateManager(this);
-}
-
 void MatchStateManager::PushRollbackPoint() {
-  memento_stack_.push(CreateMemento());
+  state_stack_.push(
+      make_shared<MatchState>(*match_state_ptr_));
 }
 
-void MatchStateManager::PopRollbackPoint() {
-  memento_stack_.pop();
+shared_ptr<MatchState> MatchStateManager::PopRollbackPoint() {
+  auto ptr = state_stack_.top();
+  state_stack_.pop();
+  return ptr;
 }
 
 void MatchStateManager::Rollback() {
-  RestoreFromMemento(memento_stack_.top());
-  PopRollbackPoint();
+  match_state_ptr_ = PopRollbackPoint();
 }
 
 vector<Token>::const_iterator
