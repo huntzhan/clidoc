@@ -1,4 +1,3 @@
-
 cmake_minimum_required (VERSION 2.8)
 project (clidoc CXX)
 
@@ -6,13 +5,22 @@ project (clidoc CXX)
 # settings related to C++ compilter#.
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -O2 -std=c++11")
 
-set (
-  CLIDOC_CPP11_INCLUDE_PATHS
-  "${clidoc_SOURCE_DIR}/include"
-  "${clidoc_SOURCE_DIR}/src/cpp11/project_template/include/"
-  PARENT_SCOPE
-)
+get_directory_property (has_parent PARENT_DIRECTORY)
+if (has_parent)
+  set (
+    CLIDOC_CPP11_INCLUDE_PATHS
+    "${clidoc_SOURCE_DIR}/include"
+    "${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/"
+    PARENT_SCOPE
+  )
+endif()
 
+
+# setup boost.
+find_package(
+  Boost REQUIRED
+  COMPONENTS system filesystem
+)
 
 # setup googletest
 add_subdirectory (lib/gtest-1.7.0)
@@ -31,15 +39,21 @@ endfunction (add_gtest)
 
 
 # set include paths.
+include_directories (${Boost_INCLUDE_DIRS})
 include_directories (${GTEST_INCLUDE_DIRS})
 # make sure the compiler find the right version of FlexLexer.h
 include_directories (${clidoc_SOURCE_DIR}/lib/flex/include)
-include_directories (${clidoc_SOURCE_DIR}/lib/boost_1_57_0/include)
-
 # include headers with pattern "clidoc/*.h"
 include_directories (include)
 # include implementations with pattern "src/*.cc"
 include_directories (${clidoc_SOURCE_DIR})
+
+
+# prepare resource for binary..
+file (COPY ${clidoc_SOURCE_DIR}/include         DESTINATION resource)
+file (COPY ${clidoc_SOURCE_DIR}/src             DESTINATION resource)
+file (COPY ${clidoc_SOURCE_DIR}/resource/cpp11  DESTINATION resource)
+file (COPY ${clidoc_SOURCE_DIR}/resource/python DESTINATION resource)
 
 
 # here we go.

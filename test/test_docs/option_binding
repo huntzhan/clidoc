@@ -1,0 +1,20 @@
+Usage:
+  utility_name -a <p1>
+  utility_name -bP2
+  utility_name -c <p3>  # -c not bound.
+  utility_name -d <p4>...
+  utility_name -eP5...
+
+  utility_name --long-1=<g1>
+  utility_name --long-2 <g2>
+  utility_name --long-3=<g3>...
+
+  utility_name -f|--long-4
+
+Options:
+  -a <p1>
+	-b P2
+  -d <p4>
+  -e P5
+  --long-2=<g2>
+	-f,--long-4
