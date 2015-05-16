@@ -2,6 +2,7 @@ Usage:
   clidoc_main (--mode|-m) <mode> <doc_name> <output_hint>
   clidoc_main --list-mode
   clidoc_main --debug <doc_name>
+  clidoc_main -g <doc_name> [-o <output_name>] [--manual]
 
 Options:
   --mode=<mode>, -m <mode>  # Set mode of code gen.
@@ -9,3 +10,6 @@ Options:
   # <output_hint>             A string to guide code gen.
   --list-mode               # List avaliable modes.
   --debug                   # List information for debug.
+  -g                        # Generate completion script.
+  -o <output_name>          # Set script's name.
+  --manual                  # Install script manually.
