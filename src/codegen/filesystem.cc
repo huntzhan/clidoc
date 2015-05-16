@@ -7,6 +7,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
+// fix "undefined reference to `boost::filesystem::detail::copy_file".
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include "boost/filesystem.hpp"
 
 namespace fs = boost::filesystem;
