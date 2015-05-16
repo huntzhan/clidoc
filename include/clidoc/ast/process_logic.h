@@ -23,7 +23,7 @@ class StructureOptimizerLogic : public VisitorProcessLogic {
                       NodeTypeOfChild child_node);
 
   template <typename NonTerminalTypeSharedPtr>
-  void ConditionalRemoveChild(NonTerminalTypeSharedPtr node);
+  bool ConditionalRemoveChild(NonTerminalTypeSharedPtr node);
 
   template <typename NonTerminalTypeSharedPtr>
   void ConditionalRemoveParent(NonTerminalTypeSharedPtr node);
@@ -114,7 +114,8 @@ namespace clidoc {
 template <typename NonTerminalTypeSharedPtr>
 void StructureOptimizerLogic::ProcessNode(
     NonTerminalTypeSharedPtr node) {
-  ConditionalRemoveChild(node);
+  // keep running if child been removed.
+  while (ConditionalRemoveChild(node)) {/* empty */}
   ConditionalRemoveParent(node);
   if (NodeIsOneOf<NonTerminalTypeSharedPtr, LogicOr, LogicXor>::value) {
     if (node->GetSizeOfChildren() == 1) {
@@ -153,8 +154,9 @@ bool StructureOptimizerLogic::CanRemoveChild(
 }
 
 template <typename NonTerminalTypeSharedPtr>
-void StructureOptimizerLogic::ConditionalRemoveChild(
+bool StructureOptimizerLogic::ConditionalRemoveChild(
     NonTerminalTypeSharedPtr node) {
+  bool removed_children_flag = false;
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
   // `child_node` must be a reference, since the value of `child_node` in
@@ -170,6 +172,7 @@ void StructureOptimizerLogic::ConditionalRemoveChild(
       optimized_children.insert(
           optimized_children.end(),
           children_of_child_.begin(), children_of_child_.end());
+      removed_children_flag = true;
     } else {
       optimized_children.push_back(child_node);
     }
@@ -181,6 +184,7 @@ void StructureOptimizerLogic::ConditionalRemoveChild(
     node->AddChild(child_node);
   }
   children_of_child_ = optimized_children;
+  return removed_children_flag;
 }
 
 template <typename NonTerminalTypeSharedPtr>
