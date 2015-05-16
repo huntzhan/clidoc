@@ -1,4 +1,7 @@
 
+#include <iostream>
+#include <cstdlib>
+
 #include <stdexcept>
 #include <string>
 #include <set>
@@ -11,6 +14,17 @@ using std::set;
 using std::logic_error;
 
 namespace clidoc {
+
+void BoundArgumentMismatchLogging(const string &left, const string &right) {
+  std::cout << "bound argument mismatch: "
+            << left << " != " << right
+            << std::endl;
+  std::exit(1);
+}
+
+void BoundArgumentMismatchLogging(const Token &left, const Token &right) {
+  BoundArgumentMismatchLogging(left.value(), right.value());
+}
 
 OptionBinding::OptionBinding(const Token &option)
     : option_(option) { /* empty */ }
@@ -53,9 +67,24 @@ bool RepresentativeOptionProperty::HasDefaultValue() const {
   return has_default_value_;
 }
 
+template <typename Target, typename Flag, typename ValueType>
+void SetDataMember(
+    RepresentativeOptionProperty *ptr,
+    Target target, Flag flag, const ValueType &value) {
+  if (ptr->*flag) {
+    if (ptr->*target != value) {
+      BoundArgumentMismatchLogging(ptr->*target, value);
+    }
+    return;
+  }
+  ptr->*flag = true;
+  ptr->*target = value;
+}
+
 void RepresentativeOptionProperty::set_option_argument(
     const Token &option_argument) {
   SetDataMember(
+      this,
       &RepresentativeOptionProperty::option_argument_,
       &RepresentativeOptionProperty::has_option_argument_,
       option_argument);
@@ -64,6 +93,7 @@ void RepresentativeOptionProperty::set_option_argument(
 void RepresentativeOptionProperty::set_default_value(
     const string &default_value) {
   SetDataMember(
+      this,
       &RepresentativeOptionProperty::default_value_,
       &RepresentativeOptionProperty::has_default_value_,
       default_value);
@@ -123,7 +153,7 @@ Token OptionBindingRecorder::GetBoundOptionArgumentFromContainer(
       if (option_argument_ptr == nullptr) {
         option_argument_ptr = &option_argument;
       } else if (*option_argument_ptr != option_argument) {
-        throw logic_error("GetBoundOptionArgumentFromContainer");
+        BoundArgumentMismatchLogging(*option_argument_ptr, option_argument);
       }
     }
   }
@@ -182,7 +212,7 @@ void OptionBindingRecorder::RecordBinding(
   if (pos_iter == option_to_option_argument_cache_.end()) {
     option_to_option_argument_cache_[option] = option_argument;
   } else if (option_argument != pos_iter->second) {
-    throw logic_error("RecordBinding");
+    BoundArgumentMismatchLogging(option_argument, pos_iter->second);
   }
 }
 

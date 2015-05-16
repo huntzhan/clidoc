@@ -1,7 +1,6 @@
 #ifndef INCLUDE_CLIDOC_AST_OPTION_RECORD_H_
 #define INCLUDE_CLIDOC_AST_OPTION_RECORD_H_
 
-#include <stdexcept>
 #include <map>
 #include <vector>
 #include <set>
@@ -52,13 +51,20 @@ class RepresentativeOptionProperty {
  private:
   // invoked by mutators.
   template <typename Target, typename Flag, typename ValueType>
-  void SetDataMember(Target target, Flag flag, const ValueType &value);
+  friend void SetDataMember(
+      RepresentativeOptionProperty *ptr,
+      Target target, Flag flag, const ValueType &value);
   // mutators.
   void set_option_argument(const Token &option_argument);
   void set_default_value(const std::string &default_value);
   bool has_option_argument_ = false;
   bool has_default_value_ = false;
 };
+
+template <typename Target, typename Flag, typename ValueType>
+void SetDataMember(
+    RepresentativeOptionProperty *ptr,
+    Target target, Flag flag, const ValueType &value);
 
 // Record different kinds of optino binding during parsing.
 class OptionBindingRecorder {
@@ -133,23 +139,6 @@ class UnboundArgumentDefaultValueRecorder {
       const Token &default_value);
   std::map<Token, std::string> unbound_argument_to_default_value_;
 };
-
-}  // namespace clidoc
-
-namespace clidoc {
-
-template <typename Target, typename Flag, typename ValueType>
-void RepresentativeOptionProperty::SetDataMember(
-    Target target, Flag flag, const ValueType &value) {
-  if (this->*flag) {
-    if (this->*target != value) {
-      throw std::logic_error("SetDataMember");
-    }
-    return;
-  }
-  this->*flag = true;
-  this->*target = value;
-}
 
 }  // namespace clidoc
 

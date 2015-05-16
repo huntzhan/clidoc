@@ -27,7 +27,7 @@ void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
   ifstream fin(doc_path);
   if (!fin.is_open()) {
     cout << "Invalid Doc Path." << endl;
-    exit(0);
+    exit(1);
   }
   ostringstream ostrm;
   ostrm << fin.rdbuf();
