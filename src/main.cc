@@ -22,7 +22,8 @@ using std::set;
 using std::string;
 using std::ostringstream;
 
-void ConstructCodeGenInfo(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
+void ConstructCodeGenInfo(
+    const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
   // load user defined doc.
   ifstream fin(doc_path);
   if (!fin.is_open()) {
