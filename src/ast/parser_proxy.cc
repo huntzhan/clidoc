@@ -1,5 +1,6 @@
 
-#include <stdexcept>
+#include <cstdlib>
+#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <string>
@@ -21,7 +22,6 @@ using std::istringstream;
 using std::ostringstream;
 using std::vector;
 using std::to_string;
-using std::logic_error;
 using std::set;
 
 using boost::xpressive::sregex;
@@ -30,6 +30,11 @@ using boost::xpressive::regex_replace;
 using boost::xpressive::regex_search;
 
 namespace clidoc {
+
+void WrongUsageSectionFormatLogging() {
+  std::cout << "can't find usage section." << std::endl;
+  std::exit(1);
+}
 
 void DocPreprocessor::RemoveComment() {
   // must NOT remove the tailing NEWLINE character.
@@ -52,7 +57,7 @@ void DocPreprocessor::ReplaceUtilityName() {
       match_result,
       utility_name_pattern);
   if (!found) {
-    throw logic_error("ReplaceUtilityName");
+    WrongUsageSectionFormatLogging();
   }
   string utility_name = match_result.str(1);
   StringUtils::ReplaceAll(
@@ -73,7 +78,8 @@ void DocPreprocessor::InsertDesDelimiter() {
   if (match_result.suffix().first == options_section_.end()) {
     // case happen if nothing is following the name of options section
     // ("Options:").
-    throw logic_error("InsertDesDelimiter");
+    options_section_ = "";
+    return;
   }
   string processed_options_section = match_result.str();
   auto pos_iter = match_result.suffix().first;
@@ -127,7 +133,7 @@ void DocPreprocessor::ExtractAndProcessUsageSection() {
     ReplaceUtilityName();
   } else {
     // can't find usage section, which must exist.
-    throw logic_error("ExtractAndProcessUsageSection");
+    WrongUsageSectionFormatLogging();
   }
 }
 
