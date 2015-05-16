@@ -136,6 +136,7 @@ void CodeGenInfo::Prepare(const std::string &raw_doc) {
   DocPreprocessor doc_preprocessor;
   ParserProxy parser_proxy;
   // setup `doc_text_`.
+  utility_name_ = doc_preprocessor.GetUtilityName(raw_doc);
   doc_text_ = doc_preprocessor.PreprocessRawDocForCodeGen(raw_doc);
   // setup `doc_node_`, `option_recorder_`.
   parser_proxy.Parse(

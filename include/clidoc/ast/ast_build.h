@@ -31,6 +31,7 @@ class CodeGenInfo {
   // default value of bound options and unbound arguments.
   std::map<Token, std::string> default_values_;
 
+  std::string utility_name_;
   std::string doc_text_;
 
  private:

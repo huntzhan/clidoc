@@ -47,19 +47,24 @@ void DocPreprocessor::RemoveEmptyLine() {
   text_ = regex_replace(text_, pattern, "\n");
 }
 
-void DocPreprocessor::ReplaceUtilityName() {
+
+std::string DocPreprocessor::GetUtilityName(const std::string &raw_doc) {
   sregex utility_name_pattern = sregex::compile(
       "usage:\\s*(\\S+)",
       boost::xpressive::regex_constants::icase);
   smatch match_result;
   bool found = regex_search(
-      usage_section_,
+      raw_doc,
       match_result,
       utility_name_pattern);
   if (!found) {
     WrongUsageSectionFormatLogging();
   }
-  string utility_name = match_result.str(1);
+  return match_result.str(1);
+}
+
+void DocPreprocessor::ReplaceUtilityName() {
+  auto utility_name = GetUtilityName(usage_section_);
   StringUtils::ReplaceAll(
       utility_name, "*UTILITY_DELIMITER*", &usage_section_);
 }

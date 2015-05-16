@@ -13,6 +13,7 @@ class DocPreprocessor {
  public:
   std::string PreprocessRawDocForParsing(const std::string &raw_doc);
   std::string PreprocessRawDocForCodeGen(const std::string &raw_doc);
+  std::string GetUtilityName(const std::string &raw_doc);
 
  private:
   // gtest related.
