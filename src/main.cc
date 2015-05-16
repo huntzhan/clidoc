@@ -22,7 +22,7 @@ using std::set;
 using std::string;
 using std::ostringstream;
 
-void PrepareForCpp11(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
+void ConstructCodeGenInfo(const string &doc_path, clidoc::CodeGenInfo *info_ptr) {
   // load user defined doc.
   ifstream fin(doc_path);
   if (!fin.is_open()) {
@@ -39,7 +39,7 @@ void GenerateCpp11SourceCode(
     const string &doc_path,
     const string &output_file_name) {
   clidoc::CodeGenInfo info;
-  PrepareForCpp11(doc_path, &info);
+  ConstructCodeGenInfo(doc_path, &info);
   // code gen.
   ofstream fout(output_file_name);
   fout << clidoc::cpp11::GenerateSource(info);
@@ -51,7 +51,7 @@ void GenerateCpp11CMakeProject(
     const string &output_dir) {
 
   clidoc::CodeGenInfo info;
-  PrepareForCpp11(doc_path, &info);
+  ConstructCodeGenInfo(doc_path, &info);
 
   clidoc::CopyDirectory(
       "cpp11/project_template",
@@ -77,7 +77,7 @@ void GeneratePythonCode(
     const string &doc_path,
     const string &output_file_name) {
   clidoc::CodeGenInfo info;
-  PrepareForCpp11(doc_path, &info);
+  ConstructCodeGenInfo(doc_path, &info);
   // code gen.
   ofstream fout(output_file_name);
   fout << clidoc::python::GenerateSource(info);
@@ -112,7 +112,7 @@ void Debug(const string &doc_path) {
   };
 
   clidoc::CodeGenInfo info;
-  PrepareForCpp11(doc_path, &info);
+  ConstructCodeGenInfo(doc_path, &info);
 
   cout << "[AST]" << endl;
   cout << info.doc_node_->ToString(0) << endl;
