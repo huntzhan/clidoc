@@ -9,7 +9,6 @@
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_nodes.h"
-
 #include "clidoc/info.h"
 
 namespace clidoc {
@@ -49,9 +48,9 @@ class MatchStateManager {
 
  private:
   // modify argv match outcome.
-  std::vector<Token>::const_iterator GetFirstUnmatchArgument() const;
   std::vector<Token>::const_iterator GetFirstUnmatchArgument(
       std::vector<Token>::const_iterator begin_iter) const;
+  std::vector<Token>::const_iterator GetFirstUnmatchArgument() const;
   std::vector<Token>::const_iterator GetIteratorOfKey(const Token &key) const;
 
   bool MatchBooleanKey(const Token &key);

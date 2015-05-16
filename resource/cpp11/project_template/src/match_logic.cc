@@ -1,4 +1,6 @@
 
+#include "clidoc/match_logic.h"
+
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -10,7 +12,6 @@
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_nodes.h"
-#include "clidoc/match_logic.h"
 
 using std::vector;
 using std::set;
@@ -127,11 +128,6 @@ void MatchStateManager::Rollback() {
 }
 
 vector<Token>::const_iterator
-MatchStateManager::GetFirstUnmatchArgument() const {
-  return GetFirstUnmatchArgument(tokens_.cbegin());
-}
-
-vector<Token>::const_iterator
 MatchStateManager::GetFirstUnmatchArgument(
     vector<Token>::const_iterator begin_iter) const {
   for (auto iter = begin_iter; iter != tokens_.cend(); ++iter) {
@@ -142,6 +138,11 @@ MatchStateManager::GetFirstUnmatchArgument(
     }
   }
   return tokens_.cend();
+}
+
+vector<Token>::const_iterator
+MatchStateManager::GetFirstUnmatchArgument() const {
+  return GetFirstUnmatchArgument(tokens_.cbegin());
 }
 
 vector<Token>::const_iterator MatchStateManager::GetIteratorOfKey(
