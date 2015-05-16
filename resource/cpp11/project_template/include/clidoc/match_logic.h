@@ -55,6 +55,9 @@ class MatchStateManager {
   std::vector<Token>::const_iterator GetIteratorOfKey(const Token &key) const;
 
   bool MatchBooleanKey(const Token &key);
+  bool MatchKeyWithValue(
+      const Token &key,
+      void (MatchState::*store_key_value_pair)(const Token &, const Token &));
   bool MatchStringKey(const Token &key);
   bool MatchStringListKey(const Token &key);
 

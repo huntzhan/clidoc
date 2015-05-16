@@ -128,17 +128,11 @@ void MatchStateManager::Rollback() {
 
 vector<Token>::const_iterator
 MatchStateManager::GetFirstUnmatchArgument() const {
-  for (auto iter = tokens_.cbegin(); iter != tokens_.cend(); ++iter) {
-    auto consumed = match_state_ptr_->ArgumentIsConcumed(
-        distance(tokens_.cbegin(), iter));
-    if (!consumed) {
-      return iter;
-    }
-  }
-  return tokens_.cend();
+  return GetFirstUnmatchArgument(tokens_.cbegin());
 }
 
-vector<Token>::const_iterator MatchStateManager::GetFirstUnmatchArgument(
+vector<Token>::const_iterator
+MatchStateManager::GetFirstUnmatchArgument(
     vector<Token>::const_iterator begin_iter) const {
   for (auto iter = begin_iter; iter != tokens_.cend(); ++iter) {
     auto consumed = match_state_ptr_->ArgumentIsConcumed(
@@ -193,91 +187,86 @@ bool MatchStateManager::MatchBooleanKey(const Token &key) {
   return false;
 }
 
-bool MatchStateManager::MatchStringKey(const Token &key) {
-  if (!match_state_ptr_->IsStringKey(key)) {
-    return false;
-  }
-
-  if (key.type() == TerminalType::ARGUMENT) {
-    // argument.
-    auto value_iter = GetFirstUnmatchArgument();
-    if (value_iter != tokens_.cend()) {
-      match_state_ptr_->AddStringOutcome(key, *value_iter);
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), value_iter));
+bool MatchStateManager::MatchKeyWithValue(
+    const Token &key,
+    void (MatchState::*store_key_value_pair)(const Token &, const Token &)) {
+  // check index.
+  auto AccessToken = [&](const int &index) -> bool {
+    const auto &token = tokens_.at(index);
+    if (token.type() == TerminalType::GENERAL_ELEMENT
+        && !match_state_ptr_->ArgumentIsConcumed(index)) {
       return true;
     }
-  } else {
-    // bound option.
+    return false;
+  };
 
+  if (key.type() == TerminalType::ARGUMENT) {
+    auto value_iter = GetFirstUnmatchArgument();
+    if (value_iter == tokens_.cend()) {
+      return false;
+    }
+    int value_index = distance(tokens_.cbegin(), value_iter);
+    if (!AccessToken(value_index)) {
+      return false;
+    }
+    (match_state_ptr_.get()->*store_key_value_pair)(key, *value_iter);
+    match_state_ptr_->MarkArgumentConsumed(value_index);
+  } else {
     auto key_iter = GetIteratorOfKey(key);
     if (key_iter == tokens_.cend()) {
       return false;
     }
-    auto value_iter = key_iter + 1;
-    // value_iter invalid.
-    if (value_iter == tokens_.cend()
-        || value_iter->type() != TerminalType::GENERAL_ELEMENT) {
-      if (info_.default_values_.find(*key_iter)
-          != info_.default_values_.cend()) {
-        match_state_ptr_->MarkArgumentConsumed(
-            distance(tokens_.cbegin(), key_iter));
-        return true;
-      } else {
-        return false;
-      }
+    auto value_iter = GetFirstUnmatchArgument(key_iter + 1);
+    if (value_iter == tokens_.cend()) {
+      return false;
+    }
+    int key_index = distance(tokens_.cbegin(), key_iter);
+    int value_index = distance(tokens_.cbegin(), value_iter);
+    if (!AccessToken(value_index)) {
+      return false;
     }
     // record key-value pair.
-    match_state_ptr_->AddStringOutcome(key, *value_iter);
+    (match_state_ptr_.get()->*store_key_value_pair)(key, *value_iter);
     // mark key-value pair consumed.
-    match_state_ptr_->MarkArgumentConsumed(
-        distance(tokens_.cbegin(), key_iter));
-    match_state_ptr_->MarkArgumentConsumed(
-        distance(tokens_.cbegin(), value_iter));
-    return true;
+    match_state_ptr_->MarkArgumentConsumed(key_index);
+    match_state_ptr_->MarkArgumentConsumed(value_index);
   }
-  return false;
+  return true;
+}
+
+bool MatchStateManager::MatchStringKey(const Token &key) {
+  if (!match_state_ptr_->IsStringKey(key)) {
+    return false;
+  }
+  return MatchKeyWithValue(key, &MatchState::AddStringOutcome);
 }
 
 bool MatchStateManager::MatchStringListKey(const Token &key) {
   if (!match_state_ptr_->IsStringListKey(key)) {
     return false;
   }
-
-  if (key.type() == TerminalType::ARGUMENT) {
-    // argument.
-    auto value_iter = GetFirstUnmatchArgument();
-    if (value_iter != tokens_.cend()) {
-      match_state_ptr_->AddStringListOutcome(key, *value_iter);
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), value_iter));
-      return true;
-    }
-  } else {
-    // bound option.
-    auto key_iter = GetIteratorOfKey(key);
-    if (key_iter == tokens_.cend()) {
-      return false;
-    }
-    auto value_iter = GetFirstUnmatchArgument(key_iter + 1);
-    if (value_iter != tokens_.cend()
-        && value_iter->type() == TerminalType::GENERAL_ELEMENT) {
-      match_state_ptr_->AddStringListOutcome(key, *value_iter);
-      // mark key-value pair consumed.
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), key_iter));
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), value_iter));
-      return true;
-    }
-  }
-  return false;
+  return MatchKeyWithValue(key, &MatchState::AddStringListOutcome);
 }
 
 bool MatchStateManager::MatchToken(const Token &key) {
-  return MatchBooleanKey(key)
-         || MatchStringKey(key)
-         || MatchStringListKey(key);
+  switch (key.type()) {
+    // POSIX_OPTION and GNU_OPTION.
+    case TerminalType::POSIX_OPTION:
+    case TerminalType::GNU_OPTION:
+      return MatchBooleanKey(key)
+             || MatchStringKey(key)
+             || MatchStringListKey(key);
+    // COMMAND.
+    case TerminalType::COMMAND:
+      return MatchBooleanKey(key);
+    // ARGUMENT.
+    case TerminalType::ARGUMENT:
+      return MatchStringKey(key)
+             || MatchStringListKey(key);
+    // otherwise, fatal error.
+    default:
+      throw logic_error("MatchToken.");
+  }
 }
 
 shared_ptr<MatchState> MatchStateManager::match_state_ptr() const {
