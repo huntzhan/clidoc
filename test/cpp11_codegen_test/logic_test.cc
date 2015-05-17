@@ -7,7 +7,7 @@ const set<string> kBooleanKeys = {
   "-d", "-e", "-f",
   "-g",
   "-h", "flag_h",
-  "-i", "-j",
+  "-i", "-j", "flag_ij",
   "-k", "-l", "-m", "-n",
   "-o", "-p", "-q", "-r", "flag_opqr",
 };
@@ -83,16 +83,16 @@ TEST(logic, h) {
 }
 
 TEST(logic, ij) {
-  const char *argv_1[] = {"utility_name", "-i"};
+  const char *argv_1[] = {"utility_name", "-i", "flag_ij"};
   EXPECT_TRUE(
-      clidoc::ParseArguments(2, argv_1, kTestMode));
+      clidoc::ParseArguments(3, argv_1, kTestMode));
   KeyChecker();
   EXPECT_TRUE(
       clidoc::boolean_outcome["-i"]);
 
-  const char *argv_2[] = {"utility_name", "-ij"};
+  const char *argv_2[] = {"utility_name", "-ij", "flag_ij"};
   EXPECT_FALSE(
-      clidoc::ParseArguments(2, argv_2, kTestMode));
+      clidoc::ParseArguments(3, argv_2, kTestMode));
 }
 
 TEST(logic, klmn) {

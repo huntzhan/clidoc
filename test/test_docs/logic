@@ -3,6 +3,6 @@ Usage:
   utility_name -def
   utility_name (-g)
   utility_name [-h] flag_h
-  utility_name -i|-j
+  utility_name -i|-j flag_ij
   utility_name (-k (-l -m) -n)
   utility_name [-o [-p -q] -r] flag_opqr

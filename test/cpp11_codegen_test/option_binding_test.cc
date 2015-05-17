@@ -60,6 +60,12 @@ TEST(option_binding, option_e) {
   KeyChecker();
   vector<string> expected = {"a", "b", "c"};
   EXPECT_EQ(expected, clidoc::string_list_outcome["-e"]);
+
+  const char *argv_2[] = {"utility_name", "-e", "a", "-eb", "-ec"};
+  EXPECT_TRUE(
+      clidoc::ParseArguments(5, argv_2, kTestMode));
+  KeyChecker();
+  EXPECT_EQ(expected, clidoc::string_list_outcome["-e"]);
 }
 
 TEST(option_binding, guideline_8_normal) {
