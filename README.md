@@ -21,11 +21,12 @@ where the front end of `clidoc` would build up an AST for user defined `doc`(syn
 
 # Requirements
 
-The project is developed in C++11 with CMake. Known supported compilers:
+The project is developed in C++11. Known supported compilers:
 
-* boost.
 * g++ 4.8.2 and higher.
 * clang 3.3 and higher.
+
+User should use CMake to build the project. Boost is necessary for building.
 
 # Documentation
 
