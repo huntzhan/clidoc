@@ -9,7 +9,6 @@
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_nodes.h"
-
 #include "clidoc/info.h"
 
 namespace clidoc {
@@ -35,61 +34,40 @@ struct MatchState {
   std::map<Token, std::vector<std::string>> string_list_outcome_;
 };
 
-class MatchStateManager;
-
-struct MementoInterface {
-  virtual void BackupMatchStateManager(
-      const MatchStateManager *match_state_manager_ptr) = 0;
-  virtual void RestoreMatchStateManager(
-      MatchStateManager *match_state_manager_ptr) = 0;
-};
-
-class SimpleMemento : public MementoInterface {
- public:
-  void BackupMatchStateManager(
-      const MatchStateManager *match_state_manager_ptr) override;
-  void RestoreMatchStateManager(
-      MatchStateManager *match_state_manager_ptr) override;
-
- private:
-  std::shared_ptr<MatchState> match_state_ptr_;
-};
-
 class MatchStateManager {
  public:
   MatchStateManager(const CppCodeGenInfo &info,
                     const std::vector<Token> &tokens);
   // memento pattern related.
   void PushRollbackPoint();
-  void PopRollbackPoint();
+  std::shared_ptr<MatchState> PopRollbackPoint();
   void Rollback();
   // modify argv match outcome.
   bool MatchToken(const Token &key);
   std::shared_ptr<MatchState> match_state_ptr() const;
 
  private:
-  // memento pattern related.
-  friend class SimpleMemento;
-  std::shared_ptr<MementoInterface> CreateMemento() const;
-  void RestoreFromMemento(std::shared_ptr<MementoInterface> memento);
-
   // modify argv match outcome.
-  std::vector<Token>::const_iterator GetFirstUnmatchArgument() const;
   std::vector<Token>::const_iterator GetFirstUnmatchArgument(
       std::vector<Token>::const_iterator begin_iter) const;
+  std::vector<Token>::const_iterator GetFirstUnmatchArgument() const;
   std::vector<Token>::const_iterator GetIteratorOfKey(const Token &key) const;
 
   bool MatchBooleanKey(const Token &key);
+  bool MatchKeyWithValue(
+      const Token &key,
+      void (MatchState::*store_key_value_pair)(const Token &, const Token &));
   bool MatchStringKey(const Token &key);
   bool MatchStringListKey(const Token &key);
 
   // infomation of AST and input arguments.
   const CppCodeGenInfo &info_;
   const std::vector<Token> tokens_;
+
   std::multimap<Token, std::vector<Token>::const_iterator> skip_iters_;
   // state of match.
   std::shared_ptr<MatchState> match_state_ptr_;
-  std::stack<std::shared_ptr<MementoInterface>> memento_stack_;
+  std::stack<std::shared_ptr<MatchState>> state_stack_;
 };
 
 class MatchStrategy : public NodeVisitorInterface {

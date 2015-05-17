@@ -1,7 +1,7 @@
 add_subdirectory (ast)
 add_subdirectory (codegen)
 
-set (CLIDOC_CPP11_PREFIX "main_doc_")
+set (CLIDOC_CPP11_PREFIX "main_doc")
 add_subdirectory (${clidoc_SOURCE_DIR}/lib/main_doc clidoc_main_doc)
 unset (CLIDOC_CPP11_PREFIX)
 

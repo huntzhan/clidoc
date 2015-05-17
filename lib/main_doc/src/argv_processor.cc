@@ -200,30 +200,23 @@ bool ArgvProcessLogic::ProcessSingleDashCase(const string &argument) {
 }
 
 bool ArgvProcessLogic::ProcessDoubleDashCase(const string &argument) {
-  bool split_flag = false;
-
   auto equal_sign_index = argument.find('=');
-  while (equal_sign_index != string::npos) {
-    // state: --...aaa=bbb...
-    //        0       ^ [equal_sign_index]
-    Token gnu_option(TerminalType::GNU_OPTION,
-                     argument.substr(0, equal_sign_index));
-    if (ReplaceWithRepresentativeOption(&gnu_option)
-        && equal_sign_index != argument.size() - 1) {
-      // `gnu_option` is valid and `=` is not the last character.
-      Token rest(TerminalType::GENERAL_ELEMENT,
-                 argument.substr(equal_sign_index + 1));
-      tokens_.push_back(gnu_option);
-      tokens_.push_back(rest);
-      split_flag = true;
-      break;
-    }
-    // current split is invalid, try next.
-    equal_sign_index = argument.find('=', equal_sign_index + 1);
-  }
-  if (!split_flag) {
+  if (equal_sign_index == string::npos
+      || equal_sign_index == argument.size() - 1) {
     tokens_.push_back(
         Token(TerminalType::GENERAL_ELEMENT, argument));
+    return false;
+  }
+  // state: --...aaa=bbb...
+  //        0       ^ [equal_sign_index]
+  Token gnu_option(TerminalType::GNU_OPTION,
+                   argument.substr(0, equal_sign_index));
+  if (ReplaceWithRepresentativeOption(&gnu_option)) {
+    // `gnu_option` is valid and `=` is not the last character.
+    Token rest(TerminalType::GENERAL_ELEMENT,
+               argument.substr(equal_sign_index + 1));
+    tokens_.push_back(gnu_option);
+    tokens_.push_back(rest);
   }
   return false;
 }

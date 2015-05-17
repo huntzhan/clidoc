@@ -1,9 +1,9 @@
 #ifndef INCLUDE_CLIDOC_AST_AST_NODES_H_
 #define INCLUDE_CLIDOC_AST_AST_NODES_H_
 
-#include <stdexcept>
 #include <cstddef>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 #include "clidoc/ast/ast_node_interface.h"

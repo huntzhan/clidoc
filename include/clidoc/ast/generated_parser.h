@@ -40,7 +40,7 @@
 #ifndef YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 # define YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 // //                    "%code requires" blocks.
-#line 14 "flex-bison-scripts/parser.y" // lalr1.cc:392
+#line 15 "parser.y" // lalr1.cc:392
 
 
 #include <string>
@@ -285,29 +285,35 @@ namespace clidoc {
       // doc
       char dummy2[sizeof(Doc::WeakPtr)];
 
+      // single_utility
       // seqs
+      // and_expr
       // descriptions
       char dummy3[sizeof(LogicAnd::WeakPtr)];
 
+      // optional_expr
+      char dummy4[sizeof(LogicOptional::WeakPtr)];
+
       // utilities
-      // xor_exprs
-      char dummy4[sizeof(LogicXor::WeakPtr)];
+      // xor_expr
+      // _xor_expr
+      char dummy5[sizeof(LogicXor::WeakPtr)];
 
       // single_binding
-      char dummy5[sizeof(OptionBinding::WeakPtr)];
+      char dummy6[sizeof(OptionBinding::WeakPtr)];
 
       // bindings
-      char dummy6[sizeof(OptionBindingContainer::WeakPtr)];
+      char dummy7[sizeof(OptionBindingContainer::WeakPtr)];
 
       // usage_section
-      // single_utility
       // single_seq
+      // logic
       // atom
       // posix_option_unit
       // gnu_option_unit
       // options_section
       // single_description
-      char dummy7[sizeof(WeakPtrNode)];
+      char dummy8[sizeof(WeakPtrNode)];
 
       // POSIX_OPTION
       // GROUPED_OPTIONS
@@ -316,7 +322,7 @@ namespace clidoc {
       // DEFAULT_VALUE
       // COMMAND
       // GENERAL_ELEMENT
-      char dummy8[sizeof(std::string)];
+      char dummy9[sizeof(std::string)];
 };
 
     /// Symbol semantic values.
@@ -400,6 +406,8 @@ namespace clidoc {
   basic_symbol (typename Base::kind_type t, const Doc::WeakPtr v);
 
   basic_symbol (typename Base::kind_type t, const LogicAnd::WeakPtr v);
+
+  basic_symbol (typename Base::kind_type t, const LogicOptional::WeakPtr v);
 
   basic_symbol (typename Base::kind_type t, const LogicXor::WeakPtr v);
 
@@ -644,7 +652,7 @@ namespace clidoc {
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const signed char yytable_[];
 
   static const signed char yycheck_[];
 
@@ -659,10 +667,13 @@ namespace clidoc {
   static const unsigned char yyr2_[];
 
 
-#if YYDEBUG
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *n);
+
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-
+#if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
   static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
@@ -763,8 +774,8 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 53,     ///< Last index in yytable_.
-      yynnts_ = 17,  ///< Number of nonterminal symbols.
+      yylast_ = 77,     ///< Last index in yytable_.
+      yynnts_ = 21,  ///< Number of nonterminal symbols.
       yyfinal_ = 7, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -848,7 +859,7 @@ namespace clidoc {
   {
       switch (other.type_get ())
     {
-      case 38: // default_value
+      case 42: // default_value
         value.copy< DefaultValue::WeakPtr > (other.value);
         break;
 
@@ -856,32 +867,39 @@ namespace clidoc {
         value.copy< Doc::WeakPtr > (other.value);
         break;
 
-      case 30: // seqs
-      case 36: // descriptions
+      case 28: // single_utility
+      case 29: // seqs
+      case 32: // and_expr
+      case 40: // descriptions
         value.copy< LogicAnd::WeakPtr > (other.value);
         break;
 
+      case 33: // optional_expr
+        value.copy< LogicOptional::WeakPtr > (other.value);
+        break;
+
       case 27: // utilities
-      case 29: // xor_exprs
+      case 34: // xor_expr
+      case 35: // _xor_expr
         value.copy< LogicXor::WeakPtr > (other.value);
         break;
 
-      case 40: // single_binding
+      case 44: // single_binding
         value.copy< OptionBinding::WeakPtr > (other.value);
         break;
 
-      case 39: // bindings
+      case 43: // bindings
         value.copy< OptionBindingContainer::WeakPtr > (other.value);
         break;
 
       case 26: // usage_section
-      case 28: // single_utility
-      case 31: // single_seq
-      case 32: // atom
-      case 33: // posix_option_unit
-      case 34: // gnu_option_unit
-      case 35: // options_section
-      case 37: // single_description
+      case 30: // single_seq
+      case 31: // logic
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
+      case 39: // options_section
+      case 41: // single_description
         value.copy< WeakPtrNode > (other.value);
         break;
 
@@ -911,7 +929,7 @@ namespace clidoc {
     (void) v;
       switch (this->type_get ())
     {
-      case 38: // default_value
+      case 42: // default_value
         value.copy< DefaultValue::WeakPtr > (v);
         break;
 
@@ -919,32 +937,39 @@ namespace clidoc {
         value.copy< Doc::WeakPtr > (v);
         break;
 
-      case 30: // seqs
-      case 36: // descriptions
+      case 28: // single_utility
+      case 29: // seqs
+      case 32: // and_expr
+      case 40: // descriptions
         value.copy< LogicAnd::WeakPtr > (v);
         break;
 
+      case 33: // optional_expr
+        value.copy< LogicOptional::WeakPtr > (v);
+        break;
+
       case 27: // utilities
-      case 29: // xor_exprs
+      case 34: // xor_expr
+      case 35: // _xor_expr
         value.copy< LogicXor::WeakPtr > (v);
         break;
 
-      case 40: // single_binding
+      case 44: // single_binding
         value.copy< OptionBinding::WeakPtr > (v);
         break;
 
-      case 39: // bindings
+      case 43: // bindings
         value.copy< OptionBindingContainer::WeakPtr > (v);
         break;
 
       case 26: // usage_section
-      case 28: // single_utility
-      case 31: // single_seq
-      case 32: // atom
-      case 33: // posix_option_unit
-      case 34: // gnu_option_unit
-      case 35: // options_section
-      case 37: // single_description
+      case 30: // single_seq
+      case 31: // logic
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
+      case 39: // options_section
+      case 41: // single_description
         value.copy< WeakPtrNode > (v);
         break;
 
@@ -986,6 +1011,12 @@ namespace clidoc {
 
   template <typename Base>
   BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicAnd::WeakPtr v)
+    : Base (t)
+    , value (v)
+  {}
+
+  template <typename Base>
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const LogicOptional::WeakPtr v)
     : Base (t)
     , value (v)
   {}
@@ -1046,7 +1077,7 @@ namespace clidoc {
     // Type destructor.
     switch (yytype)
     {
-      case 38: // default_value
+      case 42: // default_value
         value.template destroy< DefaultValue::WeakPtr > ();
         break;
 
@@ -1054,32 +1085,39 @@ namespace clidoc {
         value.template destroy< Doc::WeakPtr > ();
         break;
 
-      case 30: // seqs
-      case 36: // descriptions
+      case 28: // single_utility
+      case 29: // seqs
+      case 32: // and_expr
+      case 40: // descriptions
         value.template destroy< LogicAnd::WeakPtr > ();
         break;
 
+      case 33: // optional_expr
+        value.template destroy< LogicOptional::WeakPtr > ();
+        break;
+
       case 27: // utilities
-      case 29: // xor_exprs
+      case 34: // xor_expr
+      case 35: // _xor_expr
         value.template destroy< LogicXor::WeakPtr > ();
         break;
 
-      case 40: // single_binding
+      case 44: // single_binding
         value.template destroy< OptionBinding::WeakPtr > ();
         break;
 
-      case 39: // bindings
+      case 43: // bindings
         value.template destroy< OptionBindingContainer::WeakPtr > ();
         break;
 
       case 26: // usage_section
-      case 28: // single_utility
-      case 31: // single_seq
-      case 32: // atom
-      case 33: // posix_option_unit
-      case 34: // gnu_option_unit
-      case 35: // options_section
-      case 37: // single_description
+      case 30: // single_seq
+      case 31: // logic
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
+      case 39: // options_section
+      case 41: // single_description
         value.template destroy< WeakPtrNode > ();
         break;
 
@@ -1116,7 +1154,7 @@ namespace clidoc {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 38: // default_value
+      case 42: // default_value
         value.move< DefaultValue::WeakPtr > (s.value);
         break;
 
@@ -1124,32 +1162,39 @@ namespace clidoc {
         value.move< Doc::WeakPtr > (s.value);
         break;
 
-      case 30: // seqs
-      case 36: // descriptions
+      case 28: // single_utility
+      case 29: // seqs
+      case 32: // and_expr
+      case 40: // descriptions
         value.move< LogicAnd::WeakPtr > (s.value);
         break;
 
+      case 33: // optional_expr
+        value.move< LogicOptional::WeakPtr > (s.value);
+        break;
+
       case 27: // utilities
-      case 29: // xor_exprs
+      case 34: // xor_expr
+      case 35: // _xor_expr
         value.move< LogicXor::WeakPtr > (s.value);
         break;
 
-      case 40: // single_binding
+      case 44: // single_binding
         value.move< OptionBinding::WeakPtr > (s.value);
         break;
 
-      case 39: // bindings
+      case 43: // bindings
         value.move< OptionBindingContainer::WeakPtr > (s.value);
         break;
 
       case 26: // usage_section
-      case 28: // single_utility
-      case 31: // single_seq
-      case 32: // atom
-      case 33: // posix_option_unit
-      case 34: // gnu_option_unit
-      case 35: // options_section
-      case 37: // single_description
+      case 30: // single_seq
+      case 31: // logic
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
+      case 39: // options_section
+      case 41: // single_description
         value.move< WeakPtrNode > (s.value);
         break;
 
@@ -1359,7 +1404,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1363 "generated_parser.h" // lalr1.cc:392
+#line 1408 "generated_parser.h" // lalr1.cc:392
 
 
 

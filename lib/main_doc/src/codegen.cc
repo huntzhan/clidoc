@@ -52,7 +52,7 @@ auto nt21 = Doc::Init();
 nt21->AddChild(nt17);
 cpp_code_gen_info.doc_node_ = nt21;
 cpp_code_gen_info.doc_text_ = R"doc(Usage:
-  clidoc_main (--mode|-m) <mode> <doc_name> <output_hint>
+  clidoc_main --mode|-m <mode> <doc_name> <output_hint>
   clidoc_main --list-mode
   clidoc_main --debug <doc_name>
 

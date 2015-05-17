@@ -9,6 +9,7 @@
 %define parser_class_name {BisonGeneratedParser}
 %define api.token.constructor
 %define api.value.type variant
+%define parse.error verbose
 
 // code inserted in header.
 %code requires {
@@ -42,7 +43,7 @@ class FlexGeneratedScanner;
 
 // Error report function.
 void clidoc::BisonGeneratedParser::error(const std::string &msg) {
-  throw std::logic_error("clidoc::BisonGeneratedParser::error");
+  throw std::logic_error("clidoc::BisonGeneratedParser::error: " + msg);
 }
 
 // functions that faciliate node building.
@@ -129,21 +130,24 @@ BuildNonTerminal(WeakNodeTypes... child_nodes) {
   END                 0
 ;
 
-// Logical nodes.
 %type <Doc::WeakPtr>                    doc
-%type <LogicAnd::WeakPtr>               seqs
-%type <LogicAnd::WeakPtr>               descriptions
-%type <LogicXor::WeakPtr>               utilities
-%type <LogicXor::WeakPtr>               xor_exprs
 
 %type <WeakPtrNode>                     usage_section
+%type <LogicXor::WeakPtr>               utilities
+%type <LogicAnd::WeakPtr>               single_utility
+%type <LogicAnd::WeakPtr>               seqs
 %type <WeakPtrNode>                     single_seq
+%type <WeakPtrNode>                     logic
+%type <LogicAnd::WeakPtr>               and_expr
+%type <LogicOptional::WeakPtr>          optional_expr
+%type <LogicXor::WeakPtr>               xor_expr
+%type <LogicXor::WeakPtr>               _xor_expr
 %type <WeakPtrNode>                     atom
-%type <WeakPtrNode>                     single_utility
 %type <WeakPtrNode>                     gnu_option_unit
 %type <WeakPtrNode>                     posix_option_unit
 
 %type <WeakPtrNode>                     options_section
+%type <LogicAnd::WeakPtr>               descriptions
 %type <WeakPtrNode>                     single_description
 %type <OptionBindingContainer::WeakPtr> bindings
 %type <OptionBinding::WeakPtr>          single_binding
@@ -183,23 +187,10 @@ utilities : utilities single_utility {
 ;
 
 
-// single_utility : K_UTILITY_DELIMITER xor_exprs
+// single_utility : K_UTILITY_DELIMITER seqs
 // ;
-single_utility : K_UTILITY_DELIMITER xor_exprs {
+single_utility : K_UTILITY_DELIMITER seqs {
   $$ = $2;
-}
-;
-
-
-// xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs
-//           | seqs
-// ;
-xor_exprs : xor_exprs K_EXCLUSIVE_OR seqs {
-  NonTerminalAddChild($1, $3);
-  $$ = $1;
-}
-         | seqs {
-  $$ = BuildNonTerminal<LogicXor>($1);
 }
 ;
 
@@ -217,34 +208,82 @@ seqs : seqs single_seq {
 ;
 
 
-// single_seq : atom
-//            | atom K_ELLIPSES
-// ;
-single_seq : atom {
+// single_seq : logic
+//            | logic K_ELLIPSES
+//            | xor_expr
+//            | atom
+single_seq : logic {
   $$ = $1;
 }
-           | atom K_ELLIPSES {
-  $$ = BuildNonTerminal<LogicOneOrMore>($1);
+           | logic K_ELLIPSES {
+	$$ = BuildNonTerminal<LogicOneOrMore>($1);
+}
+           | xor_expr {
+  $$ = $1;
+}
+           | atom {
+  $$ = $1;
 }
 ;
 
 
-// atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS
-//      | K_L_BRACKET xor_exprs K_R_BRACKET
-//      | posix_option_unit
+// logic : and_expr
+//       | optional_expr                   
+// ;
+logic : and_expr {
+	$$ = $1;
+}
+      | optional_expr {
+	$$ = $1;
+}
+;
+
+// and_expr : K_L_PARENTHESIS seqs K_R_PARENTHESIS
+// ;
+and_expr : K_L_PARENTHESIS seqs K_R_PARENTHESIS {
+  $$ = BuildNonTerminal<LogicAnd>($2);
+}
+;
+
+
+// optional_expr : K_L_BRACKET seqs K_R_BRACKET
+// ;
+optional_expr : K_L_BRACKET seqs K_R_BRACKET {
+  $$ = BuildNonTerminal<LogicOptional>($2);
+}
+;
+
+
+// xor_expr : _xor_expr K_EXCLUSIVE_OR atom
+xor_expr : _xor_expr K_EXCLUSIVE_OR atom {
+  NonTerminalAddChild($1, $3);
+  $$ = $1;
+}
+;
+
+
+// _xor_expr : _xor_expr K_EXCLUSIVE_OR atom
+//           | atom
+// ;
+_xor_expr : _xor_expr K_EXCLUSIVE_OR atom {
+  NonTerminalAddChild($1, $3);
+  $$ = $1;
+}
+         | atom {
+  $$ = BuildNonTerminal<LogicXor>($1);
+}
+;
+
+
+// atom : posix_option_unit
 //      | gnu_option_unit
 //      | ARGUMENT
+//      | ARGUMENT K_ELLIPSES
 //      | COMMAND
 //      | K_OPTIONS
 //      | K_DOUBLE_HYPHEN
 // ;
-atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
-  $$ = BuildNonTerminal<LogicAnd>($2);
-}
-     | K_L_BRACKET xor_exprs K_R_BRACKET {
-  $$ = BuildNonTerminal<LogicOptional>($2);
-}
-     | posix_option_unit {
+atom : posix_option_unit {
   $$ = $1;
 }
      | gnu_option_unit {
@@ -252,6 +291,9 @@ atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
 }
      | ARGUMENT {
   $$ = BuildNonTerminal<LogicAnd>(Argument::Init($1));
+}
+     | ARGUMENT K_ELLIPSES {
+	$$ = BuildNonTerminal<LogicOneOrMore>(Argument::Init($1));
 }
      | COMMAND {
   $$ = BuildNonTerminal<LogicAnd>(Command::Init($1));
@@ -266,22 +308,35 @@ atom : K_L_PARENTHESIS xor_exprs K_R_PARENTHESIS {
 
 
 // posix_option_unit : POSIX_OPTION
+//                   | POSIX_OPTION K_ELLIPSES
 //                   | GROUPED_OPTIONS
+//                   | GROUPED_OPTIONS K_ELLIPSES
 // ;
 posix_option_unit : POSIX_OPTION {
   $$ = BuildNonTerminal<LogicAnd>(PosixOption::Init($1));
 }
+                  | POSIX_OPTION K_ELLIPSES {
+	$$ = BuildNonTerminal<LogicOneOrMore>(PosixOption::Init($1));
+}
                   | GROUPED_OPTIONS {
   $$ = BuildNonTerminal<LogicAnd>(GroupedOptions::Init($1));
+}
+                  | GROUPED_OPTIONS K_ELLIPSES {
+  $$ = BuildNonTerminal<LogicOneOrMore>(GroupedOptions::Init($1));
 }
 ;
 
 
 // gnu_option_unit : GNU_OPTION
+//                 | GNU_OPTION K_ELLIPSES
 //                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT
+//                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT K_ELLIPSES
 // ;
 gnu_option_unit : GNU_OPTION {
   $$ = BuildNonTerminal<LogicAnd>(GnuOption::Init($1));
+}
+                | GNU_OPTION K_ELLIPSES {
+	$$ = BuildNonTerminal<LogicOneOrMore>(GnuOption::Init($1));
 }
                 | GNU_OPTION K_EQUAL_SIGN ARGUMENT {
   // recording binding.
@@ -292,6 +347,17 @@ gnu_option_unit : GNU_OPTION {
   // normal works.
   $$ = BuildNonTerminal<LogicAnd>(GnuOption::Init($1),
                                   Argument::Init($3));
+}
+                | GNU_OPTION K_EQUAL_SIGN ARGUMENT K_ELLIPSES {
+  // recording binding.
+  option_recorder_ptr->RecordBinding(
+      Token(TerminalType::GNU_OPTION, $1),
+      Token(TerminalType::ARGUMENT, $3));
+
+  // normal works.
+  auto logic_and = BuildNonTerminal<LogicAnd>(GnuOption::Init($1),
+                                              Argument::Init($3));
+  $$ = BuildNonTerminal<LogicOneOrMore>(logic_and);
 }
 ;
 
