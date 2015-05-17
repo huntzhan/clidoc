@@ -38,7 +38,7 @@ def clidoc(argv, flags=0):
     argv_prepprocessor = ArgvPreprocessor(
         argv,
         Info.option_to_representative_option,
-        Info.bound_options,
+        Info.bound_options | Info.oom_bound_options,
     )
     argv_prepprocessor.tokenize_argv()
     if not argv_prepprocessor.tokens:
