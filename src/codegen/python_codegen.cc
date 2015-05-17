@@ -1,15 +1,10 @@
-#define OSTRM_PROPERTY(data_member)                \
-  ostrm << GenerateSetOfToken(                     \
-      RemoveUnderscoreSuffix("Info."#data_member), \
-      code_gen_info.data_member)                   \
-
 #include "clidoc/codegen/python_codegen.h"
 
-#include <string>
-#include <set>
-#include <map>
-#include <sstream>
 #include <fstream>
+#include <map>
+#include <set>
+#include <sstream>
+#include <string>
 
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
@@ -19,10 +14,15 @@ using std::endl;
 using std::ifstream;
 using std::map;
 using std::ostringstream;
-using std::string;
 using std::set;
+using std::string;
 
 const string kIndent = "    ";
+
+#define OSTRM_PROPERTY(data_member)                \
+  ostrm << GenerateSetOfToken(                     \
+      RemoveUnderscoreSuffix("Info."#data_member), \
+      code_gen_info.data_member)                   \
 
 namespace clidoc {
 

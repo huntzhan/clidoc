@@ -1,15 +1,15 @@
 #ifndef INCLUDE_CLIDOC_CODEGEN_CPP11_CODEGEN_H_
 #define INCLUDE_CLIDOC_CODEGEN_CPP11_CODEGEN_H_
 
-#include <string>
-#include <vector>
-#include <sstream>
+#include <map>
 #include <memory>
 #include <set>
-#include <map>
+#include <sstream>
+#include <string>
+#include <vector>
 
-#include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_build.h"
+#include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_visitor_helper.h"
 
 namespace clidoc {

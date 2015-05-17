@@ -1,17 +1,16 @@
-
-#include <iostream>
-#include <cstdlib>
-
-#include <stdexcept>
-#include <string>
-#include <set>
-
-#include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/option_record.h"
 
-using std::string;
-using std::set;
+#include <cstdlib>
+#include <iostream>
+#include <set>
+#include <stdexcept>
+#include <string>
+
+#include "clidoc/ast/ast_node_interface.h"
+
 using std::logic_error;
+using std::set;
+using std::string;
 
 namespace clidoc {
 

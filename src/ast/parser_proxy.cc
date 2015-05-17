@@ -1,33 +1,33 @@
+#include "clidoc/ast/parser_proxy.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <iterator>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <set>
 
 #include "boost/xpressive/xpressive_dynamic.hpp"
-#include "clidoc/ast/generated_scanner.h"
-#include "clidoc/ast/generated_parser.h"
-#include "clidoc/ast/parser_proxy.h"
 #include "clidoc/ast/ast_nodes.h"
 #include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/ast/generated_scanner.h"
+#include "clidoc/ast/generated_parser.h"
 #include "clidoc/ast/option_record.h"
 #include "clidoc/ast/string_utils.h"
-
-using std::string;
-using std::back_inserter;
-using std::istringstream;
-using std::ostringstream;
-using std::vector;
-using std::to_string;
-using std::set;
 
 using boost::xpressive::sregex;
 using boost::xpressive::smatch;
 using boost::xpressive::regex_replace;
 using boost::xpressive::regex_search;
+
+using std::back_inserter;
+using std::istringstream;
+using std::ostringstream;
+using std::set;
+using std::string;
+using std::to_string;
+using std::vector;
 
 namespace clidoc {
 

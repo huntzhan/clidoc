@@ -5,11 +5,11 @@
 #include <sstream>
 #include <string>
 
-#include "clidoc/cpp11.h"
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/codegen/cpp11_codegen.h"
-#include "clidoc/codegen/python_codegen.h"
 #include "clidoc/codegen/filesystem.h"
+#include "clidoc/codegen/python_codegen.h"
+#include "clidoc/cpp11.h"
 
 using std::cout;
 using std::cerr;
@@ -18,9 +18,9 @@ using std::exit;
 using std::ifstream;
 using std::map;
 using std::ofstream;
+using std::ostringstream;
 using std::set;
 using std::string;
-using std::ostringstream;
 
 void ConstructCodeGenInfo(
     const string &doc_path, clidoc::CodeGenInfo *info_ptr) {

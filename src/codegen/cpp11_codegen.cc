@@ -1,18 +1,19 @@
-#include <string>
-#include <set>
+#include "clidoc/codegen/cpp11_codegen.h"
+
 #include <map>
+#include <set>
 #include <sstream>
+#include <string>
 
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_visitor_helper.h"
-#include "clidoc/codegen/cpp11_codegen.h"
 
-using std::string;
-using std::set;
+using std::endl;
 using std::map;
 using std::ostringstream;
-using std::endl;
+using std::set;
+using std::string;
 
 #define OSTRM_PROPERTY(data_member)     \
   ostrm << GenerateSetOfToken(          \

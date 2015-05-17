@@ -1,33 +1,34 @@
-add_library (clidoc_filesystem filesystem.cc)
-target_link_libraries(clidoc_filesystem ${Boost_LIBRARIES})
+# compile library for in-project cpp11 codegen.
+set (CLIDOC_CPP11_PREFIX "clidoc_project_used")
+set (PATH_PREFIX "${clidoc_SOURCE_DIR}/resource/cpp11/project_template/src")
+
+include_directories (${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/)
+
+add_library (clidoc_filesystem     filesystem.cc)
+add_library (clidoc_python_codegen python_codegen.cc)
+add_library (clidoc_cpp11_codegen  cpp11_codegen.cc)
+
+add_library (${CLIDOC_CPP11_PREFIX}_argv_processor ${PATH_PREFIX}/argv_processor.cc)
+add_library (${CLIDOC_CPP11_PREFIX}_match_logic    ${PATH_PREFIX}/match_logic.cc)
+add_library (${CLIDOC_CPP11_PREFIX}_cpp11          ${PATH_PREFIX}/cpp11.cc)
+
+target_link_libraries(
+  clidoc_filesystem
+  ${Boost_LIBRARIES}
+)
 set_target_properties (
   clidoc_filesystem
   PROPERTIES COMPILE_FLAGS "-DCLIDOC_RESOURCE_DIR=${CMAKE_BINARY_DIR}/resource"
 )
-
-
 # compile library for python codegen.
-add_library (clidoc_python_codegen python_codegen.cc)
-target_link_libraries (clidoc_python_codegen clidoc_filesystem)
-
-
-add_library (clidoc_cpp11_codegen cpp11_codegen.cc)
-
-
-# compile library for in-project cpp11 codegen.
-set (CLIDOC_CPP11_PREFIX "clidoc_project_used_")
-set (PATH_PREFIX "${clidoc_SOURCE_DIR}/resource/cpp11/project_template/src/")
-
-include_directories (${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/)
-
-add_library (${CLIDOC_CPP11_PREFIX}argv_processor ${PATH_PREFIX}argv_processor.cc)
-add_library (${CLIDOC_CPP11_PREFIX}match_logic    ${PATH_PREFIX}match_logic.cc)
-add_library (${CLIDOC_CPP11_PREFIX}cpp11          ${PATH_PREFIX}cpp11.cc)
-
 target_link_libraries (
-  ${CLIDOC_CPP11_PREFIX}cpp11
-  ${CLIDOC_CPP11_PREFIX}argv_processor
-  ${CLIDOC_CPP11_PREFIX}match_logic
+  clidoc_python_codegen
+  clidoc_filesystem
+)
+target_link_libraries (
+  ${CLIDOC_CPP11_PREFIX}_cpp11
+  ${CLIDOC_CPP11_PREFIX}_argv_processor
+  ${CLIDOC_CPP11_PREFIX}_match_logic
   clidoc_smart_ptr_interface
 )
 

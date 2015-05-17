@@ -1,21 +1,21 @@
-
-#include <cstddef>
-#include <vector>
-#include <string>
-
-#include "boost/xpressive/xpressive_dynamic.hpp"
 #include "clidoc/ast/string_utils.h"
 
-using std::string;
-using std::to_string;
-using std::vector;
-using std::size_t;
+#include <cstddef>
+#include <string>
+#include <vector>
+
+#include "boost/xpressive/xpressive_dynamic.hpp"
 
 using boost::xpressive::sregex;
 using boost::xpressive::smatch;
 using boost::xpressive::regex_replace;
 using boost::xpressive::regex_search;
 using boost::xpressive::regex_match;
+
+using std::size_t;
+using std::string;
+using std::to_string;
+using std::vector;
 
 namespace clidoc {
 

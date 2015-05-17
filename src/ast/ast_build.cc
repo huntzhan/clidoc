@@ -1,20 +1,20 @@
+#include "clidoc/ast/ast_build.h"
 
-#include <set>
-#include <string>
 #include <algorithm>
 #include <iterator>
+#include <set>
+#include <string>
 
-#include "clidoc/ast/ast_build.h"
-#include "clidoc/ast/parser_proxy.h"
 #include "clidoc/ast/ast_node_interface.h"
-#include "clidoc/ast/process_logic.h"
-#include "clidoc/ast/option_record.h"
 #include "clidoc/ast/ast_visitor_helper.h"
+#include "clidoc/ast/option_record.h"
+#include "clidoc/ast/parser_proxy.h"
+#include "clidoc/ast/process_logic.h"
 
-using std::set;
-using std::string;
-using std::set_difference;
 using std::inserter;
+using std::set;
+using std::set_difference;
+using std::string;
 
 namespace clidoc {
 

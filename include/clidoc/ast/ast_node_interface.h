@@ -2,12 +2,12 @@
 #define INCLUDE_CLIDOC_AST_AST_NODE_INTERFACE_H_
 
 #include <cstddef>
+#include <iterator>
+#include <list>
 #include <map>
 #include <memory>
 #include <sstream>
 #include <string>
-#include <list>
-#include <iterator>
 
 namespace clidoc {
 

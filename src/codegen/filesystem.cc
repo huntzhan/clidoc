@@ -1,11 +1,9 @@
-#define STRINGIFY(x) TO_STRING(x)
-#define TO_STRING(x) #x
-
 #include "clidoc/codegen/filesystem.h"
+
 #include <cstdlib>
-#include <sstream>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 // fix "undefined reference to `boost::filesystem::detail::copy_file".
@@ -13,13 +11,16 @@
 #include "boost/filesystem.hpp"
 
 namespace fs = boost::filesystem;
-using std::string;
-using std::exit;
+
 using std::cout;
 using std::endl;
-using std::ostringstream;
+using std::exit;
 using std::ifstream;
+using std::ostringstream;
+using std::string;
 
+#define STRINGIFY(x) TO_STRING(x)
+#define TO_STRING(x) #x
 const fs::path kResourceDir(STRINGIFY(CLIDOC_RESOURCE_DIR));
 
 namespace clidoc {

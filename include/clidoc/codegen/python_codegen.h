@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 
-#include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_build.h"
+#include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/ast_visitor_helper.h"
 
 namespace clidoc {

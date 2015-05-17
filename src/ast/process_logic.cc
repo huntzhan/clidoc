@@ -1,19 +1,20 @@
+#include "clidoc/ast/process_logic.h"
+
 #include <algorithm>
-#include <string>
 #include <iterator>
-#include <set>
 #include <map>
+#include <set>
+#include <string>
 #include <utility>
 
 #include "clidoc/ast/ast_node_interface.h"
-#include "clidoc/ast/option_record.h"
-#include "clidoc/ast/process_logic.h"
 #include "clidoc/ast/ast_visitor_helper.h"
+#include "clidoc/ast/option_record.h"
 
-using std::set;
-using std::multimap;
 using std::make_pair;
+using std::multimap;
 using std::next;
+using std::set;
 using std::string;
 
 namespace clidoc {

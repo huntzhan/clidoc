@@ -1,4 +1,3 @@
-
 add_executable (python_codegen_test python_codegen_test.cc)
 target_link_libraries (
   python_codegen_test
