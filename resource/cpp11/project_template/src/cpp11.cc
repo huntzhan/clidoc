@@ -93,13 +93,7 @@ bool ParseArguments(const int &argc, const char *const *argv,
   ArgvProcessor argv_processor;
   argv_processor.LoadArgv(argc, argv);
   // merge `bound_options_` and `oom_bound_options_`.
-  auto bound_options = cpp_code_gen_info.bound_options_;
-  bound_options.insert(
-      cpp_code_gen_info.oom_bound_options_.cbegin(),
-      cpp_code_gen_info.oom_bound_options_.cend());
-  auto tokens = argv_processor.GetPreprocessedArguments(
-      cpp_code_gen_info.option_to_representative_option_,
-      bound_options);
+  auto tokens = argv_processor.GetPreprocessedArguments(cpp_code_gen_info);
   if (tokens.empty()) {
     return RespondToError();
   }

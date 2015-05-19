@@ -8,6 +8,7 @@
 #include <map>
 
 #include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/info.h"
 
 namespace clidoc {
 
@@ -20,14 +21,14 @@ struct ArgvProcessLogic {
     UNKNOW_CASE,
   };
 
-  explicit ArgvProcessLogic(
+  ArgvProcessLogic(
       const std::vector<std::string> &argv,
-      const std::map<Token, Token> &option_to_rep_option,
-      const std::set<Token> &bound_options);
+      const CppCodeGenInfo &info);
 
   ArgumentPattern DetectArgumentPattern(const std::string &argument);
   bool ReplaceWithRepresentativeOption(Token *option_ptr);
   bool OptionIsBound(const Token &option);
+  bool ArgumentIsCommand(const std::string &argument);
 
   void TokenizeArgv();
 
@@ -39,8 +40,7 @@ struct ArgvProcessLogic {
   bool ProcessUnknowCase(const std::string &argument);
 
   const std::vector<std::string> &argv_;
-  const std::map<Token, Token> &option_to_rep_option_;
-  const std::set<Token> &bound_options_;
+  const CppCodeGenInfo &info_;
   std::list<Token> tokens_;
 };
 
@@ -48,8 +48,7 @@ class ArgvProcessor {
  public:
   void LoadArgv(const int &argc, const char *const *argv);
   std::vector<Token> GetPreprocessedArguments(
-      const std::map<Token, Token> &option_to_rep_option,
-      const std::set<Token> &bound_options) const;
+      const CppCodeGenInfo &info) const;
 
  private:
   std::vector<std::string> argv_;

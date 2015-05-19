@@ -8,6 +8,7 @@
 
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/argv_processor.h"
+#include "clidoc/info.h"
 
 using std::back_inserter;
 using std::copy;
@@ -22,12 +23,8 @@ namespace clidoc {
 
 ArgvProcessLogic::ArgvProcessLogic(
     const vector<string> &argv,
-    const map<Token, Token> &option_to_rep_option,
-    const set<Token> &bound_options)
-    :
-    argv_(argv),
-    option_to_rep_option_(option_to_rep_option),
-    bound_options_(bound_options) { /* empty */ }
+    const CppCodeGenInfo &info)
+    : argv_(argv), info_(info) { /* empty */ }
 
 ArgvProcessLogic::ArgumentPattern
 ArgvProcessLogic::DetectArgumentPattern(const string &argument) {
@@ -79,16 +76,25 @@ ArgvProcessLogic::DetectArgumentPattern(const string &argument) {
 
 bool
 ArgvProcessLogic::ReplaceWithRepresentativeOption(Token *option_ptr) {
-  if (option_to_rep_option_.find(*option_ptr)
-      != option_to_rep_option_.cend()) {
-    *option_ptr = option_to_rep_option_.at(*option_ptr);
+  const auto &option_to_rep_option = info_.option_to_representative_option_;
+  if (option_to_rep_option.find(*option_ptr)
+      != option_to_rep_option.cend()) {
+    *option_ptr = option_to_rep_option.at(*option_ptr);
     return true;
   }
   return false;
 }
 
 bool ArgvProcessLogic::OptionIsBound(const Token &option) {
-  return bound_options_.find(option) != bound_options_.cend();
+  const auto &bound_options = info_.bound_options_;
+  const auto &oom_bound_options = info_.oom_bound_options_;
+  return bound_options.find(option) != bound_options.cend()
+         || oom_bound_options.find(option) != oom_bound_options.cend();
+}
+
+bool ArgvProcessLogic::ArgumentIsCommand(const string &argument) {
+  return info_.commands_.find(Token(TerminalType::COMMAND, argument))
+         != info_.commands_.cend();
 }
 
 void ArgvProcessLogic::TokenizeArgv() {
@@ -225,8 +231,9 @@ bool ArgvProcessLogic::ProcessUnknowCase(const string &argument) {
   if (argument == "--") {
     return true;
   }
-  tokens_.push_back(
-      Token(TerminalType::GENERAL_ELEMENT, argument));
+  TerminalType type = ArgumentIsCommand(argument)?
+                      TerminalType::COMMAND : TerminalType::GENERAL_ELEMENT;
+  tokens_.push_back(Token(type, argument));
   return false;
 }
 
@@ -237,9 +244,8 @@ void ArgvProcessor::LoadArgv(const int &argc, const char *const *argv) {
 }
 
 vector<Token> ArgvProcessor::GetPreprocessedArguments(
-    const map<Token, Token> &option_to_rep_option,
-    const set<Token> &bound_options) const {
-  ArgvProcessLogic process_logic(argv_, option_to_rep_option, bound_options);
+    const CppCodeGenInfo &info) const {
+  ArgvProcessLogic process_logic(argv_, info);
   process_logic.TokenizeArgv();
   return vector<Token>(
       process_logic.tokens_.begin(),

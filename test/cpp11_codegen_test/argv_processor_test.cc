@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/argv_processor.h"
+#include "clidoc/info.h"
 
 using std::string;
 using std::vector;
@@ -14,7 +15,7 @@ using std::set;
 using namespace clidoc;
 
 TEST(ArgvProcessorTest, DetectArgumentPattern) {
-  ArgvProcessLogic logic({}, {}, {});
+  ArgvProcessLogic logic({}, CppCodeGenInfo());
   EXPECT_EQ(
       ArgvProcessLogic::ArgumentPattern::POSIX_OPTION,
       logic.DetectArgumentPattern("-c"));
@@ -45,13 +46,14 @@ TEST(ArgvProcessorTest, DetectArgumentPattern) {
 }
 
 TEST(ArgvProcessorTest, ReplaceWithRepresentativeOption) {
-  map<Token, Token> option_to_rep_option = {
+  CppCodeGenInfo info;
+  info.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-c"),
      Token(TerminalType::GNU_OPTION, "--longc")},
     {Token(TerminalType::GNU_OPTION, "--longc"),
      Token(TerminalType::GNU_OPTION, "--longc")},
   };
-  ArgvProcessLogic logic({}, option_to_rep_option, {});
+  ArgvProcessLogic logic({}, info);
 
   auto c = Token(TerminalType::POSIX_OPTION, "-c");
   auto longc = Token(TerminalType::GNU_OPTION, "--longc");
@@ -66,9 +68,10 @@ TEST(ArgvProcessorTest, ReplaceWithRepresentativeOption) {
 }
 
 TEST(ArgvProcessorTest, OptionIsBound) {
-  set<Token> bound_options = {Token(TerminalType::POSIX_OPTION, "-o"),
+  CppCodeGenInfo info;
+  info.bound_options_ = {Token(TerminalType::POSIX_OPTION, "-o"),
                               Token(TerminalType::POSIX_OPTION, "-I")};
-  ArgvProcessLogic logic({}, {}, bound_options);
+  ArgvProcessLogic logic({}, info);
   auto c = Token(TerminalType::POSIX_OPTION, "-c");
   auto o = Token(TerminalType::POSIX_OPTION, "-o");
   auto I = Token(TerminalType::POSIX_OPTION, "-I");
@@ -78,13 +81,14 @@ TEST(ArgvProcessorTest, OptionIsBound) {
 }
 
 TEST(ArgvProcessorTest, ProcessOption) {
-  map<Token, Token> option_to_rep_option = {
+  CppCodeGenInfo info;
+  info.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-c"),
      Token(TerminalType::GNU_OPTION, "--longc")},
     {Token(TerminalType::GNU_OPTION, "--longc"),
      Token(TerminalType::GNU_OPTION, "--longc")},
   };
-  ArgvProcessLogic logic({}, option_to_rep_option, {});
+  ArgvProcessLogic logic({}, info);
   auto longc = Token(TerminalType::GNU_OPTION, "--longc");
   EXPECT_FALSE(logic.ProcessOption(TerminalType::POSIX_OPTION, "-c"));
   EXPECT_EQ(
@@ -114,7 +118,8 @@ TEST(ArgvProcessorTest, GetPreprocessedArguments) {
   ArgvProcessor argv_processor;
   argv_processor.LoadArgv(sizeof(argv) / sizeof(argv[0]), argv);
 
-  map<Token, Token> option_to_rep_option = {
+  CppCodeGenInfo info;
+  info.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-c"),
      Token(TerminalType::GNU_OPTION, "--longc")},
     {Token(TerminalType::GNU_OPTION, "--longc"),
@@ -128,14 +133,12 @@ TEST(ArgvProcessorTest, GetPreprocessedArguments) {
     {Token(TerminalType::POSIX_OPTION, "-I"),
      Token(TerminalType::POSIX_OPTION, "-I")},
   };
-  set<Token> bound_options = {
+  info.bound_options_ = {
     Token(TerminalType::POSIX_OPTION, "-o"),
     Token(TerminalType::POSIX_OPTION, "-I"),
     Token(TerminalType::GNU_OPTION, "--long-option"),
   };
-  auto tokens = argv_processor.GetPreprocessedArguments(
-      option_to_rep_option,
-      bound_options);
+  auto tokens = argv_processor.GetPreprocessedArguments(info);
   vector<TerminalType> types;
   vector<string> values;
   for (const auto &token : tokens) {

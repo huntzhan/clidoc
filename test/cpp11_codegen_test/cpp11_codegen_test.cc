@@ -80,9 +80,9 @@ TEST(cpp_code_gen, argv_match) {
   MatchStrategy strategy(
       cppinfo,
       {
-        Token(TerminalType::GENERAL_ELEMENT, "ship"),
+        Token(TerminalType::COMMAND, "ship"),
         Token(TerminalType::GENERAL_ELEMENT, "name_of_ship"),
-        Token(TerminalType::GENERAL_ELEMENT, "move"),
+        Token(TerminalType::COMMAND, "move"),
         Token(TerminalType::GENERAL_ELEMENT, "10"),
         Token(TerminalType::GENERAL_ELEMENT, "20"),
         Token(TerminalType::GNU_OPTION, "--speed"),

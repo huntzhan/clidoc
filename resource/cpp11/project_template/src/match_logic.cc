@@ -166,24 +166,12 @@ bool MatchStateManager::MatchBooleanKey(const Token &key) {
   if (!match_state_ptr_->IsBooleanKey(key)) {
     return false;
   }
-  if (key.type() == TerminalType::COMMAND) {
-    auto transformed_key = key;
-    transformed_key.set_type(TerminalType::GENERAL_ELEMENT);
-    auto key_iter = GetIteratorOfKey(transformed_key);
-    if (key_iter != tokens_.cend()) {
-      match_state_ptr_->AddBooleanOutcome(key);
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), key_iter));
-      return true;
-    }
-  } else {
-    auto key_iter = GetIteratorOfKey(key);
-    if (key_iter != tokens_.cend()) {
-      match_state_ptr_->AddBooleanOutcome(key);
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), key_iter));
-      return true;
-    }
+  auto key_iter = GetIteratorOfKey(key);
+  if (key_iter != tokens_.cend()) {
+    match_state_ptr_->AddBooleanOutcome(key);
+    match_state_ptr_->MarkArgumentConsumed(
+        distance(tokens_.cbegin(), key_iter));
+    return true;
   }
   return false;
 }
