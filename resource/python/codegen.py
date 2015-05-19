@@ -76,6 +76,7 @@ class Token(object):
     # input argument types:
     # * POSIX_OPTION
     # * GNU_OPTION
+    # * COMMAND
     # * GENERAL_ELEMENT
     #
     # AST token types:
@@ -272,10 +273,6 @@ class MatchStateManager(object):
 
     @classmethod
     def _prepare_unconsumed_index(cls, key):
-        # transform type of key.
-        if key.type_id == Token.COMMAND:
-            key = Token(Token.GENERAL_ELEMENT, key.value)
-
         match_indices = Info.search_match_token_indices(key)
         for index in match_indices:
             if not cls._match_state.get_consumed_flag(index):
@@ -657,7 +654,11 @@ class ArgvPreprocessor(object):
     def _process_unknow_case(self, value):
         if value == '--':
             return True
-        self._add_general_element(value)
+        suspect_command = Token(Token.COMMAND, value)
+        if suspect_command in Info.commands:
+            self.tokens.append(suspect_command)
+        else:
+            self._add_general_element(value)
         return False
 
     def tokenize_argv(self):
