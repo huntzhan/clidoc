@@ -49,7 +49,7 @@ ARGUMENT             {ARGUMENT_FORM_ONE}|{ARGUMENT_FORM_TWO}
 
 DEFAULT_VALUE        \"[^\n\"]*\"
 
-COMMAND              {NON_SPACE}+
+COMMAND              {LOWERCASE_DIGIT}({LOWERCASE_DIGIT}|{HYPHEN})*
 
 %%
 {K_L_PARENTHESIS}     return clidoc::BisonGeneratedParser::make_K_L_PARENTHESIS();

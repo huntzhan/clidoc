@@ -6,10 +6,10 @@ const set<string> kBooleanKeys = {
   "-a", "-b", "-c",
   "-d", "-e", "-f",
   "-g",
-  "-h", "flag_h",
-  "-i", "-j", "flag_ij",
+  "-h", "flag-h",
+  "-i", "-j", "flag-ij",
   "-k", "-l", "-m", "-n",
-  "-o", "-p", "-q", "-r", "flag_opqr",
+  "-o", "-p", "-q", "-r", "flag-opqr",
 };
 const set<string> kStringKeys = {};
 const set<string> kStringListKeys = {};
@@ -74,7 +74,7 @@ TEST(logic, g) {
 }
 
 TEST(logic, h) {
-  const char *argv_1[] = {"utility_name", "flag_h"};
+  const char *argv_1[] = {"utility_name", "flag-h"};
   EXPECT_TRUE(
       clidoc::ParseArguments(2, argv_1, kTestMode));
   KeyChecker();
@@ -83,14 +83,14 @@ TEST(logic, h) {
 }
 
 TEST(logic, ij) {
-  const char *argv_1[] = {"utility_name", "-i", "flag_ij"};
+  const char *argv_1[] = {"utility_name", "-i", "flag-ij"};
   EXPECT_TRUE(
       clidoc::ParseArguments(3, argv_1, kTestMode));
   KeyChecker();
   EXPECT_TRUE(
       clidoc::boolean_outcome["-i"]);
 
-  const char *argv_2[] = {"utility_name", "-ij", "flag_ij"};
+  const char *argv_2[] = {"utility_name", "-ij", "flag-ij"};
   EXPECT_FALSE(
       clidoc::ParseArguments(3, argv_2, kTestMode));
 }
@@ -119,7 +119,7 @@ TEST(logic, klmn) {
 }
 
 TEST(logic, opqr) {
-  const char *argv_1[] = {"utility_name", "-opqr", "flag_opqr"};
+  const char *argv_1[] = {"utility_name", "-opqr", "flag-opqr"};
   EXPECT_TRUE(
       clidoc::ParseArguments(3, argv_1, kTestMode));
   KeyChecker();
@@ -132,7 +132,7 @@ TEST(logic, opqr) {
   EXPECT_TRUE(
       clidoc::boolean_outcome["-r"]);
 
-  const char *argv_2[] = {"utility_name", "-or", "flag_opqr"};
+  const char *argv_2[] = {"utility_name", "-or", "flag-opqr"};
   EXPECT_TRUE(
       clidoc::ParseArguments(3, argv_2, kTestMode));
   KeyChecker();
@@ -145,7 +145,7 @@ TEST(logic, opqr) {
   EXPECT_TRUE(
       clidoc::boolean_outcome["-r"]);
 
-  const char *argv_3[] = {"utility_name", "flag_opqr"};
+  const char *argv_3[] = {"utility_name", "flag-opqr"};
   EXPECT_TRUE(
       clidoc::ParseArguments(2, argv_3, kTestMode));
   KeyChecker();
@@ -158,11 +158,11 @@ TEST(logic, opqr) {
   EXPECT_FALSE(
       clidoc::boolean_outcome["-r"]);
 
-  const char *argv_4[] = {"utility_name", "-pq", "flag_opqr"};
+  const char *argv_4[] = {"utility_name", "-pq", "flag-opqr"};
   EXPECT_FALSE(
       clidoc::ParseArguments(3, argv_4, kTestMode));
 
-  const char *argv_5[] = {"utility_name", "-opr", "flag_opqr"};
+  const char *argv_5[] = {"utility_name", "-opr", "flag-opqr"};
   EXPECT_FALSE(
       clidoc::ParseArguments(3, argv_5, kTestMode));
 }

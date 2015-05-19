@@ -3,8 +3,8 @@
 #include "cpp11_codegen_test/util-inl.h"
 
 const set<string> kBooleanKeys = {
-  "flag_a",
-  "flag_arg2",
+  "flag-a",
+  "flag-arg2",
 };
 const set<string> kStringKeys = {
   "-a",
@@ -15,7 +15,7 @@ auto KeyChecker = GenerateKeysOfOutcomeChecker(
     kBooleanKeys, kStringKeys, kStringListKeys);
 
 TEST(default_value, option_a) {
-  const char *argv[] = {"utility_name", "flag_a"};
+  const char *argv[] = {"utility_name", "flag-a"};
   EXPECT_TRUE(
       clidoc::ParseArguments(2, argv, kTestMode));
   KeyChecker();
@@ -23,7 +23,7 @@ TEST(default_value, option_a) {
 }
 
 TEST(default_value, arg2) {
-  const char *argv[] = {"utility_name", "flag_arg2"};
+  const char *argv[] = {"utility_name", "flag-arg2"};
   EXPECT_TRUE(
       clidoc::ParseArguments(2, argv, kTestMode));
   KeyChecker();

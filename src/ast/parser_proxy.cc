@@ -16,10 +16,7 @@
 #include "clidoc/ast/option_record.h"
 #include "clidoc/ast/string_utils.h"
 
-using boost::xpressive::sregex;
-using boost::xpressive::smatch;
-using boost::xpressive::regex_replace;
-using boost::xpressive::regex_search;
+namespace re = boost::xpressive;
 
 using std::back_inserter;
 using std::istringstream;
@@ -38,22 +35,21 @@ void WrongUsageSectionFormatLogging() {
 
 void DocPreprocessor::RemoveComment() {
   // must NOT remove the tailing NEWLINE character.
-  sregex pattern = sregex::compile("#[^\r\n]*");
-  text_ = regex_replace(text_, pattern, "");
+  re::sregex pattern = re::sregex::compile("#[^\r\n]*");
+  text_ = re::regex_replace(text_, pattern, "");
 }
 
 void DocPreprocessor::RemoveEmptyLine() {
-  sregex pattern = sregex::compile("(\n[ \t]*)+");
-  text_ = regex_replace(text_, pattern, "\n");
+  re::sregex pattern = re::sregex::compile("(\n[ \t]*)+");
+  text_ = re::regex_replace(text_, pattern, "\n");
 }
 
-
 std::string DocPreprocessor::GetUtilityName(const std::string &raw_doc) {
-  sregex utility_name_pattern = sregex::compile(
+  re::sregex utility_name_pattern = re::sregex::compile(
       "usage:\\s*(\\S+)",
-      boost::xpressive::regex_constants::icase);
-  smatch match_result;
-  bool found = regex_search(
+      re::regex_constants::icase);
+  re::smatch match_result;
+  bool found = re::regex_search(
       raw_doc,
       match_result,
       utility_name_pattern);
@@ -74,12 +70,13 @@ void DocPreprocessor::InsertDesDelimiter() {
   // Options: \n[NOT here]
   //   -x, -xxx # brbrbr. \n[HERE!]
   //   ...
-  sregex options_section_name_pattern = sregex::compile(
+  re::sregex options_section_name_pattern = re::sregex::compile(
       "options:\\s*",
-      boost::xpressive::regex_constants::icase);
-  smatch match_result;
+      re::regex_constants::icase);
+  re::smatch match_result;
   // have no chance to fail.
-  regex_search(options_section_, match_result, options_section_name_pattern);
+  re::regex_search(
+      options_section_, match_result, options_section_name_pattern);
   if (match_result.suffix().first == options_section_.end()) {
     // case happen if nothing is following the name of options section
     // ("Options:").
@@ -88,49 +85,12 @@ void DocPreprocessor::InsertDesDelimiter() {
   }
   string processed_options_section = match_result.str();
   auto pos_iter = match_result.suffix().first;
-  regex_replace(
+  re::regex_replace(
       back_inserter(processed_options_section),
       pos_iter, options_section_.cend(),
-      sregex::compile("\n"),
-      "\n*DESC_DELIMITER*");
+      re::sregex::compile("\n"),
+      "\n*DESC_DELIMITER* ");
   options_section_ = processed_options_section;
-}
-
-void DocPreprocessor::DisambiguateByInsertSpace() {
-  const vector<string> keywords = {
-    "(",
-    ")",
-    "[",
-    "]",
-    "|",
-    "...",
-    "=",
-    ",",
-    "options",
-    "*UTILITY_DELIMITER*",
-    "*DESC_DELIMITER*" ,
-  };
-
-  // deal with `usage_section_`.
-  usage_section_ += "*UTILITY_DELIMITER*";
-  StringUtils::InsertSpace(
-      {"(-- (.|\n)*?)(\\s*)(\\*UTILITY_DELIMITER\\*)", "(<.*?>)"},
-      keywords,
-      &usage_section_);
-  // remove previous added dilimiter.
-  usage_section_ = regex_replace(
-      usage_section_,
-      sregex::compile("\\*UTILITY_DELIMITER\\*$"),
-      "");
-
-  // deal with `options_section_`.
-  StringUtils::InsertSpace(
-      {"(<.*?>)", "(\".*?\")"},
-      keywords,
-      &options_section_);
-
-  // update `text_`.
-  text_ = usage_section_ + options_section_;
 }
 
 void DocPreprocessor::ExtractAndProcessUsageSection() {
@@ -154,6 +114,7 @@ void DocPreprocessor::ExtractAndProcessOptionsSection() {
 
 string DocPreprocessor::PreprocessRawDocForParsing(const string &raw_doc) {
   text_ = raw_doc;
+
   // remove string.
   RemoveComment();
   RemoveEmptyLine();
@@ -161,15 +122,16 @@ string DocPreprocessor::PreprocessRawDocForParsing(const string &raw_doc) {
   ExtractAndProcessUsageSection();
   // extract and preprocess options section.
   ExtractAndProcessOptionsSection();
-  // disambiguate.
-  DisambiguateByInsertSpace();
+
+  // update `text_`.
+  text_ = usage_section_ + options_section_;
   return text_;
 }
 
 string DocPreprocessor::PreprocessRawDocForCodeGen(const string &raw_doc) {
   // Replace # and following space or tab.
-  sregex pattern = sregex::compile("#[ \t]*");
-  return regex_replace(raw_doc, pattern, "");
+  re::sregex pattern = re::sregex::compile("#[ \t]*");
+  return re::regex_replace(raw_doc, pattern, "");
 }
 
 string ParserProxy::PreprocessRawDoc(const string &raw_doc) {

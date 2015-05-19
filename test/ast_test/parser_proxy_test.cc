@@ -122,8 +122,8 @@ TEST(DocPreprocessorTest, ExtractAndProcessOptionsSection) {
       "   this is line two.\n";
   string expect =
       "Options:\n"
-      "   this is line one.\n*DESC_DELIMITER*"
-      "   this is line two.\n*DESC_DELIMITER*";
+      "   this is line one.\n*DESC_DELIMITER* "
+      "   this is line two.\n*DESC_DELIMITER* ";
   preprocessor.ExtractAndProcessOptionsSection();
   EXPECT_EQ(expect, preprocessor.options_section_);
 }
@@ -136,7 +136,7 @@ TEST(ParserProxyTest, PreprocessRawDoc) {
       "   some_program.py (foo|bar) --long=<newline>\n"
       "\n\t \n\n"
       "Options \t:\n"
-      "   this is line one. [default: \"a   b\"] # whatever\n"
+      "this is line one. [default: \"a   b\"]   # whatever\n"
       "       # whatever\n"
       "   this is line two. [default: \"a   b\"] \n"
       " -h <arg 1> [default: \"42\"]\n"
@@ -145,15 +145,15 @@ TEST(ParserProxyTest, PreprocessRawDoc) {
       "\n\n\n";
 
   string expect =
-    "Usage:"
-    " *UTILITY_DELIMITER* [ -f ] FILE [ options ] -- <foo  \t bar>"
-    " *UTILITY_DELIMITER* ( foo | bar ) --long = <newline>"
-    " Options:"
-    " this is line one. [ default: \"a   b\" ] *DESC_DELIMITER*"
-    " this is line two. [ default: \"a   b\" ] *DESC_DELIMITER*"
-    " -h <arg 1> [ default: \"42\" ] *DESC_DELIMITER*"
-    " --help = ARG-2 [ default: \"43\" ] *DESC_DELIMITER*"
-    " --mode = <mode> , -m <mode> *DESC_DELIMITER*";
+      "Usage:\n"
+      "*UTILITY_DELIMITER* [-f] FILE [options] -- <foo  \t bar>\n"
+      "*UTILITY_DELIMITER* (foo|bar) --long=<newline>\n"
+      "Options:\n"
+      "this is line one. [default: \"a   b\"]   \n*DESC_DELIMITER* "
+      "this is line two. [default: \"a   b\"] \n*DESC_DELIMITER* "
+      "-h <arg 1> [default: \"42\"]\n*DESC_DELIMITER* "
+      "--help=ARG-2 [default:\"43\"]\n*DESC_DELIMITER* "
+      "--mode=<mode>,-m <mode> \n*DESC_DELIMITER* ";
   ParserProxy proxy;
   EXPECT_EQ(expect, proxy.PreprocessRawDoc(input));
 }

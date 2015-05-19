@@ -2,7 +2,7 @@ Usage:
   utility_name -a -b -c
   utility_name -def
   utility_name (-g)
-  utility_name [-h] flag_h
-  utility_name -i|-j flag_ij
+  utility_name [-h] flag-h
+  utility_name -i|-j flag-ij
   utility_name (-k (-l -m) -n)
-  utility_name [-o [-p -q] -r] flag_opqr
+  utility_name [-o [-p -q] -r] flag-opqr
