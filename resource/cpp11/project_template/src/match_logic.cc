@@ -303,14 +303,30 @@ void MatchStrategy::ProcessNode(LogicAnd::SharedPtr node) {
 }
 
 void MatchStrategy::ProcessNode(LogicXor::SharedPtr node) {
+  // increase level of `LogicXor` and push rollback point.
+  ++logix_xor_level;
+  state_manager_.PushRollbackPoint();
+
   for (auto child_node : node->children_) {
     child_node->Accept(this);
+    if (child_match_condition_
+        && logix_xor_level == 1 && !AllMatch()) {
+      // top-level `LogicXor` node require all argument being matched.
+      // if not, rollback match state and keep searching.
+      state_manager_.Rollback();
+      // record initial state again.
+      state_manager_.PushRollbackPoint();
+      child_match_condition_ = false;
+      continue;
+    }
     if (child_match_condition_) {
-      child_match_condition_ = true;
-      return;
+      break;
     }
   }
-  child_match_condition_ = false;
+  // state: child_match_condition_ == True
+  // decrease level of `LogicXor` and pop rollback point.
+  state_manager_.PopRollbackPoint();
+  --logix_xor_level;
 }
 
 void MatchStrategy::ProcessNode(LogicOr::SharedPtr node) {

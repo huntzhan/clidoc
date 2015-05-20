@@ -58,4 +58,13 @@ TEST(simple_option, arg3) {
   EXPECT_EQ(
       expected,
       clidoc::string_list_outcome["<arg3>"]);
+
+  const char *argv_3[] = {"utility_name", "flag-1", "a", "b"};
+  EXPECT_TRUE(
+      clidoc::ParseArguments(4, argv_3, kTestMode));
+  KeyChecker();
+  expected = {"flag-1", "a", "b"};
+  EXPECT_EQ(
+      expected,
+      clidoc::string_list_outcome["<arg3>"]);
 }

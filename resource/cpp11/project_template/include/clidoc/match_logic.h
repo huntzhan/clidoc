@@ -94,6 +94,7 @@ class MatchStrategy : public NodeVisitorInterface {
  private:
   MatchStateManager state_manager_;
   bool child_match_condition_ = false;
+  int logix_xor_level = 0;
 };
 
 }  // namespace clidoc
