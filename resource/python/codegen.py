@@ -301,7 +301,19 @@ class MatchStateManager(object):
     @classmethod
     def _try_to_generate_outcome_with_value(cls, key, store_key_value_pair):
 
-        def access_token(index):
+        def access_argument_token(index):
+            token = Info.get_token(index)
+            if token is None:
+                return False, None
+            # 1. GENERAL_ELEMENT or COMMAND.
+            # 2. not consumed.
+            flag = ((token.type_id == Token.GENERAL_ELEMENT
+                     or token.type_id == Token.COMMAND)
+                    and not cls._match_state.get_consumed_flag(index))
+            value = token.value
+            return flag, value
+
+        def access_normal_token(index):
             token = Info.get_token(index)
             if token is None:
                 return False, None
@@ -317,7 +329,7 @@ class MatchStateManager(object):
             key_index = cls._match_state.get_first_unconsumed_index()
             if key_index is None:
                 return False
-            flag, value = access_token(key_index)
+            flag, value = access_argument_token(key_index)
             if flag:
                 cls._match_state.set_consumed_flag(key_index)
                 store_key_value_pair(key, value)
@@ -333,7 +345,7 @@ class MatchStateManager(object):
             )
             if value_index is None:
                 return False
-            flag, value = access_token(value_index)
+            flag, value = access_normal_token(value_index)
             if flag:
                 cls._match_state.set_consumed_flag(key_index)
                 cls._match_state.set_consumed_flag(value_index)
@@ -661,7 +673,7 @@ class ArgvPreprocessor(object):
             self._add_general_element(value)
         return False
 
-    def tokenize_argv(self):
+    def _fill_tokens(self):
         case_function_mapping = {
             self.POSIX_OPTION: self._process_posix_option,
             self.GNU_OPTION: self._process_gnu_option,
@@ -687,3 +699,21 @@ class ArgvPreprocessor(object):
                 for value_after_double_dash in self._argv[index + 1:]:
                     self._add_general_element(value_after_double_dash)
                 break
+
+    def _correct_oom_argument_type(self):
+        is_oom_bound_option_argument = False
+        for token in self.tokens:
+            is_oom_bound_option = token in Info.oom_bound_options
+            if is_oom_bound_option and not is_oom_bound_option_argument:
+                is_oom_bound_option_argument = True
+                continue
+            if not is_oom_bound_option and is_oom_bound_option_argument:
+                token.type_id = Token.GENERAL_ELEMENT
+                continue
+            if is_oom_bound_option and is_oom_bound_option_argument:
+                is_oom_bound_option_argument = False
+                continue
+
+    def tokenize_argv(self):
+        self._fill_tokens()
+        self._correct_oom_argument_type()
