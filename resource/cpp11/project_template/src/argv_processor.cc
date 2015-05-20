@@ -97,7 +97,7 @@ bool ArgvProcessLogic::ArgumentIsCommand(const string &argument) {
          != info_.commands_.cend();
 }
 
-void ArgvProcessLogic::TokenizeArgv() {
+void ArgvProcessLogic::FillTokens() {
   auto iter = argv_.cbegin();
   bool flag = (iter != argv_.cend());
   bool skip_next_argument = false;
@@ -147,6 +147,32 @@ void ArgvProcessLogic::TokenizeArgv() {
     tokens_.push_back(
         Token(TerminalType::GENERAL_ELEMENT, *iter));
   }
+}
+
+void ArgvProcessLogic::CorrectOOMArgumentType() {
+  const auto &oom_bound_options = info_.oom_bound_options_;
+  bool is_oom_bound_option_argument = false;
+  for (auto iter = tokens_.begin(); iter != tokens_.end(); ++iter) {
+    bool is_oom_bound_option =
+        oom_bound_options.find(*iter) != oom_bound_options.cend();
+    if (is_oom_bound_option && !is_oom_bound_option_argument) {
+      is_oom_bound_option_argument = true;
+      continue;
+    }
+    if (!is_oom_bound_option && is_oom_bound_option_argument) {
+      iter->set_type(TerminalType::GENERAL_ELEMENT);
+      continue;
+    }
+    if (is_oom_bound_option && is_oom_bound_option_argument) {
+      is_oom_bound_option_argument = false;
+      continue;
+    }
+  }
+}
+
+void ArgvProcessLogic::TokenizeArgv() {
+  FillTokens();
+  CorrectOOMArgumentType();
 }
 
 bool ArgvProcessLogic::ProcessOption(

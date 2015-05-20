@@ -5,6 +5,7 @@
 const set<string> kBooleanKeys = {
   "-c",
   "--long-4",
+  "command",
 };
 const set<string> kStringKeys = {
   "-a",
@@ -65,6 +66,13 @@ TEST(option_binding, option_e) {
   EXPECT_TRUE(
       clidoc::ParseArguments(5, argv_2, kTestMode));
   KeyChecker();
+  EXPECT_EQ(expected, clidoc::string_list_outcome["-e"]);
+
+  const char *argv_3[] = {"utility_name", "-e", "a", "command", "b"};
+  EXPECT_TRUE(
+      clidoc::ParseArguments(5, argv_3, kTestMode));
+  KeyChecker();
+  expected = {"a", "command", "b"};
   EXPECT_EQ(expected, clidoc::string_list_outcome["-e"]);
 }
 

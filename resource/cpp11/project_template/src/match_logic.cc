@@ -180,7 +180,17 @@ bool MatchStateManager::MatchKeyWithValue(
     const Token &key,
     void (MatchState::*store_key_value_pair)(const Token &, const Token &)) {
   // check index.
-  auto AccessToken = [&](const int &index) -> bool {
+  auto AccessArgumentToken = [&](const int &index) -> bool {
+    const auto &token = tokens_.at(index);
+    const auto &type = token.type();
+    if ((type == TerminalType::GENERAL_ELEMENT
+         || type == TerminalType::COMMAND)
+        && !match_state_ptr_->ArgumentIsConcumed(index)) {
+      return true;
+    }
+    return false;
+  };
+  auto AccessNormalToken = [&](const int &index) -> bool {
     const auto &token = tokens_.at(index);
     if (token.type() == TerminalType::GENERAL_ELEMENT
         && !match_state_ptr_->ArgumentIsConcumed(index)) {
@@ -195,7 +205,7 @@ bool MatchStateManager::MatchKeyWithValue(
       return false;
     }
     int value_index = distance(tokens_.cbegin(), value_iter);
-    if (!AccessToken(value_index)) {
+    if (!AccessArgumentToken(value_index)) {
       return false;
     }
     (match_state_ptr_.get()->*store_key_value_pair)(key, *value_iter);
@@ -211,7 +221,7 @@ bool MatchStateManager::MatchKeyWithValue(
     }
     int key_index = distance(tokens_.cbegin(), key_iter);
     int value_index = distance(tokens_.cbegin(), value_iter);
-    if (!AccessToken(value_index)) {
+    if (!AccessNormalToken(value_index)) {
       return false;
     }
     // record key-value pair.

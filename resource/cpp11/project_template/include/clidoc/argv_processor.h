@@ -31,6 +31,8 @@ struct ArgvProcessLogic {
   bool ArgumentIsCommand(const std::string &argument);
 
   void TokenizeArgv();
+  void FillTokens();
+  void CorrectOOMArgumentType();
 
   // return True indicates skipping next input argument.
   bool ProcessOption(const TerminalType &type, const std::string &argument);

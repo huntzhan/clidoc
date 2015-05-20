@@ -1,0 +1,5 @@
+Usage:
+  utility_name flag-1 ARG1
+  utility_name flag-2 <arg2>
+  utility_name command1 command2
+  utility_name <arg3>...
