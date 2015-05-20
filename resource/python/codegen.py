@@ -459,6 +459,7 @@ class Argument(Terminal):
 
 
 class NonTerminal(object):
+
     def __init__(self):
         self._children = []
 
@@ -477,7 +478,9 @@ class NonTerminal(object):
 class Doc(NonTerminal):
 
     def match(self):
-        return self.get_forward_child().match()
+        logic_xor_node = self.get_forward_child()
+        logic_xor_node.is_top_level = True
+        return logic_xor_node.match()
 
 
 class LogicAnd(NonTerminal):
@@ -495,10 +498,26 @@ class LogicAnd(NonTerminal):
 class LogicXor(NonTerminal):
 
     def match(self):
+        MatchStateManager.push_rollback_point()
+        match_flag = False
         for child in self._children:
-            if child.match():
-                return True
-        return False
+            match_in_child = child.match()
+            should_rollback = (match_in_child
+                               and getattr(self, 'is_top_level', False)
+                               and not MatchStateManager.all_match())
+            # handle top-level `LogicXor` node.
+            if should_rollback:
+                MatchStateManager.rollback()
+                # record initial state again.
+                MatchStateManager.push_rollback_point()
+                continue
+            # state: should not rollback.
+            # otherwise, break looping.
+            if match_in_child:
+                match_flag = True
+                break
+        MatchStateManager.pop_rollback_point()
+        return match_flag
 
 
 class LogicOr(NonTerminal):
