@@ -30,6 +30,10 @@ target_link_libraries (
   clidoc_option_record
 )
 target_link_libraries (
+  clidoc_string_utils
+  ${Boost_LIBRARIES}
+)
+target_link_libraries (
   clidoc_parser_proxy
   clidoc_generated_parser clidoc_string_utils
 )

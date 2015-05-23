@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "boost/xpressive/xpressive_dynamic.hpp"
+#include "boost/regex.hpp"
 #include "clidoc/ast/ast_nodes.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/ast/generated_scanner.h"
@@ -16,7 +16,7 @@
 #include "clidoc/ast/option_record.h"
 #include "clidoc/ast/string_utils.h"
 
-namespace re = boost::xpressive;
+namespace re = boost;
 
 using std::back_inserter;
 using std::istringstream;
@@ -35,17 +35,17 @@ void WrongUsageSectionFormatLogging() {
 
 void DocPreprocessor::RemoveComment() {
   // must NOT remove the tailing NEWLINE character.
-  re::sregex pattern = re::sregex::compile("#[^\r\n]*");
+  re::regex pattern("#[^\r\n]*");
   text_ = re::regex_replace(text_, pattern, "");
 }
 
 void DocPreprocessor::RemoveEmptyLine() {
-  re::sregex pattern = re::sregex::compile("(\n[ \t]*)+");
+  re::regex pattern("(\n[ \t]*)+");
   text_ = re::regex_replace(text_, pattern, "\n");
 }
 
 std::string DocPreprocessor::GetUtilityName(const std::string &raw_doc) {
-  re::sregex utility_name_pattern = re::sregex::compile(
+  re::regex utility_name_pattern(
       "usage:\\s*(\\S+)",
       re::regex_constants::icase);
   re::smatch match_result;
@@ -70,7 +70,7 @@ void DocPreprocessor::InsertDesDelimiter() {
   // Options: \n[NOT here]
   //   -x, -xxx # brbrbr. \n[HERE!]
   //   ...
-  re::sregex options_section_name_pattern = re::sregex::compile(
+  re::regex options_section_name_pattern(
       "options:\\s*",
       re::regex_constants::icase);
   re::smatch match_result;
@@ -88,7 +88,7 @@ void DocPreprocessor::InsertDesDelimiter() {
   re::regex_replace(
       back_inserter(processed_options_section),
       pos_iter, options_section_.cend(),
-      re::sregex::compile("\n"),
+      re::regex("\n"),
       "\n*DESC_DELIMITER* ");
   options_section_ = processed_options_section;
 }
@@ -130,7 +130,7 @@ string DocPreprocessor::PreprocessRawDocForParsing(const string &raw_doc) {
 
 string DocPreprocessor::PreprocessRawDocForCodeGen(const string &raw_doc) {
   // Replace # and following space or tab.
-  re::sregex pattern = re::sregex::compile("#[ \t]*");
+  re::regex pattern("#[ \t]*");
   return re::regex_replace(raw_doc, pattern, "");
 }
 

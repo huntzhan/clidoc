@@ -4,13 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "boost/xpressive/xpressive_dynamic.hpp"
+#include "boost/regex.hpp"
 
-using boost::xpressive::sregex;
-using boost::xpressive::smatch;
-using boost::xpressive::regex_replace;
-using boost::xpressive::regex_search;
-using boost::xpressive::regex_match;
+namespace re = boost;
 
 using std::size_t;
 using std::string;
@@ -23,20 +19,20 @@ bool StringUtils::ExtractSection(
     const string &section_name,
     const string &text,
     string *output) {
-  sregex target_section_pattern = sregex::compile(
+  re::regex target_section_pattern(
       "(" + section_name + ")[ \t]*:",
       // case-insensitive.
-      boost::xpressive::regex_constants::icase);
-  sregex next_section_pattern = sregex::compile(
+      re::regex_constants::icase);
+  re::regex next_section_pattern(
       "(\\w+?)[ \t]*:",
-      boost::xpressive::regex_constants::icase);
-  smatch match_result;
+      re::regex_constants::icase);
+  re::smatch match_result;
   auto pos_iter = text.cbegin();
   auto text_end_iter = text.cend();
 
   bool found = false;
   // search the begin of section.
-  found = regex_search(
+  found = re::regex_search(
       pos_iter, text_end_iter,
       match_result,
       target_section_pattern);
@@ -48,7 +44,7 @@ bool StringUtils::ExtractSection(
   pos_iter = match_result.suffix().first;
 
   // seach the end of section.
-  found = regex_search(
+  found = re::regex_search(
       pos_iter, text_end_iter,
       match_result,
       next_section_pattern);
@@ -56,9 +52,9 @@ bool StringUtils::ExtractSection(
   auto section_end_iter = text_end_iter;
   if (found) {
     // ignroe `[default: "xxx"]`.
-    bool found = regex_match(
+    bool found = re::regex_match(
         match_result.str(1),
-        sregex::compile("default", boost::xpressive::regex_constants::icase));
+        re::regex("default", re::regex_constants::icase));
     if (!found) {
       section_end_iter = match_result[0].first;
     }
@@ -66,7 +62,7 @@ bool StringUtils::ExtractSection(
 
   // remove blank in section name.
   string extract_text(section_begin_iter, section_end_iter);
-  *output = regex_replace(
+  *output = re::regex_replace(
       extract_text,
       target_section_pattern,
       "$1:");
@@ -90,9 +86,9 @@ void StringUtils::ReplaceElementWithMark(
     const string &regex_string,
     std::string *text_ptr,
     std::vector<std::string> *elements_ptr) {
-  smatch match_result;
-  while (regex_search(*text_ptr, match_result,
-                      sregex::compile(regex_string))) {
+  re::smatch match_result;
+  while (re::regex_search(*text_ptr, match_result,
+                      re::regex(regex_string))) {
     auto element = match_result.str(1);
     // ` __id__ `. Notice that `__id__` is surrounded by spaces.
     string content = " __" + to_string(elements_ptr->size()) + "__ ";
@@ -110,7 +106,7 @@ void StringUtils::InsertSpace(
     StringUtils::ReplaceAll(keyword, " " + keyword + " ", text_ptr);
   }
   // collapse whitespaces.
-  *text_ptr = regex_replace(*text_ptr, sregex::compile("\\s+"), " ");
+  *text_ptr = re::regex_replace(*text_ptr, re::regex("\\s+"), " ");
   if (text_ptr->back() == ' ') {
     text_ptr->pop_back();
   }
