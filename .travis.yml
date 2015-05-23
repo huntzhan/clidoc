@@ -18,4 +18,6 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
   - sudo apt-get install libboost1.54-all-dev
 script:
-  - ./scripts/clidoc-stuff.sh build
+  - mkdir build; cd $_
+  - cmake ..
+  - make && make test
