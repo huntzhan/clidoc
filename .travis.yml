@@ -2,8 +2,9 @@ language:
   - cpp
 compiler:
   - g++
-  - clang++
 install:
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
   - sudo apt-get install libboost-all-dev
 script:
   - ./scripts/clidoc-stuff.sh build
