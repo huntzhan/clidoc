@@ -21,6 +21,11 @@ set_target_properties (
   clidoc_filesystem
   PROPERTIES COMPILE_FLAGS "-DCLIDOC_RESOURCE_DIR=${CMAKE_BINARY_DIR}/resource"
 )
+# cpp11 coddgen.
+target_link_libraries (
+  clidoc_cpp11_codegen
+  clidoc_codegen_helper
+)
 # compile library for python codegen.
 target_link_libraries (
   clidoc_python_codegen

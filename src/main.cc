@@ -43,7 +43,7 @@ void GenerateCpp11SourceCode(
   ConstructCodeGenInfo(doc_path, &info);
   // code gen.
   ofstream fout(output_file_name);
-  fout << clidoc::cpp11::GenerateSource(info);
+  fout << clidoc::Cpp11Codegen(info);
   fout.close();
 }
 
@@ -69,7 +69,7 @@ void GenerateCpp11CMakeProject(
 
   string filename = clidoc::AppendPath(output_dir, "src/codegen.cc");
   ofstream fout(filename.c_str());
-  fout << clidoc::cpp11::GenerateSource(info);
+  fout << clidoc::Cpp11Codegen(info);
   fout.close();
 }
 
