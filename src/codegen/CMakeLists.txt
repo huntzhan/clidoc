@@ -5,6 +5,7 @@ set (PATH_PREFIX "${clidoc_SOURCE_DIR}/resource/cpp11/project_template/src")
 include_directories (${clidoc_SOURCE_DIR}/resource/cpp11/project_template/include/)
 
 add_library (clidoc_filesystem     filesystem.cc)
+add_library (clidoc_codegen_helper codegen_helper.cc)
 add_library (clidoc_python_codegen python_codegen.cc)
 add_library (clidoc_cpp11_codegen  cpp11_codegen.cc)
 
