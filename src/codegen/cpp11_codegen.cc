@@ -98,7 +98,7 @@ class Cpp11CollectedElementCodeGenerator
   }
 };
 
-} // namespace cpp11
+}  // namespace cpp11
 
 string Cpp11Codegen(const CodeGenInfo &code_gen_info) {
   // codegen of AST.

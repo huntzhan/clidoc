@@ -1,6 +1,7 @@
 #ifndef INCLUDE_CLIDOC_CODEGEN_CODEGEN_HELPER_H_
 #define INCLUDE_CLIDOC_CODEGEN_CODEGEN_HELPER_H_
 
+#include <array>
 #include <map>
 #include <memory>
 #include <string>
@@ -13,13 +14,72 @@
 
 namespace clidoc {
 
+using FormatPair = std::array<std::string, 2>;
+
 class CollectedElementCodeGenerator {
  public:
-  virtual std::string GenerateCode(const CodeGenInfo &code_gen_info) const = 0;
+  virtual ~CollectedElementCodeGenerator() = default;
+
+  virtual std::string GenerateCode(const CodeGenInfo &code_gen_info) const;
+
+  void SetTokenFormat(
+      const std::map<TerminalType, std::string> &token_format);
+
+  void SetBoundOptionsDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetUnboundOptionsDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetArgumentsDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetOOMBoundOptionsDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetOOMArgumentsDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetCommandsDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+
+  void SetDefaultValuesDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetOptionToRepresentativeOptionDeclFormat(
+      const std::string &decl_format,
+      const std::string &element_format);
+  void SetDocTextDeclFormat(
+      const std::string &decl_format);
+
+ private:
+  enum class FocusedElementType {
+    BOUND_OPTIONS,
+    UNBOUND_OPTIONS,
+    ARGUMENTS,
+    OOM_BOUND_OPTIONS,
+    OOM_ARGUMENTS,
+    COMMANDS,
+  };
+
+  void AddFocusedElementFormatPair(
+      const FocusedElementType &type,
+      const std::string &decl_format,
+      const std::string &element_format);
+
+  std::map<TerminalType, std::string> token_format_;
+
+  std::map<FocusedElementType, FormatPair> focused_elements_format_pair_;
+  FormatPair default_values_format_pair_;
+  FormatPair option_to_representative_option_format_pair_;
+  std::string doc_text_format_;
 };
 
 class ASTCodeGenerator : public VisitorProcessLogic {
  public:
+  virtual ~ASTCodeGenerator() = default;
+
   void SetVariableNameFormat(const std::string &format);
   void SetAddingChildStatFormat(const std::string &format);
   void SetBindingRootNodeStatFormat(const std::string &format);
@@ -32,7 +92,7 @@ class ASTCodeGenerator : public VisitorProcessLogic {
   template <NonTerminalType type>
   void ProcessNode(std::shared_ptr<NonTerminal<type>> node);
 
-  std::string GenerateCode() const;
+  virtual std::string GenerateCode() const;
 
  private:
   std::string RenderNodeDecl(

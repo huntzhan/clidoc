@@ -45,3 +45,96 @@ TEST(ASTCodeGenerator, GenerateCode) {
     "whatever.doc_node_ = node2;\n";
   EXPECT_EQ(expected, ast_code_generator.GenerateCode());
 }
+
+TEST(CollectedElementCodeGenerator, GenerateCode) {
+  CodeGenInfo code_gen_info;
+  code_gen_info.bound_options_ = {
+    Token(TerminalType::POSIX_OPTION, "-a"),
+  };
+  code_gen_info.unbound_options_= {
+    Token(TerminalType::POSIX_OPTION, "-b"),
+  };
+  code_gen_info.arguments_= {
+    Token(TerminalType::ARGUMENT, "ARG1"),
+  };
+  code_gen_info.oom_bound_options_= {
+    Token(TerminalType::POSIX_OPTION, "-c"),
+  };
+  code_gen_info.oom_arguments_= {
+    Token(TerminalType::ARGUMENT, "ARG2"),
+  };
+  code_gen_info.commands_ = {
+    Token(TerminalType::COMMAND, "command"),
+  };
+  code_gen_info.default_values_ = {
+    {Token(TerminalType::POSIX_OPTION, "-a"), "42"},
+  };
+  code_gen_info.option_recorder_.option_to_representative_option_ = {
+    {Token(TerminalType::POSIX_OPTION, "-b"),
+     Token(TerminalType::POSIX_OPTION, "-a")},
+  };
+  code_gen_info.doc_text_ = "whatever";
+
+  CollectedElementCodeGenerator cec_generator;
+  const map<TerminalType, string> token_to_string = {
+    {TerminalType::POSIX_OPTION, "po<%1%>"},
+    {TerminalType::ARGUMENT, "arg<%1%>"},
+    {TerminalType::COMMAND, "com<%1%>"},
+  };
+  cec_generator.SetTokenFormat(token_to_string);
+
+  cec_generator.SetBoundOptionsDeclFormat(
+      "bo = {\n%1%};",
+      "%1%,");
+  cec_generator.SetUnboundOptionsDeclFormat(
+      "ubo = {\n%1%};",
+      "%1%,");
+  cec_generator.SetArgumentsDeclFormat(
+      "arg = {\n%1%};",
+      "%1%,");
+  cec_generator.SetOOMBoundOptionsDeclFormat(
+      "oomb = {\n%1%};",
+      "%1%,");
+  cec_generator.SetOOMArgumentsDeclFormat(
+      "ooma = {\n%1%};",
+      "%1%,");
+  cec_generator.SetCommandsDeclFormat(
+      "com = {\n%1%};",
+      "%1%,");
+  cec_generator.SetDefaultValuesDeclFormat(
+      "dv = {\n%1%};",
+      "%1%: %2%,");
+  cec_generator.SetOptionToRepresentativeOptionDeclFormat(
+      "otro = {\n%1%};",
+      "%1%: %2%,");
+  cec_generator.SetDocTextDeclFormat(
+      "doc_text = \"%1%\";");
+
+  string expected = R"doc(bo = {
+po<-a>,
+};
+ubo = {
+po<-b>,
+};
+arg = {
+arg<ARG1>,
+};
+oomb = {
+po<-c>,
+};
+ooma = {
+arg<ARG2>,
+};
+com = {
+com<command>,
+};
+dv = {
+po<-a>: 42,
+};
+otro = {
+po<-b>: po<-a>,
+};
+doc_text = "whatever";
+)doc";
+  EXPECT_EQ(expected, cec_generator.GenerateCode(code_gen_info));
+}
