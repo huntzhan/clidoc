@@ -1,104 +1,16 @@
 #include "clidoc/codegen/cpp11_codegen.h"
 
 #include <map>
-#include <set>
-#include <sstream>
 #include <string>
 
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
 #include "clidoc/codegen/codegen_helper.h"
 
-using std::endl;
 using std::map;
-using std::ostringstream;
-using std::set;
 using std::string;
 
-#define OSTRM_PROPERTY(data_member)     \
-  ostrm << GenerateSetOfToken(          \
-      "cpp_code_gen_info."#data_member, \
-      code_gen_info.data_member)        \
-
 namespace clidoc {
-
-namespace cpp11 {
-
-string GenerateSetOfToken(
-    const string &variable,
-    const set<Token> &elements) {
-  ostringstream ostrm;
-  // assign to `variable`.
-  ostrm << variable << " = {" << endl;
-  for (const Token &element : elements) {
-    ostrm << "  " << element.ToString() << "," << endl;
-  }
-  ostrm << "};" << endl;
-  return ostrm.str();
-}
-
-string GenerateInitializerList(
-    const string &variable,
-    const map<Token, string> default_values) {
-  ostringstream ostrm;
-  ostrm << variable << " = {" << endl;
-  for (const auto &map_pair : default_values) {
-    ostrm << "  {"
-          << map_pair.first.ToString()
-          << ", "
-          << "\"" << map_pair.second << "\""
-          << "}," << endl;
-  }
-  ostrm << "};" << endl;
-  return ostrm.str();
-}
-
-string GenerateInitializerList(
-    const string &variable,
-    const map<Token, Token> default_values) {
-  ostringstream ostrm;
-  ostrm << variable << " = {" << endl;
-  for (const auto &map_pair : default_values) {
-    ostrm << "  {"
-          << map_pair.first.ToString()
-          << ", "
-          << map_pair.second.ToString()
-          << "}," << endl;
-  }
-  ostrm << "};" << endl;
-  return ostrm.str();
-}
-
-class Cpp11CollectedElementCodeGenerator
-    : public CollectedElementCodeGenerator {
- public:
-  string GenerateCode(const CodeGenInfo &code_gen_info) const override {
-    ostringstream ostrm;
-
-    OSTRM_PROPERTY(bound_options_);
-    OSTRM_PROPERTY(unbound_options_);
-    OSTRM_PROPERTY(arguments_);
-    OSTRM_PROPERTY(oom_bound_options_);
-    OSTRM_PROPERTY(oom_arguments_);
-    OSTRM_PROPERTY(commands_);
-
-    ostrm << GenerateInitializerList(
-        "cpp_code_gen_info.default_values_",
-        code_gen_info.default_values_);
-
-    ostrm << GenerateInitializerList(
-        "cpp_code_gen_info.option_to_representative_option_",
-        code_gen_info.option_recorder_.option_to_representative_option_);
-
-    ostrm << "cpp_code_gen_info.doc_text_ = R\"doc("
-          << code_gen_info.doc_text_
-          << ")doc\";"
-          << endl;
-    return ostrm.str();
-  }
-};
-
-}  // namespace cpp11
 
 string Cpp11Codegen(const CodeGenInfo &code_gen_info) {
   // codegen of AST.
@@ -141,9 +53,50 @@ CppCodeGenInfo cpp_code_gen_info = InitCppCodeGenInfo();
 }  // namespace clidoc
 )doc";
 
+  // codegen of collected elements.
+  CollectedElementCodeGenerator cec_generator;
+  map<TerminalType, string> token_to_string = {
+    {TerminalType::POSIX_OPTION, "Token(TerminalType::POSIX_OPTION, \"%1%\")"},
+    {TerminalType::GNU_OPTION,   "Token(TerminalType::GNU_OPTION, \"%1%\")"},
+    {TerminalType::COMMAND,      "Token(TerminalType::COMMAND, \"%1%\")"},
+    {TerminalType::ARGUMENT,     "Token(TerminalType::ARGUMENT, \"%1%\")"},
+  };
+  cec_generator.SetTokenFormat(token_to_string);
+
+  const string decl_format_suffix = " = {\n%1%};";
+  const string focused_element_format = "%1%,";
+  cec_generator.SetBoundOptionsDeclFormat(
+      "cpp_code_gen_info.bound_options_" + decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetUnboundOptionsDeclFormat(
+      "cpp_code_gen_info.unbound_options_" + decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetArgumentsDeclFormat(
+      "cpp_code_gen_info.arguments_" + decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetOOMBoundOptionsDeclFormat(
+      "cpp_code_gen_info.oom_bound_options_" + decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetOOMArgumentsDeclFormat(
+      "cpp_code_gen_info.oom_arguments_" + decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetCommandsDeclFormat(
+      "cpp_code_gen_info.commands_" + decl_format_suffix,
+      focused_element_format);
+
+  cec_generator.SetDefaultValuesDeclFormat(
+      "cpp_code_gen_info.default_values_" + decl_format_suffix,
+      "{%1%, \"%2%\"},");
+  cec_generator.SetOptionToRepresentativeOptionDeclFormat(
+      "cpp_code_gen_info.option_to_representative_option_"
+      + decl_format_suffix,
+      "{%1%, %2%},");
+  cec_generator.SetDocTextDeclFormat(
+      "cpp_code_gen_info.doc_text_ = R\"doc(%1%)doc\";");
+
   CodegenHelper codegen_helper(
       code_gen_info,
-      cpp11::Cpp11CollectedElementCodeGenerator(),
+      cec_generator,
       &ast_code_generator);
   codegen_helper.SetCodegenPrefixAndSuffix(codegen_prefix, codegen_suffix);
   return codegen_helper.GenerateCode();
