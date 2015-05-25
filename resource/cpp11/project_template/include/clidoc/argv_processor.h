@@ -23,7 +23,7 @@ struct ArgvProcessLogic {
 
   ArgvProcessLogic(
       const std::vector<std::string> &argv,
-      const CppCodeGenInfo &info);
+      const CppCodegenInfo &info);
 
   ArgumentPattern DetectArgumentPattern(const std::string &argument);
   bool ReplaceWithRepresentativeOption(Token *option_ptr);
@@ -42,7 +42,7 @@ struct ArgvProcessLogic {
   bool ProcessUnknowCase(const std::string &argument);
 
   const std::vector<std::string> &argv_;
-  const CppCodeGenInfo &info_;
+  const CppCodegenInfo &info_;
   std::list<Token> tokens_;
 };
 
@@ -50,7 +50,7 @@ class ArgvProcessor {
  public:
   void LoadArgv(const int &argc, const char *const *argv);
   std::vector<Token> GetPreprocessedArguments(
-      const CppCodeGenInfo &info) const;
+      const CppCodegenInfo &info) const;
 
  private:
   std::vector<std::string> argv_;

@@ -15,7 +15,7 @@ using std::set;
 using namespace clidoc;
 
 TEST(ArgvProcessorTest, DetectArgumentPattern) {
-  ArgvProcessLogic logic({}, CppCodeGenInfo());
+  ArgvProcessLogic logic({}, CppCodegenInfo());
   EXPECT_EQ(
       ArgvProcessLogic::ArgumentPattern::POSIX_OPTION,
       logic.DetectArgumentPattern("-c"));
@@ -46,7 +46,7 @@ TEST(ArgvProcessorTest, DetectArgumentPattern) {
 }
 
 TEST(ArgvProcessorTest, ReplaceWithRepresentativeOption) {
-  CppCodeGenInfo info;
+  CppCodegenInfo info;
   info.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-c"),
      Token(TerminalType::GNU_OPTION, "--longc")},
@@ -68,7 +68,7 @@ TEST(ArgvProcessorTest, ReplaceWithRepresentativeOption) {
 }
 
 TEST(ArgvProcessorTest, OptionIsBound) {
-  CppCodeGenInfo info;
+  CppCodegenInfo info;
   info.bound_options_ = {Token(TerminalType::POSIX_OPTION, "-o"),
                               Token(TerminalType::POSIX_OPTION, "-I")};
   ArgvProcessLogic logic({}, info);
@@ -81,7 +81,7 @@ TEST(ArgvProcessorTest, OptionIsBound) {
 }
 
 TEST(ArgvProcessorTest, ProcessOption) {
-  CppCodeGenInfo info;
+  CppCodegenInfo info;
   info.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-c"),
      Token(TerminalType::GNU_OPTION, "--longc")},
@@ -118,7 +118,7 @@ TEST(ArgvProcessorTest, GetPreprocessedArguments) {
   ArgvProcessor argv_processor;
   argv_processor.LoadArgv(sizeof(argv) / sizeof(argv[0]), argv);
 
-  CppCodeGenInfo info;
+  CppCodegenInfo info;
   info.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-c"),
      Token(TerminalType::GNU_OPTION, "--longc")},

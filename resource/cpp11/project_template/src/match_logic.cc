@@ -58,7 +58,7 @@ bool MatchState::ArgumentIsConcumed(const int &index) const {
   return token_match_state_.at(index);
 }
 
-MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
+MatchStateManager::MatchStateManager(const CppCodegenInfo &info,
                                      const vector<Token> &tokens)
     : info_(info), tokens_(tokens), match_state_ptr_(new MatchState) {
   // lambdas.
@@ -272,7 +272,7 @@ shared_ptr<MatchState> MatchStateManager::match_state_ptr() const {
   return match_state_ptr_;
 }
 
-MatchStrategy::MatchStrategy(const CppCodeGenInfo &info,
+MatchStrategy::MatchStrategy(const CppCodegenInfo &info,
                              const vector<Token> &tokens)
     : state_manager_(info, tokens) { /* empty */ }
 

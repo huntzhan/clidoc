@@ -10,7 +10,7 @@
 
 namespace clidoc {
 
-struct CppCodeGenInfo {
+struct CppCodegenInfo {
   Doc::SharedPtr doc_node_;
   std::set<Token> bound_options_;
   std::set<Token> unbound_options_;
@@ -23,7 +23,7 @@ struct CppCodeGenInfo {
   std::string doc_text_;
 };
 
-extern CppCodeGenInfo cpp_code_gen_info;
+extern CppCodegenInfo cpp_codegen_info;
 
 }  // namespace clidoc
 #endif  // SRC_CPP11_PROJECT_TEMPLATE_INCLUDE_CLIDOC_INFO_H_

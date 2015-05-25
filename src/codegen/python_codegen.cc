@@ -13,7 +13,7 @@ using std::string;
 
 namespace clidoc {
 
-string PythonCodegen(const CodeGenInfo &code_gen_info) {
+string PythonCodegen(const CodegenInfo &codegen_info) {
   // codegen of AST.
   ASTCodeGenerator ast_code_generator;
   ast_code_generator.SetVariableNameFormat(
@@ -82,7 +82,7 @@ string PythonCodegen(const CodeGenInfo &code_gen_info) {
       "Info.doc_text = '''%1%'''");
 
   CodegenHelper codegen_helper(
-      code_gen_info,
+      codegen_info,
       cec_generator,
       &ast_code_generator);
   codegen_helper.SetCodegenPrefixAndSuffix(

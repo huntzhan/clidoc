@@ -97,21 +97,21 @@ void CollectedElementCodeGenerator::SetDocTextDeclFormat(
 }
 
 string CollectedElementCodeGenerator::GenerateCode(
-    const CodeGenInfo &code_gen_info) const {
+    const CodegenInfo &codegen_info) const {
   const map<FocusedElementType,
             reference_wrapper<const set<Token>>> kFocusedElementMapping = {
     {FocusedElementType::BOUND_OPTIONS,
-     cref(code_gen_info.bound_options_)},
+     cref(codegen_info.bound_options_)},
     {FocusedElementType::UNBOUND_OPTIONS,
-     cref(code_gen_info.unbound_options_)},
+     cref(codegen_info.unbound_options_)},
     {FocusedElementType::ARGUMENTS,
-     cref(code_gen_info.arguments_)},
+     cref(codegen_info.arguments_)},
     {FocusedElementType::OOM_BOUND_OPTIONS,
-     cref(code_gen_info.oom_bound_options_)},
+     cref(codegen_info.oom_bound_options_)},
     {FocusedElementType::OOM_ARGUMENTS,
-     cref(code_gen_info.oom_arguments_)},
+     cref(codegen_info.oom_arguments_)},
     {FocusedElementType::COMMANDS,
-     cref(code_gen_info.commands_)},
+     cref(codegen_info.commands_)},
   };
 
   auto RenderToken = [&](const Token &token) -> string {
@@ -138,7 +138,7 @@ string CollectedElementCodeGenerator::GenerateCode(
   ostringstream tmp_ostrm;
 
   // codgen for default_values_.
-  for (const auto &map_pair : code_gen_info.default_values_) {
+  for (const auto &map_pair : codegen_info.default_values_) {
     tmp_ostrm << boost::format(default_values_format_pair_.at(1))
                  % RenderToken(map_pair.first)
                  % map_pair.second
@@ -150,7 +150,7 @@ string CollectedElementCodeGenerator::GenerateCode(
   // codgen for option_to_representative_option_.
   tmp_ostrm.str("");
   for (const auto &map_pair
-       : code_gen_info.option_recorder_.option_to_representative_option_) {
+       : codegen_info.option_recorder_.option_to_representative_option_) {
     auto element_format = boost::format(
         option_to_representative_option_format_pair_.at(1));
     tmp_ostrm << element_format
@@ -163,7 +163,7 @@ string CollectedElementCodeGenerator::GenerateCode(
         << endl;
 
   // codgen for doc_text_.
-  ostrm << boost::format(doc_text_format_) % code_gen_info.doc_text_ << endl;
+  ostrm << boost::format(doc_text_format_) % codegen_info.doc_text_ << endl;
   return ostrm.str();
 }
 
@@ -241,11 +241,11 @@ string ASTCodeGenerator::GetRootVariableName() const {
 }
 
 CodegenHelper::CodegenHelper(
-    const CodeGenInfo &code_gen_info,
+    const CodegenInfo &codegen_info,
     const CollectedElementCodeGenerator &collected_element_code_generator,
     ASTCodeGenerator *ast_code_generator)
     :
-    code_gen_info_(code_gen_info),
+    codegen_info_(codegen_info),
     collected_element_code_generator_(collected_element_code_generator),
     ast_code_generator_(ast_code_generator) { /* empty */ }
 
@@ -259,11 +259,11 @@ void CodegenHelper::SetCodegenPrefixAndSuffix(
 string CodegenHelper::GenerateCode() const {
   // prepare codgen of AST.
   auto visitor = GenerateVisitor<AllNodeVisitor>(ast_code_generator_);
-  code_gen_info_.doc_node_->Accept(&visitor);
+  codegen_info_.doc_node_->Accept(&visitor);
 
   ostringstream ostrm;
   ostrm << codegen_prefix_
-        << collected_element_code_generator_.GenerateCode(code_gen_info_)
+        << collected_element_code_generator_.GenerateCode(codegen_info_)
         << ast_code_generator_->GenerateCode()
         << codegen_suffix_;
   return ostrm.str();

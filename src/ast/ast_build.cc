@@ -18,7 +18,7 @@ using std::string;
 
 namespace clidoc {
 
-void CodeGenInfo::PrepareFocusedElements(
+void CodegenInfo::PrepareFocusedElements(
     set<Token> *elements_ptr,
     set<Token> *oom_elements_ptr) {
   // remove the intersection of OOM element from focused element.
@@ -75,7 +75,7 @@ void CodeGenInfo::PrepareFocusedElements(
   }
 }
 
-void CodeGenInfo::PostProcessedAST() {
+void CodegenInfo::PostProcessedAST() {
   // uncategorized focused elements.
   set<Token> elements;
   set<Token> oom_elements;
@@ -132,7 +132,7 @@ void CodeGenInfo::PostProcessedAST() {
   doc_node_->Accept(&structure_optimizer);
 }
 
-void CodeGenInfo::Prepare(const std::string &raw_doc) {
+void CodegenInfo::Prepare(const std::string &raw_doc) {
   DocPreprocessor doc_preprocessor;
   ParserProxy parser_proxy;
   // setup `doc_text_`.

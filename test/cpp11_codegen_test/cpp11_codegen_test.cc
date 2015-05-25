@@ -34,9 +34,9 @@ Options:
 )doc";
 
 TEST(cpp_code_gen, argv_match) {
-  // load up `CppCodeGenInfo`.
-  CodeGenInfo info;
-  CppCodeGenInfo cppinfo;
+  // load up `CppCodegenInfo`.
+  CodegenInfo info;
+  CppCodegenInfo cppinfo;
   info.Prepare(example_doc);
   cppinfo.doc_node_ = info.doc_node_;
   cppinfo.bound_options_ = info.bound_options_;

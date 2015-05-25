@@ -20,7 +20,7 @@ class CollectedElementCodeGenerator {
  public:
   virtual ~CollectedElementCodeGenerator() = default;
 
-  virtual std::string GenerateCode(const CodeGenInfo &code_gen_info) const;
+  virtual std::string GenerateCode(const CodegenInfo &codegen_info) const;
 
   void SetTokenFormat(
       const std::map<TerminalType, std::string> &token_format);
@@ -128,7 +128,7 @@ class ASTCodeGenerator : public VisitorProcessLogic {
 class CodegenHelper {
  public:
   CodegenHelper(
-      const CodeGenInfo &code_gen_info,
+      const CodegenInfo &codegen_info,
       const CollectedElementCodeGenerator &collected_element_code_generator,
       ASTCodeGenerator *ast_code_generator);
 
@@ -139,7 +139,7 @@ class CodegenHelper {
   std::string GenerateCode() const;
 
  private:
-  const CodeGenInfo &code_gen_info_;
+  const CodegenInfo &codegen_info_;
   const CollectedElementCodeGenerator &collected_element_code_generator_;
   ASTCodeGenerator *ast_code_generator_;
 

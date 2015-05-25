@@ -35,7 +35,7 @@ Options:
   --drifting                   # Drifting mine.
 )doc";
 
-  CodeGenInfo info;
+  CodegenInfo info;
   info.Prepare(input);
 
   std::cout << info.doc_node_->ToString(0);
@@ -94,7 +94,7 @@ TEST(ParserProxyTest, DemoOfPrintAST) {
       "  example --hello-world\n"
       "  example --output-file=<filename>\n"
       "  example -n <names>...\n";
-  CodeGenInfo info;
+  CodegenInfo info;
   info.Prepare(input);
   std::cout << info.doc_node_->ToString(0);
 }

@@ -13,7 +13,7 @@ namespace clidoc {
 
 // 1. Build AST.
 // 2. Collect necessary information for code gen procedure.
-class CodeGenInfo {
+class CodegenInfo {
  public:
   void Prepare(const std::string &raw_doc);
 

@@ -12,7 +12,7 @@ using std::string;
 
 namespace clidoc {
 
-string Cpp11Codegen(const CodeGenInfo &code_gen_info) {
+string Cpp11Codegen(const CodegenInfo &codegen_info) {
   // codegen of AST.
   ASTCodeGenerator ast_code_generator;
   ast_code_generator.SetVariableNameFormat(
@@ -37,19 +37,19 @@ string Cpp11Codegen(const CodeGenInfo &code_gen_info) {
   ast_code_generator.SetAddingChildStatFormat(
       "%1%->AddChild(%2%);");
   ast_code_generator.SetBindingRootNodeStatFormat(
-      "cpp_code_gen_info.doc_node_ = %1%;");
+      "cpp_codegen_info.doc_node_ = %1%;");
 
   string codegen_prefix = R"doc(
 #include "clidoc/info.h"
 namespace clidoc {
-CppCodeGenInfo InitCppCodeGenInfo() {
-CppCodeGenInfo cpp_code_gen_info;
+CppCodegenInfo InitCppCodegenInfo() {
+CppCodegenInfo cpp_codegen_info;
 )doc";
 
   string codegen_suffix = R"doc(
-return cpp_code_gen_info;
+return cpp_codegen_info;
 }
-CppCodeGenInfo cpp_code_gen_info = InitCppCodeGenInfo();
+CppCodegenInfo cpp_codegen_info = InitCppCodegenInfo();
 }  // namespace clidoc
 )doc";
 
@@ -66,36 +66,36 @@ CppCodeGenInfo cpp_code_gen_info = InitCppCodeGenInfo();
   const string decl_format_suffix = " = {\n%1%};";
   const string focused_element_format = "%1%,";
   cec_generator.SetBoundOptionsDeclFormat(
-      "cpp_code_gen_info.bound_options_" + decl_format_suffix,
+      "cpp_codegen_info.bound_options_" + decl_format_suffix,
       focused_element_format);
   cec_generator.SetUnboundOptionsDeclFormat(
-      "cpp_code_gen_info.unbound_options_" + decl_format_suffix,
+      "cpp_codegen_info.unbound_options_" + decl_format_suffix,
       focused_element_format);
   cec_generator.SetArgumentsDeclFormat(
-      "cpp_code_gen_info.arguments_" + decl_format_suffix,
+      "cpp_codegen_info.arguments_" + decl_format_suffix,
       focused_element_format);
   cec_generator.SetOOMBoundOptionsDeclFormat(
-      "cpp_code_gen_info.oom_bound_options_" + decl_format_suffix,
+      "cpp_codegen_info.oom_bound_options_" + decl_format_suffix,
       focused_element_format);
   cec_generator.SetOOMArgumentsDeclFormat(
-      "cpp_code_gen_info.oom_arguments_" + decl_format_suffix,
+      "cpp_codegen_info.oom_arguments_" + decl_format_suffix,
       focused_element_format);
   cec_generator.SetCommandsDeclFormat(
-      "cpp_code_gen_info.commands_" + decl_format_suffix,
+      "cpp_codegen_info.commands_" + decl_format_suffix,
       focused_element_format);
 
   cec_generator.SetDefaultValuesDeclFormat(
-      "cpp_code_gen_info.default_values_" + decl_format_suffix,
+      "cpp_codegen_info.default_values_" + decl_format_suffix,
       "{%1%, \"%2%\"},");
   cec_generator.SetOptionToRepresentativeOptionDeclFormat(
-      "cpp_code_gen_info.option_to_representative_option_"
+      "cpp_codegen_info.option_to_representative_option_"
       + decl_format_suffix,
       "{%1%, %2%},");
   cec_generator.SetDocTextDeclFormat(
-      "cpp_code_gen_info.doc_text_ = R\"doc(%1%)doc\";");
+      "cpp_codegen_info.doc_text_ = R\"doc(%1%)doc\";");
 
   CodegenHelper codegen_helper(
-      code_gen_info,
+      codegen_info,
       cec_generator,
       &ast_code_generator);
   codegen_helper.SetCodegenPrefixAndSuffix(codegen_prefix, codegen_suffix);

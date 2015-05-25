@@ -6,7 +6,7 @@
 
 namespace clidoc {
 
-std::string Cpp11Codegen(const CodeGenInfo &code_gen_info);
+std::string Cpp11Codegen(const CodegenInfo &codegen_info);
 
 }  // namespace clidoc
 

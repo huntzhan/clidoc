@@ -6,7 +6,7 @@
 
 namespace clidoc {
 
-std::string PythonCodegen(const CodeGenInfo &code_gen_info);
+std::string PythonCodegen(const CodegenInfo &codegen_info);
 
 }  // namespace clidoc
 #endif  // INCLUDE_CLIDOC_CODEGEN_PYTHON_CODEGEN_H_

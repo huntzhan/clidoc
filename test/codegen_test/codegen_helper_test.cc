@@ -47,33 +47,33 @@ TEST(ASTCodeGenerator, GenerateCode) {
 }
 
 TEST(CollectedElementCodeGenerator, GenerateCode) {
-  CodeGenInfo code_gen_info;
-  code_gen_info.bound_options_ = {
+  CodegenInfo codegen_info;
+  codegen_info.bound_options_ = {
     Token(TerminalType::POSIX_OPTION, "-a"),
   };
-  code_gen_info.unbound_options_= {
+  codegen_info.unbound_options_= {
     Token(TerminalType::POSIX_OPTION, "-b"),
   };
-  code_gen_info.arguments_= {
+  codegen_info.arguments_= {
     Token(TerminalType::ARGUMENT, "ARG1"),
   };
-  code_gen_info.oom_bound_options_= {
+  codegen_info.oom_bound_options_= {
     Token(TerminalType::POSIX_OPTION, "-c"),
   };
-  code_gen_info.oom_arguments_= {
+  codegen_info.oom_arguments_= {
     Token(TerminalType::ARGUMENT, "ARG2"),
   };
-  code_gen_info.commands_ = {
+  codegen_info.commands_ = {
     Token(TerminalType::COMMAND, "command"),
   };
-  code_gen_info.default_values_ = {
+  codegen_info.default_values_ = {
     {Token(TerminalType::POSIX_OPTION, "-a"), "42"},
   };
-  code_gen_info.option_recorder_.option_to_representative_option_ = {
+  codegen_info.option_recorder_.option_to_representative_option_ = {
     {Token(TerminalType::POSIX_OPTION, "-b"),
      Token(TerminalType::POSIX_OPTION, "-a")},
   };
-  code_gen_info.doc_text_ = "whatever";
+  codegen_info.doc_text_ = "whatever";
 
   CollectedElementCodeGenerator cec_generator;
   const map<TerminalType, string> token_to_string = {
@@ -136,5 +136,5 @@ po<-b>: po<-a>,
 };
 doc_text = "whatever";
 )doc";
-  EXPECT_EQ(expected, cec_generator.GenerateCode(code_gen_info));
+  EXPECT_EQ(expected, cec_generator.GenerateCode(codegen_info));
 }

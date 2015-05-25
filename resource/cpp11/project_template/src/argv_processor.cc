@@ -23,7 +23,7 @@ namespace clidoc {
 
 ArgvProcessLogic::ArgvProcessLogic(
     const vector<string> &argv,
-    const CppCodeGenInfo &info)
+    const CppCodegenInfo &info)
     : argv_(argv), info_(info) { /* empty */ }
 
 ArgvProcessLogic::ArgumentPattern
@@ -270,7 +270,7 @@ void ArgvProcessor::LoadArgv(const int &argc, const char *const *argv) {
 }
 
 vector<Token> ArgvProcessor::GetPreprocessedArguments(
-    const CppCodeGenInfo &info) const {
+    const CppCodegenInfo &info) const {
   ArgvProcessLogic process_logic(argv_, info);
   process_logic.TokenizeArgv();
   return vector<Token>(
