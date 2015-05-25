@@ -14,19 +14,19 @@ namespace clidoc {
 
 class StructureOptimizerLogic : public VisitorProcessLogic {
  public:
-  template <typename NonTerminalTypeSharedPtr>
-  void ProcessNode(NonTerminalTypeSharedPtr node);
+  template <NonTerminalType type>
+  void ProcessNode(NonTerminalTypeSharedPtr<type> node);
 
  private:
   template <typename NodeTypeOfParent, typename NodeTypeOfChild>
   bool CanRemoveChild(NodeTypeOfParent parent_node,
                       NodeTypeOfChild child_node);
 
-  template <typename NonTerminalTypeSharedPtr>
-  bool ConditionalRemoveChild(NonTerminalTypeSharedPtr node);
+  template <NonTerminalType type>
+  bool ConditionalRemoveChild(NonTerminalTypeSharedPtr<type> node);
 
-  template <typename NonTerminalTypeSharedPtr>
-  void ConditionalRemoveParent(NonTerminalTypeSharedPtr node);
+  template <typename NodeType>
+  void ConditionalRemoveParent(NodeType node);
 
   SharedPtrNodeContainer children_of_child_;
 };
@@ -34,8 +34,8 @@ class StructureOptimizerLogic : public VisitorProcessLogic {
 template <typename TargetType>
 class TerminalTypeModifierLogic : public VisitorProcessLogic {
  public:
-  template <typename TerminalTypeSharedPtr>
-  void ProcessNode(TerminalTypeSharedPtr node);
+  template <TerminalType type>
+  void ProcessNode(TerminalTypeSharedPtr<type> node);
 };
 
 class DoubleHyphenHandlerLogic : public VisitorProcessLogic {
@@ -55,8 +55,8 @@ class AmbiguityHandlerLogic : public VisitorProcessLogic {
 
 class NodeRecorderLogic : public VisitorProcessLogic {
  public:
-  template <typename NonTerminalTypeSharedPtr>
-  void ProcessNode(NonTerminalTypeSharedPtr node);
+  template <TerminalType type>
+  void ProcessNode(TerminalTypeSharedPtr<type> node);
   std::set<Token> recorded_elements_;
 };
 
@@ -65,8 +65,8 @@ class FocusedElementCollectorLogic : public VisitorProcessLogic {
   explicit FocusedElementCollectorLogic(OptionBindingRecorder *recorder_ptr);
   std::set<Token> GetFocusedElements();
 
-  template <typename TerminalTypeSharedPtr>
-  void ProcessNode(TerminalTypeSharedPtr node);
+  template <TerminalType type>
+  void ProcessNode(TerminalTypeSharedPtr<type> node);
 
  private:
   OptionBindingRecorder *recorder_ptr_;
@@ -91,8 +91,8 @@ class OneOrMoreNodeInsertLogic : public VisitorProcessLogic {
   OneOrMoreNodeInsertLogic(
     const std::set<Token> &focused_oom_bound_options);
 
-  template <typename TerminalTypeSharedPtr>
-  void ProcessNode(TerminalTypeSharedPtr node);
+  template <TerminalType type>
+  void ProcessNode(TerminalTypeSharedPtr<type> node);
 
  private:
   const std::set<Token> &focused_oom_bound_options_;
@@ -111,13 +111,13 @@ class BoundArgumentCleanerLogic : public VisitorProcessLogic {
 
 namespace clidoc {
 
-template <typename NonTerminalTypeSharedPtr>
+template <NonTerminalType type>
 void StructureOptimizerLogic::ProcessNode(
-    NonTerminalTypeSharedPtr node) {
+    NonTerminalTypeSharedPtr<type> node) {
   // keep running if child been removed.
   while (ConditionalRemoveChild(node)) {/* empty */}
   ConditionalRemoveParent(node);
-  if (NodeIsOneOf<NonTerminalTypeSharedPtr, LogicOr, LogicXor>::value) {
+  if (NodeIsOneOf<NonTerminalTypeSharedPtr<type>, LogicOr, LogicXor>::value) {
     if (node->GetSizeOfChildren() == 1) {
       NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
     }
@@ -153,9 +153,9 @@ bool StructureOptimizerLogic::CanRemoveChild(
   return equivalent;
 }
 
-template <typename NonTerminalTypeSharedPtr>
+template <NonTerminalType type>
 bool StructureOptimizerLogic::ConditionalRemoveChild(
-    NonTerminalTypeSharedPtr node) {
+    NonTerminalTypeSharedPtr<type> node) {
   bool removed_children_flag = false;
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
@@ -187,46 +187,46 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
   return removed_children_flag;
 }
 
-template <typename NonTerminalTypeSharedPtr>
+template <typename NodeType>
 void StructureOptimizerLogic::ConditionalRemoveParent(
-    NonTerminalTypeSharedPtr node) {
+    NodeType node) {
   if (node->children_.size() == 0) {
     *node->node_connection.this_iter_ = nullptr;
   }
 }
 
 template <typename TargetType>
-template <typename TerminalTypeSharedPtr>
+template <TerminalType type>
 void TerminalTypeModifierLogic<TargetType>::ProcessNode(
-    TerminalTypeSharedPtr node) {
+    TerminalTypeSharedPtr<type> node) {
   NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
-template <typename NonTerminalTypeSharedPtr>
+template <TerminalType type>
 void NodeRecorderLogic::ProcessNode(
-    NonTerminalTypeSharedPtr node) {
+    TerminalTypeSharedPtr<type> node) {
   recorded_elements_.insert(node->token_);
 }
 
-template <typename TerminalTypeSharedPtr>
+template <TerminalType type>
 void FocusedElementCollectorLogic::ProcessNode(
-    TerminalTypeSharedPtr node) {
-  if (NodeIsOneOf<TerminalTypeSharedPtr,
+    TerminalTypeSharedPtr<type> node) {
+  if (NodeIsOneOf<TerminalTypeSharedPtr<type>,
                   PosixOption, GnuOption>::value) {
     if (!recorder_ptr_->OptionIsRecorded(node->token_)) {
       recorder_ptr_->RecordSingleOption(node->token_);
     }
   }
-  if (NodeIsOneOf<TerminalTypeSharedPtr,
+  if (NodeIsOneOf<TerminalTypeSharedPtr<type>,
                   Argument, Command>::value) {
     operand_candidates_.insert(node->token_);
   }
 }
 
-template <typename TerminalTypeSharedPtr>
+template <TerminalType type>
 void OneOrMoreNodeInsertLogic::ProcessNode(
-    TerminalTypeSharedPtr node) {
-  if (NodeIsNot<TerminalTypeSharedPtr,
+    TerminalTypeSharedPtr<type> node) {
+  if (NodeIsNot<TerminalTypeSharedPtr<type>,
                 PosixOption, GnuOption>::value) {
     return;
   }

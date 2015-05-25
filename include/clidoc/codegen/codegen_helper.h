@@ -3,7 +3,6 @@
 
 #include <array>
 #include <map>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -88,9 +87,9 @@ class ASTCodeGenerator : public VisitorProcessLogic {
       const std::map<NonTerminalType, std::string> &non_terminal_format);
 
   template <TerminalType type>
-  void ProcessNode(std::shared_ptr<Terminal<type>> node);
+  void ProcessNode(TerminalTypeSharedPtr<type> node);
   template <NonTerminalType type>
-  void ProcessNode(std::shared_ptr<NonTerminal<type>> node);
+  void ProcessNode(NonTerminalTypeSharedPtr<type> node);
 
   virtual std::string GenerateCode() const;
 
@@ -152,7 +151,7 @@ class CodegenHelper {
 namespace clidoc {
 
 template <TerminalType type>
-void ASTCodeGenerator::ProcessNode(std::shared_ptr<Terminal<type>> node) {
+void ASTCodeGenerator::ProcessNode(TerminalTypeSharedPtr<type> node) {
   std::string variable_name = GenerateVariableNmae();
   std::string stat = RenderNodeDecl(
       variable_name,
@@ -163,7 +162,7 @@ void ASTCodeGenerator::ProcessNode(std::shared_ptr<Terminal<type>> node) {
 }
 
 template <NonTerminalType type>
-void ASTCodeGenerator::ProcessNode(std::shared_ptr<NonTerminal<type>> node) {
+void ASTCodeGenerator::ProcessNode(NonTerminalTypeSharedPtr<type> node) {
   // apply processing logic to children, and collect variable name of children.
   std::vector<std::string> child_variable_names;
   for (auto child_node : node->children_) {
