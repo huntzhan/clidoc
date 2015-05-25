@@ -22,6 +22,8 @@ using std::string;
 
 namespace clidoc {
 
+namespace cpp11 {
+
 string GenerateSetOfToken(
     const string &variable,
     const set<Token> &elements) {
@@ -96,6 +98,8 @@ class Cpp11CollectedElementCodeGenerator
   }
 };
 
+} // namespace cpp11
+
 string Cpp11Codegen(const CodeGenInfo &code_gen_info) {
   // codegen of AST.
   ASTCodeGenerator ast_code_generator;
@@ -139,7 +143,7 @@ CppCodeGenInfo cpp_code_gen_info = InitCppCodeGenInfo();
 
   CodegenHelper codegen_helper(
       code_gen_info,
-      Cpp11CollectedElementCodeGenerator(),
+      cpp11::Cpp11CollectedElementCodeGenerator(),
       &ast_code_generator);
   codegen_helper.SetCodegenPrefixAndSuffix(codegen_prefix, codegen_suffix);
   return codegen_helper.GenerateCode();

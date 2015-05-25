@@ -29,7 +29,7 @@ target_link_libraries (
 # compile library for python codegen.
 target_link_libraries (
   clidoc_python_codegen
-  clidoc_filesystem
+  clidoc_codegen_helper clidoc_filesystem
 )
 target_link_libraries (
   ${CLIDOC_CPP11_PREFIX}_cpp11

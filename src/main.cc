@@ -81,7 +81,7 @@ void GeneratePythonCode(
   ConstructCodeGenInfo(doc_path, &info);
   // code gen.
   ofstream fout(output_file_name);
-  fout << clidoc::python::GenerateSource(info);
+  fout << clidoc::PythonCodegen(info);
   fout.close();
 }
 

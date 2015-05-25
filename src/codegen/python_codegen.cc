@@ -8,6 +8,7 @@
 
 #include "clidoc/ast/ast_build.h"
 #include "clidoc/ast/ast_node_interface.h"
+#include "clidoc/codegen/codegen_helper.h"
 #include "clidoc/codegen/filesystem.h"
 
 using std::endl;
@@ -68,9 +69,9 @@ string GenerateSetOfToken(
   return ostrm.str();
 }
 
-std::string GenerateInitializerList(
-    const std::string &variable,
-    const std::map<Token, std::string> default_values) {
+string GenerateInitializerList(
+    const string &variable,
+    const map<Token, string> default_values) {
   ostringstream ostrm;
   ostrm << variable << " = {" << endl;
   for (const auto &map_pair : default_values) {
@@ -85,9 +86,9 @@ std::string GenerateInitializerList(
   return ostrm.str();
 }
 
-std::string GenerateInitializerList(
-    const std::string &variable,
-    const std::map<Token, Token> default_values) {
+string GenerateInitializerList(
+    const string &variable,
+    const map<Token, Token> default_values) {
   ostringstream ostrm;
   ostrm << variable << " = {" << endl;
   for (const auto &map_pair : default_values) {
@@ -102,47 +103,71 @@ std::string GenerateInitializerList(
   return ostrm.str();
 }
 
-string GenerateSource(const CodeGenInfo &code_gen_info) {
-  ostringstream ostrm;
+class PythonCollectedElementCodeGenerator
+    : public CollectedElementCodeGenerator {
+ public:
+  string GenerateCode(const CodeGenInfo &code_gen_info) const override {
+    ostringstream ostrm;
+    OSTRM_PROPERTY(bound_options_);
+    OSTRM_PROPERTY(unbound_options_);
+    OSTRM_PROPERTY(arguments_);
+    OSTRM_PROPERTY(oom_bound_options_);
+    OSTRM_PROPERTY(oom_arguments_);
+    OSTRM_PROPERTY(commands_);
 
-  // load codegen.py.
-  ostrm << LoadFileFromResource("python/codegen.py") << endl << endl
-        << "#####################" << endl
-        << "#####  codegen  #####" << endl
-        << "#####################" << endl;
+    ostrm << GenerateInitializerList(
+        "Info.default_values",
+        code_gen_info.default_values_);
 
-  OSTRM_PROPERTY(bound_options_);
-  OSTRM_PROPERTY(unbound_options_);
-  OSTRM_PROPERTY(arguments_);
-  OSTRM_PROPERTY(oom_bound_options_);
-  OSTRM_PROPERTY(oom_arguments_);
-  OSTRM_PROPERTY(commands_);
+    ostrm << GenerateInitializerList(
+        "Info.option_to_representative_option",
+        code_gen_info.option_recorder_.option_to_representative_option_);
 
-  ostrm << GenerateInitializerList(
-      "Info.default_values",
-      code_gen_info.default_values_);
-
-  ostrm << GenerateInitializerList(
-      "Info.option_to_representative_option",
-      code_gen_info.option_recorder_.option_to_representative_option_);
-
-  ASTTextGenerator ast_text_generator;
-  auto visitor = GenerateVisitor<AllNodeVisitor>(&ast_text_generator);
-  code_gen_info.doc_node_->Accept(&visitor);
-  ostrm << ast_text_generator.GetExpressions()
-        << endl;
-
-  ostrm << "Info.doc_node = "
-        << ast_text_generator.GetRootVariableName()
-        << endl;
-
-  ostrm << "Info.doc_text = '''"
-        << code_gen_info.doc_text_
-        << "'''"
-        << endl;
-  return ostrm.str();
-}
+    ostrm << "Info.doc_text = '''"
+          << code_gen_info.doc_text_
+          << "'''"
+          << endl;
+    return ostrm.str();
+  }
+};
 
 }  // namespace python
+
+string PythonCodegen(const CodeGenInfo &code_gen_info) {
+  // codegen of AST.
+  ASTCodeGenerator ast_code_generator;
+  ast_code_generator.SetVariableNameFormat(
+      "node_%1%");
+
+  map<TerminalType, string> terminal_format = {
+    {TerminalType::POSIX_OPTION, "%1% = PosixOption(\"%2%\")"},
+    {TerminalType::GNU_OPTION,   "%1% = GnuOption(\"%2%\")"},
+    {TerminalType::COMMAND,      "%1% = Command(\"%2%\")"},
+    {TerminalType::ARGUMENT,     "%1% = Argument(\"%2%\")"},
+  };
+  map<NonTerminalType, string> non_terminal_format = {
+    {NonTerminalType::DOC,             "%1% = Doc()"},
+    {NonTerminalType::LOGIC_AND,       "%1% = LogicAnd()"},
+    {NonTerminalType::LOGIC_XOR,       "%1% = LogicXor()"},
+    {NonTerminalType::LOGIC_OR,        "%1% = LogicOr()"},
+    {NonTerminalType::LOGIC_OPTIONAL,  "%1% = LogicOptional()"},
+    {NonTerminalType::LOGIC_ONEORMORE, "%1% = LogicOneOrMore()"},
+  };
+  ast_code_generator.SetNodeDeclFormat(terminal_format, non_terminal_format);
+
+  ast_code_generator.SetAddingChildStatFormat(
+      "%1%.add_child(%2%)");
+  ast_code_generator.SetBindingRootNodeStatFormat(
+      "Info.doc_node = %1%");
+
+  CodegenHelper codegen_helper(
+      code_gen_info,
+      python::PythonCollectedElementCodeGenerator(),
+      &ast_code_generator);
+  codegen_helper.SetCodegenPrefixAndSuffix(
+      LoadFileFromResource("python/codegen.py"),
+      "");
+  return codegen_helper.GenerateCode();
+}
 
 }  // namespace clidoc
