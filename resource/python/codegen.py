@@ -60,9 +60,9 @@ def clidoc(argv, flags=0):
 
 def split_comma_separated_oom_outcome(outcome):
     for key, value in outcome.items():
-        if not isinstance(value, list) or not value:
+        if not isinstance(value, list) or len(value) != 1:
             continue
-        # is non-empty string list outcome.
+        # is one-element string list outcome.
         # try to split the last element.
         text = value.pop()
         value.extend(

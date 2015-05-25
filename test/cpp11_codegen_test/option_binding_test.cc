@@ -106,6 +106,20 @@ TEST(option_binding, guideline_8_fault_tolerance) {
   KeyChecker();
   vector<string> expected_3 = {};
   EXPECT_EQ(expected_3, clidoc::string_list_outcome["-e"]);
+
+  const char *argv_4[] = {"utility_name", "-e", "a,b,c"};
+  EXPECT_TRUE(
+      clidoc::ParseArguments(3, argv_4, kTestMode | clidoc::GUIDELINE_8_OFF));
+  KeyChecker();
+  vector<string> expected_4 = {"a,b,c"};
+  EXPECT_EQ(expected_4, clidoc::string_list_outcome["-e"]);
+
+  const char *argv_5[] = {"utility_name", "-e", "c,d", "-e", "a,b,c"};
+  EXPECT_TRUE(
+      clidoc::ParseArguments(5, argv_5, kTestMode));
+  KeyChecker();
+  vector<string> expected_5 = {"c,d", "a,b,c"};
+  EXPECT_EQ(expected_5, clidoc::string_list_outcome["-e"]);
 }
 
 TEST(option_binding, option_long_1) {

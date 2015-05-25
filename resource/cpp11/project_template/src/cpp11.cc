@@ -37,9 +37,10 @@ void SplitCommaSeparatedOOMOutcome(
     map<string, vector<string>> *string_list_outcome_ptr) {
   for (auto &map_pair : *string_list_outcome_ptr) {
     auto &values = map_pair.second;
-    if (values.empty()) {
+    if (values.size() != 1) {
       continue;
     }
+    // split only if the list contains a single outcome.
     if (values.back().find(',') != string::npos) {
       // split the last element.
       const string text = values.back();
