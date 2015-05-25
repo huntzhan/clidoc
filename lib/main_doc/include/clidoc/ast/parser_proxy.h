@@ -33,9 +33,6 @@ class DocPreprocessor {
   void ReplaceUtilityName();
   // 3. Insert K_DESC_DELIMITER after each newline character in option section.
   void InsertDesDelimiter();
-  // 4. Disambiguate textual elements by inserting spaces to both sides of
-  // every keyword
-  void DisambiguateByInsertSpace();
 
   std::string text_;
   std::string usage_section_;

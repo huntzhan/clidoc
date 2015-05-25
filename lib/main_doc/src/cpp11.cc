@@ -76,7 +76,7 @@ bool ParseArguments(const int &argc, const char *const *argv,
 
   auto RespondToError = [&]() -> bool {
     if (!print_doc_off) {
-      cout << cpp_code_gen_info.doc_text_ << endl;
+      cout << cpp_codegen_info.doc_text_ << endl;
     }
     if (!system_exit_off) {
       exit(0);
@@ -92,16 +92,15 @@ bool ParseArguments(const int &argc, const char *const *argv,
   // tokenize input arguments.
   ArgvProcessor argv_processor;
   argv_processor.LoadArgv(argc, argv);
-  auto tokens = argv_processor.GetPreprocessedArguments(
-      cpp_code_gen_info.option_to_representative_option_,
-      cpp_code_gen_info.bound_options_);
+  // merge `bound_options_` and `oom_bound_options_`.
+  auto tokens = argv_processor.GetPreprocessedArguments(cpp_codegen_info);
   if (tokens.empty()) {
     return RespondToError();
   }
 
   // analyse input arguments.
-  MatchStrategy match_strategy(cpp_code_gen_info, tokens);
-  cpp_code_gen_info.doc_node_->Accept(&match_strategy);
+  MatchStrategy match_strategy(cpp_codegen_info, tokens);
+  cpp_codegen_info.doc_node_->Accept(&match_strategy);
 
   if (match_strategy.AllMatch()) {
     auto match_state_ptr = match_strategy.GetMatchStatePtr();

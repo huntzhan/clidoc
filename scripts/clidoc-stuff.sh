@@ -32,6 +32,14 @@ function build {
   cd $cached_pwd
 }
 
+function update_main_doc {
+  MAIN_DOC_LIB_DIR="${CLIDOC_SOURCE_DIR}/lib/main_doc"
+  MAIN_DOC_PATH="${CLIDOC_SOURCE_DIR}/scripts/main_doc"
+  rm -rf "$MAIN_DOC_LIB_DIR"
+  $CLIDOC_MAIN_PATH -m cpp11_cmake_project \
+      "$MAIN_DOC_PATH" "$MAIN_DOC_LIB_DIR"
+}
+
 
 if [[ $1 = "lint" ]]; then
   lint
@@ -40,6 +48,8 @@ elif [[ $1 = "build" ]]; then
 elif [[ $1 = "rebuild" ]]; then
   rm -rf "$CLIDOC_BUILD_DIR"
   build
+elif [[ $1 = "update_main_doc" ]]; then
+  update_main_doc
 elif [[ $1 = "clidoc_main" ]]; then
   echo "$CLIDOC_MAIN_PATH"
 fi

@@ -58,7 +58,7 @@ bool MatchState::ArgumentIsConcumed(const int &index) const {
   return token_match_state_.at(index);
 }
 
-MatchStateManager::MatchStateManager(const CppCodeGenInfo &info,
+MatchStateManager::MatchStateManager(const CppCodegenInfo &info,
                                      const vector<Token> &tokens)
     : info_(info), tokens_(tokens), match_state_ptr_(new MatchState) {
   // lambdas.
@@ -166,24 +166,12 @@ bool MatchStateManager::MatchBooleanKey(const Token &key) {
   if (!match_state_ptr_->IsBooleanKey(key)) {
     return false;
   }
-  if (key.type() == TerminalType::COMMAND) {
-    auto transformed_key = key;
-    transformed_key.set_type(TerminalType::GENERAL_ELEMENT);
-    auto key_iter = GetIteratorOfKey(transformed_key);
-    if (key_iter != tokens_.cend()) {
-      match_state_ptr_->AddBooleanOutcome(key);
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), key_iter));
-      return true;
-    }
-  } else {
-    auto key_iter = GetIteratorOfKey(key);
-    if (key_iter != tokens_.cend()) {
-      match_state_ptr_->AddBooleanOutcome(key);
-      match_state_ptr_->MarkArgumentConsumed(
-          distance(tokens_.cbegin(), key_iter));
-      return true;
-    }
+  auto key_iter = GetIteratorOfKey(key);
+  if (key_iter != tokens_.cend()) {
+    match_state_ptr_->AddBooleanOutcome(key);
+    match_state_ptr_->MarkArgumentConsumed(
+        distance(tokens_.cbegin(), key_iter));
+    return true;
   }
   return false;
 }
@@ -192,7 +180,17 @@ bool MatchStateManager::MatchKeyWithValue(
     const Token &key,
     void (MatchState::*store_key_value_pair)(const Token &, const Token &)) {
   // check index.
-  auto AccessToken = [&](const int &index) -> bool {
+  auto AccessArgumentToken = [&](const int &index) -> bool {
+    const auto &token = tokens_.at(index);
+    const auto &type = token.type();
+    if ((type == TerminalType::GENERAL_ELEMENT
+         || type == TerminalType::COMMAND)
+        && !match_state_ptr_->ArgumentIsConcumed(index)) {
+      return true;
+    }
+    return false;
+  };
+  auto AccessNormalToken = [&](const int &index) -> bool {
     const auto &token = tokens_.at(index);
     if (token.type() == TerminalType::GENERAL_ELEMENT
         && !match_state_ptr_->ArgumentIsConcumed(index)) {
@@ -207,7 +205,7 @@ bool MatchStateManager::MatchKeyWithValue(
       return false;
     }
     int value_index = distance(tokens_.cbegin(), value_iter);
-    if (!AccessToken(value_index)) {
+    if (!AccessArgumentToken(value_index)) {
       return false;
     }
     (match_state_ptr_.get()->*store_key_value_pair)(key, *value_iter);
@@ -223,7 +221,7 @@ bool MatchStateManager::MatchKeyWithValue(
     }
     int key_index = distance(tokens_.cbegin(), key_iter);
     int value_index = distance(tokens_.cbegin(), value_iter);
-    if (!AccessToken(value_index)) {
+    if (!AccessNormalToken(value_index)) {
       return false;
     }
     // record key-value pair.
@@ -274,7 +272,7 @@ shared_ptr<MatchState> MatchStateManager::match_state_ptr() const {
   return match_state_ptr_;
 }
 
-MatchStrategy::MatchStrategy(const CppCodeGenInfo &info,
+MatchStrategy::MatchStrategy(const CppCodegenInfo &info,
                              const vector<Token> &tokens)
     : state_manager_(info, tokens) { /* empty */ }
 
@@ -305,14 +303,30 @@ void MatchStrategy::ProcessNode(LogicAnd::SharedPtr node) {
 }
 
 void MatchStrategy::ProcessNode(LogicXor::SharedPtr node) {
+  // increase level of `LogicXor` and push rollback point.
+  ++logix_xor_level;
+  state_manager_.PushRollbackPoint();
+
   for (auto child_node : node->children_) {
     child_node->Accept(this);
+    if (child_match_condition_
+        && logix_xor_level == 1 && !AllMatch()) {
+      // top-level `LogicXor` node require all argument being matched.
+      // if not, rollback match state and keep searching.
+      state_manager_.Rollback();
+      // record initial state again.
+      state_manager_.PushRollbackPoint();
+      child_match_condition_ = false;
+      continue;
+    }
     if (child_match_condition_) {
-      child_match_condition_ = true;
-      return;
+      break;
     }
   }
-  child_match_condition_ = false;
+  // state: child_match_condition_ == True
+  // decrease level of `LogicXor` and pop rollback point.
+  state_manager_.PopRollbackPoint();
+  --logix_xor_level;
 }
 
 void MatchStrategy::ProcessNode(LogicOr::SharedPtr node) {

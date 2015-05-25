@@ -36,7 +36,7 @@ struct MatchState {
 
 class MatchStateManager {
  public:
-  MatchStateManager(const CppCodeGenInfo &info,
+  MatchStateManager(const CppCodegenInfo &info,
                     const std::vector<Token> &tokens);
   // memento pattern related.
   void PushRollbackPoint();
@@ -61,7 +61,7 @@ class MatchStateManager {
   bool MatchStringListKey(const Token &key);
 
   // infomation of AST and input arguments.
-  const CppCodeGenInfo &info_;
+  const CppCodegenInfo &info_;
   const std::vector<Token> tokens_;
 
   std::multimap<Token, std::vector<Token>::const_iterator> skip_iters_;
@@ -74,7 +74,7 @@ class MatchStrategy : public NodeVisitorInterface {
  public:
   using NodeVisitorInterface::ProcessNode;
 
-  MatchStrategy(const CppCodeGenInfo &info,
+  MatchStrategy(const CppCodegenInfo &info,
                 const std::vector<Token> &tokens);
   bool AllMatch() const;
   std::shared_ptr<MatchState> GetMatchStatePtr() const;
@@ -94,6 +94,7 @@ class MatchStrategy : public NodeVisitorInterface {
  private:
   MatchStateManager state_manager_;
   bool child_match_condition_ = false;
+  int logix_xor_level = 0;
 };
 
 }  // namespace clidoc

@@ -40,7 +40,7 @@
 #ifndef YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 # define YY_CLIDOC_GENERATED_PARSER_H_INCLUDED
 // //                    "%code requires" blocks.
-#line 14 "parser.y" // lalr1.cc:392
+#line 15 "parser.y" // lalr1.cc:392
 
 
 #include <string>
@@ -296,6 +296,7 @@ namespace clidoc {
 
       // utilities
       // xor_expr
+      // _xor_expr
       char dummy5[sizeof(LogicXor::WeakPtr)];
 
       // single_binding
@@ -310,7 +311,6 @@ namespace clidoc {
       // atom
       // posix_option_unit
       // gnu_option_unit
-      // argument
       // options_section
       // single_description
       char dummy8[sizeof(WeakPtrNode)];
@@ -652,7 +652,7 @@ namespace clidoc {
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const signed char yytable_[];
 
   static const signed char yycheck_[];
 
@@ -667,10 +667,13 @@ namespace clidoc {
   static const unsigned char yyr2_[];
 
 
-#if YYDEBUG
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *n);
+
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-
+#if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
   static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
@@ -771,7 +774,7 @@ namespace clidoc {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 73,     ///< Last index in yytable_.
+      yylast_ = 77,     ///< Last index in yytable_.
       yynnts_ = 21,  ///< Number of nonterminal symbols.
       yyfinal_ = 7, ///< Termination state number.
       yyterror_ = 1,
@@ -877,6 +880,7 @@ namespace clidoc {
 
       case 27: // utilities
       case 34: // xor_expr
+      case 35: // _xor_expr
         value.copy< LogicXor::WeakPtr > (other.value);
         break;
 
@@ -891,10 +895,9 @@ namespace clidoc {
       case 26: // usage_section
       case 30: // single_seq
       case 31: // logic
-      case 35: // atom
-      case 36: // posix_option_unit
-      case 37: // gnu_option_unit
-      case 38: // argument
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
         value.copy< WeakPtrNode > (other.value);
@@ -947,6 +950,7 @@ namespace clidoc {
 
       case 27: // utilities
       case 34: // xor_expr
+      case 35: // _xor_expr
         value.copy< LogicXor::WeakPtr > (v);
         break;
 
@@ -961,10 +965,9 @@ namespace clidoc {
       case 26: // usage_section
       case 30: // single_seq
       case 31: // logic
-      case 35: // atom
-      case 36: // posix_option_unit
-      case 37: // gnu_option_unit
-      case 38: // argument
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
         value.copy< WeakPtrNode > (v);
@@ -1095,6 +1098,7 @@ namespace clidoc {
 
       case 27: // utilities
       case 34: // xor_expr
+      case 35: // _xor_expr
         value.template destroy< LogicXor::WeakPtr > ();
         break;
 
@@ -1109,10 +1113,9 @@ namespace clidoc {
       case 26: // usage_section
       case 30: // single_seq
       case 31: // logic
-      case 35: // atom
-      case 36: // posix_option_unit
-      case 37: // gnu_option_unit
-      case 38: // argument
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
         value.template destroy< WeakPtrNode > ();
@@ -1172,6 +1175,7 @@ namespace clidoc {
 
       case 27: // utilities
       case 34: // xor_expr
+      case 35: // _xor_expr
         value.move< LogicXor::WeakPtr > (s.value);
         break;
 
@@ -1186,10 +1190,9 @@ namespace clidoc {
       case 26: // usage_section
       case 30: // single_seq
       case 31: // logic
-      case 35: // atom
-      case 36: // posix_option_unit
-      case 37: // gnu_option_unit
-      case 38: // argument
+      case 36: // atom
+      case 37: // posix_option_unit
+      case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
         value.move< WeakPtrNode > (s.value);
@@ -1401,7 +1404,7 @@ namespace clidoc {
 
 
 } // clidoc
-#line 1405 "generated_parser.h" // lalr1.cc:392
+#line 1408 "generated_parser.h" // lalr1.cc:392
 
 
 
