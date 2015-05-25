@@ -1,9 +1,6 @@
 #include "clidoc/codegen/python_codegen.h"
 
-#include <fstream>
 #include <map>
-#include <set>
-#include <sstream>
 #include <string>
 
 #include "clidoc/ast/ast_build.h"
@@ -11,127 +8,10 @@
 #include "clidoc/codegen/codegen_helper.h"
 #include "clidoc/codegen/filesystem.h"
 
-using std::endl;
-using std::ifstream;
 using std::map;
-using std::ostringstream;
-using std::set;
 using std::string;
 
-const string kIndent = "    ";
-
-#define OSTRM_PROPERTY(data_member)                \
-  ostrm << GenerateSetOfToken(                     \
-      RemoveUnderscoreSuffix("Info."#data_member), \
-      code_gen_info.data_member)                   \
-
 namespace clidoc {
-
-namespace python {
-
-string RemoveUnderscoreSuffix(const string &variable) {
-  return string(variable.cbegin(), variable.cend() - 1);
-}
-
-string GeneratePythonToken(const Token &token) {
-  ostringstream ostrm;
-  ostrm << "Token(Token.";
-  switch (token.type()) {
-    case TerminalType::POSIX_OPTION:
-      ostrm << "POSIX_OPTION";
-      break;
-    case TerminalType::GNU_OPTION:
-      ostrm << "GNU_OPTION";
-      break;
-    case TerminalType::COMMAND:
-      ostrm << "COMMAND";
-      break;
-    case TerminalType::ARGUMENT:
-      ostrm << "ARGUMENT";
-      break;
-    default:
-      throw "GenerateSetOfToken";
-  }
-  ostrm << ", \"" << token.value() << "\")";
-  return ostrm.str();
-}
-
-string GenerateSetOfToken(
-    const string &variable,
-    const set<Token> &elements) {
-  ostringstream ostrm;
-  // assign to `variable`.
-  ostrm << variable << " = set([" << endl;
-  for (const Token &element : elements) {
-    ostrm << kIndent << GeneratePythonToken(element) << "," << endl;
-  }
-  ostrm << "])" << endl;
-  return ostrm.str();
-}
-
-string GenerateInitializerList(
-    const string &variable,
-    const map<Token, string> default_values) {
-  ostringstream ostrm;
-  ostrm << variable << " = {" << endl;
-  for (const auto &map_pair : default_values) {
-    ostrm << kIndent
-          << GeneratePythonToken(map_pair.first)
-          << ": "
-          << "\"" << map_pair.second << "\""
-          << ","
-          << endl;
-  }
-  ostrm << "}" << endl;
-  return ostrm.str();
-}
-
-string GenerateInitializerList(
-    const string &variable,
-    const map<Token, Token> default_values) {
-  ostringstream ostrm;
-  ostrm << variable << " = {" << endl;
-  for (const auto &map_pair : default_values) {
-    ostrm << kIndent
-          << GeneratePythonToken(map_pair.first)
-          << ": "
-          << GeneratePythonToken(map_pair.second)
-          << ","
-          << endl;
-  }
-  ostrm << "}" << endl;
-  return ostrm.str();
-}
-
-class PythonCollectedElementCodeGenerator
-    : public CollectedElementCodeGenerator {
- public:
-  string GenerateCode(const CodeGenInfo &code_gen_info) const override {
-    ostringstream ostrm;
-    OSTRM_PROPERTY(bound_options_);
-    OSTRM_PROPERTY(unbound_options_);
-    OSTRM_PROPERTY(arguments_);
-    OSTRM_PROPERTY(oom_bound_options_);
-    OSTRM_PROPERTY(oom_arguments_);
-    OSTRM_PROPERTY(commands_);
-
-    ostrm << GenerateInitializerList(
-        "Info.default_values",
-        code_gen_info.default_values_);
-
-    ostrm << GenerateInitializerList(
-        "Info.option_to_representative_option",
-        code_gen_info.option_recorder_.option_to_representative_option_);
-
-    ostrm << "Info.doc_text = '''"
-          << code_gen_info.doc_text_
-          << "'''"
-          << endl;
-    return ostrm.str();
-  }
-};
-
-}  // namespace python
 
 string PythonCodegen(const CodeGenInfo &code_gen_info) {
   // codegen of AST.
@@ -160,9 +40,50 @@ string PythonCodegen(const CodeGenInfo &code_gen_info) {
   ast_code_generator.SetBindingRootNodeStatFormat(
       "Info.doc_node = %1%");
 
+  // codegen of collected elements.
+  CollectedElementCodeGenerator cec_generator;
+  map<TerminalType, string> token_to_string = {
+    {TerminalType::POSIX_OPTION, "Token(Token.POSIX_OPTION, \"%1%\")"},
+    {TerminalType::GNU_OPTION,   "Token(Token.GNU_OPTION, \"%1%\")"},
+    {TerminalType::COMMAND,      "Token(Token.COMMAND, \"%1%\")"},
+    {TerminalType::ARGUMENT,     "Token(Token.ARGUMENT, \"%1%\")"},
+  };
+  cec_generator.SetTokenFormat(token_to_string);
+
+  const string focused_element_decl_format_suffix = " = set([\n%1%])";
+  const string focused_element_format = "    %1%,";
+  cec_generator.SetBoundOptionsDeclFormat(
+      "Info.bound_options" + focused_element_decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetUnboundOptionsDeclFormat(
+      "Info.unbound_options" + focused_element_decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetArgumentsDeclFormat(
+      "Info.arguments" + focused_element_decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetOOMBoundOptionsDeclFormat(
+      "Info.oom_bound_options" + focused_element_decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetOOMArgumentsDeclFormat(
+      "Info.oom_arguments" + focused_element_decl_format_suffix,
+      focused_element_format);
+  cec_generator.SetCommandsDeclFormat(
+      "Info.commands" + focused_element_decl_format_suffix,
+      focused_element_format);
+
+  const string &mapping_decl_format_suffix = " = {\n%1%}";
+  cec_generator.SetDefaultValuesDeclFormat(
+      "Info.default_values" + mapping_decl_format_suffix,
+      "    %1%: \"%2%\",");
+  cec_generator.SetOptionToRepresentativeOptionDeclFormat(
+      "Info.option_to_representative_option" + mapping_decl_format_suffix,
+      "    %1%: %2%,");
+  cec_generator.SetDocTextDeclFormat(
+      "Info.doc_text = '''%1%'''");
+
   CodegenHelper codegen_helper(
       code_gen_info,
-      python::PythonCollectedElementCodeGenerator(),
+      cec_generator,
       &ast_code_generator);
   codegen_helper.SetCodegenPrefixAndSuffix(
       LoadFileFromResource("python/codegen.py"),
