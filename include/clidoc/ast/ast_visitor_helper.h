@@ -117,7 +117,7 @@ struct DefaultBehaviorOfNonTerminal {
       ProcessLogicType *process_logic_ptr,
       NonTerminalTypeSharedPtr<type> node) {
     // process logic can not handle the type of `node`.
-    auto cache_children = node->children_;
+    auto cache_children = node->children();
     for (auto child_node : cache_children) {
       child_node->Accept(process_logic_ptr->visitor_ptr_);
     }
@@ -443,7 +443,7 @@ template <NonTerminalType type>
 void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
     NonTerminalTypeSharedPtr<type> node) {
   auto new_node = TargetType::Init();
-  for (auto child : node->children_) {
+  for (auto child : node->children()) {
     new_node->AddChild(child);
   }
   node->node_connection.ReplacedWith(new_node);

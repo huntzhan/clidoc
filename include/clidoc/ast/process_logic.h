@@ -137,11 +137,11 @@ void ChildRemovabilityChecker<ParentType>::ProcessNode(
     child_is_removable_ = true;
   }
   // 2. when child_node is one of (`LogicAnd`, `LogicXor`, `LogicOr`), and
-  // size of child_node->children_ equals to 1, remove the child_node.
+  // size of child_node->children() equals to 1, remove the child_node.
   if ((ChildType == NonTerminalType::LOGIC_AND
        || ChildType == NonTerminalType::LOGIC_XOR
        || ChildType == NonTerminalType::LOGIC_OR)
-      && child_node->children_.size() == 1) {
+      && child_node->children().size() == 1) {
     child_is_removable_ = true;
   }
 }
@@ -158,7 +158,7 @@ void StructureOptimizerLogic::ProcessNode(
   while (ConditionalRemoveChild(node)) {/* empty */}
   ConditionalRemoveParent(node);
   if ((Type == NonTerminalType::LOGIC_OR || Type == NonTerminalType::LOGIC_XOR)
-      && node->children_.size() == 1) {
+      && node->children().size() == 1) {
     NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
   }
 }
@@ -171,7 +171,7 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
   SharedPtrNodeContainer optimized_children;
   // `child_node` must be a reference, since the value of `child_node` in
   // `node->children_` might change.
-  for (auto &child_node : node->children_) {
+  for (auto &child_node : node->children()) {
     child_node->Accept(visitor_ptr_);
     if (!child_node) {
       // child node has been removed.
@@ -196,7 +196,7 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
   }
   // make a copy of children of current node, which are accessiable to the
   // parent of current node.
-  node->children_.clear();
+  node->ClearChildren();
   for (auto child_node : optimized_children) {
     node->AddChild(child_node);
   }
@@ -207,7 +207,7 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
 template <NonTerminalType Type>
 void StructureOptimizerLogic::ConditionalRemoveParent(
     NonTerminalTypeSharedPtr<Type> node) {
-  if (node->children_.size() == 0) {
+  if (node->children().size() == 0) {
     *node->node_connection.this_iter_ = nullptr;
   }
 }

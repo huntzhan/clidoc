@@ -290,7 +290,7 @@ shared_ptr<MatchState> MatchStrategy::GetMatchStatePtr() const {
 
 void MatchStrategy::ProcessNode(LogicAnd::SharedPtr node) {
   state_manager_.PushRollbackPoint();
-  for (auto child_node : node->children_) {
+  for (auto child_node : node->children()) {
     child_node->Accept(this);
     if (!child_match_condition_) {
       state_manager_.Rollback();
@@ -307,7 +307,7 @@ void MatchStrategy::ProcessNode(LogicXor::SharedPtr node) {
   ++logix_xor_level;
   state_manager_.PushRollbackPoint();
 
-  for (auto child_node : node->children_) {
+  for (auto child_node : node->children()) {
     child_node->Accept(this);
     if (child_match_condition_
         && logix_xor_level == 1 && !AllMatch()) {
@@ -331,7 +331,7 @@ void MatchStrategy::ProcessNode(LogicXor::SharedPtr node) {
 
 void MatchStrategy::ProcessNode(LogicOr::SharedPtr node) {
   bool one_or_more = false;
-  for (auto child_node : node->children_) {
+  for (auto child_node : node->children()) {
     child_node->Accept(this);
     if (child_match_condition_) {
       one_or_more = true;
@@ -341,12 +341,12 @@ void MatchStrategy::ProcessNode(LogicOr::SharedPtr node) {
 }
 
 void MatchStrategy::ProcessNode(LogicOptional::SharedPtr node) {
-  node->children_.front()->Accept(this);
+  node->children().front()->Accept(this);
   child_match_condition_ = true;
 }
 
 void MatchStrategy::ProcessNode(LogicOneOrMore::SharedPtr node) {
-  auto child_node = node->children_.front();
+  auto child_node = node->children().front();
   int counter = -1;
   do {
     child_node->Accept(this);

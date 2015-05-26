@@ -18,19 +18,19 @@ TEST(symbol, non_terminal_to_string) {
   // one child.
   auto Command_ptr = Command::Init("whatever");
   auto logic_and_ptr = LogicAnd::Init();
-  logic_and_ptr->children_.push_back(Command_ptr);
+  logic_and_ptr->AddChild(Command_ptr);
   EXPECT_EQ("LogicAnd(Command[whatever])", logic_and_ptr->ToString());
   // more than one.
   auto posix_option_ptr = PosixOption::Init("-c");
-  logic_and_ptr->children_.push_back(posix_option_ptr);
+  logic_and_ptr->AddChild(posix_option_ptr);
   EXPECT_EQ(
       "LogicAnd(Command[whatever], PosixOption[-c])",
       logic_and_ptr->ToString());
   // more than one level.
   auto logic_xor_ptr = LogicXor::Init();
   auto gnu_option_ptr = GnuOption::Init("--long");
-  logic_xor_ptr->children_.push_back(gnu_option_ptr);
-  logic_and_ptr->children_.push_back(logic_xor_ptr);
+  logic_xor_ptr->AddChild(gnu_option_ptr);
+  logic_and_ptr->AddChild(logic_xor_ptr);
   EXPECT_EQ(
       ("LogicAnd(Command[whatever], PosixOption[-c], "
          "LogicXor(GnuOption[--long])"

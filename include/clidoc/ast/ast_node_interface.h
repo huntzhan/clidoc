@@ -95,7 +95,7 @@ struct NodeConnection {
       SharedPtrNodeContainer::iterator other_this_iter,
       SharedPtrNodeContainer *other_children_of_parent_ptr);
   // by copying the setting of other.
-  void ConnectParent(NodeConnection *other);
+  void ConnectParent(const NodeConnection &other);
   // by connect to the last child of parent.
   template <typename NonTerminalTypeSharedPtr>
   void ConnectParent(NonTerminalTypeSharedPtr parent_node);
@@ -114,17 +114,18 @@ struct NodeVisitorInterface;
 class NodeInterface {
  public:
   virtual ~NodeInterface() = default;
-
-  // inline member helps generating indented prefix.
-  std::string GetIndent(const int &indent) const;
   // encode the tree structure rooted by current node as string.
-  virtual std::string ToString() = 0;
+  virtual std::string ToString() const = 0;
   // indented version of ToString().
-  virtual std::string ToString(const int &indent) = 0;
+  virtual std::string ToString(const int &indent) const = 0;
   // Apply visitor design pattern!
   virtual void Accept(NodeVisitorInterface *visitor_ptr) = 0;
   // Connection of nodes in AST.
   NodeConnection node_connection;
+
+ protected:
+  // inline member helps generating indented prefix.
+  std::string GetIndent(const int &indent) const;
 };
 
 
@@ -170,9 +171,8 @@ inline void NodeConnection::ConnectParent(
   children_of_parent_ptr_ = other_children_of_parent_ptr;
 }
 
-
-inline void NodeConnection::ConnectParent(NodeConnection *other) {
-  ConnectParent(other->this_iter_, other->children_of_parent_ptr_);
+inline void NodeConnection::ConnectParent(const NodeConnection &other) {
+  ConnectParent(other.this_iter_, other.children_of_parent_ptr_);
 }
 
 template <typename NonTerminalTypeSharedPtr>
@@ -184,7 +184,7 @@ void NodeConnection::ConnectParent(NonTerminalTypeSharedPtr parent_node) {
 template <typename NodeTypeSharedPtr>
 void NodeConnection::ReplacedWith(NodeTypeSharedPtr node_ptr) {
   *this_iter_ = node_ptr;
-  node_ptr->node_connection.ConnectParent(this);
+  node_ptr->node_connection.ConnectParent(*this);
 }
 
 // This member function must be marked inline, otherwise a linkage error would

@@ -20,8 +20,8 @@ class Terminal : public NodeInterface,
   explicit Terminal(const std::string &value);  // Terminal with value.
   explicit Terminal(const Token &token);
 
-  std::string ToString() override;
-  std::string ToString(const int &indent) override;
+  std::string ToString() const override;
+  std::string ToString(const int &indent) const override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
 
   Token token() const;
@@ -29,7 +29,6 @@ class Terminal : public NodeInterface,
 
  private:
   std::string GetID() const;
-
   const Token token_;
 };
 
@@ -38,15 +37,18 @@ template <NonTerminalType T>
 class NonTerminal : public NodeInterface,
                     public SmartPtrInterface<NonTerminal<T>> {
  public:
-  std::string ToString() override;
-  std::string ToString(const int &indent) override;
+  std::string ToString() const override;
+  std::string ToString(const int &indent) const override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
 
   void AddChild(SharedPtrNode node);
+  const SharedPtrNodeContainer &children() const;
+  void ClearChildren();
 
-  SharedPtrNodeContainer children_;
  private:
+  friend struct NodeConnection;
   std::string GetID() const;
+  SharedPtrNodeContainer children_;
 };
 
 // Terminal classes.
@@ -115,7 +117,7 @@ struct NonTerminalVisitorInterface<T, RestType...>
   // interface for NonTerminal<T>::SharedPtr.
   virtual void ProcessNode(typename NonTerminal<T>::SharedPtr node) {
     // Apply visitor to children.
-    auto cache_children = node->children_;
+    auto cache_children = node->children();
     for (auto child_ptr : cache_children) {
       // it's safe to do so, cause `NodeVisitorInterface` derived from current
       // type.
@@ -175,13 +177,13 @@ std::string Terminal<T>::GetID() const {
 }
 
 template <TerminalType T>
-std::string Terminal<T>::ToString() {
+std::string Terminal<T>::ToString() const {
   std::string token_value = token_.has_value() ? token_.value() : "NoValue";
   return GetID() + "[" + token_value + "]";
 }
 
 template <TerminalType T>
-std::string Terminal<T>::ToString(const int &indent) {
+std::string Terminal<T>::ToString(const int &indent) const {
   std::ostringstream strm;
   strm << GetIndent(indent) << ToString() << std::endl;
   return strm.str();
@@ -208,7 +210,7 @@ std::string NonTerminal<T>::GetID() const {
 }
 
 template <NonTerminalType T>
-std::string NonTerminal<T>::ToString() {
+std::string NonTerminal<T>::ToString() const {
   std::ostringstream strm;
   strm << GetID() << "(";
   std::size_t index = 0;
@@ -224,7 +226,7 @@ std::string NonTerminal<T>::ToString() {
 }
 
 template <NonTerminalType T>
-std::string NonTerminal<T>::ToString(const int &indent) {
+std::string NonTerminal<T>::ToString(const int &indent) const {
   std::ostringstream strm;
   auto prefix = GetIndent(indent);
   strm << prefix << GetID() << "(" << std::endl;
@@ -245,6 +247,16 @@ void NonTerminal<T>::AddChild(SharedPtrNode node) {
   children_.push_back(node);
   // make connection.
   node->node_connection.ConnectParent(this->shared_from_this());
+}
+
+template <NonTerminalType T>
+const SharedPtrNodeContainer &NonTerminal<T>::children() const {
+  return children_;
+}
+
+template <NonTerminalType T>
+void NonTerminal<T>::ClearChildren() {
+  children_.clear();
 }
 
 }  // namespace clidoc

@@ -165,7 +165,7 @@ template <NonTerminalType type>
 void ASTCodeGenerator::ProcessNode(NonTerminalTypeSharedPtr<type> node) {
   // apply processing logic to children, and collect variable name of children.
   std::vector<std::string> child_variable_names;
-  for (auto child_node : node->children_) {
+  for (auto child_node : node->children()) {
     child_node->Accept(visitor_ptr_);
     child_variable_names.push_back(child_variable_name_);
   }
