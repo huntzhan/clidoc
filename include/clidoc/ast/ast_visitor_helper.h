@@ -239,6 +239,24 @@ struct NodeTypeModifier {
   static void ChangeNonTerminalType(NonTerminalTypeSharedPtr<type> node);
 };
 
+class ChildrenSizeRecorder : public VisitorProcessLogic {
+ public:
+  template <NonTerminalType type>
+  void ProcessNode(NonTerminalTypeSharedPtr<type> node);
+  SharedPtrNodeContainer::size_type children_size() const;
+
+ private:
+  SharedPtrNodeContainer::size_type children_size_ = 0;
+};
+
+inline SharedPtrNodeContainer::size_type GetChildrenSize(SharedPtrNode node) {
+  ChildrenSizeRecorder children_size_recorder;
+  auto visitor = GenerateVisitor<NonTerminalVisitor>(
+      &children_size_recorder);
+  node->Accept(&visitor);
+  return children_size_recorder.children_size();
+}
+
 }  // namespace clidoc
 
 namespace clidoc {
@@ -249,25 +267,6 @@ ConditionalSelectBehavior<                        \
     decltype(node),                               \
     behavior_cls                                  \
     >(process_logic_ptr_, node)                   \
-
-template <typename TargetType>
-template <TerminalType type>
-void NodeTypeModifier<TargetType>::ChangeTerminalType(
-    TerminalTypeSharedPtr<type> node) {
-  auto new_node = TargetType::Init(node->token_.value());
-  node->node_connection.ReplacedWith(new_node);
-}
-
-template <typename TargetType>
-template <NonTerminalType type>
-void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
-    NonTerminalTypeSharedPtr<type> node) {
-  auto new_node = TargetType::Init();
-  for (auto child : node->children_) {
-    new_node->AddChild(child);
-  }
-  node->node_connection.ReplacedWith(new_node);
-}
 
 template <typename ProcessLogicType>
 TerminalVisitor<ProcessLogicType>::TerminalVisitor(
@@ -447,6 +446,35 @@ template <typename ProcessLogicType>
 void AllNodeVisitor<ProcessLogicType>::ProcessNode(
     LogicOneOrMore::SharedPtr node) {
   CONDITIONAL_SELECT_BEHAVIOR(DefaultBehaviorOfNonTerminal);
+}
+
+template <typename TargetType>
+template <TerminalType type>
+void NodeTypeModifier<TargetType>::ChangeTerminalType(
+    TerminalTypeSharedPtr<type> node) {
+  auto new_node = TargetType::Init(node->token_.value());
+  node->node_connection.ReplacedWith(new_node);
+}
+
+template <typename TargetType>
+template <NonTerminalType type>
+void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
+    NonTerminalTypeSharedPtr<type> node) {
+  auto new_node = TargetType::Init();
+  for (auto child : node->children_) {
+    new_node->AddChild(child);
+  }
+  node->node_connection.ReplacedWith(new_node);
+}
+
+template <NonTerminalType type>
+void ChildrenSizeRecorder::ProcessNode(NonTerminalTypeSharedPtr<type> node) {
+  children_size_ = node->children_.size();
+}
+
+inline
+SharedPtrNodeContainer::size_type ChildrenSizeRecorder::children_size() const {
+  return children_size_;
 }
 
 }  // namespace clidoc

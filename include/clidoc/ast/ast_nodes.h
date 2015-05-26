@@ -21,7 +21,6 @@ class Terminal : public NodeInterface,
   explicit Terminal(const Token &token);
 
   std::string GetID() override;
-  std::size_t GetSizeOfChildren() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
@@ -35,7 +34,6 @@ class NonTerminal : public NodeInterface,
                     public SmartPtrInterface<NonTerminal<T>> {
  public:
   std::string GetID() override;
-  std::size_t GetSizeOfChildren() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
@@ -171,11 +169,6 @@ std::string Terminal<T>::GetID() {
 }
 
 template <TerminalType T>
-std::size_t Terminal<T>::GetSizeOfChildren() {
-  return 0;
-}
-
-template <TerminalType T>
 std::string Terminal<T>::ToString() {
   std::string token_value = token_.has_value() ? token_.value() : "NoValue";
   return GetID() + "[" + token_value + "]";
@@ -196,11 +189,6 @@ void Terminal<T>::Accept(NodeVisitorInterface *visitor_ptr) {
 template <NonTerminalType T>
 std::string NonTerminal<T>::GetID() {
   return kNonTermianlClassName.at(T);
-}
-
-template <NonTerminalType T>
-std::size_t NonTerminal<T>::GetSizeOfChildren() {
-  return children_.size();
 }
 
 template <NonTerminalType T>
