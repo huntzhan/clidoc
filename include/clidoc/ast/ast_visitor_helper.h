@@ -434,7 +434,7 @@ template <typename TargetType>
 template <TerminalType type>
 void NodeTypeModifier<TargetType>::ChangeTerminalType(
     TerminalTypeSharedPtr<type> node) {
-  auto new_node = TargetType::Init(node->token_.value());
+  auto new_node = TargetType::Init(node->TokenValue());
   node->node_connection.ReplacedWith(new_node);
 }
 

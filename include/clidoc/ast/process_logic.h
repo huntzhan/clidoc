@@ -222,18 +222,18 @@ void TerminalTypeModifierLogic<TargetType>::ProcessNode(
 template <TerminalType Type>
 void NodeRecorderLogic::ProcessNode(
     TerminalTypeSharedPtr<Type> node) {
-  recorded_elements_.insert(node->token_);
+  recorded_elements_.insert(node->token());
 }
 
 template <TerminalType Type>
 void FocusedElementCollectorLogic::ProcessNode(
     TerminalTypeSharedPtr<Type> node) {
   if ((Type == TerminalType::POSIX_OPTION || Type == TerminalType::GNU_OPTION)
-      && !recorder_ptr_->OptionIsRecorded(node->token_)) {
-    recorder_ptr_->RecordSingleOption(node->token_);
+      && !recorder_ptr_->OptionIsRecorded(node->token())) {
+    recorder_ptr_->RecordSingleOption(node->token());
   }
   if (Type == TerminalType::ARGUMENT || Type == TerminalType::COMMAND) {
-    operand_candidates_.insert(node->token_);
+    operand_candidates_.insert(node->token());
   }
 }
 
@@ -243,7 +243,7 @@ void OneOrMoreNodeInsertLogic::ProcessNode(
   if (Type != TerminalType::POSIX_OPTION && Type != TerminalType::GNU_OPTION) {
     return;
   }
-  if (focused_oom_bound_options_.find(node->token_)
+  if (focused_oom_bound_options_.find(node->token())
       != focused_oom_bound_options_.end()) {
     auto logic_one_or_more = LogicOneOrMore::Init();
     node->node_connection.ReplacedWith(logic_one_or_more);

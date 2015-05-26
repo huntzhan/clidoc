@@ -20,10 +20,15 @@ class Terminal : public NodeInterface,
   explicit Terminal(const std::string &value);  // Terminal with value.
   explicit Terminal(const Token &token);
 
-  std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
+
+  Token token() const;
+  std::string TokenValue() const;
+
+ private:
+  std::string GetID() const;
 
   const Token token_;
 };
@@ -33,14 +38,15 @@ template <NonTerminalType T>
 class NonTerminal : public NodeInterface,
                     public SmartPtrInterface<NonTerminal<T>> {
  public:
-  std::string GetID() override;
   std::string ToString() override;
   std::string ToString(const int &indent) override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
 
   void AddChild(SharedPtrNode node);
-  // Container of symbols.
+
   SharedPtrNodeContainer children_;
+ private:
+  std::string GetID() const;
 };
 
 // Terminal classes.
@@ -164,7 +170,7 @@ inline Terminal<T>::Terminal(const std::string &value)
     : token_(T, value) { /* empty */ }
 
 template <TerminalType T>
-std::string Terminal<T>::GetID() {
+std::string Terminal<T>::GetID() const {
   return kTermianlClassName.at(T);
 }
 
@@ -186,8 +192,18 @@ void Terminal<T>::Accept(NodeVisitorInterface *visitor_ptr) {
   visitor_ptr->ProcessNode(this->shared_from_this());
 }
 
+template <TerminalType T>
+Token Terminal<T>::token() const {
+  return token_;
+}
+
+template <TerminalType T>
+std::string Terminal<T>::TokenValue() const {
+  return token_.value();
+}
+
 template <NonTerminalType T>
-std::string NonTerminal<T>::GetID() {
+std::string NonTerminal<T>::GetID() const {
   return kNonTermianlClassName.at(T);
 }
 

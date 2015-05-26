@@ -156,7 +156,7 @@ void ASTCodeGenerator::ProcessNode(TerminalTypeSharedPtr<type> node) {
   std::string stat = RenderNodeDecl(
       variable_name,
       type,
-      node->token_.value());
+      node->TokenValue());
   expressions_.push_back(stat);
   child_variable_name_ = variable_name;
 }

@@ -117,8 +117,6 @@ class NodeInterface {
 
   // inline member helps generating indented prefix.
   std::string GetIndent(const int &indent) const;
-  // get the string identify CURRENT node.
-  virtual std::string GetID() = 0;
   // encode the tree structure rooted by current node as string.
   virtual std::string ToString() = 0;
   // indented version of ToString().

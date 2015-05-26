@@ -38,7 +38,7 @@ void AmbiguityHandlerLogic::ProcessNode(
 
   // `-hso` -> LogicOr(`-h`, `-s`, `-o`).
   auto logic_or = LogicOr::Init();
-  string value = grouped_options_node->token_.value();
+  string value = grouped_options_node->TokenValue();
 
   for (auto iter = value.cbegin() + 1;  // ignore prefix `-`.
        iter != value.cend(); ++iter) {
@@ -93,7 +93,7 @@ BoundArgumentCleanerLogic::BoundArgumentCleanerLogic(
 
 void BoundArgumentCleanerLogic::ProcessNode(Argument::SharedPtr node) {
   auto &conn = node->node_connection;
-  if (bound_arguments_.find(node->token_) != bound_arguments_.end()) {
+  if (bound_arguments_.find(node->token()) != bound_arguments_.end()) {
     // is bound argument.
     conn.children_of_parent_ptr_->erase(conn.this_iter_);
   }

@@ -356,19 +356,19 @@ void MatchStrategy::ProcessNode(LogicOneOrMore::SharedPtr node) {
 }
 
 void MatchStrategy::ProcessNode(PosixOption::SharedPtr node) {
-  child_match_condition_ = state_manager_.MatchToken(node->token_);
+  child_match_condition_ = state_manager_.MatchToken(node->token());
 }
 
 void MatchStrategy::ProcessNode(GnuOption::SharedPtr node) {
-  child_match_condition_ = state_manager_.MatchToken(node->token_);
+  child_match_condition_ = state_manager_.MatchToken(node->token());
 }
 
 void MatchStrategy::ProcessNode(Command::SharedPtr node) {
-  child_match_condition_ = state_manager_.MatchToken(node->token_);
+  child_match_condition_ = state_manager_.MatchToken(node->token());
 }
 
 void MatchStrategy::ProcessNode(Argument::SharedPtr node) {
-  child_match_condition_ = state_manager_.MatchToken(node->token_);
+  child_match_condition_ = state_manager_.MatchToken(node->token());
 }
 
 void MatchStrategy::ProcessNode(GroupedOptions::SharedPtr node) {
