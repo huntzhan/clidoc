@@ -239,24 +239,6 @@ struct NodeTypeModifier {
   static void ChangeNonTerminalType(NonTerminalTypeSharedPtr<type> node);
 };
 
-class ChildrenSizeRecorder : public VisitorProcessLogic {
- public:
-  template <NonTerminalType type>
-  void ProcessNode(NonTerminalTypeSharedPtr<type> node);
-  SharedPtrNodeContainer::size_type children_size() const;
-
- private:
-  SharedPtrNodeContainer::size_type children_size_ = 0;
-};
-
-inline SharedPtrNodeContainer::size_type GetChildrenSize(SharedPtrNode node) {
-  ChildrenSizeRecorder children_size_recorder;
-  auto visitor = GenerateVisitor<NonTerminalVisitor>(
-      &children_size_recorder);
-  node->Accept(&visitor);
-  return children_size_recorder.children_size();
-}
-
 }  // namespace clidoc
 
 namespace clidoc {
@@ -465,16 +447,6 @@ void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
     new_node->AddChild(child);
   }
   node->node_connection.ReplacedWith(new_node);
-}
-
-template <NonTerminalType type>
-void ChildrenSizeRecorder::ProcessNode(NonTerminalTypeSharedPtr<type> node) {
-  children_size_ = node->children_.size();
-}
-
-inline
-SharedPtrNodeContainer::size_type ChildrenSizeRecorder::children_size() const {
-  return children_size_;
 }
 
 }  // namespace clidoc

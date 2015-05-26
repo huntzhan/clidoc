@@ -12,21 +12,33 @@
 
 namespace clidoc {
 
-class StructureOptimizerLogic : public VisitorProcessLogic {
+template <NonTerminalType ParentType>
+class ChildRemovabilityChecker : public VisitorProcessLogic {
  public:
-  template <NonTerminalType type>
-  void ProcessNode(NonTerminalTypeSharedPtr<type> node);
+  explicit ChildRemovabilityChecker(
+      NonTerminalTypeSharedPtr<ParentType> parent_node);
+
+  template <NonTerminalType ChildType>
+  void ProcessNode(NonTerminalTypeSharedPtr<ChildType> child_node);
+
+  bool child_is_removable() const;
 
  private:
-  template <NonTerminalType parent_type, typename NodeType>
-  bool CanRemoveChild(NonTerminalTypeSharedPtr<parent_type> parent_node,
-                      NodeType child_node);
+  NonTerminalTypeSharedPtr<ParentType> parent_node_;
+  bool child_is_removable_ = false;
+};
 
-  template <NonTerminalType type>
-  bool ConditionalRemoveChild(NonTerminalTypeSharedPtr<type> node);
+class StructureOptimizerLogic : public VisitorProcessLogic {
+ public:
+  template <NonTerminalType Type>
+  void ProcessNode(NonTerminalTypeSharedPtr<Type> node);
 
-  template <NonTerminalType type>
-  void ConditionalRemoveParent(NonTerminalTypeSharedPtr<type> node);
+ private:
+  template <NonTerminalType Type>
+  bool ConditionalRemoveChild(NonTerminalTypeSharedPtr<Type> node);
+
+  template <NonTerminalType Type>
+  void ConditionalRemoveParent(NonTerminalTypeSharedPtr<Type> node);
 
   SharedPtrNodeContainer children_of_child_;
 };
@@ -34,8 +46,8 @@ class StructureOptimizerLogic : public VisitorProcessLogic {
 template <typename TargetType>
 class TerminalTypeModifierLogic : public VisitorProcessLogic {
  public:
-  template <TerminalType type>
-  void ProcessNode(TerminalTypeSharedPtr<type> node);
+  template <TerminalType Type>
+  void ProcessNode(TerminalTypeSharedPtr<Type> node);
 };
 
 class DoubleHyphenHandlerLogic : public VisitorProcessLogic {
@@ -55,8 +67,8 @@ class AmbiguityHandlerLogic : public VisitorProcessLogic {
 
 class NodeRecorderLogic : public VisitorProcessLogic {
  public:
-  template <TerminalType type>
-  void ProcessNode(TerminalTypeSharedPtr<type> node);
+  template <TerminalType Type>
+  void ProcessNode(TerminalTypeSharedPtr<Type> node);
   std::set<Token> recorded_elements_;
 };
 
@@ -65,8 +77,8 @@ class FocusedElementCollectorLogic : public VisitorProcessLogic {
   explicit FocusedElementCollectorLogic(OptionBindingRecorder *recorder_ptr);
   std::set<Token> GetFocusedElements();
 
-  template <TerminalType type>
-  void ProcessNode(TerminalTypeSharedPtr<type> node);
+  template <TerminalType Type>
+  void ProcessNode(TerminalTypeSharedPtr<Type> node);
 
  private:
   OptionBindingRecorder *recorder_ptr_;
@@ -91,8 +103,8 @@ class OneOrMoreNodeInsertLogic : public VisitorProcessLogic {
   OneOrMoreNodeInsertLogic(
     const std::set<Token> &focused_oom_bound_options);
 
-  template <TerminalType type>
-  void ProcessNode(TerminalTypeSharedPtr<type> node);
+  template <TerminalType Type>
+  void ProcessNode(TerminalTypeSharedPtr<Type> node);
 
  private:
   const std::set<Token> &focused_oom_bound_options_;
@@ -111,50 +123,49 @@ class BoundArgumentCleanerLogic : public VisitorProcessLogic {
 
 namespace clidoc {
 
-template <NonTerminalType type>
+template <NonTerminalType ParentType>
+ChildRemovabilityChecker<ParentType>::ChildRemovabilityChecker(
+    NonTerminalTypeSharedPtr<ParentType> parent_node)
+    : parent_node_(parent_node) { /* empty */ }
+
+template <NonTerminalType ParentType>
+template <NonTerminalType ChildType>
+void ChildRemovabilityChecker<ParentType>::ProcessNode(
+    NonTerminalTypeSharedPtr<ChildType> child_node) {
+  // 1. equivalent if they have the same id.
+  if (ParentType == ChildType) {
+    child_is_removable_ = true;
+  }
+  // 2. when child_node is one of (`LogicAnd`, `LogicXor`, `LogicOr`), and
+  // size of child_node->children_ equals to 1, remove the child_node.
+  if ((ChildType == NonTerminalType::LOGIC_AND
+       || ChildType == NonTerminalType::LOGIC_XOR
+       || ChildType == NonTerminalType::LOGIC_OR)
+      && child_node->children_.size() == 1) {
+    child_is_removable_ = true;
+  }
+}
+
+template <NonTerminalType ParentType>
+bool ChildRemovabilityChecker<ParentType>::child_is_removable() const {
+  return child_is_removable_;
+}
+
+template <NonTerminalType Type>
 void StructureOptimizerLogic::ProcessNode(
-    NonTerminalTypeSharedPtr<type> node) {
+    NonTerminalTypeSharedPtr<Type> node) {
   // keep running if child been removed.
   while (ConditionalRemoveChild(node)) {/* empty */}
   ConditionalRemoveParent(node);
-  if ((type == NonTerminalType::LOGIC_OR || type == NonTerminalType::LOGIC_XOR)
-      && GetChildrenSize(node) == 1) {
+  if ((Type == NonTerminalType::LOGIC_OR || Type == NonTerminalType::LOGIC_XOR)
+      && node->children_.size() == 1) {
     NodeTypeModifier<LogicAnd>::ChangeNonTerminalType(node);
   }
 }
 
-template <NonTerminalType parent_type, typename NodeType>
-bool StructureOptimizerLogic::CanRemoveChild(
-    NonTerminalTypeSharedPtr<parent_type> parent_node,
-    NodeType child_node) {
-  const auto &logic_and_name =
-      kNonTermianlClassName.at(NonTerminalType::LOGIC_AND);
-  const auto &logic_xor_name =
-      kNonTermianlClassName.at(NonTerminalType::LOGIC_XOR);
-  const auto &logic_or_name =
-      kNonTermianlClassName.at(NonTerminalType::LOGIC_OR);
-  // decide expand or not.
-  bool child_is_logic_and = child_node->GetID() == logic_and_name;
-  bool child_is_logic_xor = child_node->GetID() == logic_xor_name;
-  bool child_is_logic_or = child_node->GetID() == logic_or_name;
-
-  bool equivalent = false;
-  // 1. equivalent if they have the same id.
-  if (parent_node->GetID() == child_node->GetID()) {
-    equivalent = true;
-  }
-  // 2. when child_node is one of (`LogicAnd`, `LogicXor`, `LogicOr`), and
-  // size of child_node->children_ equals to 1, remove the child_node.
-  if ((child_is_logic_and || child_is_logic_xor || child_is_logic_or)
-      && GetChildrenSize(child_node) == 1) {
-    equivalent = true;
-  }
-  return equivalent;
-}
-
-template <NonTerminalType type>
+template <NonTerminalType Type>
 bool StructureOptimizerLogic::ConditionalRemoveChild(
-    NonTerminalTypeSharedPtr<type> node) {
+    NonTerminalTypeSharedPtr<Type> node) {
   bool removed_children_flag = false;
   // container for processed elements.
   SharedPtrNodeContainer optimized_children;
@@ -166,7 +177,14 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
       // child node has been removed.
       continue;
     }
-    if (CanRemoveChild(node, child_node)) {
+
+    // check child_node is removable or not.
+    ChildRemovabilityChecker<Type> child_removability_checker(node);
+    auto visitor = GenerateVisitor<NonTerminalVisitor>(
+        &child_removability_checker);
+    child_node->Accept(&visitor);
+
+    if (child_removability_checker.child_is_removable()) {
       // same non-terminal nodes.
       optimized_children.insert(
           optimized_children.end(),
@@ -186,43 +204,43 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
   return removed_children_flag;
 }
 
-template <NonTerminalType type>
+template <NonTerminalType Type>
 void StructureOptimizerLogic::ConditionalRemoveParent(
-    NonTerminalTypeSharedPtr<type> node) {
+    NonTerminalTypeSharedPtr<Type> node) {
   if (node->children_.size() == 0) {
     *node->node_connection.this_iter_ = nullptr;
   }
 }
 
 template <typename TargetType>
-template <TerminalType type>
+template <TerminalType Type>
 void TerminalTypeModifierLogic<TargetType>::ProcessNode(
-    TerminalTypeSharedPtr<type> node) {
+    TerminalTypeSharedPtr<Type> node) {
   NodeTypeModifier<TargetType>::ChangeTerminalType(node);
 }
 
-template <TerminalType type>
+template <TerminalType Type>
 void NodeRecorderLogic::ProcessNode(
-    TerminalTypeSharedPtr<type> node) {
+    TerminalTypeSharedPtr<Type> node) {
   recorded_elements_.insert(node->token_);
 }
 
-template <TerminalType type>
+template <TerminalType Type>
 void FocusedElementCollectorLogic::ProcessNode(
-    TerminalTypeSharedPtr<type> node) {
-  if ((type == TerminalType::POSIX_OPTION || type == TerminalType::GNU_OPTION)
+    TerminalTypeSharedPtr<Type> node) {
+  if ((Type == TerminalType::POSIX_OPTION || Type == TerminalType::GNU_OPTION)
       && !recorder_ptr_->OptionIsRecorded(node->token_)) {
     recorder_ptr_->RecordSingleOption(node->token_);
   }
-  if (type == TerminalType::ARGUMENT || type == TerminalType::COMMAND) {
+  if (Type == TerminalType::ARGUMENT || Type == TerminalType::COMMAND) {
     operand_candidates_.insert(node->token_);
   }
 }
 
-template <TerminalType type>
+template <TerminalType Type>
 void OneOrMoreNodeInsertLogic::ProcessNode(
-    TerminalTypeSharedPtr<type> node) {
-  if (type != TerminalType::POSIX_OPTION && type != TerminalType::GNU_OPTION) {
+    TerminalTypeSharedPtr<Type> node) {
+  if (Type != TerminalType::POSIX_OPTION && Type != TerminalType::GNU_OPTION) {
     return;
   }
   if (focused_oom_bound_options_.find(node->token_)
