@@ -23,9 +23,9 @@ using std::set;
 using std::string;
 
 void ConstructCodegenInfo(
-    const string &doc_path, clidoc::CodegenInfo *info_ptr) {
+    const string &synopsis_path, clidoc::CodegenInfo *info_ptr) {
   // load user defined doc.
-  ifstream fin(doc_path);
+  ifstream fin(synopsis_path);
   if (!fin.is_open()) {
     cout << "Invalid Doc Path." << endl;
     exit(1);
@@ -37,10 +37,10 @@ void ConstructCodegenInfo(
 }
 
 void GenerateCpp11SourceCode(
-    const string &doc_path,
+    const string &synopsis_path,
     const string &output_file_name) {
   clidoc::CodegenInfo info;
-  ConstructCodegenInfo(doc_path, &info);
+  ConstructCodegenInfo(synopsis_path, &info);
   // code gen.
   ofstream fout(output_file_name);
   fout << clidoc::Cpp11Codegen(info);
@@ -48,11 +48,11 @@ void GenerateCpp11SourceCode(
 }
 
 void GenerateCpp11CMakeProject(
-    const string &doc_path,
+    const string &synopsis_path,
     const string &output_dir) {
 
   clidoc::CodegenInfo info;
-  ConstructCodegenInfo(doc_path, &info);
+  ConstructCodegenInfo(synopsis_path, &info);
 
   clidoc::CopyDirectory(
       "cpp11/project_template",
@@ -75,10 +75,10 @@ void GenerateCpp11CMakeProject(
 
 
 void GeneratePythonCode(
-    const string &doc_path,
+    const string &synopsis_path,
     const string &output_file_name) {
   clidoc::CodegenInfo info;
-  ConstructCodegenInfo(doc_path, &info);
+  ConstructCodegenInfo(synopsis_path, &info);
   // code gen.
   ofstream fout(output_file_name);
   fout << clidoc::PythonCodegen(info);
@@ -98,7 +98,7 @@ void ListMode() {
   }
 }
 
-void Debug(const string &doc_path) {
+void Debug(const string &synopsis_path) {
   auto PrintSetOfToken = [](
       const string &section_name,
       const set<clidoc::Token> &token_set) {
@@ -113,7 +113,7 @@ void Debug(const string &doc_path) {
   };
 
   clidoc::CodegenInfo info;
-  ConstructCodegenInfo(doc_path, &info);
+  ConstructCodegenInfo(synopsis_path, &info);
 
   cout << "[AST]" << endl;
   cout << info.doc_node_->ToString(0) << endl;
@@ -146,19 +146,19 @@ void Debug(const string &doc_path) {
 int main(int argc, char **argv) {
   clidoc::ParseArguments(argc, argv);
 
-  auto mode        = clidoc::string_outcome["--mode"];
-  auto doc_name    = clidoc::string_outcome["<doc_name>"];
-  auto output_hint = clidoc::string_outcome["<output_hint>"];
+  auto mode          = clidoc::string_outcome["--mode"];
+  auto synopsis_path = clidoc::string_outcome["<synopsis>"];
+  auto output_hint   = clidoc::string_outcome["<output_hint>"];
 
   if (clidoc::boolean_outcome["--list-mode"]) {
     ListMode();
     return 0;
   }
   if (clidoc::boolean_outcome["--debug"]) {
-    Debug(doc_name);
+    Debug(synopsis_path);
     return 0;
   }
 
   auto function = MODE_FUNCTION_MAPPING.at(mode);
-  function(doc_name, output_hint);
+  function(synopsis_path, output_hint);
 }

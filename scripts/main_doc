@@ -1,11 +1,11 @@
 Usage:
-  clidoc_main --mode|-m <mode> <doc_name> <output_hint>
+  clidoc_main --mode|-m <mode> <synopsis> <output_hint>
   clidoc_main --list-mode
-  clidoc_main --debug <doc_name>
+  clidoc_main --debug <synopsis>
 
 Options:
   --mode=<mode>, -m <mode>  # Set mode of code gen.
-  # <doc_name>                The filename of user defined doc.
-  # <output_hint>             A string to guide code gen.
+  # <synopsis>                The filename of user defined synopsis.
+  # <output_hint>             String to guide codegen.
   # --list-mode               List avaliable modes.
   # --debug                   List information for debug.
