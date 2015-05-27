@@ -435,7 +435,7 @@ template <TerminalType type>
 void NodeTypeModifier<TargetType>::ChangeTerminalType(
     TerminalTypeSharedPtr<type> node) {
   auto new_node = TargetType::Init(node->TokenValue());
-  node->node_connection.ReplacedWith(new_node);
+  node->ReplacedWith(new_node);
 }
 
 template <typename TargetType>
@@ -446,7 +446,7 @@ void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
   for (auto child : node->children()) {
     new_node->AddChild(child);
   }
-  node->node_connection.ReplacedWith(new_node);
+  node->ReplacedWith(new_node);
 }
 
 }  // namespace clidoc

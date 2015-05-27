@@ -208,7 +208,7 @@ template <NonTerminalType Type>
 void StructureOptimizerLogic::ConditionalRemoveParent(
     NonTerminalTypeSharedPtr<Type> node) {
   if (node->children().size() == 0) {
-    *node->node_connection.this_iter_ = nullptr;
+    node->ReplacedWith(nullptr);
   }
 }
 
@@ -246,7 +246,7 @@ void OneOrMoreNodeInsertLogic::ProcessNode(
   if (focused_oom_bound_options_.find(node->token())
       != focused_oom_bound_options_.end()) {
     auto logic_one_or_more = LogicOneOrMore::Init();
-    node->node_connection.ReplacedWith(logic_one_or_more);
+    node->ReplacedWith(logic_one_or_more);
     logic_one_or_more->AddChild(node);
   }
 }

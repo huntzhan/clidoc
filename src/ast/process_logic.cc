@@ -68,7 +68,7 @@ void AmbiguityHandlerLogic::ProcessNode(
     }
   }
   // replace original `GroupedOptions`.
-  grouped_options_node->node_connection.ReplacedWith(logic_or);
+  grouped_options_node->ReplacedWith(logic_or);
   // process bindings.
   recorder_ptr_->ProcessCachedBindings();
 }
@@ -78,13 +78,12 @@ void DoubleHyphenHandlerLogic::ProcessNode(
   // change the type of all elements after `--` to `OPERAND`.
   TerminalTypeModifierLogic<Argument> callable;
   auto type_modifier = GenerateVisitor<TerminalVisitor>(&callable);
-  auto &conn = double_hyphen_node->node_connection;
-  for (auto iter = next(conn.this_iter_);
-       iter != conn.children_of_parent_ptr_->end(); ++iter) {
+  for (auto iter = next(double_hyphen_node->GetThisIter());
+       iter != double_hyphen_node->GetEndOfChildrenOfParent(); ++iter) {
     (*iter)->Accept(&type_modifier);
   }
   // remove `--`.
-  conn.children_of_parent_ptr_->erase(conn.this_iter_);
+  double_hyphen_node->EraseFromAST();
 }
 
 BoundArgumentCleanerLogic::BoundArgumentCleanerLogic(
@@ -92,10 +91,9 @@ BoundArgumentCleanerLogic::BoundArgumentCleanerLogic(
     : bound_arguments_(bound_arguments) { /* empty */ }
 
 void BoundArgumentCleanerLogic::ProcessNode(Argument::SharedPtr node) {
-  auto &conn = node->node_connection;
   if (bound_arguments_.find(node->token()) != bound_arguments_.end()) {
     // is bound argument.
-    conn.children_of_parent_ptr_->erase(conn.this_iter_);
+    node->EraseFromAST();
   }
 }
 

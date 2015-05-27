@@ -228,9 +228,7 @@ void NonTerminal<T>::Accept(NodeVisitorInterface *visitor_ptr) {
 
 template <NonTerminalType T>
 void NonTerminal<T>::AddChild(SharedPtrNode node) {
-  PushBackChild(node);
-  // make connection.
-  node->node_connection.ConnectParent(this->shared_from_this());
+  node->ConnectParent(this->shared_from_this(), node);
 }
 
 }  // namespace clidoc

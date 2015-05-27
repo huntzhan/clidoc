@@ -119,25 +119,23 @@ using SharedPtrNodeContainer = std::list<SharedPtrNode>;
 using SharedPtrNonTerminalInterface = std::shared_ptr<NonTerminalInterface>;
 
 // Record the binding of parent and child.
-struct NodeConnection {
-  // `ConnectParent` make connection with parent node.
-  // by manually set.
+class NodeConnection {
+ public:
+  void Init(
+      SharedPtrNonTerminalInterface parent_node,
+      SharedPtrNodeContainer::iterator this_iter);
+  void CopyFrom(const NodeConnection &other);
   void ConnectParent(
-      SharedPtrNodeContainer::iterator other_this_iter,
-      SharedPtrNodeContainer *other_children_of_parent_ptr);
-  // by copying the setting of other.
-  void ConnectParent(const NodeConnection &other);
-  // by connect to the last child of parent.
-  // template <typename NonTerminalTypeSharedPtr>
-  // void ConnectParent(NonTerminalTypeSharedPtr parent_node);
-  void ConnectParent(SharedPtrNonTerminalInterface parent_node);
+      SharedPtrNonTerminalInterface parent_node,
+      SharedPtrNode child_node);
+  void EraseFromAST();
 
-  // Replace this node with another node.
-  template <typename NodeTypeSharedPtr>
-  void ReplacedWith(NodeTypeSharedPtr node_ptr);
+  SharedPtrNodeContainer::iterator this_iter() const;
+  SharedPtrNodeContainer::iterator GetEndOfChildrenOfParent() const;
 
+ private:
+  SharedPtrNonTerminalInterface parent_node_ = nullptr;
   SharedPtrNodeContainer::iterator this_iter_;
-  SharedPtrNodeContainer *children_of_parent_ptr_ = nullptr;
 };
 
 struct NodeVisitorInterface;
@@ -152,12 +150,23 @@ class NodeInterface {
   virtual std::string ToString(const int &indent) const = 0;
   // Apply visitor design pattern!
   virtual void Accept(NodeVisitorInterface *visitor_ptr) = 0;
-  // Connection of nodes in AST.
-  NodeConnection node_connection;
+
+  // operations related to node relations.
+  void ConnectParent(
+      SharedPtrNonTerminalInterface parent_node,
+      SharedPtrNode child_node);
+  void ReplacedWith(SharedPtrNode node);
+  void EraseFromAST();
+  SharedPtrNodeContainer::iterator GetThisIter() const;
+  SharedPtrNodeContainer::iterator GetEndOfChildrenOfParent() const;
 
  protected:
   // inline member helps generating indented prefix.
   std::string GetIndent(const int &indent) const;
+
+ private:
+  // Connection of nodes in AST.
+  NodeConnection node_connection;
 };
 
 class TerminalInterface : public NodeInterface {
@@ -177,11 +186,10 @@ class TerminalInterface : public NodeInterface {
 class NonTerminalInterface : public NodeInterface {
  public:
   const SharedPtrNodeContainer &children() const;
-  void PushBackChild(SharedPtrNode node);
   void ClearChildren();
 
  private:
-  friend struct NodeConnection;
+  friend class NodeConnection;
   SharedPtrNodeContainer children_;
 };
 
@@ -244,27 +252,38 @@ inline void Token::set_value(const std::string &value) {
   value_ = value;
 }
 
+inline void NodeConnection::Init(
+    SharedPtrNonTerminalInterface parent_node,
+    SharedPtrNodeContainer::iterator this_iter) {
+  parent_node_ = parent_node;
+  this_iter_ = this_iter;
+}
+
+inline void NodeConnection::CopyFrom(const NodeConnection &other) {
+  Init(other.parent_node_, other.this_iter_);
+}
+
 inline void NodeConnection::ConnectParent(
-    SharedPtrNodeContainer::iterator other_this_iter,
-    SharedPtrNodeContainer *other_children_of_parent_ptr) {
-  this_iter_ = other_this_iter;
-  children_of_parent_ptr_ = other_children_of_parent_ptr;
+    SharedPtrNonTerminalInterface parent_node,
+    SharedPtrNode child_node) {
+  parent_node->children_.push_back(child_node);
+  Init(parent_node, std::prev(parent_node->children_.end()));
 }
 
-inline void NodeConnection::ConnectParent(const NodeConnection &other) {
-  ConnectParent(other.this_iter_, other.children_of_parent_ptr_);
+inline void NodeConnection::EraseFromAST() {
+  parent_node_->children_.erase(this_iter_);
+  this_iter_ = parent_node_->children_.end();
+  parent_node_ = nullptr;
 }
 
-inline void NodeConnection::ConnectParent(
-    SharedPtrNonTerminalInterface parent_node) {
-  ConnectParent(std::prev(parent_node->children_.end()),
-                &parent_node->children_);
+inline SharedPtrNodeContainer::iterator
+NodeConnection::this_iter() const {
+  return this_iter_;
 }
 
-template <typename NodeTypeSharedPtr>
-void NodeConnection::ReplacedWith(NodeTypeSharedPtr node_ptr) {
-  *this_iter_ = node_ptr;
-  node_ptr->node_connection.ConnectParent(*this);
+inline SharedPtrNodeContainer::iterator
+NodeConnection::GetEndOfChildrenOfParent() const {
+  return parent_node_->children_.end();
 }
 
 inline TerminalInterface::TerminalInterface(
@@ -283,6 +302,38 @@ inline std::string TerminalInterface::TokenValue() const {
   return token_.value();
 }
 
+inline void NodeInterface::ConnectParent(
+    SharedPtrNonTerminalInterface parent_node,
+    SharedPtrNode child_node) {
+  node_connection.ConnectParent(parent_node, child_node);
+}
+
+inline void NodeInterface::ReplacedWith(SharedPtrNode node) {
+  auto this_iter = node_connection.this_iter();
+  if (node) {
+    // replace iterator of children of parent.
+    *this_iter = node;
+    // copy connection.
+    node->node_connection.CopyFrom(node_connection);
+  } else {
+    *this_iter = nullptr;
+  }
+}
+
+inline void NodeInterface::EraseFromAST() {
+  node_connection.EraseFromAST();
+}
+
+inline SharedPtrNodeContainer::iterator
+NodeInterface::GetThisIter() const {
+  return node_connection.this_iter();
+}
+
+inline SharedPtrNodeContainer::iterator
+NodeInterface::GetEndOfChildrenOfParent() const {
+  return node_connection.GetEndOfChildrenOfParent();
+}
+
 // This member function must be marked inline, otherwise a linkage error would
 // be raised.
 inline std::string NodeInterface::GetIndent(const int &indent) const {
@@ -296,10 +347,6 @@ inline std::string NodeInterface::GetIndent(const int &indent) const {
 
 inline const SharedPtrNodeContainer &NonTerminalInterface::children() const {
   return children_;
-}
-
-inline void NonTerminalInterface::PushBackChild(SharedPtrNode node) {
-  children_.push_back(node);
 }
 
 inline void NonTerminalInterface::ClearChildren() {
