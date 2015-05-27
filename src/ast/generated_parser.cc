@@ -331,7 +331,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        value.move< WeakPtrNode > (that.value);
+        value.move< WeakPtrNodeInterface > (that.value);
         break;
 
       case 3: // POSIX_OPTION
@@ -400,7 +400,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        value.copy< WeakPtrNode > (that.value);
+        value.copy< WeakPtrNodeInterface > (that.value);
         break;
 
       case 3: // POSIX_OPTION
@@ -677,7 +677,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        yylhs.value.build< WeakPtrNode > ();
+        yylhs.value.build< WeakPtrNodeInterface > ();
         break;
 
       case 3: // POSIX_OPTION
@@ -705,7 +705,7 @@ namespace clidoc {
   case 2:
 #line 161 "parser.y" // lalr1.cc:859
     {
-  auto doc = BuildNonTerminal<Doc>(yystack_[1].value.as< WeakPtrNode > ());
+  auto doc = BuildNonTerminal<Doc>(yystack_[1].value.as< WeakPtrNodeInterface > ());
   *doc_node_ptr = doc;
   yylhs.value.as< Doc::WeakPtr > () = doc;
 }
@@ -715,7 +715,7 @@ namespace clidoc {
   case 3:
 #line 171 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
+  yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
 }
 #line 721 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -748,7 +748,7 @@ namespace clidoc {
   case 7:
 #line 201 "parser.y" // lalr1.cc:859
     {
-  NonTerminalAddChild(yystack_[1].value.as< LogicAnd::WeakPtr > (), yystack_[0].value.as< WeakPtrNode > ());
+  NonTerminalAddChild(yystack_[1].value.as< LogicAnd::WeakPtr > (), yystack_[0].value.as< WeakPtrNodeInterface > ());
   yylhs.value.as< LogicAnd::WeakPtr > () = yystack_[1].value.as< LogicAnd::WeakPtr > ();
 }
 #line 755 "generated_parser.cc" // lalr1.cc:859
@@ -757,7 +757,7 @@ namespace clidoc {
   case 8:
 #line 205 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< LogicAnd::WeakPtr > () = BuildNonTerminal<LogicAnd>(yystack_[0].value.as< WeakPtrNode > ());
+  yylhs.value.as< LogicAnd::WeakPtr > () = BuildNonTerminal<LogicAnd>(yystack_[0].value.as< WeakPtrNodeInterface > ());
 }
 #line 763 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -765,7 +765,7 @@ namespace clidoc {
   case 9:
 #line 215 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
+  yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< WeakPtrNodeInterface > ();
 }
 #line 771 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -773,7 +773,7 @@ namespace clidoc {
   case 10:
 #line 218 "parser.y" // lalr1.cc:859
     {
-	yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicOneOrMore>(yystack_[1].value.as< WeakPtrNode > ());
+	yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicOneOrMore>(yystack_[1].value.as< WeakPtrNodeInterface > ());
 }
 #line 779 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -781,7 +781,7 @@ namespace clidoc {
   case 11:
 #line 221 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
+  yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< LogicXor::WeakPtr > ();
 }
 #line 787 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -789,7 +789,7 @@ namespace clidoc {
   case 12:
 #line 224 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
+  yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< WeakPtrNodeInterface > ();
 }
 #line 795 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -797,7 +797,7 @@ namespace clidoc {
   case 13:
 #line 233 "parser.y" // lalr1.cc:859
     {
-	yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicAnd::WeakPtr > ();
+	yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< LogicAnd::WeakPtr > ();
 }
 #line 803 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -805,7 +805,7 @@ namespace clidoc {
   case 14:
 #line 236 "parser.y" // lalr1.cc:859
     {
-	yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< LogicOptional::WeakPtr > ();
+	yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< LogicOptional::WeakPtr > ();
 }
 #line 811 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -829,7 +829,7 @@ namespace clidoc {
   case 17:
 #line 258 "parser.y" // lalr1.cc:859
     {
-  NonTerminalAddChild(yystack_[2].value.as< LogicXor::WeakPtr > (), yystack_[0].value.as< WeakPtrNode > ());
+  NonTerminalAddChild(yystack_[2].value.as< LogicXor::WeakPtr > (), yystack_[0].value.as< WeakPtrNodeInterface > ());
   yylhs.value.as< LogicXor::WeakPtr > () = yystack_[2].value.as< LogicXor::WeakPtr > ();
 }
 #line 836 "generated_parser.cc" // lalr1.cc:859
@@ -838,7 +838,7 @@ namespace clidoc {
   case 18:
 #line 268 "parser.y" // lalr1.cc:859
     {
-  NonTerminalAddChild(yystack_[2].value.as< LogicXor::WeakPtr > (), yystack_[0].value.as< WeakPtrNode > ());
+  NonTerminalAddChild(yystack_[2].value.as< LogicXor::WeakPtr > (), yystack_[0].value.as< WeakPtrNodeInterface > ());
   yylhs.value.as< LogicXor::WeakPtr > () = yystack_[2].value.as< LogicXor::WeakPtr > ();
 }
 #line 845 "generated_parser.cc" // lalr1.cc:859
@@ -847,7 +847,7 @@ namespace clidoc {
   case 19:
 #line 272 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< LogicXor::WeakPtr > () = BuildNonTerminal<LogicXor>(yystack_[0].value.as< WeakPtrNode > ());
+  yylhs.value.as< LogicXor::WeakPtr > () = BuildNonTerminal<LogicXor>(yystack_[0].value.as< WeakPtrNodeInterface > ());
 }
 #line 853 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -855,7 +855,7 @@ namespace clidoc {
   case 20:
 #line 286 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
+  yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< WeakPtrNodeInterface > ();
 }
 #line 861 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -863,7 +863,7 @@ namespace clidoc {
   case 21:
 #line 289 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = yystack_[0].value.as< WeakPtrNode > ();
+  yylhs.value.as< WeakPtrNodeInterface > () = yystack_[0].value.as< WeakPtrNodeInterface > ();
 }
 #line 869 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -871,7 +871,7 @@ namespace clidoc {
   case 22:
 #line 292 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(Argument::Init(yystack_[0].value.as< std::string > ()));
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(Argument::Init(yystack_[0].value.as< std::string > ()));
 }
 #line 877 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -879,7 +879,7 @@ namespace clidoc {
   case 23:
 #line 295 "parser.y" // lalr1.cc:859
     {
-	yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicOneOrMore>(Argument::Init(yystack_[1].value.as< std::string > ()));
+	yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicOneOrMore>(Argument::Init(yystack_[1].value.as< std::string > ()));
 }
 #line 885 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -887,7 +887,7 @@ namespace clidoc {
   case 24:
 #line 298 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(Command::Init(yystack_[0].value.as< std::string > ()));
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(Command::Init(yystack_[0].value.as< std::string > ()));
 }
 #line 893 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -895,7 +895,7 @@ namespace clidoc {
   case 25:
 #line 301 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(KOptions::Init());
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(KOptions::Init());
 }
 #line 901 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -903,7 +903,7 @@ namespace clidoc {
   case 26:
 #line 304 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(KDoubleHyphen::Init());
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(KDoubleHyphen::Init());
 }
 #line 909 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -911,7 +911,7 @@ namespace clidoc {
   case 27:
 #line 315 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(PosixOption::Init(yystack_[0].value.as< std::string > ()));
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(PosixOption::Init(yystack_[0].value.as< std::string > ()));
 }
 #line 917 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -919,7 +919,7 @@ namespace clidoc {
   case 28:
 #line 318 "parser.y" // lalr1.cc:859
     {
-	yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicOneOrMore>(PosixOption::Init(yystack_[1].value.as< std::string > ()));
+	yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicOneOrMore>(PosixOption::Init(yystack_[1].value.as< std::string > ()));
 }
 #line 925 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -927,7 +927,7 @@ namespace clidoc {
   case 29:
 #line 321 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(GroupedOptions::Init(yystack_[0].value.as< std::string > ()));
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(GroupedOptions::Init(yystack_[0].value.as< std::string > ()));
 }
 #line 933 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -935,7 +935,7 @@ namespace clidoc {
   case 30:
 #line 324 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicOneOrMore>(GroupedOptions::Init(yystack_[1].value.as< std::string > ()));
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicOneOrMore>(GroupedOptions::Init(yystack_[1].value.as< std::string > ()));
 }
 #line 941 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -943,7 +943,7 @@ namespace clidoc {
   case 31:
 #line 335 "parser.y" // lalr1.cc:859
     {
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(GnuOption::Init(yystack_[0].value.as< std::string > ()));
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(GnuOption::Init(yystack_[0].value.as< std::string > ()));
 }
 #line 949 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -951,7 +951,7 @@ namespace clidoc {
   case 32:
 #line 338 "parser.y" // lalr1.cc:859
     {
-	yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicOneOrMore>(GnuOption::Init(yystack_[1].value.as< std::string > ()));
+	yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicOneOrMore>(GnuOption::Init(yystack_[1].value.as< std::string > ()));
 }
 #line 957 "generated_parser.cc" // lalr1.cc:859
     break;
@@ -965,7 +965,7 @@ namespace clidoc {
       Token(TerminalType::ARGUMENT, yystack_[0].value.as< std::string > ()));
 
   // normal works.
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicAnd>(GnuOption::Init(yystack_[2].value.as< std::string > ()),
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicAnd>(GnuOption::Init(yystack_[2].value.as< std::string > ()),
                                   Argument::Init(yystack_[0].value.as< std::string > ()));
 }
 #line 972 "generated_parser.cc" // lalr1.cc:859
@@ -982,7 +982,7 @@ namespace clidoc {
   // normal works.
   auto logic_and = BuildNonTerminal<LogicAnd>(GnuOption::Init(yystack_[3].value.as< std::string > ()),
                                               Argument::Init(yystack_[1].value.as< std::string > ()));
-  yylhs.value.as< WeakPtrNode > () = BuildNonTerminal<LogicOneOrMore>(logic_and);
+  yylhs.value.as< WeakPtrNodeInterface > () = BuildNonTerminal<LogicOneOrMore>(logic_and);
 }
 #line 988 "generated_parser.cc" // lalr1.cc:859
     break;

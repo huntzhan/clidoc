@@ -108,14 +108,14 @@ class Token {
   std::string value_;
 };
 
-// forward declaration for `SharedPtrNode`...
+// forward declaration for `SharedPtrNodeInterface`...
 class NodeInterface;
 // forward declaration for `NodeConnection::ConnectParent`.
 class NonTerminalInterface;
 
-using SharedPtrNode = std::shared_ptr<NodeInterface>;
-using WeakPtrNode = std::weak_ptr<NodeInterface>;
-using SharedPtrNodeContainer = std::list<SharedPtrNode>;
+using SharedPtrNodeInterface = std::shared_ptr<NodeInterface>;
+using WeakPtrNodeInterface = std::weak_ptr<NodeInterface>;
+using SharedPtrNodeInterfaceContainer = std::list<SharedPtrNodeInterface>;
 using SharedPtrNonTerminalInterface = std::shared_ptr<NonTerminalInterface>;
 
 // Record the binding of parent and child.
@@ -123,19 +123,19 @@ class NodeConnection {
  public:
   void Init(
       SharedPtrNonTerminalInterface parent_node,
-      SharedPtrNodeContainer::iterator this_iter);
+      SharedPtrNodeInterfaceContainer::iterator this_iter);
   void CopyFrom(const NodeConnection &other);
   void ConnectParent(
       SharedPtrNonTerminalInterface parent_node,
-      SharedPtrNode child_node);
+      SharedPtrNodeInterface child_node);
   void EraseFromAST();
 
-  SharedPtrNodeContainer::iterator this_iter() const;
-  SharedPtrNodeContainer::iterator GetEndOfChildrenOfParent() const;
+  SharedPtrNodeInterfaceContainer::iterator this_iter() const;
+  SharedPtrNodeInterfaceContainer::iterator GetEndOfChildrenOfParent() const;
 
  private:
   SharedPtrNonTerminalInterface parent_node_ = nullptr;
-  SharedPtrNodeContainer::iterator this_iter_;
+  SharedPtrNodeInterfaceContainer::iterator this_iter_;
 };
 
 struct NodeVisitorInterface;
@@ -154,11 +154,11 @@ class NodeInterface {
   // operations related to node relations.
   void ConnectParent(
       SharedPtrNonTerminalInterface parent_node,
-      SharedPtrNode child_node);
-  void ReplacedWith(SharedPtrNode node);
+      SharedPtrNodeInterface child_node);
+  void ReplacedWith(SharedPtrNodeInterface node);
   void EraseFromAST();
-  SharedPtrNodeContainer::iterator GetThisIter() const;
-  SharedPtrNodeContainer::iterator GetEndOfChildrenOfParent() const;
+  SharedPtrNodeInterfaceContainer::iterator GetThisIter() const;
+  SharedPtrNodeInterfaceContainer::iterator GetEndOfChildrenOfParent() const;
 
  protected:
   // inline member helps generating indented prefix.
@@ -185,12 +185,12 @@ class TerminalInterface : public NodeInterface {
 
 class NonTerminalInterface : public NodeInterface {
  public:
-  const SharedPtrNodeContainer &children() const;
+  const SharedPtrNodeInterfaceContainer &children() const;
   void ClearChildren();
 
  private:
   friend class NodeConnection;
-  SharedPtrNodeContainer children_;
+  SharedPtrNodeInterfaceContainer children_;
 };
 
 }  // namespace clidoc
@@ -254,7 +254,7 @@ inline void Token::set_value(const std::string &value) {
 
 inline void NodeConnection::Init(
     SharedPtrNonTerminalInterface parent_node,
-    SharedPtrNodeContainer::iterator this_iter) {
+    SharedPtrNodeInterfaceContainer::iterator this_iter) {
   parent_node_ = parent_node;
   this_iter_ = this_iter;
 }
@@ -265,7 +265,7 @@ inline void NodeConnection::CopyFrom(const NodeConnection &other) {
 
 inline void NodeConnection::ConnectParent(
     SharedPtrNonTerminalInterface parent_node,
-    SharedPtrNode child_node) {
+    SharedPtrNodeInterface child_node) {
   parent_node->children_.push_back(child_node);
   Init(parent_node, std::prev(parent_node->children_.end()));
 }
@@ -276,12 +276,12 @@ inline void NodeConnection::EraseFromAST() {
   parent_node_ = nullptr;
 }
 
-inline SharedPtrNodeContainer::iterator
+inline SharedPtrNodeInterfaceContainer::iterator
 NodeConnection::this_iter() const {
   return this_iter_;
 }
 
-inline SharedPtrNodeContainer::iterator
+inline SharedPtrNodeInterfaceContainer::iterator
 NodeConnection::GetEndOfChildrenOfParent() const {
   return parent_node_->children_.end();
 }
@@ -304,11 +304,11 @@ inline std::string TerminalInterface::TokenValue() const {
 
 inline void NodeInterface::ConnectParent(
     SharedPtrNonTerminalInterface parent_node,
-    SharedPtrNode child_node) {
+    SharedPtrNodeInterface child_node) {
   node_connection.ConnectParent(parent_node, child_node);
 }
 
-inline void NodeInterface::ReplacedWith(SharedPtrNode node) {
+inline void NodeInterface::ReplacedWith(SharedPtrNodeInterface node) {
   auto this_iter = node_connection.this_iter();
   if (node) {
     // replace iterator of children of parent.
@@ -324,12 +324,12 @@ inline void NodeInterface::EraseFromAST() {
   node_connection.EraseFromAST();
 }
 
-inline SharedPtrNodeContainer::iterator
+inline SharedPtrNodeInterfaceContainer::iterator
 NodeInterface::GetThisIter() const {
   return node_connection.this_iter();
 }
 
-inline SharedPtrNodeContainer::iterator
+inline SharedPtrNodeInterfaceContainer::iterator
 NodeInterface::GetEndOfChildrenOfParent() const {
   return node_connection.GetEndOfChildrenOfParent();
 }
@@ -345,7 +345,8 @@ inline std::string NodeInterface::GetIndent(const int &indent) const {
   return strm.str();
 }
 
-inline const SharedPtrNodeContainer &NonTerminalInterface::children() const {
+inline
+const SharedPtrNodeInterfaceContainer &NonTerminalInterface::children() const {
   return children_;
 }
 

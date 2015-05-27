@@ -2,7 +2,6 @@
 #define INCLUDE_CLIDOC_AST_AST_NODES_H_
 
 #include <cstddef>
-#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -38,7 +37,7 @@ class NonTerminal : public NonTerminalInterface,
   std::string ToString(const int &indent) const override;
   void Accept(NodeVisitorInterface *visitor_ptr) override;
 
-  void AddChild(SharedPtrNode node);
+  void AddChild(SharedPtrNodeInterface node);
 
  private:
   std::string GetID() const;
@@ -227,7 +226,7 @@ void NonTerminal<T>::Accept(NodeVisitorInterface *visitor_ptr) {
 }
 
 template <NonTerminalType T>
-void NonTerminal<T>::AddChild(SharedPtrNode node) {
+void NonTerminal<T>::AddChild(SharedPtrNodeInterface node) {
   node->ConnectParent(this->shared_from_this(), node);
 }
 

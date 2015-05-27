@@ -132,23 +132,23 @@ BuildNonTerminal(WeakNodeTypes... child_nodes) {
 
 %type <Doc::WeakPtr>                    doc
 
-%type <WeakPtrNode>                     usage_section
+%type <WeakPtrNodeInterface>            usage_section
 %type <LogicXor::WeakPtr>               utilities
 %type <LogicAnd::WeakPtr>               single_utility
 %type <LogicAnd::WeakPtr>               seqs
-%type <WeakPtrNode>                     single_seq
-%type <WeakPtrNode>                     logic
+%type <WeakPtrNodeInterface>            single_seq
+%type <WeakPtrNodeInterface>            logic
 %type <LogicAnd::WeakPtr>               and_expr
 %type <LogicOptional::WeakPtr>          optional_expr
 %type <LogicXor::WeakPtr>               xor_expr
 %type <LogicXor::WeakPtr>               _xor_expr
-%type <WeakPtrNode>                     atom
-%type <WeakPtrNode>                     gnu_option_unit
-%type <WeakPtrNode>                     posix_option_unit
+%type <WeakPtrNodeInterface>            atom
+%type <WeakPtrNodeInterface>            gnu_option_unit
+%type <WeakPtrNodeInterface>            posix_option_unit
 
-%type <WeakPtrNode>                     options_section
+%type <WeakPtrNodeInterface>            options_section
 %type <LogicAnd::WeakPtr>               descriptions
-%type <WeakPtrNode>                     single_description
+%type <WeakPtrNodeInterface>            single_description
 %type <OptionBindingContainer::WeakPtr> bindings
 %type <OptionBinding::WeakPtr>          single_binding
 %type <DefaultValue::WeakPtr>           default_value

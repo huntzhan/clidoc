@@ -77,61 +77,6 @@ const std::map<TerminalType, std::string> kTermianlValueName = {
   {TerminalType::GENERAL_ELEMENT, "TerminalType::GENERAL_ELEMENT"},
 };
 
-// forward declaration for `SharedPtrNode`...
-class NodeInterface;
-// forward declaration for `NodeConnection::ConnectParent`.
-template <NonTerminalType T>
-class NonTerminal;
-
-using SharedPtrNode = std::shared_ptr<NodeInterface>;
-using WeakPtrNode = std::weak_ptr<NodeInterface>;
-using SharedPtrNodeContainer = std::list<SharedPtrNode>;
-
-// Record the binding of parent and child.
-struct NodeConnection {
-  // `ConnectParent` make connection with parent node.
-  // by manually set.
-  void ConnectParent(
-      SharedPtrNodeContainer::iterator other_this_iter,
-      SharedPtrNodeContainer *other_children_of_parent_ptr);
-  // by copying the setting of other.
-  void ConnectParent(NodeConnection *other);
-  // by connect to the last child of parent.
-  template <typename NonTerminalTypeSharedPtr>
-  void ConnectParent(NonTerminalTypeSharedPtr parent_node);
-
-  // Replace this node with another node.
-  template <typename NodeTypeSharedPtr>
-  void ReplacedWith(NodeTypeSharedPtr node_ptr);
-
-  SharedPtrNodeContainer::iterator this_iter_;
-  SharedPtrNodeContainer *children_of_parent_ptr_ = nullptr;
-};
-
-struct NodeVisitorInterface;
-
-// Interface for symbols in parsing tree.
-class NodeInterface {
- public:
-  virtual ~NodeInterface() = default;
-
-  // inline member helps generating indented prefix.
-  std::string GetIndent(const int &indent) const;
-  // get the string identify CURRENT node.
-  virtual std::string GetID() = 0;
-  // get the size of children. terminal type would return 0.
-  virtual std::size_t GetSizeOfChildren() = 0;
-  // encode the tree structure rooted by current node as string.
-  virtual std::string ToString() = 0;
-  // indented version of ToString().
-  virtual std::string ToString(const int &indent) = 0;
-  // Apply visitor design pattern!
-  virtual void Accept(NodeVisitorInterface *visitor_ptr) = 0;
-  // Connection of nodes in AST.
-  NodeConnection node_connection;
-};
-
-
 // Basic element to store data.
 class Token {
  public:
@@ -163,44 +108,94 @@ class Token {
   std::string value_;
 };
 
+// forward declaration for `SharedPtrNodeInterface`...
+class NodeInterface;
+// forward declaration for `NodeConnection::ConnectParent`.
+class NonTerminalInterface;
+
+using SharedPtrNodeInterface = std::shared_ptr<NodeInterface>;
+using WeakPtrNodeInterface = std::weak_ptr<NodeInterface>;
+using SharedPtrNodeInterfaceContainer = std::list<SharedPtrNodeInterface>;
+using SharedPtrNonTerminalInterface = std::shared_ptr<NonTerminalInterface>;
+
+// Record the binding of parent and child.
+class NodeConnection {
+ public:
+  void Init(
+      SharedPtrNonTerminalInterface parent_node,
+      SharedPtrNodeInterfaceContainer::iterator this_iter);
+  void CopyFrom(const NodeConnection &other);
+  void ConnectParent(
+      SharedPtrNonTerminalInterface parent_node,
+      SharedPtrNodeInterface child_node);
+  void EraseFromAST();
+
+  SharedPtrNodeInterfaceContainer::iterator this_iter() const;
+  SharedPtrNodeInterfaceContainer::iterator GetEndOfChildrenOfParent() const;
+
+ private:
+  SharedPtrNonTerminalInterface parent_node_ = nullptr;
+  SharedPtrNodeInterfaceContainer::iterator this_iter_;
+};
+
+struct NodeVisitorInterface;
+
+// Interface for symbols in parsing tree.
+class NodeInterface {
+ public:
+  virtual ~NodeInterface() = default;
+  // encode the tree structure rooted by current node as string.
+  virtual std::string ToString() const = 0;
+  // indented version of ToString().
+  virtual std::string ToString(const int &indent) const = 0;
+  // Apply visitor design pattern!
+  virtual void Accept(NodeVisitorInterface *visitor_ptr) = 0;
+
+  // operations related to node relations.
+  void ConnectParent(
+      SharedPtrNonTerminalInterface parent_node,
+      SharedPtrNodeInterface child_node);
+  void ReplacedWith(SharedPtrNodeInterface node);
+  void EraseFromAST();
+  SharedPtrNodeInterfaceContainer::iterator GetThisIter() const;
+  SharedPtrNodeInterfaceContainer::iterator GetEndOfChildrenOfParent() const;
+
+ protected:
+  // inline member helps generating indented prefix.
+  std::string GetIndent(const int &indent) const;
+
+ private:
+  // Connection of nodes in AST.
+  NodeConnection node_connection;
+};
+
+class TerminalInterface : public NodeInterface {
+ public:
+  TerminalInterface(
+      const TerminalType &type,
+      const std::string &value);
+  explicit TerminalInterface(const Token &token);
+
+  const Token &token() const;
+  std::string TokenValue() const;
+
+ private:
+  const Token token_;
+};
+
+class NonTerminalInterface : public NodeInterface {
+ public:
+  const SharedPtrNodeInterfaceContainer &children() const;
+  void ClearChildren();
+
+ private:
+  friend class NodeConnection;
+  SharedPtrNodeInterfaceContainer children_;
+};
+
 }  // namespace clidoc
 
 namespace clidoc {
-
-inline void NodeConnection::ConnectParent(
-    SharedPtrNodeContainer::iterator other_this_iter,
-    SharedPtrNodeContainer *other_children_of_parent_ptr) {
-  this_iter_ = other_this_iter;
-  children_of_parent_ptr_ = other_children_of_parent_ptr;
-}
-
-
-inline void NodeConnection::ConnectParent(NodeConnection *other) {
-  ConnectParent(other->this_iter_, other->children_of_parent_ptr_);
-}
-
-template <typename NonTerminalTypeSharedPtr>
-void NodeConnection::ConnectParent(NonTerminalTypeSharedPtr parent_node) {
-  ConnectParent(std::prev(parent_node->children_.end()),
-                &parent_node->children_);
-}
-
-template <typename NodeTypeSharedPtr>
-void NodeConnection::ReplacedWith(NodeTypeSharedPtr node_ptr) {
-  *this_iter_ = node_ptr;
-  node_ptr->node_connection.ConnectParent(this);
-}
-
-// This member function must be marked inline, otherwise a linkage error would
-// be raised.
-inline std::string NodeInterface::GetIndent(const int &indent) const {
-  std::string indent_element = "| ";
-  std::ostringstream strm;
-  for (int repeat_times = 0; repeat_times < indent; ++repeat_times) {
-    strm << indent_element;
-  }
-  return strm.str();
-}
 
 inline Token::Token(TerminalType type)
     : has_value_(false), type_(type) { /* empty */ }
@@ -255,6 +250,108 @@ inline void Token::set_type(const TerminalType &type) {
 
 inline void Token::set_value(const std::string &value) {
   value_ = value;
+}
+
+inline void NodeConnection::Init(
+    SharedPtrNonTerminalInterface parent_node,
+    SharedPtrNodeInterfaceContainer::iterator this_iter) {
+  parent_node_ = parent_node;
+  this_iter_ = this_iter;
+}
+
+inline void NodeConnection::CopyFrom(const NodeConnection &other) {
+  Init(other.parent_node_, other.this_iter_);
+}
+
+inline void NodeConnection::ConnectParent(
+    SharedPtrNonTerminalInterface parent_node,
+    SharedPtrNodeInterface child_node) {
+  parent_node->children_.push_back(child_node);
+  Init(parent_node, std::prev(parent_node->children_.end()));
+}
+
+inline void NodeConnection::EraseFromAST() {
+  parent_node_->children_.erase(this_iter_);
+  this_iter_ = parent_node_->children_.end();
+  parent_node_ = nullptr;
+}
+
+inline SharedPtrNodeInterfaceContainer::iterator
+NodeConnection::this_iter() const {
+  return this_iter_;
+}
+
+inline SharedPtrNodeInterfaceContainer::iterator
+NodeConnection::GetEndOfChildrenOfParent() const {
+  return parent_node_->children_.end();
+}
+
+inline TerminalInterface::TerminalInterface(
+    const TerminalType &type,
+    const std::string &value)
+    : token_(type, value) { /* empty */ }
+
+inline TerminalInterface::TerminalInterface(const Token &token)
+    : token_(token) { /* empty */ }
+
+inline const Token &TerminalInterface::token() const {
+  return token_;
+}
+
+inline std::string TerminalInterface::TokenValue() const {
+  return token_.value();
+}
+
+inline void NodeInterface::ConnectParent(
+    SharedPtrNonTerminalInterface parent_node,
+    SharedPtrNodeInterface child_node) {
+  node_connection.ConnectParent(parent_node, child_node);
+}
+
+inline void NodeInterface::ReplacedWith(SharedPtrNodeInterface node) {
+  auto this_iter = node_connection.this_iter();
+  if (node) {
+    // replace iterator of children of parent.
+    *this_iter = node;
+    // copy connection.
+    node->node_connection.CopyFrom(node_connection);
+  } else {
+    *this_iter = nullptr;
+  }
+}
+
+inline void NodeInterface::EraseFromAST() {
+  node_connection.EraseFromAST();
+}
+
+inline SharedPtrNodeInterfaceContainer::iterator
+NodeInterface::GetThisIter() const {
+  return node_connection.this_iter();
+}
+
+inline SharedPtrNodeInterfaceContainer::iterator
+NodeInterface::GetEndOfChildrenOfParent() const {
+  return node_connection.GetEndOfChildrenOfParent();
+}
+
+// This member function must be marked inline, otherwise a linkage error would
+// be raised.
+inline std::string NodeInterface::GetIndent(const int &indent) const {
+  std::string indent_element = "| ";
+  std::ostringstream strm;
+  for (int repeat_times = 0; repeat_times < indent; ++repeat_times) {
+    strm << indent_element;
+  }
+  return strm.str();
+}
+
+inline
+const SharedPtrNodeInterfaceContainer &NonTerminalInterface::children() const {
+  return children_;
+}
+
+inline void NonTerminalInterface::ClearChildren() {
+  children_.clear();
 }
 
 }  // namespace clidoc

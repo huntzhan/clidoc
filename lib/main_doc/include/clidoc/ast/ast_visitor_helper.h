@@ -9,6 +9,12 @@
 
 namespace clidoc {
 
+template <TerminalType Type>
+using TerminalTypeSharedPtr = std::shared_ptr<Terminal<Type>>;
+
+template <NonTerminalType Type>
+using NonTerminalTypeSharedPtr = std::shared_ptr<NonTerminal<Type>>;
+
 template <typename NodeSharedPtr, typename NodeType>
 struct NodeIs {
   static const bool value = std::is_same<
@@ -59,12 +65,12 @@ template <typename... T>
 struct ExtractNodeType;
 
 template <TerminalType T>
-struct ExtractNodeType<std::shared_ptr<Terminal<T>>> {
+struct ExtractNodeType<TerminalTypeSharedPtr<T>> {
   static const TerminalType value = T;
 };
 
 template <NonTerminalType T>
-struct ExtractNodeType<std::shared_ptr<NonTerminal<T>>> {
+struct ExtractNodeType<NonTerminalTypeSharedPtr<T>> {
   static const NonTerminalType value = T;
 };
 
@@ -106,12 +112,12 @@ struct VisitorProcessLogic {
 };
 
 struct DefaultBehaviorOfNonTerminal {
-  template <typename ProcessLogicType, typename NonTerminalTypeSharedPtr>
+  template <typename ProcessLogicType, NonTerminalType Type>
   static void ApplyVisitorProcessLogic(
       ProcessLogicType *process_logic_ptr,
-      NonTerminalTypeSharedPtr node) {
+      NonTerminalTypeSharedPtr<Type> node) {
     // process logic can not handle the type of `node`.
-    auto cache_children = node->children_;
+    auto cache_children = node->children();
     for (auto child_node : cache_children) {
       child_node->Accept(process_logic_ptr->visitor_ptr_);
     }
@@ -119,10 +125,10 @@ struct DefaultBehaviorOfNonTerminal {
 };
 
 struct DefaultBehaviorOfTerminal {
-  template <typename ProcessLogicType, typename TerminalTypeSharedPtr>
+  template <typename ProcessLogicType, TerminalType Type>
   static void ApplyVisitorProcessLogic(
       ProcessLogicType *process_logic_ptr,
-      TerminalTypeSharedPtr node) {
+      TerminalTypeSharedPtr<Type> node) {
     /* empty */
   }
 };
@@ -130,10 +136,10 @@ struct DefaultBehaviorOfTerminal {
 struct VisitorWithProcessLogicInterface {
  protected:
   struct ProcessLogicInvoker {
-    template <typename ProcessLogicType, typename NonTerminalTypeSharedPtr>
+    template <typename ProcessLogicType, typename NodeType>
     static void ApplyVisitorProcessLogic(
         ProcessLogicType *process_logic_ptr,
-        NonTerminalTypeSharedPtr node) {
+        NodeType node) {
       // ONLY apply process logic to CURRENT node.
       process_logic_ptr->ProcessNode(node);
     }
@@ -227,10 +233,10 @@ GenerateVisitor(ProcessLogicType *process_logic_ptr) {
 template <typename ProcessLogicType>
 struct NodeTypeModifier {
   // Could be invoked other visitors.
-  template <typename TerminalTypeSharedPtr>
-  static void ChangeTerminalType(TerminalTypeSharedPtr node);
-  template <typename NonTerminalTypeSharedPtr>
-  static void ChangeNonTerminalType(NonTerminalTypeSharedPtr node);
+  template <TerminalType Type>
+  static void ChangeTerminalType(TerminalTypeSharedPtr<Type> node);
+  template <NonTerminalType Type>
+  static void ChangeNonTerminalType(NonTerminalTypeSharedPtr<Type> node);
 };
 
 }  // namespace clidoc
@@ -243,25 +249,6 @@ ConditionalSelectBehavior<                        \
     decltype(node),                               \
     behavior_cls                                  \
     >(process_logic_ptr_, node)                   \
-
-template <typename TargetType>
-template <typename TerminalTypeSharedPtr>
-void NodeTypeModifier<TargetType>::ChangeTerminalType(
-    TerminalTypeSharedPtr node) {
-  auto new_node = TargetType::Init(node->token_.value());
-  node->node_connection.ReplacedWith(new_node);
-}
-
-template <typename TargetType>
-template <typename NonTerminalTypeSharedPtr>
-void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
-    NonTerminalTypeSharedPtr node) {
-  auto new_node = TargetType::Init();
-  for (auto child : node->children_) {
-    new_node->AddChild(child);
-  }
-  node->node_connection.ReplacedWith(new_node);
-}
 
 template <typename ProcessLogicType>
 TerminalVisitor<ProcessLogicType>::TerminalVisitor(
@@ -441,6 +428,25 @@ template <typename ProcessLogicType>
 void AllNodeVisitor<ProcessLogicType>::ProcessNode(
     LogicOneOrMore::SharedPtr node) {
   CONDITIONAL_SELECT_BEHAVIOR(DefaultBehaviorOfNonTerminal);
+}
+
+template <typename TargetType>
+template <TerminalType Type>
+void NodeTypeModifier<TargetType>::ChangeTerminalType(
+    TerminalTypeSharedPtr<Type> node) {
+  auto new_node = TargetType::Init(node->TokenValue());
+  node->ReplacedWith(new_node);
+}
+
+template <typename TargetType>
+template <NonTerminalType Type>
+void NodeTypeModifier<TargetType>::ChangeNonTerminalType(
+    NonTerminalTypeSharedPtr<Type> node) {
+  auto new_node = TargetType::Init();
+  for (auto child : node->children()) {
+    new_node->AddChild(child);
+  }
+  node->ReplacedWith(new_node);
 }
 
 }  // namespace clidoc

@@ -40,7 +40,7 @@ class StructureOptimizerLogic : public VisitorProcessLogic {
   template <NonTerminalType Type>
   void ConditionalRemoveParent(NonTerminalTypeSharedPtr<Type> node);
 
-  SharedPtrNodeContainer children_of_child_;
+  SharedPtrNodeInterfaceContainer children_of_child_;
 };
 
 template <typename TargetType>
@@ -168,7 +168,7 @@ bool StructureOptimizerLogic::ConditionalRemoveChild(
     NonTerminalTypeSharedPtr<Type> node) {
   bool removed_children_flag = false;
   // container for processed elements.
-  SharedPtrNodeContainer optimized_children;
+  SharedPtrNodeInterfaceContainer optimized_children;
   // `child_node` must be a reference, since the value of `child_node` in
   // `node->children_` might change.
   for (auto &child_node : node->children()) {

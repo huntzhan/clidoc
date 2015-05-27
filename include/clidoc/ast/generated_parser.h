@@ -313,7 +313,7 @@ namespace clidoc {
       // gnu_option_unit
       // options_section
       // single_description
-      char dummy8[sizeof(WeakPtrNode)];
+      char dummy8[sizeof(WeakPtrNodeInterface)];
 
       // POSIX_OPTION
       // GROUPED_OPTIONS
@@ -415,7 +415,7 @@ namespace clidoc {
 
   basic_symbol (typename Base::kind_type t, const OptionBindingContainer::WeakPtr v);
 
-  basic_symbol (typename Base::kind_type t, const WeakPtrNode v);
+  basic_symbol (typename Base::kind_type t, const WeakPtrNodeInterface v);
 
   basic_symbol (typename Base::kind_type t, const std::string v);
 
@@ -900,7 +900,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        value.copy< WeakPtrNode > (other.value);
+        value.copy< WeakPtrNodeInterface > (other.value);
         break;
 
       case 3: // POSIX_OPTION
@@ -970,7 +970,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        value.copy< WeakPtrNode > (v);
+        value.copy< WeakPtrNodeInterface > (v);
         break;
 
       case 3: // POSIX_OPTION
@@ -1040,7 +1040,7 @@ namespace clidoc {
   {}
 
   template <typename Base>
-  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const WeakPtrNode v)
+  BisonGeneratedParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const WeakPtrNodeInterface v)
     : Base (t)
     , value (v)
   {}
@@ -1118,7 +1118,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        value.template destroy< WeakPtrNode > ();
+        value.template destroy< WeakPtrNodeInterface > ();
         break;
 
       case 3: // POSIX_OPTION
@@ -1195,7 +1195,7 @@ namespace clidoc {
       case 38: // gnu_option_unit
       case 39: // options_section
       case 41: // single_description
-        value.move< WeakPtrNode > (s.value);
+        value.move< WeakPtrNodeInterface > (s.value);
         break;
 
       case 3: // POSIX_OPTION
