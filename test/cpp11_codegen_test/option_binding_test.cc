@@ -74,6 +74,15 @@ TEST(option_binding, option_e) {
   KeyChecker();
   expected = {"a", "command", "b"};
   EXPECT_EQ(expected, clidoc::string_list_outcome["-e"]);
+
+  const char *argv_4[] = {
+      "utility_name", "-e", "a", "command", "-e", "b", "c"};
+  EXPECT_TRUE(
+      clidoc::ParseArguments(7, argv_4, kTestMode));
+  KeyChecker();
+  expected = {"a", "b", "c"};
+  EXPECT_EQ(expected, clidoc::string_list_outcome["-e"]);
+  EXPECT_TRUE(clidoc::boolean_outcome["command"]);
 }
 
 TEST(option_binding, guideline_8_normal) {
