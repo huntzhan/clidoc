@@ -153,7 +153,7 @@ void ArgvProcessLogic::FillTokens() {
 void ArgvProcessLogic::CorrectOOMArgumentType() {
   const auto &oom_bound_options = info_.oom_bound_options_;
   set<Token> matched_oom_bound_options;
-  auto next_oom_bound_option_iter = tokens_.rbegin();
+  auto lower_bound_iter = tokens_.rbegin();
 
   auto IsOOMBoundOption = [&](const Token &token) -> bool {
     return oom_bound_options.find(token) != oom_bound_options.cend();
@@ -170,20 +170,17 @@ void ArgvProcessLogic::CorrectOOMArgumentType() {
 
   for (auto iter = tokens_.rbegin(); iter != tokens_.rend(); ++iter) {
     if (IsTargetOOMBoundOption(*iter)) {
-      // init `bound_value_iter`.
-      auto bound_value_iter = next_oom_bound_option_iter;
-      if (bound_value_iter != tokens_.rbegin()) {
-        ++bound_value_iter;
-      }
       // change type of tokens to `GENERAL_ELEMENT`.
-      for (; bound_value_iter != iter; ++bound_value_iter) {
+      for (auto bound_value_iter = lower_bound_iter;
+           bound_value_iter != iter; ++bound_value_iter) {
         bound_value_iter->set_type(TerminalType::GENERAL_ELEMENT);
       }
       // record option.
       matched_oom_bound_options.insert(*iter);
     }
     if (IsOOMBoundOption(*iter)) {
-      next_oom_bound_option_iter = iter;
+      lower_bound_iter = iter;
+      ++lower_bound_iter;
     }
   }
 }
