@@ -720,18 +720,21 @@ class ArgvPreprocessor(object):
                 break
 
     def _correct_oom_argument_type(self):
-        is_oom_bound_option_argument = False
-        for token in self.tokens:
-            is_oom_bound_option = token in Info.oom_bound_options
-            if is_oom_bound_option and not is_oom_bound_option_argument:
-                is_oom_bound_option_argument = True
-                continue
-            if not is_oom_bound_option and is_oom_bound_option_argument:
-                token.type_id = Token.GENERAL_ELEMENT
-                continue
-            if is_oom_bound_option and is_oom_bound_option_argument:
-                is_oom_bound_option_argument = False
-                continue
+        matched_oom_bound_options = set()
+        next_oom_bound_option_index = len(self.tokens)
+        for index, token in reversed(list(enumerate(self.tokens))):
+            if (token in Info.oom_bound_options
+                    and token not in matched_oom_bound_options):
+                target_range = range(
+                    index + 1,
+                    next_oom_bound_option_index,
+                )
+                for target_index in target_range:
+                    self.tokens[target_index].type_id = Token.GENERAL_ELEMENT
+                # record oom_bound_option.
+                matched_oom_bound_options.add(token)
+            if token in Info.oom_bound_options:
+                next_oom_bound_option_index = index
 
     def tokenize_argv(self):
         self._fill_tokens()
