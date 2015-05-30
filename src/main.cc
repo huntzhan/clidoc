@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
 
   auto mode          = clidoc::string_outcome["--mode"];
   auto synopsis_path = clidoc::string_outcome["<synopsis>"];
-  auto output_hint   = clidoc::string_outcome["<output_hint>"];
+  auto output_hint   = clidoc::string_outcome["<output-hint>"];
 
   if (clidoc::boolean_outcome["--list-mode"]) {
     ListMode();

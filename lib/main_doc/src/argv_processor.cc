@@ -3,6 +3,7 @@
 #include <iterator>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -151,21 +152,35 @@ void ArgvProcessLogic::FillTokens() {
 
 void ArgvProcessLogic::CorrectOOMArgumentType() {
   const auto &oom_bound_options = info_.oom_bound_options_;
-  bool is_oom_bound_option_argument = false;
-  for (auto iter = tokens_.begin(); iter != tokens_.end(); ++iter) {
-    bool is_oom_bound_option =
-        oom_bound_options.find(*iter) != oom_bound_options.cend();
-    if (is_oom_bound_option && !is_oom_bound_option_argument) {
-      is_oom_bound_option_argument = true;
-      continue;
+  set<Token> matched_oom_bound_options;
+  auto lower_bound_iter = tokens_.rbegin();
+
+  auto IsOOMBoundOption = [&](const Token &token) -> bool {
+    return oom_bound_options.find(token) != oom_bound_options.cend();
+  };
+
+  auto IsTargetOOMBoundOption = [&](const Token &token) -> bool {
+    bool flag =
+      IsOOMBoundOption(token)
+      &&
+      (matched_oom_bound_options.find(token)
+       == matched_oom_bound_options.cend());
+    return flag;
+  };
+
+  for (auto iter = tokens_.rbegin(); iter != tokens_.rend(); ++iter) {
+    if (IsTargetOOMBoundOption(*iter)) {
+      // change type of tokens to `GENERAL_ELEMENT`.
+      for (auto bound_value_iter = lower_bound_iter;
+           bound_value_iter != iter; ++bound_value_iter) {
+        bound_value_iter->set_type(TerminalType::GENERAL_ELEMENT);
+      }
+      // record option.
+      matched_oom_bound_options.insert(*iter);
     }
-    if (!is_oom_bound_option && is_oom_bound_option_argument) {
-      iter->set_type(TerminalType::GENERAL_ELEMENT);
-      continue;
-    }
-    if (is_oom_bound_option && is_oom_bound_option_argument) {
-      is_oom_bound_option_argument = false;
-      continue;
+    if (IsOOMBoundOption(*iter)) {
+      lower_bound_iter = iter;
+      ++lower_bound_iter;
     }
   }
 }

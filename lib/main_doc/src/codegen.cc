@@ -11,7 +11,7 @@ Token(TerminalType::GNU_OPTION, "--debug"),
 Token(TerminalType::GNU_OPTION, "--list-mode"),
 };
 cpp_codegen_info.arguments_ = {
-Token(TerminalType::ARGUMENT, "<output_hint>"),
+Token(TerminalType::ARGUMENT, "<output-hint>"),
 Token(TerminalType::ARGUMENT, "<synopsis>"),
 };
 cpp_codegen_info.oom_bound_options_ = {
@@ -29,16 +29,16 @@ cpp_codegen_info.option_to_representative_option_ = {
 {Token(TerminalType::POSIX_OPTION, "-m"), Token(TerminalType::GNU_OPTION, "--mode")},
 };
 cpp_codegen_info.doc_text_ = R"doc(Usage:
-  clidoc_main --mode|-m <mode> <synopsis> <output_hint>
+  clidoc_main --mode|-m <mode> <synopsis> <output-hint>
   clidoc_main --list-mode
   clidoc_main --debug <synopsis>
 
 Options:
-  --mode=<mode>, -m <mode>  Set mode of code gen.
-  <synopsis>                The filename of user defined synopsis.
-  <output_hint>             String to guide codegen.
-  --list-mode               List avaliable modes.
-  --debug                   List information for debug.
+  --mode=<mode>, -m <mode>  Mode of codegen.
+  <synopsis>                Filename of user defined synopsis.
+  <output-hint>             String to guide codegen.
+  --list-mode               List available modes.
+  --debug                   List information for debugging.
 )doc";
 auto node_0 = GnuOption::Init("--mode");
 auto node_1 = PosixOption::Init("-m");
@@ -46,7 +46,7 @@ auto node_2 = LogicXor::Init();
 node_2->AddChild(node_0);
 node_2->AddChild(node_1);
 auto node_3 = Argument::Init("<synopsis>");
-auto node_4 = Argument::Init("<output_hint>");
+auto node_4 = Argument::Init("<output-hint>");
 auto node_5 = LogicAnd::Init();
 node_5->AddChild(node_2);
 node_5->AddChild(node_3);
