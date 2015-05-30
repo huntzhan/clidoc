@@ -6,7 +6,7 @@ Workflow of `clidoc` is as follow:
 
 ```                                                         
 # front end.
-doc --> | doc analyser | --> AST
+synopsis --> | synopsis analyser | --> AST
                                 
 # back end.
         | cpp11 codegen  |
