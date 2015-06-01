@@ -91,7 +91,7 @@ void CollectedElementCodeGenerator::SetOptionToRepresentativeOptionDeclFormat(
       {{decl_format, element_format}};
 }
 
-void CollectedElementCodeGenerator::SetUtilityName(
+void CollectedElementCodeGenerator::SetUtilityNameDeclFormat(
     const string &decl_format) {
   utility_name_format_ = decl_format;
 }

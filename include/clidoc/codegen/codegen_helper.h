@@ -49,7 +49,7 @@ class CollectedElementCodeGenerator {
   void SetOptionToRepresentativeOptionDeclFormat(
       const std::string &decl_format,
       const std::string &element_format);
-  void SetUtilityName(
+  void SetUtilityNameDeclFormat(
       const std::string &decl_format);
   void SetDocTextDeclFormat(
       const std::string &decl_format);
