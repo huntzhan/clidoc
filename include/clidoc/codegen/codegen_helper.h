@@ -49,6 +49,8 @@ class CollectedElementCodeGenerator {
   void SetOptionToRepresentativeOptionDeclFormat(
       const std::string &decl_format,
       const std::string &element_format);
+  void SetUtilityName(
+      const std::string &decl_format);
   void SetDocTextDeclFormat(
       const std::string &decl_format);
 
@@ -72,6 +74,7 @@ class CollectedElementCodeGenerator {
   std::map<FocusedElementType, FormatPair> focused_elements_format_pair_;
   FormatPair default_values_format_pair_;
   FormatPair option_to_representative_option_format_pair_;
+  std::string utility_name_format_;
   std::string doc_text_format_;
 };
 

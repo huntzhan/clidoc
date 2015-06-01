@@ -91,6 +91,11 @@ void CollectedElementCodeGenerator::SetOptionToRepresentativeOptionDeclFormat(
       {{decl_format, element_format}};
 }
 
+void CollectedElementCodeGenerator::SetUtilityName(
+    const string &decl_format) {
+  utility_name_format_ = decl_format;
+}
+
 void CollectedElementCodeGenerator::SetDocTextDeclFormat(
     const string &decl_format) {
   doc_text_format_ = decl_format;
@@ -161,6 +166,11 @@ string CollectedElementCodeGenerator::GenerateCode(
   ostrm << boost::format(option_to_representative_option_format_pair_.at(0))
            % tmp_ostrm.str()
         << endl;
+
+  if (!utility_name_format_.empty()) {
+    ostrm << boost::format(utility_name_format_) % codegen_info.utility_name_
+          << endl;
+  }
 
   // codgen for doc_text_.
   ostrm << boost::format(doc_text_format_) % codegen_info.doc_text_ << endl;
