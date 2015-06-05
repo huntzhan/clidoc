@@ -129,10 +129,9 @@ set<Token> OneOrMoreMarkedElementCollectorLogic::GetOneOrMoreMarkedElements() {
         make_pair(map_pair.second.option_argument_, map_pair.first));
   }
   // process recorded elements.
-  auto end_iter = bound_argument_to_rep_option.end();
   for (const Token &element : node_recorder_logic_.recorded_elements_) {
     auto range = bound_argument_to_rep_option.equal_range(element);
-    if (range.first == end_iter) {
+    if (range.first == range.second) {
       // `element` is not a bound argument.
       if (element.type() == TerminalType::ARGUMENT) {
         // unbound argument.
