@@ -1,5 +1,6 @@
 #!/bin/bash
 CLIDOC_SOURCE_DIR="$(dirname $0)/.."
+CLIDOC_SOURCE_DIR="$(cd $CLIDOC_SOURCE_DIR; pwd)"
 CLIDOC_BUILD_DIR="${CLIDOC_SOURCE_DIR}/build"
 CLIDOC_MAIN_PATH="${CLIDOC_BUILD_DIR}/src/clidoc_main"
 
